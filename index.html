@@ -605,7 +605,34 @@ async function handleSubmit() {
     btn.innerHTML = 'ส่งแบบประเมิน';
   }
 }
+// ================================================================
+// อ่านค่าจาก URL Parameter เพื่อ Auto-Select แผนกและพื้นที่
+// ================================================================
+function prefillFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const deptParam = urlParams.get('dept');
+  const areaParam = urlParams.get('area');
 
+  if (deptParam) {
+    const deptSelect = document.getElementById('f-dept');
+    deptSelect.value = deptParam;
+    
+    // สั่งให้ Load รายชื่อ Area ของแผนกนั้นขึ้นมา
+    filterAreas(); 
+    
+    if (areaParam) {
+      setTimeout(() => {
+        const areaSelect = document.getElementById('f-area');
+        areaSelect.value = areaParam;
+      }, 100); // รอให้ dropdown สร้างเสร็จเสี้ยววิ
+    }
+  }
+}
+
+// ... โค้ด Init เดิม เปลี่ยนเป็นแบบนี้ ...
+toggleStepCards();
+document.getElementById('f-date').valueAsDate = new Date();
+prefillFromURL(); // 🟢 เรียกใช้ฟังก์ชันตอนเปิดหน้าเว็บ
 // Init
 toggleStepCards();
 document.getElementById('f-date').valueAsDate = new Date();
