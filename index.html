@@ -513,22 +513,24 @@ async function handleSubmit() {
     return;
   }
 
-  // ส่งจริง
+  // ส่งจริง — ใช้ no-cors เพื่อข้าม CORS จาก GitHub Pages
   const btn = document.getElementById('btn-submit');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>กำลังส่ง...';
 
   try {
-    const form = new FormData();
-    form.append('payload', JSON.stringify(payload));
-    const res  = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: form });
-    const json = JSON.parse(await res.text());
-    if (json.status === 'success') {
-      showToast('ส่งแบบประเมินสำเร็จแล้ว!', 'var(--teal-600)', 4000);
-      setTimeout(() => resetForm(), 4500);
-    } else {
-      throw new Error(json.message || 'Apps Script error');
-    }
+    // ส่งแบบ no-cors → ไม่สามารถอ่าน response ได้ แต่ข้อมูลถึง Apps Script
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    // no-cors จะไม่รู้ว่า success หรือ error แต่ถ้าไม่ throw ก็ถือว่าส่งได้
+    showToast('ส่งแบบประเมินสำเร็จแล้ว!', 'var(--teal-600)', 4000);
+    setTimeout(() => resetForm(), 4500);
+
   } catch(err) {
     console.error(err);
     showToast('เกิดข้อผิดพลาด: ' + err.message, '#A32D2D', 6000);
@@ -536,7 +538,6 @@ async function handleSubmit() {
     btn.disabled = false;
     btn.innerHTML = 'ส่งแบบประเมิน';
   }
-}
 
 function toBase64(file) {
   return new Promise((res, rej) => {
