@@ -53,6 +53,7 @@ input[type=text],input[type=date],select,textarea{
 input:focus,select:focus,textarea:focus{border-color:var(--blue-400);box-shadow:0 0 0 3px rgba(55,138,221,0.12)}
 select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235F5E5A'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
 textarea{resize:vertical;min-height:64px;line-height:1.55}
+input[readonly]{background-color: #f9f9f9; color: #888; cursor: not-allowed;}
 
 /* Step cards */
 .step-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-lg);margin-bottom:1rem;overflow:hidden;transition:box-shadow .2s}
@@ -162,16 +163,8 @@ textarea{resize:vertical;min-height:64px;line-height:1.55}
   <div class="sec-label">ข้อมูลทั่วไป</div>
   <div class="grid2">
     <div class="fg">
-      <label>ชื่อผู้ประเมิน <span class="req">จำเป็น</span></label>
-      <input type="text" id="f-name" placeholder="ชื่อ-นามสกุล">
-    </div>
-    <div class="fg">
-      <label>อีเมลผู้ประเมิน (เพื่อรับผลประเมิน)</label>
-      <input type="text" id="f-email" placeholder="อีเมล (ไม่บังคับ)">
-    </div>
-    <div class="fg">
       <label>แผนก / กลุ่ม <span class="req">จำเป็น</span></label>
-      <select id="f-dept" onchange="filterAreas()">
+      <select id="f-dept" onchange="filterAreas(); populateUsers();">
         <option value="">-- เลือกแผนก --</option>
         <option value="MT">MT — แผนกวิศวกรรมและซ่อมบำรุง</option>
         <option value="HC.P">HC.P — แผนกทรัพยากรบุคคล</option>
@@ -192,17 +185,41 @@ textarea{resize:vertical;min-height:64px;line-height:1.55}
         <option value="PAYROLL">PAYROLL</option>
       </select>
     </div>
+
+    <div class="fg">
+      <label>ประเภทผู้ตรวจ <span class="req">จำเป็น</span></label>
+      <select id="f-auditor" onchange="updateAll(); populateUsers();">
+        <option value="self">ตรวจด้วยตนเอง (เกณฑ์ผ่าน 90%)</option>
+        <option value="lead">หัวหน้าตรวจ (เกณฑ์ผ่าน 85%)</option>
+        <option value="exec">ผู้บริหารตรวจ (เกณฑ์ผ่าน 80%)</option>
+      </select>
+    </div>
+
+    <div class="fg">
+      <label>ชื่อผู้ประเมิน <span class="req">จำเป็น</span></label>
+      <select id="f-name" onchange="autoFillEmail()">
+        <option value="">-- กรุณาเลือกแผนกก่อน --</option>
+      </select>
+    </div>
+    
+    <div class="fg">
+      <label>อีเมลผู้ประเมิน</label>
+      <input type="text" id="f-email" placeholder="ระบบจะดึงอีเมลอัตโนมัติ" readonly>
+    </div>
+
     <div class="fg">
       <label>พื้นที่ประเมิน <span class="req">จำเป็น</span></label>
       <select id="f-area" onchange="checkAreaHistory()">
         <option value="">-- กรุณาเลือกแผนกก่อน --</option>
       </select>
     </div>
+
     <div class="fg">
       <label>วันที่ประเมิน <span class="req">จำเป็น</span></label>
       <input type="date" id="f-date">
     </div>
-    <div class="fg">
+
+    <div class="fg" style="grid-column: 1 / -1;">
       <label>Step ที่ต้องการประเมิน <span class="req">จำเป็น</span></label>
       <select id="f-assess-step" onchange="toggleStepCards()">
         <option value="all">ประเมินทุก Step (1–5)</option>
@@ -211,14 +228,6 @@ textarea{resize:vertical;min-height:64px;line-height:1.55}
         <option value="3">เฉพาะ Step 3 — สร้างมาตรฐานพื้นที่</option>
         <option value="4">เฉพาะ Step 4 — ตรวจเช็คโดยรวม</option>
         <option value="5">เฉพาะ Step 5 — การจัดการด้วยตนเอง</option>
-      </select>
-    </div>
-    <div class="fg">
-      <label>ประเภทผู้ตรวจ</label>
-      <select id="f-auditor" onchange="updateAll()">
-        <option value="self">ตรวจด้วยตนเอง (เกณฑ์ผ่าน 90%)</option>
-        <option value="lead">หัวหน้าตรวจ (เกณฑ์ผ่าน 85%)</option>
-        <option value="exec">ผู้บริหารตรวจ (เกณฑ์ผ่าน 80%)</option>
       </select>
     </div>
   </div>
@@ -335,33 +344,128 @@ textarea{resize:vertical;min-height:64px;line-height:1.55}
 
 <script>
 // ================================================================
-// Apps Script URL — อัปเดตลิงก์ใหม่จากการกด Deploy New version ด้วยนะครับ!
+// Apps Script URL — ใส่ลิงก์ของคุณตรงนี้
 // ================================================================
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
-// ================================================================
 
 const scores   = {};
 const fileStore = [];
 
+// ================================================================
+// 🟢 ฐานข้อมูลจำลอง (ให้คุณแก้ใส่ชื่อพนักงานและหัวหน้าของแต่ละแผนกที่นี่)
+// ================================================================
+
+// 1. พื้นที่ของแต่ละแผนก (เหมือนเดิม)
 const areaData = {
-  "RW":      ["ห้องจัดเก็บวัตถุดิบ 2","ห้องจัดเก็บวัตถุดิบ 3","ห้องจัดเก็บวัตถุดิบ 7","ห้องจัดเก็บ Barcode","คลังจัดเก็บสารเคมี","ห้องจัดเก็บอะไหล่ต่างประเทศ"],
-  "QC":      ["ห้อง Chemical","ห้อง Packaging","ห้อง Micro"],
-  "WH.P":    ["ออฟฟิศคลังสินค้า"],
-  "MT":      ["ห้องเก็บอะไหล่หน่วย PM ไฟฟ้า","ห้องเก็บอะไหล่หน่วย Utility","ห้องจัดเก็บอะไหล่ต่างประเทศ"],
-  "AC.P":    ["ห้องหัวหน้าแผนก","ห้องเก็บกล่องเอกสาร","ห้องประชุมแผนกบัญชี"],
-  "LG.P":    ["ห้องลำเลียง"],
-  "SE.P":    ["ออฟฟิศ"],
-  "PD":      ["ห้องประชุมห้องผสม","ห้องประชุมแผนกผลิต"],
-  "HC.P":    ["ห้องพยาบาล","ห้องประชุมแผนก"],
-  "PU.P":    ["ห้องจัดซื้อ"],
-  "IT.P":    ["ห้อง Server","ออฟฟิศ IT"],
-  "EN":      ["ห้องวิศวกรรม","ห้องประชุม EN"],
-  "PE":      ["ห้องออกแบบบรรจุภัณฑ์"],
-  "PN":      ["ห้องวางแผน"],
-  "SE":      ["ออฟฟิศความปลอดภัย"],
-  "PIS":     ["ห้อง PIS"],
+  "RW": ["ห้องจัดเก็บวัตถุดิบ 2","ห้องจัดเก็บวัตถุดิบ 3","ห้องจัดเก็บวัตถุดิบ 7","ห้องจัดเก็บ Barcode","คลังจัดเก็บสารเคมี","ห้องจัดเก็บอะไหล่ต่างประเทศ"],
+  "QC": ["ห้อง Chemical","ห้อง Packaging","ห้อง Micro"],
+  "WH.P": ["ออฟฟิศคลังสินค้า"],
+  "MT": ["ห้องเก็บอะไหล่หน่วย PM ไฟฟ้า","ห้องเก็บอะไหล่หน่วย Utility","ห้องจัดเก็บอะไหล่ต่างประเทศ"],
+  "AC.P": ["ห้องหัวหน้าแผนก","ห้องเก็บกล่องเอกสาร","ห้องประชุมแผนกบัญชี"],
+  "LG.P": ["ห้องลำเลียง"],
+  "SE.P": ["ออฟฟิศ"],
+  "PD": ["ห้องประชุมห้องผสม","ห้องประชุมแผนกผลิต"],
+  "HC.P": ["ห้องพยาบาล","ห้องประชุมแผนก"],
+  "PU.P": ["ห้องจัดซื้อ"],
+  "IT.P": ["ห้อง Server","ออฟฟิศ IT"],
+  "EN": ["ห้องวิศวกรรม","ห้องประชุม EN"],
+  "PE": ["ห้องออกแบบบรรจุภัณฑ์"],
+  "PN": ["ห้องวางแผน"],
+  "SE": ["ออฟฟิศความปลอดภัย"],
+  "PIS": ["ห้อง PIS"],
   "PAYROLL": ["ห้อง Payroll"]
 };
+
+// 2. รายชื่อพนักงานทั่วไป (แยกตามแผนก) 
+// **คุณสามารถแก้ไขชื่อและอีเมลในนี้ให้เป็นข้อมูลจริงได้เลย**
+const userData = {
+  "MT": [
+    { name: "นาย สมชาย ช่างไฟ", email: "somchai.m@test.com" },
+    { name: "นาย สมศักดิ์ ซ่อมบำรุง", email: "somsak.m@test.com" }
+  ],
+  "QC": [
+    { name: "นางสาว วิภา ตรวจสอบ", email: "wipa.q@test.com" }
+  ]
+  // เพิ่มแผนกอื่นๆ ตรงนี้...
+};
+
+// 3. รายชื่อหัวหน้าและผู้บริหาร (แยกตามแผนก)
+// **คุณสามารถแก้ไขชื่อและอีเมลในนี้ให้เป็นข้อมูลจริงได้เลย**
+const approverData = {
+  "MT": {
+    lead: { name: "นาย หัวหน้า เอ็มที", email: "lead.mt@test.com" },
+    exec: { name: "นาย ผู้บริหาร เอ็มที", email: "exec.mt@test.com" }
+  },
+  "QC": {
+    lead: { name: "นาง หัวหน้า คิวซี", email: "lead.qc@test.com" },
+    exec: { name: "นาง ผู้บริหาร คิวซี", email: "exec.qc@test.com" }
+  }
+  // เพิ่มแผนกอื่นๆ ตรงนี้...
+};
+
+// ================================================================
+// ฟังก์ชันจัดการ Dropdown ใหม่
+// ================================================================
+
+// ฟังก์ชันโหลดรายชื่อพนักงาน/หัวหน้า ลงใน Dropdown
+function populateUsers() {
+  const dept = document.getElementById('f-dept').value;
+  const type = document.getElementById('f-auditor').value;
+  const nameSelect = document.getElementById('f-name');
+  const emailInput = document.getElementById('f-email');
+
+  // ล้างค่าเก่าทิ้งก่อน
+  nameSelect.innerHTML = '<option value="">-- กรุณาเลือกชื่อ --</option>';
+  emailInput.value = '';
+
+  if (!dept) return;
+
+  if (type === 'self') {
+    // โหลดรายชื่อพนักงานทั่วไป
+    if (userData[dept]) {
+      userData[dept].forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.name;
+        opt.dataset.email = u.email;
+        opt.textContent = u.name;
+        nameSelect.appendChild(opt);
+      });
+    }
+  } else if (type === 'lead') {
+    // โหลดชื่อหัวหน้า (ถ้ามีข้อมูล)
+    if (approverData[dept] && approverData[dept].lead) {
+      const u = approverData[dept].lead;
+      const opt = document.createElement('option');
+      opt.value = u.name;
+      opt.dataset.email = u.email;
+      opt.textContent = `(หัวหน้า) ${u.name}`;
+      nameSelect.appendChild(opt);
+    }
+  } else if (type === 'exec') {
+    // โหลดชื่อผู้บริหาร (ถ้ามีข้อมูล)
+    if (approverData[dept] && approverData[dept].exec) {
+      const u = approverData[dept].exec;
+      const opt = document.createElement('option');
+      opt.value = u.name;
+      opt.dataset.email = u.email;
+      opt.textContent = `(ผู้บริหาร) ${u.name}`;
+      nameSelect.appendChild(opt);
+    }
+  }
+}
+
+// ฟังก์ชันดึง Email มาใส่ช่องอัตโนมัติเมื่อเลือกชื่อ
+function autoFillEmail() {
+  const nameSelect = document.getElementById('f-name');
+  const emailInput = document.getElementById('f-email');
+  const selectedOpt = nameSelect.options[nameSelect.selectedIndex];
+  
+  if (selectedOpt && selectedOpt.dataset.email) {
+    emailInput.value = selectedOpt.dataset.email;
+  } else {
+    emailInput.value = '';
+  }
+}
 
 function filterAreas() {
   const dept = document.getElementById('f-dept').value;
@@ -455,8 +559,6 @@ document.querySelectorAll('.score-btns').forEach(grp => {
   });
 });
 
-document.getElementById('f-auditor').addEventListener('change', updateAll);
-
 function addFiles(fl) {
   const container = document.getElementById('chips');
   Array.from(fl).forEach(f => {
@@ -479,9 +581,9 @@ function showToast(msg, color, ms) {
 
 function resetForm() {
   if (!confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) return;
-  document.getElementById('f-name').value = '';
-  document.getElementById('f-email').value = '';
   document.getElementById('f-dept').value = '';
+  document.getElementById('f-name').innerHTML = '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
+  document.getElementById('f-email').value = '';
   document.getElementById('f-area').innerHTML = '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
   document.getElementById('f-date').valueAsDate = new Date();
   document.getElementById('f-assess-step').value = 'all';
@@ -533,14 +635,15 @@ function compressImage(file, maxWidth = 1024, quality = 0.7) {
 }
 
 async function handleSubmit() {
-  const name = document.getElementById('f-name').value.trim();
-  const email = document.getElementById('f-email') ? document.getElementById('f-email').value.trim() : '';
   const dept = document.getElementById('f-dept').value;
+  const nameSelect = document.getElementById('f-name');
+  const name = nameSelect.options[nameSelect.selectedIndex] ? nameSelect.options[nameSelect.selectedIndex].text : '';
+  const email = document.getElementById('f-email').value.trim();
   const area = document.getElementById('f-area').value;
   const date = document.getElementById('f-date').value;
 
-  if (!name) { showToast('กรุณากรอกชื่อผู้ประเมิน', '#A32D2D'); return; }
   if (!dept) { showToast('กรุณาเลือกแผนก', '#A32D2D'); return; }
+  if (!name || name === '-- กรุณาเลือกชื่อ --') { showToast('กรุณาเลือกชื่อผู้ประเมิน', '#A32D2D'); return; }
   if (!area) { showToast('กรุณาเลือกพื้นที่ประเมิน', '#A32D2D'); return; }
   if (!date) { showToast('กรุณาเลือกวันที่ประเมิน', '#A32D2D'); return; }
 
@@ -686,15 +789,44 @@ function prefillFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const deptParam = urlParams.get('dept');
   const areaParam = urlParams.get('area');
+  const roleParam = urlParams.get('role'); // ดักจับ Link สำหรับหัวหน้า
 
   if (deptParam) {
     document.getElementById('f-dept').value = deptParam;
     filterAreas();
-    
+    populateUsers(); // โหลดรายชื่อผู้ประเมิน
+
     if (areaParam) {
       setTimeout(() => {
         document.getElementById('f-area').value = areaParam;
         loadHistoryForArea(deptParam, areaParam);
+
+        // ==========================================
+        // 🟢 ถ้าเป็น Link หัวหน้า/ผู้บริหาร (Magic Link)
+        // ==========================================
+        if (roleParam === 'lead' || roleParam === 'exec') {
+           document.getElementById('f-auditor').value = roleParam;
+           updateAll();
+           populateUsers(); // โหลดชื่อหัวหน้า
+           
+           setTimeout(() => {
+             // Auto-select ชื่อหัวหน้าคนนั้น
+             const nameSelect = document.getElementById('f-name');
+             if(nameSelect.options.length > 1) {
+               nameSelect.selectedIndex = 1;
+               autoFillEmail();
+             }
+
+             // Lock สิทธิ์ไม่ให้แก้ข้อมูลสำคัญ
+             document.getElementById('f-dept').disabled = true;
+             document.getElementById('f-auditor').disabled = true;
+             document.getElementById('f-name').disabled = true;
+             document.getElementById('f-area').disabled = true;
+
+             const label = roleParam === 'lead' ? 'หัวหน้า' : 'ผู้บริหาร';
+             showToast(`เข้าสู่โหมดประเมินสำหรับ: ${label}`, 'var(--orange-500)', 5000);
+           }, 100);
+        }
       }, 150);
     }
   }
