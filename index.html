@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TPM — Office Improvement Assessment</title>
-<style>const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+<style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap');
 :root{
   --blue-900:#042C53;--blue-800:#0C447C;--blue-600:#185FA5;--blue-400:#378ADD;
@@ -21,6 +21,8 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--gray-900);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* Header */
 .page-header{background:var(--blue-800);padding:1.25rem 2rem;position:sticky;top:0;z-index:100;border-bottom:3px solid var(--blue-400)}
 .page-header-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .page-title{font-size:16px;font-weight:600;color:#fff}
@@ -29,6 +31,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--gray-900);font-siz
 .step-dot{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);transition:all .2s}
 .step-dot.active{background:var(--blue-400);border-color:var(--blue-400);color:#fff}
 .step-dot.done{background:var(--teal-600);border-color:var(--teal-600);color:#fff}
+
+/* Layout */
 .wrap{max-width:860px;margin:0 auto;padding:1.5rem 1rem 5rem}
 .card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1rem}
 .card-accent{border-left:3px solid var(--blue-400);border-radius:0 var(--r-lg) var(--r-lg) 0}
@@ -38,23 +42,34 @@ body{font-family:var(--font);background:var(--bg);color:var(--gray-900);font-siz
 .fg{display:flex;flex-direction:column;gap:5px}
 .fg label{font-size:12px;font-weight:500;color:var(--gray-600)}
 .req{background:var(--red-50);color:var(--red-600);font-size:9px;font-weight:600;padding:2px 5px;border-radius:4px;margin-left:4px}
-input[type=text],input[type=date],select,textarea{width:100%;font-family:var(--font);font-size:13px;color:var(--gray-900);background:var(--surface);border:0.5px solid var(--border-md);border-radius:var(--r-sm);padding:8px 11px;outline:none;transition:border-color .15s,box-shadow .15s}
+
+/* Controls */
+input[type=text],input[type=date],select,textarea{
+  width:100%;font-family:var(--font);font-size:13px;color:var(--gray-900);
+  background:var(--surface);border:0.5px solid var(--border-md);
+  border-radius:var(--r-sm);padding:8px 11px;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
 input:focus,select:focus,textarea:focus{border-color:var(--blue-400);box-shadow:0 0 0 3px rgba(55,138,221,0.12)}
 select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235F5E5A'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
-textarea{resize:vertical;min-height:60px;line-height:1.55}
+textarea{resize:vertical;min-height:64px;line-height:1.55}
+
+/* Step cards */
 .step-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-lg);margin-bottom:1rem;overflow:hidden;transition:box-shadow .2s}
 .step-card:hover{box-shadow:0 2px 16px rgba(44,44,42,0.07)}
 .step-hdr{display:flex;align-items:center;gap:12px;padding:1rem 1.5rem;border-bottom:0.5px solid var(--border);background:var(--blue-50)}
-.step-badge{background:var(--blue-800);color:#fff;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.step-badge{background:var(--blue-800);color:#fff;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;letter-spacing:.04em}
 .step-info{flex:1}
 .step-name{font-size:14px;font-weight:600;color:var(--blue-900)}
 .step-obj{font-size:11px;color:var(--blue-600);margin-top:2px}
 .step-max{font-size:11px;color:var(--gray-600);background:var(--gray-50);padding:3px 9px;border-radius:12px;white-space:nowrap;flex-shrink:0}
 .step-body{padding:1rem 1.5rem}
+
+/* Criteria */
 .criteria-item{padding:12px 0;border-bottom:0.5px solid var(--border)}
 .criteria-item:last-of-type{border-bottom:none}
 .criteria-num{display:inline-flex;align-items:center;justify-content:center;background:var(--blue-50);color:var(--blue-800);font-size:10px;font-weight:600;width:20px;height:20px;border-radius:50%;margin-right:6px;flex-shrink:0}
-.criteria-q{font-size:13px;color:var(--gray-900);line-height:1.6;margin-bottom:10px;display:flex;align-items:flex-start}
+.criteria-q{font-size:13px;color:var(--gray-900);line-height:1.6;margin-bottom:10px;display:flex;align-items:flex-start;gap:4px}
 .criteria-q-text{flex:1}
 .score-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .score-lbl{font-size:11px;color:var(--gray-600);min-width:52px}
@@ -67,41 +82,55 @@ textarea{resize:vertical;min-height:60px;line-height:1.55}
 .sb.s10.on{background:var(--blue-800);border-color:var(--blue-800);color:#fff}
 .score-max-lbl{font-size:11px;color:var(--gray-200)}
 .score-mult{font-size:10px;color:var(--gray-200);background:var(--gray-50);padding:2px 6px;border-radius:10px}
+
+/* Step footer */
 .step-footer{background:var(--gray-50);border-top:0.5px solid var(--border);padding:12px 1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .note-area{flex:1;min-width:200px}
 .note-area label{font-size:11px;color:var(--gray-600);margin-bottom:4px;display:block}
 .step-score-display{text-align:right;flex-shrink:0;padding-top:2px}
 .ssd-label{font-size:11px;color:var(--gray-600)}
 .ssd-val{font-size:18px;font-weight:600;color:var(--blue-800)}
+
+/* Totals */
 .totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:1rem}
 .tc{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);padding:14px;text-align:center}
 .tc-lbl{font-size:11px;color:var(--gray-600);margin-bottom:6px}
 .tc-val{font-size:24px;font-weight:600;color:var(--gray-900)}
 .tc-sub{font-size:11px;color:var(--gray-200);margin-top:2px}
+
+/* Upload */
 .upload-zone{border:1.5px dashed var(--border-md);border-radius:var(--r-md);padding:1.5rem;text-align:center;cursor:pointer;transition:all .15s}
 .upload-zone:hover{background:var(--blue-50);border-color:var(--blue-400)}
-.upload-icon{width:32px;height:32px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center}
-.upload-icon svg{width:26px;height:26px;stroke:var(--gray-200);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.upload-icon{width:36px;height:36px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center}
+.upload-icon svg{width:28px;height:28px;stroke:var(--gray-200);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .upload-text{font-size:13px;font-weight:500;color:var(--gray-600)}
 .upload-hint{font-size:11px;color:var(--gray-200);margin-top:3px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .chip{background:var(--blue-50);border:0.5px solid var(--blue-100);border-radius:var(--r-sm);padding:5px 10px;font-size:12px;color:var(--blue-800);display:flex;align-items:center;gap:6px}
 .chip-x{cursor:pointer;color:var(--blue-600);font-size:14px;line-height:1;opacity:.7}
 .chip-x:hover{opacity:1}
+
+/* Actions */
 .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:1.5rem}
 .btn{font-family:var(--font);font-size:13px;font-weight:500;padding:9px 22px;border-radius:var(--r-sm);cursor:pointer;transition:all .15s;border:0.5px solid var(--border-md);background:var(--surface);color:var(--gray-600)}
 .btn:hover{background:var(--gray-50)}
 .btn-pri{background:var(--blue-800);border-color:var(--blue-800);color:#fff}
 .btn-pri:hover{background:var(--blue-900)}
-.btn-pri:disabled{opacity:.55;cursor:not-allowed}
-.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--teal-600);color:#fff;padding:12px 20px;border-radius:var(--r-md);font-size:13px;font-weight:500;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;z-index:999;max-width:300px}
-.toast.show{opacity:1;transform:translateY(0)}
-.legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.btn-pri:disabled{opacity:.5;cursor:not-allowed}
+
+/* Legend */
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
 .legend-title{font-size:11px;color:var(--gray-600);font-weight:500}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gray-600)}
 .legend-dot{width:12px;height:12px;border-radius:3px}
+
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--teal-600);color:#fff;padding:12px 20px;border-radius:var(--r-md);font-size:13px;font-weight:500;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;z-index:999;max-width:300px}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* Spinner */
 @keyframes spin{to{transform:rotate(360deg)}}
-.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:middle}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -124,10 +153,14 @@ textarea{resize:vertical;min-height:60px;line-height:1.55}
 
 <div class="wrap">
 
+<!-- ข้อมูลทั่วไป -->
 <div class="card card-accent">
   <div class="sec-label">ข้อมูลทั่วไป</div>
   <div class="grid2">
-    <div class="fg"><label>ชื่อผู้ประเมิน <span class="req">จำเป็น</span></label><input type="text" id="f-name" placeholder="ชื่อ-นามสกุล"></div>
+    <div class="fg">
+      <label>ชื่อผู้ประเมิน <span class="req">จำเป็น</span></label>
+      <input type="text" id="f-name" placeholder="ชื่อ-นามสกุล">
+    </div>
     <div class="fg">
       <label>แผนก / กลุ่ม <span class="req">จำเป็น</span></label>
       <select id="f-dept" onchange="filterAreas()">
@@ -151,8 +184,14 @@ textarea{resize:vertical;min-height:60px;line-height:1.55}
         <option value="PAYROLL">PAYROLL</option>
       </select>
     </div>
-    <div class="fg"><label>พื้นที่ประเมิน <span class="req">จำเป็น</span></label><select id="f-area"><option value="">-- กรุณาเลือกแผนกก่อน --</option></select></div>
-    <div class="fg"><label>วันที่ประเมิน <span class="req">จำเป็น</span></label><input type="date" id="f-date"></div>
+    <div class="fg">
+      <label>พื้นที่ประเมิน <span class="req">จำเป็น</span></label>
+      <select id="f-area"><option value="">-- กรุณาเลือกแผนกก่อน --</option></select>
+    </div>
+    <div class="fg">
+      <label>วันที่ประเมิน <span class="req">จำเป็น</span></label>
+      <input type="date" id="f-date">
+    </div>
     <div class="fg">
       <label>Step ที่ต้องการประเมิน <span class="req">จำเป็น</span></label>
       <select id="f-assess-step" onchange="toggleStepCards()">
@@ -175,6 +214,7 @@ textarea{resize:vertical;min-height:60px;line-height:1.55}
   </div>
 </div>
 
+<!-- Legend -->
 <div class="legend">
   <span class="legend-title">เกณฑ์คะแนน:</span>
   <div class="legend-item"><div class="legend-dot" style="background:#F09595"></div>2 — ไม่ดี</div>
@@ -185,78 +225,78 @@ textarea{resize:vertical;min-height:60px;line-height:1.55}
 
 <!-- STEP 1 -->
 <div class="step-card" id="step1-card">
-  <div class="step-hdr"><div class="step-badge">Step 1</div><div class="step-info"><div class="step-name">การทำความสะอาดขั้นต้น (Initial Cleaning)</div><div class="step-obj">ค้นหาปัญหา กำจัดของไม่จำเป็น ขยะ สิ่งสกปรก จัด 2ส และ Layout</div></div><div class="step-max">เต็ม 100</div></div>
+  <div class="step-hdr"><div class="step-badge">Step 1</div><div class="step-info"><div class="step-name">การทำความสะอาดขั้นต้น (Initial Cleaning)</div><div class="step-obj">ค้นหาปัญหา กำจัดของไม่จำเป็น ขยะ สิ่งสกปรก จัด 2ส และ Layout</div></div><div class="step-max">เต็ม 100 คะแนน</div></div>
   <div class="step-body">
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">มีการตระหนักถึงความจำเป็นและวัตถุประสงค์ของกิจกรรม กำหนดพื้นที่และสิ่งที่เข้าข่ายชัดเจน และถ่ายทอดวิธีดำเนินการให้เป็นทิศทางเดียวกันหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="1" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">มีการตระหนักถึงความจำเป็นและวัตถุประสงค์ของกิจกรรม กำหนดพื้นที่และสิ่งที่เข้าข่ายชัดเจน และมีการถ่ายทอดวิธีดำเนินการให้เป็นทิศทางเดียวกันหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="1" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">2</span><span class="criteria-q-text">กำจัดขยะ สิ่งสกปรก ของไม่จำเป็นในพื้นที่กิจกรรม (โต๊ะ ล็อกเกอร์ ตู้ หน้าต่าง พื้น) และกำหนดกฎทำความสะอาดสม่ำเสมอเป็นระบบหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="2" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">เข้าใจนิยามของความบกพร่องและจุดที่ยากลำบาก ค้นหาและแก้ไขจุดบกพร่องในพื้นที่ ย่นระยะเวลากิจกรรมได้หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="3" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">ระบุสิ่งที่ต้องมีมาตรการจัดการแหล่งกำเนิดชัดเจน วิเคราะห์สาเหตุ และปฏิบัติตามมาตรการได้ดีหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="4" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">จัด 2ส ระบบ Filing จัดระเบียบ Layout กำหนดที่วางอุปกรณ์เพื่อลด Loss ของคน และสิ่งที่ต้องควบคุมมองเห็นได้บรรลุระดับที่คาดหวังหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="5" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">เข้าใจนิยามของความบกพร่องและจุดที่ยากลำบาก ค้นหาและแก้ไขจุดบกพร่องในพื้นที่กิจกรรม ย่นระยะเวลากิจกรรมได้หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="3" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">ระบุสิ่งที่ต้องมีมาตรการจัดการแหล่งกำเนิดอย่างชัดเจน วิเคราะห์สาเหตุ และปฏิบัติตามมาตรการได้ดีหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="4" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">จัด 2ส ระบบ Filing จัดระเบียบ Layout กำหนดที่วางอุปกรณ์ต่างๆ เพื่อลด Loss ของคน และสิ่งที่ต้องควบคุมมองเห็นได้บรรลุระดับที่คาดหวังหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="5" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">6</span><span class="criteria-q-text">สร้างสภาพแวดล้อมสำนักงานที่ไม่รู้สึกเครียด ค้นหาส่วนต่างระหว่างสภาพที่ควรเป็นกับปัจจุบัน และพยายามไคเซ็นบรรลุระดับที่คาดหวังหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="6" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">7</span><span class="criteria-q-text">จัดทำกฎในการคงสภาพที่สะอาดและเป็นระเบียบ จัดทำมาตรฐานไม่เป็นทางการ และเรียนรู้ตัวอย่างไคเซ็นของหน่วยงานอื่นหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="7" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
   </div>
-  <div class="step-footer"><div class="note-area"><label>หมายเหตุ Step 1</label><textarea id="note1" placeholder="บันทึกจุดบกพร่อง สิ่งที่ทำแล้ว หรือไคเซ็นที่ดำเนินการ..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนน Step 1</div><div class="ssd-val" id="ss1">0 / 100</div></div></div>
+  <div class="step-footer"><div class="note-area"><label>หมายเหตุ / สิ่งที่พบ Step 1</label><textarea id="note1" placeholder="บันทึกจุดบกพร่อง สิ่งที่ทำแล้ว หรือไคเซ็นที่ดำเนินการ..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนน Step 1</div><div class="ssd-val" id="ss1">0 / 100</div></div></div>
 </div>
 
 <!-- STEP 2 -->
 <div class="step-card" id="step2-card">
-  <div class="step-hdr"><div class="step-badge">Step 2</div><div class="step-info"><div class="step-name">ไคเซ็นจุดบกพร่อง (Kaizen Defect Points)</div><div class="step-obj">ทำให้ปัญหาและ Loss ปรากฏชัดเจน เสนอและลงมือไคเซ็น วัดผลสำเร็จ</div></div><div class="step-max">เต็ม 100</div></div>
+  <div class="step-hdr"><div class="step-badge">Step 2</div><div class="step-info"><div class="step-name">ไคเซ็นจุดบกพร่อง (Kaizen Defect Points)</div><div class="step-obj">ทำให้ปัญหาและ Loss ปรากฏชัดเจน เสนอและลงมือไคเซ็น วัดผลสำเร็จ</div></div><div class="step-max">เต็ม 100 คะแนน</div></div>
   <div class="step-body">
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">มีการคงสภาพการทิ้งของไม่จำเป็น กำจัดสิ่งสกปรก สภาพการจัดเก็บเอกสาร และจัดการหัวข้อถูกติเตียนของ Step 1 ให้หมดไปหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="1" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">2</span><span class="criteria-q-text">คัดเลือกหัวเรื่องกิจกรรมจากผลการเช็คปริมาณงาน กำหนดเป้าหมายพิจารณาจากวัตถุประสงค์และฟังก์ชั่นงาน และมีแผนดำเนินการชัดเจนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="2" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">นำ Process ของงานและ Flow งานสำนักงานมาจัดทำ Chart ทำความเข้าใจเวลาและระยะเวลาที่จำเป็น และติด Tag ที่จุดปัญหาครบถ้วนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="3" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">นำ Process ของงานและ Flow งานในสำนักงานมาจัดทำเป็น Chart ทำความเข้าใจเวลาและระยะเวลาที่จำเป็น และติด Tag ที่จุดปัญหาและจุดที่สงสัยครบถ้วนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="3" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">เรียนรู้วิธีการและแนวคิดของการมุ่งไคเซ็นโดยประยุกต์ใช้ OPL มุมมองการไคเซ็นเพียงพอกับจุดปัญหาและ Loss ที่ปรากฏหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="4" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">เสนอไอเดียไคเซ็นอย่างเป็นรูปธรรม แสดงแผนปฏิบัติ กำหนดเสร็จ ผู้รับผิดชอบชัดเจน ทุกคนปฏิบัติพร้อมกัน และ Loss ได้รับการกำจัดอย่างเพียงพอหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="5" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">6</span><span class="criteria-q-text">มาตรฐานการคำนวณวัดผลชัดเจน บรรลุเป้าหมาย มีการสร้างมาตรฐานการทำงานหลังไคเซ็น และมีแผนสร้างความชำนาญหลายด้านหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="6" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">เสนอไอเดียไคเซ็นอย่างเป็นรูปธรรม แสดงแผนปฏิบัติ กำหนดเสร็จ ผู้รับผิดชอบชัดเจน ทุกคนปฏิบัติโดยพร้อมเพรียง และ Loss ที่ปรากฏได้รับการกำจัดอย่างเพียงพอหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="5" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">6</span><span class="criteria-q-text">มาตรฐานการคำนวณเพื่อวัดผลชัดเจน บรรลุเป้าหมาย มีการสร้างมาตรฐานการทำงานหลังไคเซ็น และมีแผนสร้างความชำนาญหลายด้านหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="6" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
   </div>
-  <div class="step-footer"><div class="note-area"><label>หมายเหตุ Step 2</label><textarea id="note2" placeholder="บันทึก Loss ที่ค้นพบ, ไอเดียไคเซ็น หรือผลการดำเนินงาน..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนน Step 2</div><div class="ssd-val" id="ss2">0 / 100</div></div></div>
+  <div class="step-footer"><div class="note-area"><label>หมายเหตุ / สิ่งที่พบ Step 2</label><textarea id="note2" placeholder="บันทึก Loss ที่ค้นพบ, ไอเดียไคเซ็น หรือผลการดำเนินงาน..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนน Step 2</div><div class="ssd-val" id="ss2">0 / 100</div></div></div>
 </div>
 
 <!-- STEP 3 -->
 <div class="step-card" id="step3-card">
-  <div class="step-hdr"><div class="step-badge">Step 3</div><div class="step-info"><div class="step-name">สร้างมาตรฐานพื้นที่ (Standardize Area)</div><div class="step-obj">ลดเวลาทำความสะอาด ลดเวลาหยิบเอกสาร จัดทำ OPL/SOP และส่งเสริม OA</div></div><div class="step-max">เต็ม 100</div></div>
+  <div class="step-hdr"><div class="step-badge">Step 3</div><div class="step-info"><div class="step-name">สร้างมาตรฐานพื้นที่ (Standardize Area)</div><div class="step-obj">ลดเวลาทำความสะอาด ลดเวลาหยิบเอกสาร จัดทำ OPL/SOP และส่งเสริม OA</div></div><div class="step-max">เต็ม 100 คะแนน</div></div>
   <div class="step-body">
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">เอกสารมาตรฐานสอดคล้องกับการแบ่งหน้าที่และกฎระเบียบบริษัท มีแผนลงรายละเอียดของกิจกรรมหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="1" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">เอกสารมาตรฐานการทำงานสอดคล้องกับการแบ่งหน้าที่และระบบกฎระเบียบของบริษัท มีแผนลงรายละเอียดของกิจกรรมหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="1" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">2</span><span class="criteria-q-text">ระเบียบปฏิบัติและมาตรฐานที่ใช้ในงานทั้งหมดถูกจัดเก็บเป็นระเบียบ จัดทำตามจำนวนที่จำเป็น ปรับแก้โดยไม่รั้งรอ และทุกคนปฏิบัติตามอย่างถูกต้องหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="2" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">มีเอกสารขั้นตอนการทำงาน (Work Procedure) ที่เนื้อหาเป็นรูปธรรม เข้าใจง่าย ไม่ว่าใครก็ใช้งานได้หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="3" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">ดำเนินการจัดทำมาตรฐาน (OPL/SOP) จากมาตรฐานไม่เป็นทางการที่สะสมมา เป็นมาตรฐานที่เข้าใจง่ายและปฏิบัติตามได้ง่ายหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="4" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">ความสัมพันธ์กับเอกสารมาตรฐานชัดเจน เป็นเอกสารขั้นตอนการทำงาน (Work Procedure) ที่เนื้อหาเป็นรูปธรรม เข้าใจง่าย ไม่ว่าใครก็ใช้งานได้หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="3" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">ดำเนินการจัดทำมาตรฐานจากมาตรฐานไม่เป็นทางการที่จัดทำใน Step 3-4 เป็นมาตรฐานที่เข้าใจง่ายและปฏิบัติตามได้ง่ายหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="4" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">จัดเตรียมสภาพแวดล้อมเพื่อทำให้เป็น OA คิดและทำกิจกรรม OA เพื่อใช้คนน้อยลง และเดินเครื่องอุปกรณ์ OA อย่างคล่องแคล่วหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="5" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">6</span><span class="criteria-q-text">ค้นหา Muri, Muda, Mura และทำไคเซ็นใน OA ตรวจสอบว่าใน Flow มีความล่าช้าหรือการหยุดนิ่งหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="6" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">7</span><span class="criteria-q-text">มีการประเมินทักษะของแต่ละคน กำหนดหัวข้อยกระดับความสามารถ และในหน่วยงานมีผู้ที่ดูแลแทนได้ 3 คนขึ้นไปหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="7" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">8</span><span class="criteria-q-text">คงสภาพความสะอาด ดูแลบริการลูกค้าอย่างใส่ใจ ส่งข้อเสนอแนะ ≥5 เรื่อง/เดือน/คน และอัพเดตบอร์ดกิจกรรมอยู่เสมอหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="8" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">6</span><span class="criteria-q-text">ค้นหา Muri, Muda, Mura และทำไคเซ็นในการปฏิบัติงาน OA ตรวจสอบว่าใน Flow ของสิ่งของและข้อมูลมีความล่าช้าหรือการหยุดนิ่งหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="6" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">7</span><span class="criteria-q-text">มีการประเมินทักษะของแต่ละคน กำหนดหัวข้อเพื่อยกระดับความสามารถ และในหน่วยหน้าที่งานหนึ่งๆ มีผู้ที่ดูแลแทนได้ 3 คนขึ้นไปหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="7" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">8</span><span class="criteria-q-text">คงสภาพความสะอาดในสำนักงาน ดูแลบริการลูกค้าอย่างใส่ใจ ส่งข้อเสนอแนะ ≥5 เรื่อง/เดือน/คน และอัพเดตบอร์ดกิจกรรมอยู่เสมอหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="8" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
   </div>
-  <div class="step-footer"><div class="note-area"><label>หมายเหตุ Step 3</label><textarea id="note3" placeholder="บันทึกสถานะมาตรฐาน OPL/SOP หรือผลการทำ OA..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนน Step 3</div><div class="ssd-val" id="ss3">0 / 100</div></div></div>
+  <div class="step-footer"><div class="note-area"><label>หมายเหตุ / สิ่งที่พบ Step 3</label><textarea id="note3" placeholder="บันทึกสถานะมาตรฐาน OPL/SOP หรือผลการทำ OA..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนน Step 3</div><div class="ssd-val" id="ss3">0 / 100</div></div></div>
 </div>
 
 <!-- STEP 4 -->
 <div class="step-card" id="step4-card">
-  <div class="step-hdr"><div class="step-badge">Step 4</div><div class="step-info"><div class="step-name">ตรวจเช็คโดยรวม (Overall Inspection)</div><div class="step-obj">Audit สิ่งแวดล้อม ฟังก์ชั่นงาน การควบคุมเอกสาร และ Visual Control</div></div><div class="step-max">เต็ม 100</div></div>
+  <div class="step-hdr"><div class="step-badge">Step 4</div><div class="step-info"><div class="step-name">ตรวจเช็คโดยรวม (Overall Inspection)</div><div class="step-obj">Audit สิ่งแวดล้อม ฟังก์ชั่นงาน การควบคุมเอกสาร และ Visual Control</div></div><div class="step-max">เต็ม 100 คะแนน</div></div>
   <div class="step-body">
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">ถ้าปฏิบัติตามมาตรฐานก็สามารถทำได้ ไม่ว่าเป็นใครดูมาตรฐานก็เข้าใจง่าย และมีการทำงานตามมาตรฐานและมีคู่มือสำนักงานหรือไม่ (Audit สิ่งแวดล้อม)</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="1" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">ถ้าปฏิบัติตามมาตรฐานก็สามารถทำได้ ไม่ว่าเป็นใครดูมาตรฐานก็เข้าใจง่าย และมีการทำงานตามมาตรฐานและมีคู่มือสำนักงานไว้หรือไม่ (Audit สิ่งแวดล้อม)</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="1" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">2</span><span class="criteria-q-text">ไม่ว่าเป็นใครดูมาตรฐาน สเปค Flow Chart ก็เข้าใจง่าย และมีการทำงานตามข้อกำหนดหรือไม่ (Audit ฟังก์ชั่นงาน)</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="2" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">ระเบียบการควบคุมเอกสารชัดเจน ผู้มีอำนาจควบคุมการคงสภาพอย่างเหมาะสม และเป็นเอกสารฉบับล่าสุดหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="3" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">มีแผนตรวจติดตามภายใน จัดทำขั้นตอนปฏิบัติเป็นลายลักษณ์อักษร ผลการตรวจถูกบันทึก และข้อบกพร่องได้รับการแก้ไขหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="4" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">หัวข้อปฏิบัติที่เหลืออยู่ถูกจัดการ กำหนดผู้รับผิดชอบและวางแผนไคเซ็นชัดเจนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="5" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">ระเบียบการควบคุมเอกสารและข้อมูลชัดเจน ผู้มีอำนาจควบคุมการคงสภาพอย่างเหมาะสม และเป็นเอกสารฉบับล่าสุดหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="3" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">มีแผนการตรวจติดตามภายใน มีการจัดทำขั้นตอนปฏิบัติเป็นลายลักษณ์อักษร ผลการตรวจถูกบันทึก และข้อบกพร่องได้รับการแก้ไขหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="4" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">หัวข้อปฏิบัติที่เหลืออยู่ถูกจัดการ กำหนดผู้รับผิดชอบหัวข้อปฏิบัติและวางแผนไคเซ็นหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="5" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">6</span><span class="criteria-q-text">ข้อมูลที่จำเป็นถูกถ่ายทอดให้แผนกที่เกี่ยวข้องทราบ ความรวดเร็วในการถ่ายทอดเหมาะสม และมีการถ่ายทอดข้อมูลคุณภาพที่ดีหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="6" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">7</span><span class="criteria-q-text">มีการฝึกอบรมที่เหมาะสม บันทึกผล จำนวนงานที่ทำแทนได้เพิ่มขึ้น และระดับทักษะ Multi-Skill เพิ่มขึ้นหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="7" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">8</span><span class="criteria-q-text">ทุกคนทราบเนื้อหาการทำงานของแต่ละคนทุกวัน/เดือน มีการประยุกต์เพื่อทราบ Flow และความคืบหน้าของงาน (Visual Control) หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="8" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">9</span><span class="criteria-q-text">คงสภาพความสะอาด ดูแลบริการลูกค้าอย่างใส่ใจ ส่งข้อเสนอแนะ ≥7 เรื่อง/เดือน/คน และบอร์ดกิจกรรมถูกใช้เป็นประจำหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="9" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">10</span><span class="criteria-q-text">มีระบบตรวจติดตามภายในแผนกอย่างสม่ำเสมอ ไคเซ็นแก้ไขหัวข้อติเตียน และส่งเสริมให้หัวข้อติเตียนภายในเป็นศูนย์หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="10" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">8</span><span class="criteria-q-text">ทุกคนในสถานที่ทำงานทราบเนื้อหาการทำงานของแต่ละคนทุกวัน/เดือน มีการประยุกต์เพื่อทราบ Flow และความคืบหน้าของงาน (Visual Control) หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="8" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">9</span><span class="criteria-q-text">มีการคงสภาพความสะอาด ดูแลบริการลูกค้าอย่างใส่ใจทั้งหมด ส่งข้อเสนอแนะ ≥7 เรื่อง/เดือน/คน และบอร์ดกิจกรรมถูกใช้เป็นประจำหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="9" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">10</span><span class="criteria-q-text">มีระบบตรวจติดตามงานภายในแผนกอย่างสม่ำเสมอ ไคเซ็นแก้ไขหัวข้อติเตียน และส่งเสริมให้หัวข้อติเตียนในการตรวจติดตามภายในเป็นศูนย์หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="10" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
   </div>
-  <div class="step-footer"><div class="note-area"><label>หมายเหตุ Step 4</label><textarea id="note4" placeholder="บันทึกผลการ Audit ด้านสิ่งแวดล้อม ฟังก์ชั่น หรือ Visual Control..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนน Step 4</div><div class="ssd-val" id="ss4">0 / 100</div></div></div>
+  <div class="step-footer"><div class="note-area"><label>หมายเหตุ / สิ่งที่พบ Step 4</label><textarea id="note4" placeholder="บันทึกผลการ Audit ด้านสิ่งแวดล้อม ฟังก์ชั่น หรือ Visual Control..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนน Step 4</div><div class="ssd-val" id="ss4">0 / 100</div></div></div>
 </div>
 
 <!-- STEP 5 -->
 <div class="step-card" id="step5-card">
-  <div class="step-hdr"><div class="step-badge">Step 5</div><div class="step-info"><div class="step-name">การจัดการด้วยตนเอง (Autonomous Management)</div><div class="step-obj">เข้าใจนโยบาย ลงทะเบียนหัวเรื่องท้าทาย ลงมือทำและตรวจติดตาม</div></div><div class="step-max">เต็ม 100</div></div>
+  <div class="step-hdr"><div class="step-badge">Step 5</div><div class="step-info"><div class="step-name">การจัดการด้วยตนเอง (Autonomous Management)</div><div class="step-obj">เข้าใจนโยบาย ลงทะเบียนหัวเรื่องท้าทาย ลงมือทำและตรวจติดตาม</div></div><div class="step-max">เต็ม 100 คะแนน</div></div>
   <div class="step-body">
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">มีการคงสภาพการทิ้งของไม่จำเป็น กำจัดฝุ่น คราบสกปรก สภาพการจัดเก็บเอกสาร และคงสภาพผลการไคเซ็นจนถึง Step ก่อนหน้าหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="1" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">2</span><span class="criteria-q-text">ระดับความเข้าใจนโยบายผู้บริหารเพียงพอ มีการแบ่งสาขาหัวเรื่องกิจกรรม ค้นหาหัวข้อปฏิบัติอย่างเป็นรูปธรรม และบทบาทหน้าที่ชัดเจนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="2" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">มีการลงทะเบียนหัวเรื่องท้าทาย ประเมินลำดับความสำคัญ กำหนดเป้าหมายร่วมกับผู้บริหาร และวางแผนกิจกรรมกำหนดขั้นตอนชัดเจนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="3" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">2</span><span class="criteria-q-text">ระดับความเข้าใจนโยบายผู้บริหารเพียงพอ มีการแบ่งสาขาหัวเรื่องกิจกรรม ค้นหาหัวข้อปฏิบัติอย่างเป็นรูปธรรม และบทบาทหน้าที่ของทุกคนชัดเจนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="2" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">มีการลงทะเบียนหัวเรื่องที่ท้าทาย ประเมินลำดับความสำคัญ กำหนดเป้าหมายร่วมกับผู้บริหาร และวางแผนกิจกรรมกำหนดขั้นตอนชัดเจนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="3" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
     <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">ลงมือทำกิจกรรมหัวเรื่องท้าทาย: สำรวจสภาพปัจจุบัน ทำให้ปัญหาปรากฏ เสนอการไคเซ็น ลงมือไคเซ็นจริงจัง กำจัด Loss และปัญหาได้อย่างเพียงพอหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="4" data-max="40"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 40</span><span class="score-mult">×4</span></div></div>
-    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">มาตรฐานการคำนวณวัดผลสำเร็จชัดเจน บรรลุเป้าหมาย สร้างมาตรฐานหลังไคเซ็น มีระบบตรวจติดตามภายใน และไคเซ็นแก้ไขสิ่งที่ถูกติเตียนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="5" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
+    <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">มาตรฐานการคำนวณเพื่อตรวจวัดผลสำเร็จชัดเจน บรรลุเป้าหมาย สร้างมาตรฐานหลังไคเซ็น มีระบบตรวจติดตามภายใน และไคเซ็นแก้ไขสิ่งที่ถูกติเตียนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="5" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
   </div>
-  <div class="step-footer"><div class="note-area"><label>หมายเหตุ Step 5</label><textarea id="note5" placeholder="บันทึกหัวเรื่องท้าทาย ผลสำเร็จ หรือแผนการขยายผล..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนน Step 5</div><div class="ssd-val" id="ss5">0 / 100</div></div></div>
+  <div class="step-footer"><div class="note-area"><label>หมายเหตุ / สิ่งที่พบ Step 5</label><textarea id="note5" placeholder="บันทึกหัวเรื่องท้าทาย ผลสำเร็จ หรือแผนการขยายผล..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนน Step 5</div><div class="ssd-val" id="ss5">0 / 100</div></div></div>
 </div>
 
 <!-- คะแนนรวม -->
@@ -272,7 +312,7 @@ textarea{resize:vertical;min-height:60px;line-height:1.55}
   <div class="upload-zone" onclick="document.getElementById('fu').click()">
     <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
     <div class="upload-text">คลิกเพื่อเลือกรูปภาพหลักฐาน</div>
-    <div class="upload-hint">รองรับ JPG, PNG — รูปจะถูกแปลงเป็น Base64 แล้วส่งพร้อมข้อมูล</div>
+    <div class="upload-hint">รองรับ JPG, PNG — รูปจะถูกส่งพร้อมข้อมูลไปเก็บใน Google Drive</div>
   </div>
   <input type="file" id="fu" multiple accept="image/*" style="display:none" onchange="addFiles(this.files)">
   <div class="chips" id="chips"></div>
@@ -294,12 +334,12 @@ textarea{resize:vertical;min-height:60px;line-height:1.55}
 
 <script>
 // ================================================================
-// CONFIG — วาง Google Apps Script Web App URL ตรงนี้ หลัง Deploy
+// Apps Script URL — ใส่แล้ว พร้อมใช้งาน
 // ================================================================
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzXj1LbUX1OzBJJ5RxdizT0Rjctxj8M31B8QNiBH5lxf8DsGC-MPt9QeSu2VweQhQi3Qw/exec';
 // ================================================================
 
-const scores  = {};
+const scores   = {};
 const fileStore = [];
 
 const areaData = {
@@ -325,15 +365,15 @@ const areaData = {
 function filterAreas() {
   const dept = document.getElementById('f-dept').value;
   const sel  = document.getElementById('f-area');
-  sel.innerHTML = dept && areaData[dept]
-    ? '<option value="">-- เลือกพื้นที่ --</option>'
-    : '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
   if (dept && areaData[dept]) {
+    sel.innerHTML = '<option value="">-- เลือกพื้นที่ --</option>';
     areaData[dept].forEach(a => {
       const o = document.createElement('option');
       o.value = o.textContent = a;
       sel.appendChild(o);
     });
+  } else {
+    sel.innerHTML = '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
   }
 }
 
@@ -384,9 +424,9 @@ function updateAll() {
   const pct = grandMax > 0 ? Math.round(grand / grandMax * 100) : 0;
   document.getElementById('t-pct').textContent = pct + '%';
   const audType = document.getElementById('f-auditor').value;
-  const thresh = audType === 'mgr' ? 85 : audType === 'exec' ? 80 : 90;
-  const pass = pct >= thresh;
-  const resEl = document.getElementById('t-result');
+  const thresh  = audType === 'mgr' ? 85 : audType === 'exec' ? 80 : 90;
+  const pass    = pct >= thresh;
+  const resEl   = document.getElementById('t-result');
   resEl.textContent = grandMax === 0 ? '—' : (pass ? 'ผ่านเกณฑ์' : 'ไม่ผ่านเกณฑ์');
   resEl.style.color = grandMax === 0 ? 'var(--gray-200)' : (pass ? 'var(--teal-600)' : 'var(--red-600)');
   document.getElementById('t-pass').textContent = 'เกณฑ์ผ่าน ' + thresh + '%';
@@ -404,7 +444,7 @@ document.querySelectorAll('.score-btns').forEach(grp => {
   const step = grp.dataset.step, q = grp.dataset.q, maxVal = parseInt(grp.dataset.max);
   grp.querySelectorAll('.sb').forEach(btn => {
     btn.addEventListener('click', () => {
-      const val = parseInt(btn.dataset.val);
+      const val    = parseInt(btn.dataset.val);
       const actual = maxVal === 10 ? val : maxVal === 20 ? val*2 : maxVal === 40 ? val*4 : val;
       grp.querySelectorAll('.sb').forEach(b => b.classList.remove('on'));
       btn.classList.add('on');
@@ -438,12 +478,13 @@ function showToast(msg, color, ms) {
 
 function resetForm() {
   if (!confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) return;
-  ['f-name','overall-note'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-name').value = '';
   document.getElementById('f-dept').value = '';
   document.getElementById('f-area').innerHTML = '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
   document.getElementById('f-date').valueAsDate = new Date();
   document.getElementById('f-assess-step').value = 'all';
   document.getElementById('f-auditor').value = 'self';
+  document.getElementById('overall-note').value = '';
   document.getElementById('chips').innerHTML = '';
   fileStore.length = 0;
   for (let i = 1; i <= 5; i++) {
@@ -457,15 +498,26 @@ function resetForm() {
   showToast('ล้างข้อมูลแล้ว');
 }
 
+function toBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result);
+    r.onerror = () => rej(r.error);
+    r.readAsDataURL(file);
+  });
+}
+
 async function handleSubmit() {
   const name = document.getElementById('f-name').value.trim();
   const dept = document.getElementById('f-dept').value;
   const area = document.getElementById('f-area').value;
   const date = document.getElementById('f-date').value;
+
   if (!name) { showToast('กรุณากรอกชื่อผู้ประเมิน', '#A32D2D'); return; }
   if (!dept) { showToast('กรุณาเลือกแผนก', '#A32D2D'); return; }
   if (!area) { showToast('กรุณาเลือกพื้นที่ประเมิน', '#A32D2D'); return; }
   if (!date) { showToast('กรุณาเลือกวันที่ประเมิน', '#A32D2D'); return; }
+
   let hasScore = false;
   [1,2,3,4,5].forEach(s => {
     const card = document.getElementById('step'+s+'-card');
@@ -479,7 +531,7 @@ async function handleSubmit() {
     try {
       const b64 = await toBase64(f);
       filesData.push({ name: f.name, mimeType: f.type, data: b64.split(',')[1] });
-    } catch(e) { console.warn('ไม่สามารถแปลงไฟล์:', f.name); }
+    } catch(e) { console.warn('แปลงไฟล์ไม่ได้:', f.name); }
   }
 
   const payload = {
@@ -506,46 +558,31 @@ async function handleSubmit() {
     files:          filesData
   };
 
-  // Demo mode
-  if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-    console.log('📋 Payload (Demo Mode):', JSON.stringify(payload, null, 2));
-    showToast('Demo Mode — ดูข้อมูลใน Console (F12)', 'var(--amber-600)', 5000);
-    return;
-  }
-
-  // ส่งจริง — ใช้ no-cors เพื่อข้าม CORS จาก GitHub Pages
   const btn = document.getElementById('btn-submit');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>กำลังส่ง...';
 
   try {
-    // ส่งแบบ no-cors → ไม่สามารถอ่าน response ได้ แต่ข้อมูลถึง Apps Script
+    // ใช้ no-cors เพื่อข้าม CORS จาก GitHub Pages → Apps Script
+    // Apps Script รับผ่าน e.postData.contents
     await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify(payload)
     });
 
-    // no-cors จะไม่รู้ว่า success หรือ error แต่ถ้าไม่ throw ก็ถือว่าส่งได้
+    // no-cors ไม่สามารถอ่าน response ได้ แต่ถ้าไม่ throw = ส่งสำเร็จ
     showToast('ส่งแบบประเมินสำเร็จแล้ว!', 'var(--teal-600)', 4000);
     setTimeout(() => resetForm(), 4500);
 
-  } catch(err) {
+  } catch (err) {
     console.error(err);
-    showToast('เกิดข้อผิดพลาด: ' + err.message, '#A32D2D', 6000);
+    showToast('เกิดข้อผิดพลาด: ' + err.message, '#A32D2D', 5000);
   } finally {
     btn.disabled = false;
     btn.innerHTML = 'ส่งแบบประเมิน';
   }
-
-function toBase64(file) {
-  return new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload  = () => res(r.result);
-    r.onerror = () => rej(r.error);
-    r.readAsDataURL(file);
-  });
 }
 
 // Init
