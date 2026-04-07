@@ -5,76 +5,159 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TPM OI — Dashboard ภาพรวม</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
   :root{
-    --blue-900:#042C53; --blue-800:#0C447C; --blue-600:#185FA5; --blue-400:#378ADD;
-    --blue-50:#E6F1FB; --teal-600:#0F6E56; --red-600:#A32D2D; --orange-500:#E67C22;
-    --gray-900:#2C2C2A; --gray-600:#5F5E5A; --gray-200:#B4B2A9; --gray-50:#F1EFE8;
-    --bg:#F7F6F3; --surface:#FFFFFF; --border:rgba(44,44,42,0.15);
+    --blue-900:#0A2540; --blue-800:#113A5D; --blue-600:#1E6091; --blue-400:#3A86FF;
+    --teal-600:#0CA47C; --teal-400:#10D2A1;
+    --red-600:#D93838; --red-400:#FF5C5C;
+    --orange-500:#F57C00; --orange-400:#FF9800;
+    --amber-500:#E69500;
+    --gray-900:#1A1C1E; --gray-600:#505A64; --gray-400:#9BA5B1; --gray-200:#D9E2EC; --gray-50:#F8FAFC;
     --font:'IBM Plex Sans Thai',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:var(--font);background:var(--bg);color:var(--gray-900);padding-bottom:60px;}
   
+  /* 🟢 พื้นหลังแบบ iOS Mesh Gradient */
+  body{
+    font-family:var(--font);
+    background-color:#E8EEF2;
+    background-image: 
+      radial-gradient(circle at 15% 10%, rgba(58,134,255,0.12) 0%, transparent 40%),
+      radial-gradient(circle at 85% 20%, rgba(12,164,124,0.1) 0%, transparent 40%),
+      radial-gradient(circle at 50% 80%, rgba(245,124,0,0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+    color:var(--gray-900);
+    padding-bottom:60px;
+  }
+  
+  /* Glassmorphism Classes */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 32px rgba(10, 37, 64, 0.05);
+  }
+
   /* Header */
-  .header{background:var(--blue-800);padding:24px 20px;color:#fff;border-bottom:4px solid var(--blue-400);text-align:center;}
-  .header h2{font-size:20px;font-weight:600;margin-bottom:4px;}
-  .header p{font-size:13px;color:var(--blue-100);}
+  .header{
+    position:sticky; top:10px; z-index:100;
+    max-width: 1080px; margin: 10px auto 24px; padding: 20px 24px;
+    border-radius: 20px; text-align:center;
+  }
+  .header h2{font-size:22px;font-weight:700;color:var(--blue-900);letter-spacing:-0.5px;margin-bottom:4px;}
+  .header p{font-size:13px;color:var(--gray-600);font-weight:500;}
   
-  .wrap{max-width:1050px;margin:24px auto;padding:0 16px;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 16px;}
   
   /* Filter & Legend */
-  .controls-area{background:var(--surface);padding:16px;border-radius:12px;border:1px solid var(--border);margin-bottom:24px;display:flex;flex-direction:column;gap:16px;}
+  .controls-area{padding:20px;border-radius:20px;margin-bottom:24px;display:flex;flex-direction:column;gap:16px;}
   .filter-box{display:flex;gap:12px;flex-wrap:wrap;}
-  .filter-box select{padding:9px 14px;border:1px solid var(--gray-200);border-radius:8px;font-family:var(--font);font-size:14px;flex:1;min-width:220px;outline:none;}
-  .filter-box select:focus{border-color:var(--blue-400);}
+  .filter-box select{
+    padding:12px 16px; border:1.5px solid rgba(255,255,255,0.9); border-radius:12px;
+    font-family:var(--font); font-size:14px; font-weight:500; color:var(--blue-900);
+    background: rgba(255, 255, 255, 0.6); flex:1; min-width:220px; outline:none;
+    box-shadow: inset 0 2px 4px rgba(10,37,64,0.02); transition:all .2s ease;
+    cursor:pointer; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%23505A64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 16px center;
+  }
+  .filter-box select:focus{background:#fff; border-color:var(--blue-400); box-shadow: 0 0 0 4px rgba(58,134,255,0.15);}
   
-  .legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding-top:12px;border-top:1px dashed var(--border);}
-  .lg-title{font-size:12px;font-weight:600;color:var(--gray-600);}
-  .lg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-600);}
-  .lg-dot{width:12px;height:12px;border-radius:3px;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;align-items:center;padding-top:16px;border-top:1px solid rgba(10,37,64,0.08);}
+  .lg-title{font-size:12px;font-weight:700;color:var(--gray-600);}
+  .lg-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--gray-600);}
+  .lg-dot{width:14px;height:14px;border-radius:4px; box-shadow:inset 0 -2px 0 rgba(0,0,0,0.1);}
   
   /* Cards Grid */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
-  .area-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;flex-direction:column;transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.02);}
-  .area-card:hover{box-shadow:0 6px 16px rgba(0,0,0,0.08);transform:translateY(-2px);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;}
+  .area-card{
+    border-radius:20px; padding:20px; display:flex; flex-direction:column;
+    transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .area-card:hover{box-shadow:0 12px 32px rgba(10,37,64,0.1); transform:translateY(-4px);}
   
   /* Card Header */
-  .ac-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
-  .ac-dept{font-size:12px;color:var(--blue-600);font-weight:700;background:var(--blue-50);padding:3px 8px;border-radius:6px;letter-spacing:0.5px;}
-  .ac-status{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;}
+  .ac-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+  .ac-dept{font-size:12px;color:var(--blue-800);font-weight:700;background:rgba(58,134,255,0.15);padding:4px 10px;border-radius:8px;letter-spacing:0.5px;}
+  .ac-status{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
   
-  .ac-name{font-size:17px;font-weight:600;color:var(--blue-900);margin-bottom:16px;}
+  .ac-name{font-size:18px;font-weight:700;color:var(--blue-900);margin-bottom:20px; letter-spacing:-0.3px;}
   
-  /* Step Bars */
-  .step-bars{display:flex;gap:6px;margin-bottom:20px;}
-  .s-bar{flex:1;text-align:center;font-size:11px;font-weight:600;padding:6px 0;border-radius:6px;color:#fff;background:var(--gray-200);transition:all 0.3s;}
+  /* 🟢 ดีไซน์ใหม่: Animated Step Tracker */
+  .step-tracker { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding: 0 5px; }
+  .step-node {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff; position: relative; z-index: 2; transition: all 0.3s;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .step-line { flex: 1; height: 4px; background: rgba(10,37,64,0.08); border-radius: 2px; margin: 0 4px; position: relative; overflow: hidden; z-index: 1; transition: all 0.3s;}
   
-  /* Status Colors */
-  .st-none{background:var(--gray-50);color:var(--gray-600);border:1px solid var(--border);}
-  .st-pass{background:var(--teal-600);color:#fff;}
-  .st-wait-lead{background:var(--orange-500);color:#fff;}
-  .st-wait-exec{background:var(--blue-400);color:#fff;}
-  .st-fail{background:var(--red-600);color:#fff;}
+  /* Status Node Colors */
+  .st-none      { background: var(--gray-200); color: var(--gray-600); box-shadow:none; }
+  .st-pass      { background: linear-gradient(135deg, var(--teal-400), var(--teal-600)); }
+  .st-wait-lead { background: linear-gradient(135deg, #FFB74D, var(--orange-500)); }
+  .st-wait-exec { background: linear-gradient(135deg, #60A5FA, var(--blue-600)); }
+  .st-fail      { background: linear-gradient(135deg, #FF5C5C, var(--red-600)); }
   
-  /* Button */
-  .btn-eval{margin-top:auto;display:block;text-align:center;background:var(--blue-800);color:#fff;padding:10px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:500;transition:background 0.2s;}
-  .btn-eval:hover{background:var(--blue-900);}
+  /* Animations */
+  .pulse-node { animation: pulseShadow 1.5s infinite; }
+  @keyframes pulseShadow {
+    0% { box-shadow: 0 0 0 0 rgba(245,124,0,0.6); transform: scale(1); }
+    70% { box-shadow: 0 0 0 10px rgba(245,124,0,0); transform: scale(1.05); }
+    100% { box-shadow: 0 0 0 0 rgba(245,124,0,0); transform: scale(1); }
+  }
+  .pulse-node.st-wait-exec { animation: pulseShadowBlue 1.5s infinite; }
+  @keyframes pulseShadowBlue {
+    0% { box-shadow: 0 0 0 0 rgba(58,134,255,0.6); transform: scale(1); }
+    70% { box-shadow: 0 0 0 10px rgba(58,134,255,0); transform: scale(1.05); }
+    100% { box-shadow: 0 0 0 0 rgba(58,134,255,0); transform: scale(1); }
+  }
   
-  #loader{text-align:center;padding:60px 20px;color:var(--gray-600);font-size:15px;display:flex;flex-direction:column;align-items:center;gap:12px;}
-  .spinner{width:24px;height:24px;border:3px solid var(--blue-100);border-top-color:var(--blue-800);border-radius:50%;animation:spin 0.8s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg)}}
+  /* Animated Lines */
+  .line-pass { background: var(--teal-400); }
+  .line-anim { background: rgba(10,37,64,0.08); }
+  .line-anim::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(58,134,255,0.8), transparent);
+    animation: flowRight 1.5s infinite linear;
+  }
+  @keyframes flowRight { 100% { left: 100%; } }
+
+  /* 🟢 Buttons */
+  .btn-eval{
+    margin-top:auto; display:block; text-align:center; padding:12px; border-radius:12px; 
+    text-decoration:none; font-size:13px; font-weight:700; transition:all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 8px;
+  }
+  .btn-eval:hover{ transform:translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+  .btn-eval:last-child { margin-bottom: 0; }
+  
+  .btn-user { background: rgba(255,255,255,0.8); color: var(--blue-800); border: 1px solid rgba(255,255,255,0.9); box-shadow: none;}
+  .btn-user:hover { background: #fff; }
+  .btn-lead { background: linear-gradient(135deg, #FFB74D, var(--orange-500)); color: #fff; }
+  .btn-exec { background: linear-gradient(135deg, #60A5FA, var(--blue-600)); color: #fff; }
+  
+  #loader{text-align:center;padding:80px 20px;color:var(--blue-800);font-size:16px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:16px;}
+  .spinner{width:32px;height:32px;border:4px solid rgba(58,134,255,0.2);border-top-color:var(--blue-600);border-radius:50%;animation:spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;}
+  
+  /* Legend Colors Mapping */
+  .bg-none { background: var(--gray-200); }
+  .bg-lead { background: var(--orange-500); }
+  .bg-exec { background: var(--blue-600); }
+  .bg-pass { background: var(--teal-600); }
+  .bg-fail { background: var(--red-600); }
 </style>
 </head>
 <body>
 
-<div class="header">
+<div class="header glass-panel">
   <h2>TPM OI — Dashboard & Area Overview</h2>
   <p>ติดตามสถานะการประเมิน Office Improvement (Flow: ตนเอง ➔ หัวหน้า ➔ ผู้บริหาร)</p>
 </div>
 
 <div class="wrap">
-  <div class="controls-area">
+  <div class="controls-area glass-panel">
     <div class="filter-box">
       <select id="filter-dept" onchange="renderCards()">
         <option value="all">🌐 แสดงทุกแผนก / กลุ่ม</option>
@@ -87,16 +170,16 @@
     </div>
     
     <div class="legend">
-      <span class="lg-title">สถานะของแต่ละ Step:</span>
-      <div class="lg-item"><div class="lg-dot st-none"></div>ยังไม่เริ่ม</div>
-      <div class="lg-item"><div class="lg-dot st-wait-lead"></div>รอหัวหน้าตรวจ</div>
-      <div class="lg-item"><div class="lg-dot st-wait-exec"></div>รอผู้บริหารตรวจ</div>
-      <div class="lg-item"><div class="lg-dot st-pass"></div>ผ่านสมบูรณ์</div>
-      <div class="lg-item"><div class="lg-dot st-fail"></div>ไม่ผ่าน/รอแก้ไข</div>
+      <span class="lg-title">สถานะจุด Step:</span>
+      <div class="lg-item"><div class="lg-dot bg-none"></div>ยังไม่เริ่ม</div>
+      <div class="lg-item"><div class="lg-dot bg-lead"></div>รอหัวหน้าตรวจ</div>
+      <div class="lg-item"><div class="lg-dot bg-exec"></div>รอผู้บริหารตรวจ</div>
+      <div class="lg-item"><div class="lg-dot bg-pass"></div>ผ่านสมบูรณ์</div>
+      <div class="lg-item"><div class="lg-dot bg-fail"></div>ไม่ผ่าน/รอแก้ไข</div>
     </div>
   </div>
 
-  <div id="loader"><div class="spinner"></div>กำลังเชื่อมต่อและดึงข้อมูลจากระบบ...</div>
+  <div id="loader"><div class="spinner"></div>กำลังเชื่อมต่อและซิงค์ข้อมูล...</div>
   <div class="grid" id="card-container"></div>
 </div>
 
@@ -159,7 +242,7 @@ function getStepLogic(stepRecords) {
   const isPass = (latest['PassFail'] === 'ผ่านเกณฑ์' || latest['PassFail'] === 'Pass');
 
   if(!isPass) {
-    let who = type === 'exec' ? 'ผู้บริหาร' : (type === 'lead' || type === 'mgr' ? 'หัวหน้า' : 'ตนเอง');
+    let who = type === 'exec' ? 'ผู้บริหาร' : (type === 'lead' || type === 'mgr' ? 'หัวหน้า' : 'พนักงาน');
     return { class: 'st-fail', text: `ไม่ผ่าน (${who})`, rank: 1 };
   }
 
@@ -184,10 +267,10 @@ function renderCards() {
       const history = sheetData.filter(r => r['Department'] === dept && r['Area'] === area);
       
       let stepsInfo = {};
-      let overallStatus = { text: 'ยังไม่มีการประเมิน', color: 'var(--gray-600)', bg: 'var(--gray-50)', icon: '📌', rank: 0 };
+      let overallStatus = { text: 'ยังไม่มีการประเมิน', color: 'var(--gray-600)', bg: 'rgba(230,235,240,0.8)', icon: '📌', rank: 0 };
       let allPassed = true;
       let hasStarted = false;
-      let pendingStep = '1'; // 🟢 เก็บค่าว่ากำลังค้างอยู่ที่ Step ไหน
+      let pendingStep = 1; 
 
       for(let s=1; s<=5; s++) {
         const sRecords = history.filter(r => r['AuditRound'] == s);
@@ -197,27 +280,23 @@ function renderCards() {
       }
 
       if(allPassed) {
-        overallStatus = { text: '🎉 ผ่านครบ 5 Step!', color: '#0F6E56', bg: '#E1F5EE', icon: '🏆', rank: 4 };
+        overallStatus = { text: '🎉 ผ่านครบ 5 Step!', color: '#0CA47C', bg: '#E1F5EE', icon: '🏆', rank: 4 };
         pendingStep = 'all';
       } else {
         for(let s=1; s<=5; s++) {
           let st = stepsInfo[s];
           if(st.rank === 0) {
-            overallStatus = { text: `รอประเมิน Step ${s} (ตนเอง)`, color: 'var(--gray-600)', bg: 'var(--gray-50)', icon: '📝', rank: 0 };
-            pendingStep = s;
-            break;
+            overallStatus = { text: `รอประเมิน Step ${s} (พนักงาน)`, color: 'var(--blue-800)', bg: 'rgba(58,134,255,0.1)', icon: '📝', rank: 0 };
+            pendingStep = s; break;
           } else if(st.rank === 1) {
-            overallStatus = { text: `Step ${s}: ${st.text} ➔ ต้องแก้ใหม่`, color: 'var(--red-600)', bg: '#FCEBEB', icon: '⚠️', rank: 1 };
-            pendingStep = s;
-            break;
+            overallStatus = { text: `Step ${s}: ${st.text} ➔ แก้ไข`, color: 'var(--red-600)', bg: '#FCEBEB', icon: '⚠️', rank: 1 };
+            pendingStep = s; break;
           } else if(st.rank === 2) {
             overallStatus = { text: `Step ${s}: รอหัวหน้าตรวจ`, color: '#fff', bg: 'var(--orange-500)', icon: '⏳', rank: 2 };
-            pendingStep = s;
-            break;
+            pendingStep = s; break;
           } else if(st.rank === 3) {
-            overallStatus = { text: `Step ${s}: รอผู้บริหารตรวจ`, color: '#fff', bg: 'var(--blue-400)', icon: '⏳', rank: 3 };
-            pendingStep = s;
-            break;
+            overallStatus = { text: `Step ${s}: รอผู้บริหารตรวจ`, color: '#fff', bg: 'var(--blue-600)', icon: '⏳', rank: 3 };
+            pendingStep = s; break;
           }
         }
       }
@@ -225,21 +304,45 @@ function renderCards() {
       if(filterStatus === 'done' && !allPassed) return;
       if(filterStatus === 'action' && (!hasStarted || allPassed)) return;
 
-      // 🟢 แยกปุ่ม และส่ง Parameter "step" แนบไปด้วย
+      // 🟢 Build Animated Tracker HTML
+      let trackerHTML = '<div class="step-tracker">';
+      for(let i=1; i<=5; i++) {
+         let st = stepsInfo[i];
+         // ใส่ effect กระพริบถ้าเป็น step ที่กำลังค้างอยู่
+         let pulseClass = (pendingStep == i && !allPassed) ? 'pulse-node' : '';
+         
+         trackerHTML += `<div class="step-node ${st.class} ${pulseClass}" title="Step ${i}: ${st.text}">${i}</div>`;
+         
+         if(i < 5) {
+            let lineClass = '';
+            // ถ้า Step นี้ผ่านแล้ว และ Step หน้าก็มีการขยับแล้ว = เส้นเขียว
+            if (st.rank === 4 && stepsInfo[i+1].rank > 0) {
+               lineClass = 'line-pass'; 
+            } 
+            // ถ้า Step นี้ผ่านแล้ว แต่ Step หน้ายังไม่เริ่ม = เส้นแสงวิ่งนำทาง
+            else if (st.rank === 4 && stepsInfo[i+1].rank === 0 && pendingStep == i+1) {
+               lineClass = 'line-anim'; 
+            }
+            trackerHTML += `<div class="step-line ${lineClass}"></div>`;
+         }
+      }
+      trackerHTML += '</div>';
+
+      // 🟢 Action Buttons
       let actionButtons = `
-        <a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pendingStep}" class="btn-eval" style="background:var(--gray-600); margin-bottom:6px;">
+        <a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pendingStep}" class="btn-eval btn-user">
           📝 เข้าประเมิน (พนักงาน) / ดูประวัติ
         </a>
       `;
 
       if(overallStatus.rank === 2) {
-        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pendingStep}" class="btn-eval" style="background:var(--orange-500);">🔑 เข้าตรวจ (สำหรับหัวหน้า)</a>`;
+        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pendingStep}" class="btn-eval btn-lead">🔑 เข้าตรวจ (สำหรับหัวหน้า)</a>`;
       } else if(overallStatus.rank === 3) {
-        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pendingStep}" class="btn-eval" style="background:var(--blue-400);">🔑 เข้าตรวจ (สำหรับผู้บริหาร)</a>`;
+        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pendingStep}" class="btn-eval btn-exec">🔑 เข้าตรวจ (สำหรับผู้บริหาร)</a>`;
       }
 
       const card = document.createElement('div');
-      card.className = 'area-card';
+      card.className = 'area-card glass-panel';
       card.innerHTML = `
         <div class="ac-top">
           <span class="ac-dept">${dept}</span>
@@ -247,13 +350,7 @@ function renderCards() {
         </div>
         <div class="ac-name">${area}</div>
         
-        <div class="step-bars">
-          <div class="s-bar ${stepsInfo[1].class}" title="${stepsInfo[1].text}">S1</div>
-          <div class="s-bar ${stepsInfo[2].class}" title="${stepsInfo[2].text}">S2</div>
-          <div class="s-bar ${stepsInfo[3].class}" title="${stepsInfo[3].text}">S3</div>
-          <div class="s-bar ${stepsInfo[4].class}" title="${stepsInfo[4].text}">S4</div>
-          <div class="s-bar ${stepsInfo[5].class}" title="${stepsInfo[5].text}">S5</div>
-        </div>
+        ${trackerHTML}
 
         <div style="margin-top:auto;">
           ${actionButtons}
@@ -264,6 +361,7 @@ function renderCards() {
   });
 }
 
+// เริ่มทำงาน
 loadData();
 </script>
 </body>
