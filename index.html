@@ -18,7 +18,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 
-/* 🟢 พื้นหลังแบบ iOS Mesh Gradient (ใช้ Radial Gradient หลายๆ วง) */
+/* พื้นหลังแบบ iOS Mesh Gradient */
 body{
   font-family:var(--font);
   background-color:#E8EEF2;
@@ -33,7 +33,7 @@ body{
   min-height:100vh;
 }
 
-/* 🟢 Glassmorphism Card (สไตล์กล่องใส) */
+/* Glassmorphism Card */
 .card, .step-card, .page-header {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(24px);
@@ -71,7 +71,7 @@ body{
 .fg label{font-size:12px;font-weight:600;color:var(--gray-900); padding-left: 4px;}
 .req{background:var(--red-400);color:#fff;font-size:9px;font-weight:600;padding:2px 6px;border-radius:6px;margin-left:4px; box-shadow:0 2px 4px rgba(217,56,56,0.2);}
 
-/* Controls (Inputs & Selects) */
+/* Controls */
 input[type=text],input[type=password],input[type=date],select,textarea{
   width:100%;font-family:var(--font);font-size:14px;color:var(--blue-900);
   background: rgba(255, 255, 255, 0.6);
@@ -89,7 +89,7 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
 select:disabled {background:rgba(230,235,240,0.5); cursor:not-allowed; color:var(--gray-600);}
 input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:not-allowed;}
 
-/* 🟢 ดีไซน์ใหม่: เกณฑ์คะแนน (Legend Badges) */
+/* เกณฑ์คะแนน (Legend Badges) */
 .legend-card { padding: 1rem 1.5rem; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
 .legend-title{font-size:12px;color:var(--gray-600);font-weight:600;}
 .lg-badges { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -125,16 +125,14 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
 .score-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap; padding-left: 34px;}
 .score-lbl{font-size:12px;font-weight:600;color:var(--gray-600);}
 
-/* 🟢 ดีไซน์ใหม่: ปุ่มให้คะแนน (Score Buttons) */
+/* Score Buttons */
 .score-btns{display:flex;gap:6px; background: rgba(255,255,255,0.5); padding: 4px; border-radius: 12px; border:1px solid rgba(255,255,255,0.8); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
 .sb{width:42px;height:34px;border:none; border-radius:8px;background:transparent;color:var(--gray-600);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s ease;}
 .sb:hover{background:rgba(255,255,255,0.8); box-shadow: 0 2px 6px rgba(0,0,0,0.05);}
-/* Active states with nice gradients */
 .sb.s2.on{background:linear-gradient(135deg, #FF5C5C, #D93838);color:#fff;box-shadow:0 4px 12px rgba(217,56,56,0.3);}
 .sb.s4.on{background:linear-gradient(135deg, #FFB74D, #E69500);color:#fff;box-shadow:0 4px 12px rgba(230,149,0,0.3);}
 .sb.s8.on{background:linear-gradient(135deg, #60A5FA, #1E6091);color:#fff;box-shadow:0 4px 12px rgba(30,96,145,0.3);}
 .sb.s10.on{background:linear-gradient(135deg, #2DD4BF, #0CA47C);color:#fff;box-shadow:0 4px 12px rgba(12,164,124,0.3);}
-
 .score-max-lbl{font-size:12px;font-weight:600;color:var(--gray-400)}
 .score-mult{font-size:10px;font-weight:700;color:var(--blue-600);background:rgba(58,134,255,0.1);padding:3px 8px;border-radius:10px}
 
@@ -223,9 +221,14 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
         <option value="">-- เลือกแผนก --</option>
         <option value="MT">MT — แผนกวิศวกรรมและซ่อมบำรุง</option>
         <option value="HC.P">HC.P — แผนกทรัพยากรบุคคล</option>
+        <option value="PU.P">PU.P — แผนกจัดซื้อโรงงาน</option>
+        <option value="IT.P">IT.P — ฝ่ายเทคโนโลยีสารสนเทศ</option>
+        <option value="EN">EN — แผนกวิศวกรรม</option>
+        <option value="PE">PE — แผนกวิศวกรรมบรรจุภัณฑ์</option>
         <option value="PN">PN — แผนกวางแผนการผลิต</option>
         <option value="WH.P">WH.P — แผนกคลังสินค้าโรงงาน</option>
         <option value="LG.P">LG.P — แผนกโลจิสติกส์โรงงาน</option>
+        <option value="SE">SE — ส่วนงานความปลอดภัย</option>
         <option value="SE.P">SE.P — หน่วยงานความปลอดภัย</option>
         <option value="RW">RW — แผนกคลังวัตถุดิบ บรรจุภัณฑ์และอะไหล่</option>
         <option value="PD">PD — แผนกผลิต</option>
@@ -699,19 +702,19 @@ async function handleSubmit() {
   const auditorType = document.getElementById('f-auditor').value;
   const pin = document.getElementById('f-pin').value;
 
-  if (auditorType === 'lead' && pin !== '1234') { showToast('รหัส PIN หัวหน้าไม่ถูกต้อง!', '#A32D2D'); return; }
-  if (auditorType === 'exec' && pin !== '9999') { showToast('รหัส PIN ผู้บริหารไม่ถูกต้อง!', '#A32D2D'); return; }
+  if (auditorType === 'lead' && pin !== '1234') { showToast('รหัส PIN หัวหน้าไม่ถูกต้อง!', '#D93838'); return; }
+  if (auditorType === 'exec' && pin !== '9999') { showToast('รหัส PIN ผู้บริหารไม่ถูกต้อง!', '#D93838'); return; }
 
-  if (!dept) { showToast('กรุณาเลือกแผนก', '#A32D2D'); return; }
-  if (!name || name.includes('--') || name.includes('ไม่พบ')) { showToast('กรุณาเลือกชื่อผู้ประเมิน', '#A32D2D'); return; }
-  if (!area) { showToast('กรุณาเลือกพื้นที่ประเมิน', '#A32D2D'); return; }
+  if (!dept) { showToast('กรุณาเลือกแผนก', '#D93838'); return; }
+  if (!name || name.includes('--') || name.includes('ไม่พบ')) { showToast('กรุณาเลือกชื่อผู้ประเมิน', '#D93838'); return; }
+  if (!area) { showToast('กรุณาเลือกพื้นที่ประเมิน', '#D93838'); return; }
 
   let hasScore = false;
   [1,2,3,4,5].forEach(s => {
     const card = document.getElementById('step'+s+'-card');
     if (card && card.style.display !== 'none' && calcStep(s).total > 0) hasScore = true;
   });
-  if (!hasScore) { showToast('กรุณาให้คะแนนอย่างน้อย 1 หัวข้อ', '#A32D2D'); return; }
+  if (!hasScore) { showToast('กรุณาให้คะแนนอย่างน้อย 1 หัวข้อ', '#D93838'); return; }
 
   const btn = document.getElementById('btn-submit');
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังบีบอัดรูปและส่งข้อมูล...';
@@ -748,10 +751,10 @@ async function handleSubmit() {
 
   try {
     await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
-    showToast('ส่งแบบประเมินสำเร็จแล้ว!', 'var(--teal-600)', 4000);
+    showToast('ส่งแบบประเมินสำเร็จแล้ว!', '#0CA47C', 4000);
     setTimeout(() => resetForm(), 4500);
   } catch (err) {
-    showToast('เกิดข้อผิดพลาด: ' + err.message, '#A32D2D', 5000);
+    showToast('เกิดข้อผิดพลาด: ' + err.message, '#D93838', 5000);
   } finally {
     btn.disabled = false; btn.innerHTML = 'ส่งแบบประเมิน';
   }
@@ -805,6 +808,7 @@ function prefillFromURL() {
   if (deptParam) {
     document.getElementById('f-dept').value = deptParam;
     filterAreas();
+    populateUsers(); // 🟢 สำคัญมาก: โหลดรายชื่อทันทีที่รู้แผนก
     
     if (areaParam) {
       setTimeout(() => {
@@ -823,6 +827,7 @@ function prefillFromURL() {
            document.getElementById('f-auditor').value = roleParam;
            updateAll();
            togglePIN();
+           populateUsers(); // 🟢 สำคัญมาก: โหลดรายชื่อหัวหน้า/ผู้บริหารทันที
            
            setTimeout(() => {
              const nameSelect = document.getElementById('f-name');
@@ -833,12 +838,11 @@ function prefillFromURL() {
              
              document.getElementById('f-dept').disabled = true;
              document.getElementById('f-auditor').disabled = true;
-             // 🟢 ปลดล็อกชื่อผู้ประเมิน ให้กดเลือกได้
-             document.getElementById('f-name').disabled = false;
+             document.getElementById('f-name').disabled = false; // 🟢 ปลดล็อกให้หัวหน้าเปลี่ยนชื่อได้
              document.getElementById('f-area').disabled = true;
              document.getElementById('f-assess-step').disabled = true;
              
-           }, 500); 
+           }, 100); 
         }
       }, 150);
     }
