@@ -161,10 +161,6 @@ textarea{resize:vertical;min-height:64px;line-height:1.55}
       <input type="text" id="f-name" placeholder="ชื่อ-นามสกุล">
     </div>
     <div class="fg">
-  <label>Email ผู้ประเมิน <span class="req">จำเป็น</span></label>
-  <input type="email" id="f-email" placeholder="yourname@company.com">
-</div>
-    <div class="fg">
       <label>แผนก / กลุ่ม <span class="req">จำเป็น</span></label>
       <select id="f-dept" onchange="filterAreas()">
         <option value="">-- เลือกแผนก --</option>
@@ -570,7 +566,6 @@ async function handleSubmit() {
 
   const payload = {
     assessorName:   name,
-    assessorEmail: document.getElementById('f-email').value,
     department:     dept,
     assessmentDate: date,
     area:           area,
