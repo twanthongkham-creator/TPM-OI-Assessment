@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TPM OI — Dashboard ภาพรวม</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
   :root{
@@ -17,7 +18,7 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   
-  /* 🟢 พื้นหลังแบบ iOS Mesh Gradient */
+  /* พื้นหลัง iOS Mesh Gradient */
   body{
     font-family:var(--font);
     background-color:#E8EEF2;
@@ -27,10 +28,9 @@
       radial-gradient(circle at 50% 80%, rgba(245,124,0,0.08) 0%, transparent 50%);
     background-attachment: fixed;
     color:var(--gray-900);
-    padding-bottom:60px;
+    padding-bottom:40px;
   }
   
-  /* Glassmorphism Classes */
   .glass-panel {
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(24px);
@@ -42,121 +42,117 @@
   /* Header */
   .header{
     position:sticky; top:10px; z-index:100;
-    max-width: 1080px; margin: 10px auto 24px; padding: 20px 24px;
-    border-radius: 20px; text-align:center;
+    max-width: 1150px; margin: 10px auto 20px; padding: 16px 24px;
+    border-radius: 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;
   }
-  .header h2{font-size:22px;font-weight:700;color:var(--blue-900);letter-spacing:-0.5px;margin-bottom:4px;}
-  .header p{font-size:13px;color:var(--gray-600);font-weight:500;}
+  .h-title h2{font-size:20px;font-weight:700;color:var(--blue-900);letter-spacing:-0.5px;}
+  .h-title p{font-size:12px;color:var(--gray-600);font-weight:500;}
   
-  .wrap{max-width:1080px;margin:0 auto;padding:0 16px;}
+  .wrap{max-width:1150px;margin:0 auto;padding:0 16px;}
+
+  /* 🟢 Summary Section (กราฟ & KPI) */
+  .summary-grid { display:grid; grid-template-columns: 300px 1fr; gap:20px; margin-bottom:20px; }
+  @media(max-width:800px){ .summary-grid { grid-template-columns: 1fr; } }
+  
+  .kpi-card { padding:24px; border-radius:20px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .kpi-val { font-size:48px; font-weight:700; color:var(--teal-600); line-height:1; margin:10px 0; background: linear-gradient(135deg, #10D2A1, #0CA47C); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+  .kpi-title { font-size:14px; font-weight:700; color:var(--blue-900); margin-bottom:4px;}
+  .kpi-sub { font-size:12px; color:var(--gray-600); font-weight:500; }
+  .kpi-target { margin-top:16px; font-size:11px; background:rgba(58,134,255,0.1); padding:8px 12px; border-radius:12px; color:var(--blue-800); font-weight:600;}
+
+  .chart-card { padding:20px; border-radius:20px; position: relative; height: 220px; }
   
   /* Filter & Legend */
-  .controls-area{padding:20px;border-radius:20px;margin-bottom:24px;display:flex;flex-direction:column;gap:16px;}
+  .controls-area{padding:16px;border-radius:20px;margin-bottom:20px;display:flex;flex-direction:column;gap:12px;}
   .filter-box{display:flex;gap:12px;flex-wrap:wrap;}
   .filter-box select{
-    padding:12px 16px; border:1.5px solid rgba(255,255,255,0.9); border-radius:12px;
-    font-family:var(--font); font-size:14px; font-weight:500; color:var(--blue-900);
-    background: rgba(255, 255, 255, 0.6); flex:1; min-width:220px; outline:none;
-    box-shadow: inset 0 2px 4px rgba(10,37,64,0.02); transition:all .2s ease;
-    cursor:pointer; appearance:none;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%23505A64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat:no-repeat; background-position:right 16px center;
+    padding:10px 14px; border:1.5px solid rgba(255,255,255,0.9); border-radius:12px;
+    font-family:var(--font); font-size:13px; font-weight:500; color:var(--blue-900);
+    background: rgba(255, 255, 255, 0.6); flex:1; min-width:200px; outline:none;
+    box-shadow: inset 0 2px 4px rgba(10,37,64,0.02); transition:all .2s ease; cursor:pointer;
   }
-  .filter-box select:focus{background:#fff; border-color:var(--blue-400); box-shadow: 0 0 0 4px rgba(58,134,255,0.15);}
-  
-  .legend{display:flex;gap:16px;flex-wrap:wrap;align-items:center;padding-top:16px;border-top:1px solid rgba(10,37,64,0.08);}
+  .filter-box select:focus{background:#fff; border-color:var(--blue-400);}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
   .lg-title{font-size:12px;font-weight:700;color:var(--gray-600);}
   .lg-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--gray-600);}
-  .lg-dot{width:14px;height:14px;border-radius:4px; box-shadow:inset 0 -2px 0 rgba(0,0,0,0.1);}
+  .lg-dot{width:12px;height:12px;border-radius:4px;}
   
   /* Cards Grid */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;}
-  .area-card{
-    border-radius:20px; padding:20px; display:flex; flex-direction:column;
-    transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
-  .area-card:hover{box-shadow:0 12px 32px rgba(10,37,64,0.1); transform:translateY(-4px);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+  .area-card{border-radius:16px; padding:16px; display:flex; flex-direction:column; transition:all 0.3s;}
+  .area-card:hover{box-shadow:0 12px 32px rgba(10,37,64,0.1); transform:translateY(-3px);}
   
-  /* Card Header */
-  .ac-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-  .ac-dept{font-size:12px;color:var(--blue-800);font-weight:700;background:rgba(58,134,255,0.15);padding:4px 10px;border-radius:8px;letter-spacing:0.5px;}
-  .ac-status{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
+  .ac-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+  .ac-dept{font-size:11px;color:var(--blue-800);font-weight:700;background:rgba(58,134,255,0.15);padding:4px 8px;border-radius:6px;}
+  .ac-status{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;}
+  .ac-name{font-size:15px;font-weight:700;color:var(--blue-900);margin-bottom:16px;}
   
-  .ac-name{font-size:18px;font-weight:700;color:var(--blue-900);margin-bottom:20px; letter-spacing:-0.3px;}
+  /* Animated Step Tracker */
+  .step-tracker { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; padding:0 4px; }
+  .step-node { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; z-index:2; transition:all 0.3s; box-shadow:inset 0 -2px 0 rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.1); }
+  .step-line { flex:1; height:3px; background:rgba(10,37,64,0.08); border-radius:2px; margin:0 4px; position:relative; overflow:hidden; z-index:1; }
   
-  /* 🟢 ดีไซน์ใหม่: Animated Step Tracker */
-  .step-tracker { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding: 0 5px; }
-  .step-node {
-    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; color: #fff; position: relative; z-index: 2; transition: all 0.3s;
-    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.1);
-  }
-  .step-line { flex: 1; height: 4px; background: rgba(10,37,64,0.08); border-radius: 2px; margin: 0 4px; position: relative; overflow: hidden; z-index: 1; transition: all 0.3s;}
-  
-  /* Status Node Colors */
   .st-none      { background: var(--gray-200); color: var(--gray-600); box-shadow:none; }
   .st-pass      { background: linear-gradient(135deg, var(--teal-400), var(--teal-600)); }
   .st-wait-lead { background: linear-gradient(135deg, #FFB74D, var(--orange-500)); }
   .st-wait-exec { background: linear-gradient(135deg, #60A5FA, var(--blue-600)); }
   .st-fail      { background: linear-gradient(135deg, #FF5C5C, var(--red-600)); }
   
-  /* Animations */
   .pulse-node { animation: pulseShadow 1.5s infinite; }
-  @keyframes pulseShadow {
-    0% { box-shadow: 0 0 0 0 rgba(245,124,0,0.6); transform: scale(1); }
-    70% { box-shadow: 0 0 0 10px rgba(245,124,0,0); transform: scale(1.05); }
-    100% { box-shadow: 0 0 0 0 rgba(245,124,0,0); transform: scale(1); }
-  }
+  @keyframes pulseShadow { 0% { box-shadow: 0 0 0 0 rgba(245,124,0,0.6); } 70% { box-shadow: 0 0 0 8px rgba(245,124,0,0); } 100% { box-shadow: 0 0 0 0 rgba(245,124,0,0); } }
   .pulse-node.st-wait-exec { animation: pulseShadowBlue 1.5s infinite; }
-  @keyframes pulseShadowBlue {
-    0% { box-shadow: 0 0 0 0 rgba(58,134,255,0.6); transform: scale(1); }
-    70% { box-shadow: 0 0 0 10px rgba(58,134,255,0); transform: scale(1.05); }
-    100% { box-shadow: 0 0 0 0 rgba(58,134,255,0); transform: scale(1); }
-  }
+  @keyframes pulseShadowBlue { 0% { box-shadow: 0 0 0 0 rgba(58,134,255,0.6); } 70% { box-shadow: 0 0 0 8px rgba(58,134,255,0); } 100% { box-shadow: 0 0 0 0 rgba(58,134,255,0); } }
   
-  /* Animated Lines */
   .line-pass { background: var(--teal-400); }
-  .line-anim { background: rgba(10,37,64,0.08); }
-  .line-anim::after {
-    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(58,134,255,0.8), transparent);
-    animation: flowRight 1.5s infinite linear;
-  }
+  .line-anim::after { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg, transparent, rgba(58,134,255,0.8), transparent); animation:flowRight 1.5s infinite linear; }
   @keyframes flowRight { 100% { left: 100%; } }
 
-  /* 🟢 Buttons */
-  .btn-eval{
-    margin-top:auto; display:block; text-align:center; padding:12px; border-radius:12px; 
-    text-decoration:none; font-size:13px; font-weight:700; transition:all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 8px;
+  /* Buttons */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:10px 16px; border-radius:12px; text-decoration:none; font-size:13px; font-weight:700; transition:all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor:pointer; border:none;
   }
-  .btn-eval:hover{ transform:translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+  .btn:hover{ transform:translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+  .btn-nav { background: linear-gradient(135deg, #fff, #f0f4f8); border:1px solid #fff; color:var(--blue-800); }
+  .btn-eval { width: 100%; margin-bottom:6px; padding:10px; font-size:12px; }
   .btn-eval:last-child { margin-bottom: 0; }
-  
-  .btn-user { background: rgba(255,255,255,0.8); color: var(--blue-800); border: 1px solid rgba(255,255,255,0.9); box-shadow: none;}
-  .btn-user:hover { background: #fff; }
+  .btn-user { background: rgba(255,255,255,0.8); color: var(--blue-800); border: 1px solid rgba(255,255,255,0.9); box-shadow:none;}
   .btn-lead { background: linear-gradient(135deg, #FFB74D, var(--orange-500)); color: #fff; }
   .btn-exec { background: linear-gradient(135deg, #60A5FA, var(--blue-600)); color: #fff; }
   
-  #loader{text-align:center;padding:80px 20px;color:var(--blue-800);font-size:16px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:16px;}
-  .spinner{width:32px;height:32px;border:4px solid rgba(58,134,255,0.2);border-top-color:var(--blue-600);border-radius:50%;animation:spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;}
+  #loader{text-align:center;padding:60px 20px;color:var(--blue-800);font-size:14px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:12px;}
+  .spinner{width:28px;height:28px;border:4px solid rgba(58,134,255,0.2);border-top-color:var(--blue-600);border-radius:50%;animation:spin 0.8s infinite;}
   
-  /* Legend Colors Mapping */
-  .bg-none { background: var(--gray-200); }
-  .bg-lead { background: var(--orange-500); }
-  .bg-exec { background: var(--blue-600); }
-  .bg-pass { background: var(--teal-600); }
-  .bg-fail { background: var(--red-600); }
+  .bg-none { background: var(--gray-200); } .bg-lead { background: var(--orange-500); } .bg-exec { background: var(--blue-600); } .bg-pass { background: var(--teal-600); } .bg-fail { background: var(--red-600); }
 </style>
 </head>
 <body>
 
 <div class="header glass-panel">
-  <h2>TPM OI — Dashboard & Area Overview</h2>
-  <p>ติดตามสถานะการประเมิน Office Improvement (Flow: ตนเอง ➔ หัวหน้า ➔ ผู้บริหาร)</p>
+  <div class="h-title">
+    <h2>TPM OI — Dashboard & KPI (2026)</h2>
+    <p>ภาพรวมสถานะการประเมิน 5ส ของทุกพื้นที่</p>
+  </div>
+  <a href="index.html" class="btn btn-nav">📝 ไปหน้าประเมิน (Assessment Form)</a>
 </div>
 
 <div class="wrap">
+  
+  <div class="summary-grid" id="summary-section" style="display:none;">
+    <div class="kpi-card glass-panel">
+      <div class="kpi-title">ความสำเร็จตามเป้าหมาย (KPI 2026)</div>
+      <div class="kpi-val" id="kpi-percent">0%</div>
+      <div class="kpi-sub" id="kpi-text">ผ่านเป้าหมาย 0 จากทั้งหมด 0 พื้นที่</div>
+      <div class="kpi-target">
+        🎯 <b>เป้าหมาย:</b> 6 Area หลักต้องถึง Step 4<br>
+        พื้นที่ส่วนอื่นทั่วไปต้องถึง Step 3
+      </div>
+    </div>
+    <div class="chart-card glass-panel">
+      <canvas id="stepChart"></canvas>
+    </div>
+  </div>
+
   <div class="controls-area glass-panel">
     <div class="filter-box">
       <select id="filter-dept" onchange="renderCards()">
@@ -165,7 +161,7 @@
       <select id="filter-status" onchange="renderCards()">
         <option value="all">🔍 แสดงทุกสถานะ (ทั้งหมด)</option>
         <option value="action">⏳ รอดำเนินการ (รอตรวจ/แก้ไข)</option>
-        <option value="done">✅ ผ่านครบ 5 Step แล้ว</option>
+        <option value="done">✅ ผ่านเป้าหมาย KPI แล้ว</option>
       </select>
     </div>
     
@@ -175,16 +171,15 @@
       <div class="lg-item"><div class="lg-dot bg-lead"></div>รอหัวหน้าตรวจ</div>
       <div class="lg-item"><div class="lg-dot bg-exec"></div>รอผู้บริหารตรวจ</div>
       <div class="lg-item"><div class="lg-dot bg-pass"></div>ผ่านสมบูรณ์</div>
-      <div class="lg-item"><div class="lg-dot bg-fail"></div>ไม่ผ่าน/รอแก้ไข</div>
+      <div class="lg-item"><div class="lg-dot bg-fail"></div>แก้ไข</div>
     </div>
   </div>
 
-  <div id="loader"><div class="spinner"></div>กำลังเชื่อมต่อและซิงค์ข้อมูล...</div>
+  <div id="loader"><div class="spinner"></div>กำลังเชื่อมต่อและประมวลผลข้อมูล...</div>
   <div class="grid" id="card-container"></div>
 </div>
 
 <script>
-// ⚠️ ใส่ API URL (ได้จากการกด Deploy New Version ครั้งล่าสุด)
 const API_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 const areaData = {
@@ -207,7 +202,18 @@ const areaData = {
   "PAYROLL": ["ห้อง Payroll"]
 };
 
+// 🟢 กำหนดเป้าหมาย KPI พิเศษ 6 Area (ที่ต้องถึง Step 4)
+const kpiFocusAreas = [
+  { dept: 'RW', area: 'คลังจัดเก็บสารเคมี' },
+  { dept: 'RW', area: 'ห้องจัดเก็บอะไหล่ต่างประเทศ' },
+  { dept: 'PD', area: 'ห้องประชุมแผนกผลิต' },
+  { dept: 'HC.P', area: 'ห้องประชุมแผนก' },
+  { dept: 'MT', area: 'ห้องจัดเก็บอะไหล่ต่างประเทศ' },
+  { dept: 'AC.P', area: 'ห้องประชุมแผนกบัญชี' }
+];
+
 let sheetData = []; 
+let chartInstance = null;
 
 async function loadData() {
   try {
@@ -236,7 +242,6 @@ function initFilters() {
 
 function getStepLogic(stepRecords) {
   if(stepRecords.length === 0) return { class: 'st-none', text: 'ยังไม่เริ่ม', rank: 0 };
-  
   const latest = stepRecords[stepRecords.length - 1];
   const type = latest['AuditorType']; 
   const isPass = (latest['PassFail'] === 'ผ่านเกณฑ์' || latest['PassFail'] === 'Pass');
@@ -253,33 +258,44 @@ function getStepLogic(stepRecords) {
 
 function renderCards() {
   const container = document.getElementById('card-container');
-  const loader = document.getElementById('loader');
   const filterDept = document.getElementById('filter-dept').value;
   const filterStatus = document.getElementById('filter-status').value;
   
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('summary-section').style.display = 'grid';
   container.innerHTML = '';
-  loader.style.display = 'none';
+
+  let totalAreas = 0;
+  let targetHit = 0;
+  let stepDistribution = [0, 0, 0, 0, 0, 0]; // Index คือ Step (0 = ยังไม่เริ่ม, 1=ผ่าน S1, ฯลฯ)
 
   Object.keys(areaData).forEach(dept => {
-    if(filterDept !== 'all' && dept !== filterDept) return;
-
     areaData[dept].forEach(area => {
+      totalAreas++;
       const history = sheetData.filter(r => r['Department'] === dept && r['Area'] === area);
       
       let stepsInfo = {};
       let overallStatus = { text: 'ยังไม่มีการประเมิน', color: 'var(--gray-600)', bg: 'rgba(230,235,240,0.8)', icon: '📌', rank: 0 };
-      let allPassed = true;
       let hasStarted = false;
       let pendingStep = 1; 
+      let currentPassedStep = 0;
 
       for(let s=1; s<=5; s++) {
         const sRecords = history.filter(r => r['AuditRound'] == s);
         stepsInfo[s] = getStepLogic(sRecords);
         if(stepsInfo[s].rank > 0) hasStarted = true;
-        if(stepsInfo[s].rank !== 4) allPassed = false;
+        if(stepsInfo[s].rank === 4) currentPassedStep = s; // เก็บ Step สูงสุดที่ผ่านสมบูรณ์
       }
 
-      if(allPassed) {
+      // เช็คเป้าหมาย KPI
+      let isFocus = kpiFocusAreas.some(k => k.dept === dept && k.area === area);
+      let targetStep = isFocus ? 4 : 3;
+      let isHitKPI = currentPassedStep >= targetStep;
+      
+      if(isHitKPI) targetHit++;
+      stepDistribution[currentPassedStep]++; // นำเข้ากราฟ
+
+      if(currentPassedStep === 5) {
         overallStatus = { text: '🎉 ผ่านครบ 5 Step!', color: '#0CA47C', bg: '#E1F5EE', icon: '🏆', rank: 4 };
         pendingStep = 'all';
       } else {
@@ -301,67 +317,106 @@ function renderCards() {
         }
       }
 
-      if(filterStatus === 'done' && !allPassed) return;
-      if(filterStatus === 'action' && (!hasStarted || allPassed)) return;
+      // ตัดการแสดงผลตาม Filter
+      if(filterDept !== 'all' && dept !== filterDept) return;
+      if(filterStatus === 'done' && !isHitKPI) return;
+      if(filterStatus === 'action' && isHitKPI) return;
 
-      // 🟢 Build Animated Tracker HTML
       let trackerHTML = '<div class="step-tracker">';
       for(let i=1; i<=5; i++) {
          let st = stepsInfo[i];
-         // ใส่ effect กระพริบถ้าเป็น step ที่กำลังค้างอยู่
-         let pulseClass = (pendingStep == i && !allPassed) ? 'pulse-node' : '';
-         
+         let pulseClass = (pendingStep == i && currentPassedStep < 5) ? 'pulse-node' : '';
          trackerHTML += `<div class="step-node ${st.class} ${pulseClass}" title="Step ${i}: ${st.text}">${i}</div>`;
          
          if(i < 5) {
             let lineClass = '';
-            // ถ้า Step นี้ผ่านแล้ว และ Step หน้าก็มีการขยับแล้ว = เส้นเขียว
-            if (st.rank === 4 && stepsInfo[i+1].rank > 0) {
-               lineClass = 'line-pass'; 
-            } 
-            // ถ้า Step นี้ผ่านแล้ว แต่ Step หน้ายังไม่เริ่ม = เส้นแสงวิ่งนำทาง
-            else if (st.rank === 4 && stepsInfo[i+1].rank === 0 && pendingStep == i+1) {
-               lineClass = 'line-anim'; 
-            }
+            if (st.rank === 4 && stepsInfo[i+1].rank > 0) lineClass = 'line-pass'; 
+            else if (st.rank === 4 && stepsInfo[i+1].rank === 0 && pendingStep == i+1) lineClass = 'line-anim'; 
             trackerHTML += `<div class="step-line ${lineClass}"></div>`;
          }
       }
       trackerHTML += '</div>';
 
-      // 🟢 Action Buttons
       let actionButtons = `
-        <a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pendingStep}" class="btn-eval btn-user">
+        <a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pendingStep}" class="btn btn-eval btn-user">
           📝 เข้าประเมิน (พนักงาน) / ดูประวัติ
         </a>
       `;
 
       if(overallStatus.rank === 2) {
-        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pendingStep}" class="btn-eval btn-lead">🔑 เข้าตรวจ (สำหรับหัวหน้า)</a>`;
+        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pendingStep}" class="btn btn-eval btn-lead">🔑 เข้าตรวจ (สำหรับหัวหน้า)</a>`;
       } else if(overallStatus.rank === 3) {
-        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pendingStep}" class="btn-eval btn-exec">🔑 เข้าตรวจ (สำหรับผู้บริหาร)</a>`;
+        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pendingStep}" class="btn btn-eval btn-exec">🔑 เข้าตรวจ (สำหรับผู้บริหาร)</a>`;
       }
+
+      let kpiBadge = isHitKPI ? `<span style="background:var(--teal-600); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">⭐ ผ่าน KPI</span>` : '';
 
       const card = document.createElement('div');
       card.className = 'area-card glass-panel';
       card.innerHTML = `
         <div class="ac-top">
-          <span class="ac-dept">${dept}</span>
+          <div><span class="ac-dept">${dept}</span>${kpiBadge}</div>
           <span class="ac-status" style="background:${overallStatus.bg}; color:${overallStatus.color}">${overallStatus.icon} ${overallStatus.text}</span>
         </div>
         <div class="ac-name">${area}</div>
-        
         ${trackerHTML}
-
-        <div style="margin-top:auto;">
-          ${actionButtons}
-        </div>
+        <div style="margin-top:auto;">${actionButtons}</div>
       `;
       container.appendChild(card);
     });
   });
+
+  // 🟢 อัปเดต Summary Section
+  updateDashboardSummary(totalAreas, targetHit, stepDistribution);
 }
 
-// เริ่มทำงาน
+function updateDashboardSummary(total, hit, dist) {
+  // Update Text
+  const pct = Math.round((hit / total) * 100) || 0;
+  document.getElementById('kpi-percent').textContent = pct + '%';
+  document.getElementById('kpi-text').textContent = `บรรลุเป้าหมายแล้ว ${hit} จากทั้งหมด ${total} พื้นที่`;
+
+  // Update Chart
+  const ctx = document.getElementById('stepChart').getContext('2d');
+  if (chartInstance) chartInstance.destroy();
+  
+  chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['ยังไม่ผ่าน', 'ผ่าน S1', 'ผ่าน S2', 'ผ่าน S3', 'ผ่าน S4', 'ผ่านครบ'],
+      datasets: [{
+        label: 'จำนวนพื้นที่',
+        data: dist,
+        backgroundColor: [
+          'rgba(155, 165, 177, 0.5)',
+          'rgba(58, 134, 255, 0.7)',
+          'rgba(58, 134, 255, 0.7)',
+          'rgba(16, 210, 161, 0.8)',
+          'rgba(16, 210, 161, 0.8)',
+          'rgba(12, 164, 124, 0.9)'
+        ],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(10,37,64,0.9)',
+          titleFont: { family: "'IBM Plex Sans Thai', sans-serif" },
+          bodyFont: { family: "'IBM Plex Sans Thai', sans-serif" }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 5 } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
 loadData();
 </script>
 </body>
