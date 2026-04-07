@@ -217,7 +217,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.55}
       <label>ประเภทผู้ตรวจ</label>
       <select id="f-auditor" onchange="updateAll()">
         <option value="self">ตรวจด้วยตนเอง (เกณฑ์ผ่าน 90%)</option>
-        <option value="mgr">ผู้จัดการตรวจ (เกณฑ์ผ่าน 85%)</option>
+        <option value="lead">หัวหน้าตรวจ (เกณฑ์ผ่าน 85%)</option>
         <option value="exec">ผู้บริหารตรวจ (เกณฑ์ผ่าน 80%)</option>
       </select>
     </div>
@@ -425,7 +425,7 @@ function updateAll() {
   const pct = grandMax > 0 ? Math.round(grand / grandMax * 100) : 0;
   document.getElementById('t-pct').textContent = pct + '%';
   const audType = document.getElementById('f-auditor').value;
-  const thresh  = audType === 'mgr' ? 85 : audType === 'exec' ? 80 : 90;
+  const thresh  = audType === 'lead' ? 85 : audType === 'exec' ? 80 : 90;
   const pass    = pct >= thresh;
   const resEl   = document.getElementById('t-result');
   resEl.textContent = grandMax === 0 ? '—' : (pass ? 'ผ่านเกณฑ์' : 'ไม่ผ่านเกณฑ์');
