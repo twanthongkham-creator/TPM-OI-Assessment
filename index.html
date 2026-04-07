@@ -53,7 +53,7 @@ input[type=text],input[type=password],input[type=date],select,textarea{
 }
 input:focus,select:focus,textarea:focus{border-color:var(--blue-400);box-shadow:0 0 0 3px rgba(55,138,221,0.12)}
 select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235F5E5A'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
-select:disabled {background-color:#f5f5f5; cursor:not-allowed; opacity:1;}
+select:disabled {background-color:#f5f5f5; cursor:not-allowed; opacity:1; color:#555;}
 textarea{resize:vertical;min-height:64px;line-height:1.55}
 input[readonly]{background-color: #f9f9f9; color: #888; cursor: not-allowed;}
 
@@ -120,12 +120,6 @@ input[readonly]{background-color: #f9f9f9; color: #888; cursor: not-allowed;}
 .btn-pri{background:var(--blue-800);border-color:var(--blue-800);color:#fff}
 .btn-pri:hover{background:var(--blue-900)}
 .btn-pri:disabled{opacity:.5;cursor:not-allowed}
-
-/* Legend */
-.legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
-.legend-title{font-size:11px;color:var(--gray-600);font-weight:500}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gray-600)}
-.legend-dot{width:12px;height:12px;border-radius:3px}
 
 /* Toast */
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--teal-600);color:#fff;padding:12px 20px;border-radius:var(--r-md);font-size:13px;font-weight:500;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;z-index:999;max-width:300px}
@@ -543,7 +537,6 @@ function updateAll() {
   });
 }
 
-// 🟢 ฟังก์ชันเปิด-ปิด กล่อง PIN 
 function togglePIN() {
   const type = document.getElementById('f-auditor').value;
   document.getElementById('pin-box').style.display = (type === 'lead' || type === 'exec') ? 'block' : 'none';
@@ -652,11 +645,9 @@ async function handleSubmit() {
   const email = document.getElementById('f-email').value.trim();
   const area = document.getElementById('f-area').value;
   const date = document.getElementById('f-date').value;
-  
   const auditorType = document.getElementById('f-auditor').value;
   const pin = document.getElementById('f-pin').value;
 
-  // 🟢 ตรวจสอบรหัส PIN
   if (auditorType === 'lead' && pin !== '1234') { showToast('รหัส PIN หัวหน้าไม่ถูกต้อง!', '#A32D2D'); return; }
   if (auditorType === 'exec' && pin !== '9999') { showToast('รหัส PIN ผู้บริหารไม่ถูกต้อง!', '#A32D2D'); return; }
 
@@ -758,6 +749,7 @@ function prefillFromURL() {
   const deptParam = urlParams.get('dept');
   const areaParam = urlParams.get('area');
   const roleParam = urlParams.get('role');
+  const stepParam = urlParams.get('step'); // 🟢 รับค่า Step จาก Dashboard
 
   if (deptParam) {
     document.getElementById('f-dept').value = deptParam;
@@ -768,20 +760,37 @@ function prefillFromURL() {
         document.getElementById('f-area').value = areaParam;
         loadHistoryForArea(deptParam, areaParam);
 
+        // 🟢 ล็อก Step ให้ตรงกับหน้า Dashboard
+        if (stepParam && stepParam !== 'all') {
+           const stepDropdown = document.getElementById('f-assess-step');
+           if([...stepDropdown.options].some(o => o.value === stepParam)) {
+               stepDropdown.value = stepParam;
+               toggleStepCards();
+           }
+        }
+
         if (roleParam === 'lead' || roleParam === 'exec') {
            document.getElementById('f-auditor').value = roleParam;
            updateAll();
-           togglePIN(); // แสดงกล่อง PIN ทันที
+           togglePIN();
            
            setTimeout(() => {
              const nameSelect = document.getElementById('f-name');
-             if(nameSelect.options.length > 1) { nameSelect.selectedIndex = 1; autoFillEmail(); }
+             if(nameSelect.options.length > 1) { 
+                nameSelect.selectedIndex = 1; 
+                autoFillEmail(); 
+             }
              
              document.getElementById('f-dept').disabled = true;
              document.getElementById('f-auditor').disabled = true;
-             document.getElementById('f-name').disabled = true;
              document.getElementById('f-area').disabled = true;
-           }, 300);
+             document.getElementById('f-assess-step').disabled = true;
+             
+             // ล็อกการเปลี่ยนชื่อถ้ามีหัวหน้าแค่คนเดียว
+             if(nameSelect.options.length <= 2) {
+                document.getElementById('f-name').disabled = true;
+             }
+           }, 500); // เผื่อเวลาดึงข้อมูลจากเน็ต
         }
       }, 150);
     }
