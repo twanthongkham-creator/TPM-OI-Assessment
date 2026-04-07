@@ -153,6 +153,10 @@ textarea{resize:vertical;min-height:64px;line-height:1.55}
 
 <div class="wrap">
 
+<div class="card" id="history-card" style="display:none; background:#f4f9ff; border-color:var(--blue-400);">
+  <div class="sec-label" style="color:var(--blue-800); border-bottom-color:var(--blue-100);">ประวัติการประเมินที่ผ่านมาของพื้นที่นี้</div>
+  <div id="history-content" style="font-size:13px; min-height:40px;">กำลังดึงข้อมูล...</div>
+</div>
 <div class="card card-accent">
   <div class="sec-label">ข้อมูลทั่วไป</div>
   <div class="grid2">
@@ -190,6 +194,8 @@ textarea{resize:vertical;min-height:64px;line-height:1.55}
     <div class="fg">
       <label>พื้นที่ประเมิน <span class="req">จำเป็น</span></label>
       <select id="f-area"><option value="">-- กรุณาเลือกแผนกก่อน --</option></select>
+      <select id="f-area"><option value="">-- กรุณาเลือกแผนกก่อน --</option></select>
+      <select id="f-area" onchange="checkAreaHistory()"><option value="">-- กรุณาเลือกแผนกก่อน --</option></select>
     </div>
     <div class="fg">
       <label>วันที่ประเมิน <span class="req">จำเป็น</span></label>
@@ -632,7 +638,92 @@ function prefillFromURL() {
 // ... โค้ด Init เดิม เปลี่ยนเป็นแบบนี้ ...
 toggleStepCards();
 document.getElementById('f-date').valueAsDate = new Date();
-prefillFromURL(); // 🟢 เรียกใช้ฟังก์ชันตอนเปิดหน้าเว็บ
+// ================================================================
+// ดึงข้อมูลประวัติเก่าจาก Sheet
+// ================================================================
+async function loadHistoryForArea(dept, area) {
+  const histCard = document.getElementById('history-card');
+  const histContent = document.getElementById('history-content');
+  histCard.style.display = 'block';
+  histContent.innerHTML = '<span class="spinner" style="border-top-color:var(--blue-800)"></span> กำลังโหลดประวัติ...';
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL);
+    const json = await res.json();
+    if (json.status === 'success') {
+      // หากรองเฉพาะแผนกและพื้นที่ที่เรากำลังดูอยู่
+      const records = json.data.filter(r => r['Department'] === dept && r['Area'] === area);
+      
+      if (records.length === 0) {
+        histContent.innerHTML = '<div style="color:var(--gray-600)">ยังไม่เคยมีการประเมินในพื้นที่นี้ เริ่มการประเมินครั้งแรกได้เลยครับ</div>';
+        return;
+      }
+
+      // สร้างตารางโชว์คะแนนเก่า
+      let html = `<table style="width:100%; border-collapse:collapse; margin-top:10px; background:#fff; border:1px solid #eee; text-align:center;">
+        <tr style="background:var(--blue-800); color:#fff; font-size:12px;">
+          <th style="padding:8px;">วันที่ประเมิน</th>
+          <th style="padding:8px;">Step ที่ตรวจ</th>
+          <th style="padding:8px;">คะแนน</th>
+          <th style="padding:8px;">ผลการประเมิน</th>
+          <th style="padding:8px;">สถานะ (จากหัวหน้า)</th>
+        </tr>`;
+      
+      records.forEach(r => {
+        const isPass = (r['PassFail'] === 'ผ่านเกณฑ์' || r['PassFail'] === 'Pass');
+        const color = isPass ? 'var(--teal-600)' : 'var(--red-600)';
+        // จัด Format วันที่ (ถ้ามี)
+        let dateStr = '-';
+        if(r['Timestamp']) {
+            const d = new Date(r['Timestamp']);
+            dateStr = d.toLocaleDateString('th-TH');
+        }
+        
+        html += `
+        <tr style="border-bottom:1px solid #eee;">
+          <td style="padding:8px;">${dateStr}</td>
+          <td style="padding:8px; font-weight:600;">Step ${r['AuditRound']}</td>
+          <td style="padding:8px;">${r['TotalScore']} (${r['TotalPercent']}%)</td>
+          <td style="padding:8px; color:${color}; font-weight:600;">${r['PassFail']}</td>
+          <td style="padding:8px; font-size:11px; color:#555;">${r['Status'] || 'รอ Review'}</td>
+        </tr>`;
+      });
+      html += '</table>';
+      histContent.innerHTML = html;
+    }
+  } catch(e) {
+    histContent.innerHTML = '<div style="color:var(--red-600)">ดึงข้อมูลประวัติล้มเหลว กรุณารีเฟรชหน้าเว็บ</div>';
+  }
+}
+
+function checkAreaHistory() {
+  const dept = document.getElementById('f-dept').value;
+  const area = document.getElementById('f-area').value;
+  if (dept && area) {
+    loadHistoryForArea(dept, area);
+  } else {
+    document.getElementById('history-card').style.display = 'none';
+  }
+}
+
+function prefillFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const deptParam = urlParams.get('dept');
+  const areaParam = urlParams.get('area');
+
+  if (deptParam) {
+    document.getElementById('f-dept').value = deptParam;
+    filterAreas();
+    
+    if (areaParam) {
+      setTimeout(() => {
+        document.getElementById('f-area').value = areaParam;
+        // เมื่อเลือกพื้นที่เสร็จ ให้สั่งดึงประวัติมาโชว์ทันที
+        loadHistoryForArea(deptParam, areaParam);
+      }, 150);
+    }
+  }
+}
 // Init
 toggleStepCards();
 document.getElementById('f-date').valueAsDate = new Date();
