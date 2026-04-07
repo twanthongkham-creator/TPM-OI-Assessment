@@ -11,6 +11,7 @@
   --blue-100:#B5D4F4;--blue-50:#E6F1FB;
   --teal-600:#0F6E56;--teal-50:#E1F5EE;
   --red-800:#791F1F;--red-600:#A32D2D;--red-50:#FCEBEB;
+  --orange-500:#FF9800;--orange-50:#FFF4E5;
   --amber-600:#854F0B;--amber-50:#FAEEDA;
   --gray-900:#2C2C2A;--gray-600:#5F5E5A;--gray-200:#B4B2A9;--gray-50:#F1EFE8;
   --bg:#F7F6F3;--surface:#FFFFFF;
@@ -44,7 +45,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--gray-900);font-siz
 .req{background:var(--red-50);color:var(--red-600);font-size:9px;font-weight:600;padding:2px 5px;border-radius:4px;margin-left:4px}
 
 /* Controls */
-input[type=text],input[type=date],select,textarea{
+input[type=text],input[type=password],input[type=date],select,textarea{
   width:100%;font-family:var(--font);font-size:13px;color:var(--gray-900);
   background:var(--surface);border:0.5px solid var(--border-md);
   border-radius:var(--r-sm);padding:8px 11px;outline:none;
@@ -52,6 +53,7 @@ input[type=text],input[type=date],select,textarea{
 }
 input:focus,select:focus,textarea:focus{border-color:var(--blue-400);box-shadow:0 0 0 3px rgba(55,138,221,0.12)}
 select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235F5E5A'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+select:disabled {background-color:#f5f5f5; cursor:not-allowed; opacity:1;}
 textarea{resize:vertical;min-height:64px;line-height:1.55}
 input[readonly]{background-color: #f9f9f9; color: #888; cursor: not-allowed;}
 
@@ -188,7 +190,7 @@ input[readonly]{background-color: #f9f9f9; color: #888; cursor: not-allowed;}
 
     <div class="fg">
       <label>ประเภทผู้ตรวจ <span class="req">จำเป็น</span></label>
-      <select id="f-auditor" onchange="updateAll(); populateUsers();">
+      <select id="f-auditor" onchange="updateAll(); populateUsers(); togglePIN();">
         <option value="self">ตรวจด้วยตนเอง (เกณฑ์ผ่าน 90%)</option>
         <option value="lead">หัวหน้าตรวจ (เกณฑ์ผ่าน 85%)</option>
         <option value="exec">ผู้บริหารตรวจ (เกณฑ์ผ่าน 80%)</option>
@@ -332,7 +334,6 @@ input[readonly]{background-color: #f9f9f9; color: #888; cursor: not-allowed;}
       <input type="file" id="fu-img" multiple accept="image/*" style="display:none" onchange="addImages(this.files)">
       <div class="chips" id="chip-img"></div>
     </div>
-
     <div>
       <div class="upload-zone" onclick="document.getElementById('fu-doc').click()">
         <div class="upload-icon">
@@ -346,9 +347,17 @@ input[readonly]{background-color: #f9f9f9; color: #888; cursor: not-allowed;}
     </div>
   </div>
 </div>
+
 <div class="card">
   <div class="sec-label">ข้อสังเกต / ข้อเสนอแนะโดยรวม</div>
   <textarea id="overall-note" placeholder="สรุปภาพรวมสิ่งที่ดำเนินการแล้ว จุดที่ต้องปรับปรุง หรือ Kaizen Theme สำหรับรอบถัดไป..." style="min-height:80px"></textarea>
+</div>
+
+<div class="card" id="pin-box" style="display:none; background:#FFF4E5; border-color:var(--orange-500);">
+  <div class="sec-label" style="color:var(--orange-500); border-bottom:none; margin-bottom:5px;">🔑 ยืนยันตัวตนผู้อนุมัติ</div>
+  <div class="fg">
+    <input type="password" id="f-pin" placeholder="กรอกรหัส PIN 4 หลักเพื่อเซ็นอนุมัติ" style="border-color:var(--orange-500); max-width:300px;">
+  </div>
 </div>
 
 <div class="actions">
@@ -366,8 +375,8 @@ input[readonly]{background-color: #f9f9f9; color: #888; cursor: not-allowed;}
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 const scores = {};
-const imageStore = []; // เก็บไฟล์รูปภาพ
-const docStore = [];   // เก็บไฟล์เอกสาร
+const imageStore = []; 
+const docStore = [];   
 
 const areaData = {
   "RW": ["ห้องจัดเก็บวัตถุดิบ 2","ห้องจัดเก็บวัตถุดิบ 3","ห้องจัดเก็บวัตถุดิบ 7","ห้องจัดเก็บ Barcode","คลังจัดเก็บสารเคมี","ห้องจัดเก็บอะไหล่ต่างประเทศ"],
@@ -534,6 +543,12 @@ function updateAll() {
   });
 }
 
+// 🟢 ฟังก์ชันเปิด-ปิด กล่อง PIN 
+function togglePIN() {
+  const type = document.getElementById('f-auditor').value;
+  document.getElementById('pin-box').style.display = (type === 'lead' || type === 'exec') ? 'block' : 'none';
+}
+
 document.querySelectorAll('.score-btns').forEach(grp => {
   const step = grp.dataset.step, q = grp.dataset.q, maxVal = parseInt(grp.dataset.max);
   grp.querySelectorAll('.sb').forEach(btn => {
@@ -548,9 +563,6 @@ document.querySelectorAll('.score-btns').forEach(grp => {
   });
 });
 
-// ================================================================
-// ฟังก์ชันจัดการอัปโหลด (รูปภาพ & เอกสาร)
-// ================================================================
 function addImages(fl) {
   const container = document.getElementById('chip-img');
   Array.from(fl).forEach(f => {
@@ -566,11 +578,7 @@ function removeImage(idx, el) { imageStore[idx] = null; el.parentElement.remove(
 function addDocs(fl) {
   const container = document.getElementById('chip-doc');
   Array.from(fl).forEach(f => {
-    // ป้องกันไฟล์ใหญ่เกิน 5MB
-    if(f.size > 5 * 1024 * 1024) {
-        showToast(`ไฟล์ ${f.name} มีขนาดใหญ่เกิน 5MB`, '#A32D2D', 5000);
-        return;
-    }
+    if(f.size > 5 * 1024 * 1024) { showToast(`ไฟล์ ${f.name} มีขนาดใหญ่เกิน 5MB`, '#A32D2D', 5000); return; }
     const idx = docStore.push(f) - 1;
     const chip = document.createElement('div');
     chip.className = 'chip';
@@ -596,9 +604,10 @@ function resetForm() {
   document.getElementById('f-assess-step').value = 'all';
   document.getElementById('f-auditor').value = 'self';
   document.getElementById('overall-note').value = '';
+  document.getElementById('f-pin').value = '';
+  togglePIN();
   
-  imageStore.length = 0;
-  docStore.length = 0;
+  imageStore.length = 0; docStore.length = 0;
   document.getElementById('chip-img').innerHTML = '';
   document.getElementById('chip-doc').innerHTML = '';
   
@@ -610,7 +619,6 @@ function resetForm() {
   updateAll(); showToast('ล้างข้อมูลแล้ว'); document.getElementById('history-card').style.display = 'none';
 }
 
-// แปลงรูปภาพและลดขนาด
 function compressImage(file, maxWidth = 1024, quality = 0.7) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader(); reader.readAsDataURL(file);
@@ -628,7 +636,6 @@ function compressImage(file, maxWidth = 1024, quality = 0.7) {
   });
 }
 
-// แปลงไฟล์เอกสารเป็น Base64 โดยไม่บีบอัด
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -645,6 +652,13 @@ async function handleSubmit() {
   const email = document.getElementById('f-email').value.trim();
   const area = document.getElementById('f-area').value;
   const date = document.getElementById('f-date').value;
+  
+  const auditorType = document.getElementById('f-auditor').value;
+  const pin = document.getElementById('f-pin').value;
+
+  // 🟢 ตรวจสอบรหัส PIN
+  if (auditorType === 'lead' && pin !== '1234') { showToast('รหัส PIN หัวหน้าไม่ถูกต้อง!', '#A32D2D'); return; }
+  if (auditorType === 'exec' && pin !== '9999') { showToast('รหัส PIN ผู้บริหารไม่ถูกต้อง!', '#A32D2D'); return; }
 
   if (!dept) { showToast('กรุณาเลือกแผนก', '#A32D2D'); return; }
   if (!name || name.includes('--') || name.includes('ไม่พบ')) { showToast('กรุณาเลือกชื่อผู้ประเมิน', '#A32D2D'); return; }
@@ -661,28 +675,24 @@ async function handleSubmit() {
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังบีบอัดรูปและส่งข้อมูล...';
 
   const filesData = [];
-  
-  // 1. จัดการรูปภาพ
   for (const f of imageStore.filter(Boolean)) {
     try {
       const b64 = await compressImage(f, 1024, 0.7);
       filesData.push({ name: f.name, mimeType: 'image/jpeg', data: b64.split(',')[1] });
-    } catch(e) { console.warn('แปลงรูปไม่ได้:', f.name); }
+    } catch(e) {}
   }
-  
-  // 2. จัดการไฟล์เอกสาร
   for (const d of docStore.filter(Boolean)) {
     try {
       const b64 = await fileToBase64(d);
       filesData.push({ name: d.name, mimeType: d.type || 'application/pdf', data: b64.split(',')[1] });
-    } catch(e) { console.warn('แปลงเอกสารไม่ได้:', d.name); }
+    } catch(e) {}
   }
 
   const payload = {
     assessorName: name.replace('(หัวหน้า) ','').replace('(ผู้บริหาร) ',''),
     assessorEmail: email, department: dept, assessmentDate: date, area: area,
     auditRound: document.getElementById('f-assess-step').value,
-    auditorType: document.getElementById('f-auditor').value,
+    auditorType: auditorType,
     step1Score: calcStep(1).total, step2Score: calcStep(2).total, step3Score: calcStep(3).total,
     step4Score: calcStep(4).total, step5Score: calcStep(5).total,
     totalScore: parseInt(document.getElementById('t-total').textContent),
@@ -761,15 +771,17 @@ function prefillFromURL() {
         if (roleParam === 'lead' || roleParam === 'exec') {
            document.getElementById('f-auditor').value = roleParam;
            updateAll();
+           togglePIN(); // แสดงกล่อง PIN ทันที
            
            setTimeout(() => {
              const nameSelect = document.getElementById('f-name');
              if(nameSelect.options.length > 1) { nameSelect.selectedIndex = 1; autoFillEmail(); }
+             
              document.getElementById('f-dept').disabled = true;
              document.getElementById('f-auditor').disabled = true;
              document.getElementById('f-name').disabled = true;
              document.getElementById('f-area').disabled = true;
-           }, 300); // รอรายชื่อโหลดเสร็จ
+           }, 300);
         }
       }, 150);
     }
@@ -780,6 +792,7 @@ function prefillFromURL() {
 // เริ่มต้นทำงาน (Init)
 // ================================================================
 toggleStepCards();
+togglePIN();
 document.getElementById('f-date').valueAsDate = new Date();
 loadMasterData().then(() => prefillFromURL()); 
 </script>
