@@ -8,67 +8,102 @@
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap');
   :root{
     --blue-900:#042C53; --blue-800:#0C447C; --blue-600:#185FA5; --blue-400:#378ADD;
-    --blue-50:#E6F1FB; --teal-600:#0F6E56; --red-600:#A32D2D;
+    --blue-50:#E6F1FB; --teal-600:#0F6E56; --red-600:#A32D2D; --orange-500:#E67C22;
     --gray-900:#2C2C2A; --gray-600:#5F5E5A; --gray-200:#B4B2A9; --gray-50:#F1EFE8;
-    --bg:#F7F6F3; --surface:#FFFFFF; --border:rgba(44,44,42,0.12);
+    --bg:#F7F6F3; --surface:#FFFFFF; --border:rgba(44,44,42,0.15);
     --font:'IBM Plex Sans Thai',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:var(--font);background:var(--bg);color:var(--gray-900);padding-bottom:50px;}
-  .header{background:var(--blue-800);padding:20px;color:#fff;border-bottom:3px solid var(--blue-400);text-align:center;}
-  .wrap{max-width:1000px;margin:20px auto;padding:0 15px;}
+  body{font-family:var(--font);background:var(--bg);color:var(--gray-900);padding-bottom:60px;}
   
-  /* Filter Area */
-  .filter-box{background:var(--surface);padding:15px;border-radius:10px;border:1px solid var(--border);display:flex;gap:15px;margin-bottom:20px;flex-wrap:wrap;}
-  .filter-box select{padding:8px 12px;border:1px solid var(--gray-200);border-radius:6px;font-family:var(--font);flex:1;min-width:200px;}
+  /* Header */
+  .header{background:var(--blue-800);padding:24px 20px;color:#fff;border-bottom:4px solid var(--blue-400);text-align:center;}
+  .header h2{font-size:20px;font-weight:600;margin-bottom:4px;}
+  .header p{font-size:13px;color:var(--blue-100);}
   
-  /* Cards */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:15px;}
-  .area-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:15px;transition:box-shadow 0.2s;}
-  .area-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.05);}
-  .ac-dept{font-size:11px;color:var(--blue-600);font-weight:600;letter-spacing:1px;}
-  .ac-name{font-size:16px;font-weight:600;color:var(--blue-900);margin-bottom:10px;}
+  .wrap{max-width:1050px;margin:24px auto;padding:0 16px;}
   
-  /* Steps Tracker */
-  .step-track{display:flex;gap:4px;margin-bottom:15px;}
-  .st-box{flex:1;text-align:center;font-size:10px;font-weight:600;padding:4px 0;border-radius:4px;background:var(--gray-50);color:var(--gray-200);border:1px solid var(--border);}
-  .st-box.pass{background:#E1F5EE;color:var(--teal-600);border-color:var(--teal-600);}
-  .st-box.fail{background:#FCEBEB;color:var(--red-600);border-color:var(--red-600);}
+  /* Filter & Legend */
+  .controls-area{background:var(--surface);padding:16px;border-radius:12px;border:1px solid var(--border);margin-bottom:24px;display:flex;flex-direction:column;gap:16px;}
+  .filter-box{display:flex;gap:12px;flex-wrap:wrap;}
+  .filter-box select{padding:9px 14px;border:1px solid var(--gray-200);border-radius:8px;font-family:var(--font);font-size:14px;flex:1;min-width:220px;outline:none;}
+  .filter-box select:focus{border-color:var(--blue-400);}
   
-  .btn-eval{display:block;text-align:center;background:var(--blue-800);color:#fff;padding:8px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:500;}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding-top:12px;border-top:1px dashed var(--border);}
+  .lg-title{font-size:12px;font-weight:600;color:var(--gray-600);}
+  .lg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-600);}
+  .lg-dot{width:12px;height:12px;border-radius:3px;}
+  
+  /* Cards Grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+  .area-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;flex-direction:column;transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.02);}
+  .area-card:hover{box-shadow:0 6px 16px rgba(0,0,0,0.08);transform:translateY(-2px);}
+  
+  /* Card Header */
+  .ac-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+  .ac-dept{font-size:12px;color:var(--blue-600);font-weight:700;background:var(--blue-50);padding:3px 8px;border-radius:6px;letter-spacing:0.5px;}
+  .ac-status{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;}
+  
+  .ac-name{font-size:17px;font-weight:600;color:var(--blue-900);margin-bottom:16px;}
+  
+  /* Step Bars */
+  .step-bars{display:flex;gap:6px;margin-bottom:20px;}
+  .s-bar{flex:1;text-align:center;font-size:11px;font-weight:600;padding:6px 0;border-radius:6px;color:#fff;background:var(--gray-200);transition:all 0.3s;}
+  
+  /* Status Colors */
+  .st-none{background:var(--gray-50);color:var(--gray-600);border:1px solid var(--border);}
+  .st-pass{background:var(--teal-600);color:#fff;}
+  .st-wait-lead{background:var(--orange-500);color:#fff;}
+  .st-wait-exec{background:var(--blue-400);color:#fff;}
+  .st-fail{background:var(--red-600);color:#fff;}
+  
+  /* Button */
+  .btn-eval{margin-top:auto;display:block;text-align:center;background:var(--blue-800);color:#fff;padding:10px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:500;transition:background 0.2s;}
   .btn-eval:hover{background:var(--blue-900);}
   
-  #loader{text-align:center;padding:50px;color:var(--gray-600);}
+  #loader{text-align:center;padding:60px 20px;color:var(--gray-600);font-size:15px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+  .spinner{width:24px;height:24px;border:3px solid var(--blue-100);border-top-color:var(--blue-800);border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
 <div class="header">
   <h2>TPM OI — Dashboard & Area Overview</h2>
-  <p style="font-size:12px;color:var(--blue-100)">ติดตามสถานะการประเมิน Office Improvement</p>
+  <p>ติดตามสถานะการประเมิน Office Improvement (Flow: ตนเอง ➔ หัวหน้า ➔ ผู้บริหาร)</p>
 </div>
 
 <div class="wrap">
-  <div class="filter-box">
-    <select id="filter-dept" onchange="renderCards()">
-      <option value="all">ดูทุกแผนก</option>
+  <div class="controls-area">
+    <div class="filter-box">
+      <select id="filter-dept" onchange="renderCards()">
+        <option value="all">🌐 แสดงทุกแผนก / กลุ่ม</option>
       </select>
-    <select id="filter-status" onchange="renderCards()">
-      <option value="all">ทุกสถานะ (ถึง Step ไหนก็ได้)</option>
-      <option value="5">ผ่าน Step 5 แล้ว</option>
-      <option value="none">ยังไม่เคยประเมิน</option>
-    </select>
+      <select id="filter-status" onchange="renderCards()">
+        <option value="all">🔍 แสดงทุกสถานะ (ทั้งหมด)</option>
+        <option value="action">⏳ รอดำเนินการ (รอตรวจ/แก้ไข)</option>
+        <option value="done">✅ ผ่านครบ 5 Step แล้ว</option>
+      </select>
+    </div>
+    
+    <div class="legend">
+      <span class="lg-title">สถานะของแต่ละ Step:</span>
+      <div class="lg-item"><div class="lg-dot st-none"></div>ยังไม่เริ่ม</div>
+      <div class="lg-item"><div class="lg-dot st-wait-lead"></div>รอหัวหน้าตรวจ</div>
+      <div class="lg-item"><div class="lg-dot st-wait-exec"></div>รอผู้บริหารตรวจ</div>
+      <div class="lg-item"><div class="lg-dot st-pass"></div>ผ่านสมบูรณ์</div>
+      <div class="lg-item"><div class="lg-dot st-fail"></div>ไม่ผ่าน/รอแก้ไข</div>
+    </div>
   </div>
 
-  <div id="loader">กำลังโหลดข้อมูลจากระบบ...</div>
+  <div id="loader"><div class="spinner"></div>กำลังเชื่อมต่อและดึงข้อมูลจากระบบ...</div>
   <div class="grid" id="card-container"></div>
 </div>
 
 <script>
-// ⚠️ ใส่ URL ที่ได้จาก Apps Script ของคุณตรงนี้
+// ⚠️ API URL
 const API_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-// ข้อมูล Area ทั้งหมด (ก๊อปปี้มาจาก index.html)
 const areaData = {
   "RW": ["ห้องจัดเก็บวัตถุดิบ 2","ห้องจัดเก็บวัตถุดิบ 3","ห้องจัดเก็บวัตถุดิบ 7","ห้องจัดเก็บ Barcode","คลังจัดเก็บสารเคมี","ห้องจัดเก็บอะไหล่ต่างประเทศ"],
   "QC": ["ห้อง Chemical","ห้อง Packaging","ห้อง Micro"],
@@ -89,7 +124,7 @@ const areaData = {
   "PAYROLL": ["ห้อง Payroll"]
 };
 
-let sheetData = []; // เก็บประวัติการประเมินจาก Sheet
+let sheetData = []; 
 
 async function loadData() {
   try {
@@ -99,9 +134,11 @@ async function loadData() {
       sheetData = json.data;
       initFilters();
       renderCards();
+    } else {
+      throw new Error(json.message);
     }
   } catch(e) {
-    document.getElementById('loader').innerText = "โหลดข้อมูลล้มเหลว กรุณารีเฟรช";
+    document.getElementById('loader').innerHTML = `<span style="color:var(--red-600)">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชหน้าจอ</span>`;
   }
 }
 
@@ -109,9 +146,28 @@ function initFilters() {
   const deptSelect = document.getElementById('filter-dept');
   Object.keys(areaData).forEach(dept => {
     const opt = document.createElement('option');
-    opt.value = dept; opt.innerText = dept;
+    opt.value = dept; opt.innerText = `แผนก ${dept}`;
     deptSelect.appendChild(opt);
   });
+}
+
+// ระบบประมวลผลตรรกะ: ตนเอง -> หัวหน้า -> ผู้บริหาร
+function getStepLogic(stepRecords) {
+  if(stepRecords.length === 0) return { class: 'st-none', text: 'ยังไม่เริ่ม', rank: 0 };
+  
+  // ยึดเอา "การประเมินครั้งล่าสุด" ของ Step นั้นๆ เป็นตัวตัดสินสถานะ
+  const latest = stepRecords[stepRecords.length - 1];
+  const type = latest['AuditorType']; 
+  const isPass = (latest['PassFail'] === 'ผ่านเกณฑ์' || latest['PassFail'] === 'Pass');
+
+  if(!isPass) {
+    let who = type === 'exec' ? 'ผู้บริหาร' : (type === 'lead' || type === 'mgr' ? 'หัวหน้า' : 'ตนเอง');
+    return { class: 'st-fail', text: `ไม่ผ่าน (${who})`, rank: 1 };
+  }
+
+  if(type === 'exec') return { class: 'st-pass', text: 'ผ่านสมบูรณ์', rank: 4 };
+  if(type === 'lead' || type === 'mgr') return { class: 'st-wait-exec', text: 'รอผู้บริหาร', rank: 3 };
+  return { class: 'st-wait-lead', text: 'รอหัวหน้า', rank: 2 };
 }
 
 function renderCards() {
@@ -123,50 +179,70 @@ function renderCards() {
   container.innerHTML = '';
   loader.style.display = 'none';
 
-  // วนลูปสร้าง Card ตาม Area ทั้งหมดที่มีในระบบ
   Object.keys(areaData).forEach(dept => {
-    if(filterDept !== 'all' && dept !== filterDept) return; // กรองแผนก
+    if(filterDept !== 'all' && dept !== filterDept) return;
 
     areaData[dept].forEach(area => {
-      // ค้นหาประวัติของ Area นี้ใน Sheet (เอาอันล่าสุดที่ผ่านเกณฑ์)
       const history = sheetData.filter(r => r['Department'] === dept && r['Area'] === area);
       
-      // หา Step สูงสุดที่ผ่าน (สมมติว่า Header ใน Sheet ชื่อ AuditRound และ PassFail)
-      let stepStatus = { 1: '', 2: '', 3: '', 4: '', 5: '' };
-      let maxStepPassed = 0;
+      let stepsInfo = {};
+      let overallStatus = { text: 'ยังไม่มีการประเมิน', color: 'var(--gray-600)', bg: 'var(--gray-50)', icon: '📌' };
+      let allPassed = true;
+      let hasStarted = false;
 
-      history.forEach(record => {
-        let step = record['AuditRound'];
-        let pf = record['PassFail']; 
-        if(step >= 1 && step <= 5) {
-           if(pf === 'ผ่านเกณฑ์' || pf === 'Pass') {
-             stepStatus[step] = 'pass';
-             if(step > maxStepPassed) maxStepPassed = parseInt(step);
-           } else if(stepStatus[step] !== 'pass') {
-             stepStatus[step] = 'fail'; // ถ้าไม่เคยผ่าน ให้ขึ้นแดง
-           }
+      // ประมวลผลแต่ละ Step 1-5
+      for(let s=1; s<=5; s++) {
+        const sRecords = history.filter(r => r['AuditRound'] == s);
+        stepsInfo[s] = getStepLogic(sRecords);
+        if(stepsInfo[s].rank > 0) hasStarted = true;
+        if(stepsInfo[s].rank !== 4) allPassed = false;
+      }
+
+      // หาสถานะภาพรวมของ Area นี้ (หา Step แรกที่ยังไม่ "ผ่านสมบูรณ์")
+      if(allPassed) {
+        overallStatus = { text: '🎉 ผ่านครบ 5 Step!', color: '#0F6E56', bg: '#E1F5EE', icon: '🏆' };
+      } else {
+        for(let s=1; s<=5; s++) {
+          let st = stepsInfo[s];
+          if(st.rank === 0) {
+            overallStatus = { text: `รอประเมิน Step ${s} (ตนเอง)`, color: 'var(--gray-600)', bg: 'var(--gray-50)', icon: '📝' };
+            break;
+          } else if(st.rank === 1) {
+            overallStatus = { text: `Step ${s}: ${st.text} ➔ ต้องแก้ใหม่`, color: 'var(--red-600)', bg: '#FCEBEB', icon: '⚠️' };
+            break;
+          } else if(st.rank === 2) {
+            overallStatus = { text: `Step ${s}: รอหัวหน้าตรวจ`, color: '#fff', bg: 'var(--orange-500)', icon: '⏳' };
+            break;
+          } else if(st.rank === 3) {
+            overallStatus = { text: `Step ${s}: รอผู้บริหารตรวจ`, color: '#fff', bg: 'var(--blue-400)', icon: '⏳' };
+            break;
+          }
         }
-      });
+      }
 
-      // กรองสถานะ
-      if(filterStatus === '5' && maxStepPassed !== 5) return;
-      if(filterStatus === 'none' && history.length > 0) return;
+      // กรองตาม Dropdown สถานะ
+      if(filterStatus === 'done' && !allPassed) return;
+      if(filterStatus === 'action' && (!hasStarted || allPassed)) return;
 
-      // สร้าง Card
       const card = document.createElement('div');
       card.className = 'area-card';
       card.innerHTML = `
-        <div class="ac-dept">${dept}</div>
-        <div class="ac-name">${area}</div>
-        <div class="step-track">
-          <div class="st-box ${stepStatus[1]}">S1</div>
-          <div class="st-box ${stepStatus[2]}">S2</div>
-          <div class="st-box ${stepStatus[3]}">S3</div>
-          <div class="st-box ${stepStatus[4]}">S4</div>
-          <div class="st-box ${stepStatus[5]}">S5</div>
+        <div class="ac-top">
+          <span class="ac-dept">${dept}</span>
+          <span class="ac-status" style="background:${overallStatus.bg}; color:${overallStatus.color}">${overallStatus.icon} ${overallStatus.text}</span>
         </div>
+        <div class="ac-name">${area}</div>
+        
+        <div class="step-bars">
+          <div class="s-bar ${stepsInfo[1].class}" title="${stepsInfo[1].text}">S1</div>
+          <div class="s-bar ${stepsInfo[2].class}" title="${stepsInfo[2].text}">S2</div>
+          <div class="s-bar ${stepsInfo[3].class}" title="${stepsInfo[3].text}">S3</div>
+          <div class="s-bar ${stepsInfo[4].class}" title="${stepsInfo[4].text}">S4</div>
+          <div class="s-bar ${stepsInfo[5].class}" title="${stepsInfo[5].text}">S5</div>
+        </div>
+
         <a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}" class="btn-eval">
-          ${history.length > 0 ? 'ดูประวัติ / ประเมิน Step ถัดไป' : 'เริ่มประเมินครั้งแรก'}
+          ${hasStarted ? 'จัดการ / ดูประวัติ / ประเมินต่อ' : 'เริ่มประเมินครั้งแรก'}
         </a>
       `;
       container.appendChild(card);
@@ -174,7 +250,6 @@ function renderCards() {
   });
 }
 
-// เริ่มทำงาน
 loadData();
 </script>
 </body>
