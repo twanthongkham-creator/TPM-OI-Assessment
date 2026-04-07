@@ -101,7 +101,7 @@
 </div>
 
 <script>
-// ⚠️ API URL
+// ⚠️ ใส่ API URL (ได้จากการกด Deploy New Version ครั้งล่าสุด)
 const API_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 const areaData = {
@@ -128,7 +128,8 @@ let sheetData = [];
 
 async function loadData() {
   try {
-    const res = await fetch(API_URL);
+    // 💡 ส่ง action=getHistory ไปเพื่อให้ API ไม่ดึงรายชื่อพนักงานกลับมาให้เปลืองเน็ต
+    const res = await fetch(API_URL + '?action=getHistory');
     const json = await res.json();
     if(json.status === 'success') {
       sheetData = json.data;
@@ -224,6 +225,19 @@ function renderCards() {
       if(filterStatus === 'done' && !allPassed) return;
       if(filterStatus === 'action' && (!hasStarted || allPassed)) return;
 
+      // 🟢 แยกปุ่มสำหรับ พนักงานทั่วไป และ ผู้อนุมัติ
+      let actionButtons = `
+        <a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}" class="btn-eval" style="background:var(--gray-600); margin-bottom:6px;">
+          📝 ดูประวัติ / พนักงานเข้าประเมิน
+        </a>
+      `;
+
+      if(overallStatus.rank === 2) {
+        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead" class="btn-eval" style="background:var(--orange-500);">🔑 เข้าตรวจ (สำหรับหัวหน้า)</a>`;
+      } else if(overallStatus.rank === 3) {
+        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec" class="btn-eval" style="background:var(--blue-400);">🔑 เข้าตรวจ (สำหรับผู้บริหาร)</a>`;
+      }
+
       const card = document.createElement('div');
       card.className = 'area-card';
       card.innerHTML = `
@@ -241,15 +255,16 @@ function renderCards() {
           <div class="s-bar ${stepsInfo[5].class}" title="${stepsInfo[5].text}">S5</div>
         </div>
 
-        <a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}" class="btn-eval">
-          ${hasStarted ? 'จัดการ / ดูประวัติ / ประเมินต่อ' : 'เริ่มประเมินครั้งแรก'}
-        </a>
+        <div style="margin-top:auto;">
+          ${actionButtons}
+        </div>
       `;
       container.appendChild(card);
     });
   });
 }
 
+// เริ่มทำงาน
 loadData();
 </script>
 </body>
