@@ -128,7 +128,6 @@ let sheetData = [];
 
 async function loadData() {
   try {
-    // 💡 ส่ง action=getHistory ไปเพื่อให้ API ไม่ดึงรายชื่อพนักงานกลับมาให้เปลืองเน็ต
     const res = await fetch(API_URL + '?action=getHistory');
     const json = await res.json();
     if(json.status === 'success') {
@@ -152,11 +151,9 @@ function initFilters() {
   });
 }
 
-// ระบบประมวลผลตรรกะ: ตนเอง -> หัวหน้า -> ผู้บริหาร
 function getStepLogic(stepRecords) {
   if(stepRecords.length === 0) return { class: 'st-none', text: 'ยังไม่เริ่ม', rank: 0 };
   
-  // ยึดเอา "การประเมินครั้งล่าสุด" ของ Step นั้นๆ เป็นตัวตัดสินสถานะ
   const latest = stepRecords[stepRecords.length - 1];
   const type = latest['AuditorType']; 
   const isPass = (latest['PassFail'] === 'ผ่านเกณฑ์' || latest['PassFail'] === 'Pass');
@@ -187,11 +184,11 @@ function renderCards() {
       const history = sheetData.filter(r => r['Department'] === dept && r['Area'] === area);
       
       let stepsInfo = {};
-      let overallStatus = { text: 'ยังไม่มีการประเมิน', color: 'var(--gray-600)', bg: 'var(--gray-50)', icon: '📌' };
+      let overallStatus = { text: 'ยังไม่มีการประเมิน', color: 'var(--gray-600)', bg: 'var(--gray-50)', icon: '📌', rank: 0 };
       let allPassed = true;
       let hasStarted = false;
+      let pendingStep = '1'; // 🟢 เก็บค่าว่ากำลังค้างอยู่ที่ Step ไหน
 
-      // ประมวลผลแต่ละ Step 1-5
       for(let s=1; s<=5; s++) {
         const sRecords = history.filter(r => r['AuditRound'] == s);
         stepsInfo[s] = getStepLogic(sRecords);
@@ -199,43 +196,46 @@ function renderCards() {
         if(stepsInfo[s].rank !== 4) allPassed = false;
       }
 
-      // หาสถานะภาพรวมของ Area นี้ (หา Step แรกที่ยังไม่ "ผ่านสมบูรณ์")
       if(allPassed) {
-        overallStatus = { text: '🎉 ผ่านครบ 5 Step!', color: '#0F6E56', bg: '#E1F5EE', icon: '🏆' };
+        overallStatus = { text: '🎉 ผ่านครบ 5 Step!', color: '#0F6E56', bg: '#E1F5EE', icon: '🏆', rank: 4 };
+        pendingStep = 'all';
       } else {
         for(let s=1; s<=5; s++) {
           let st = stepsInfo[s];
           if(st.rank === 0) {
-            overallStatus = { text: `รอประเมิน Step ${s} (ตนเอง)`, color: 'var(--gray-600)', bg: 'var(--gray-50)', icon: '📝' };
+            overallStatus = { text: `รอประเมิน Step ${s} (ตนเอง)`, color: 'var(--gray-600)', bg: 'var(--gray-50)', icon: '📝', rank: 0 };
+            pendingStep = s;
             break;
           } else if(st.rank === 1) {
-            overallStatus = { text: `Step ${s}: ${st.text} ➔ ต้องแก้ใหม่`, color: 'var(--red-600)', bg: '#FCEBEB', icon: '⚠️' };
+            overallStatus = { text: `Step ${s}: ${st.text} ➔ ต้องแก้ใหม่`, color: 'var(--red-600)', bg: '#FCEBEB', icon: '⚠️', rank: 1 };
+            pendingStep = s;
             break;
           } else if(st.rank === 2) {
-            overallStatus = { text: `Step ${s}: รอหัวหน้าตรวจ`, color: '#fff', bg: 'var(--orange-500)', icon: '⏳' };
+            overallStatus = { text: `Step ${s}: รอหัวหน้าตรวจ`, color: '#fff', bg: 'var(--orange-500)', icon: '⏳', rank: 2 };
+            pendingStep = s;
             break;
           } else if(st.rank === 3) {
-            overallStatus = { text: `Step ${s}: รอผู้บริหารตรวจ`, color: '#fff', bg: 'var(--blue-400)', icon: '⏳' };
+            overallStatus = { text: `Step ${s}: รอผู้บริหารตรวจ`, color: '#fff', bg: 'var(--blue-400)', icon: '⏳', rank: 3 };
+            pendingStep = s;
             break;
           }
         }
       }
 
-      // กรองตาม Dropdown สถานะ
       if(filterStatus === 'done' && !allPassed) return;
       if(filterStatus === 'action' && (!hasStarted || allPassed)) return;
 
-      // 🟢 แยกปุ่มสำหรับ พนักงานทั่วไป และ ผู้อนุมัติ
+      // 🟢 แยกปุ่ม และส่ง Parameter "step" แนบไปด้วย
       let actionButtons = `
-        <a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}" class="btn-eval" style="background:var(--gray-600); margin-bottom:6px;">
-          📝 ดูประวัติ / พนักงานเข้าประเมิน
+        <a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pendingStep}" class="btn-eval" style="background:var(--gray-600); margin-bottom:6px;">
+          📝 เข้าประเมิน (พนักงาน) / ดูประวัติ
         </a>
       `;
 
       if(overallStatus.rank === 2) {
-        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead" class="btn-eval" style="background:var(--orange-500);">🔑 เข้าตรวจ (สำหรับหัวหน้า)</a>`;
+        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pendingStep}" class="btn-eval" style="background:var(--orange-500);">🔑 เข้าตรวจ (สำหรับหัวหน้า)</a>`;
       } else if(overallStatus.rank === 3) {
-        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec" class="btn-eval" style="background:var(--blue-400);">🔑 เข้าตรวจ (สำหรับผู้บริหาร)</a>`;
+        actionButtons += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pendingStep}" class="btn-eval" style="background:var(--blue-400);">🔑 เข้าตรวจ (สำหรับผู้บริหาร)</a>`;
       }
 
       const card = document.createElement('div');
@@ -264,7 +264,6 @@ function renderCards() {
   });
 }
 
-// เริ่มทำงาน
 loadData();
 </script>
 </body>
