@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TPM OI — Dashboard ภาพรวม</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap');
+  :root{
+    --blue-900:#042C53; --blue-800:#0C447C; --blue-600:#185FA5; --blue-400:#378ADD;
+    --blue-50:#E6F1FB; --teal-600:#0F6E56; --red-600:#A32D2D;
+    --gray-900:#2C2C2A; --gray-600:#5F5E5A; --gray-200:#B4B2A9; --gray-50:#F1EFE8;
+    --bg:#F7F6F3; --surface:#FFFFFF; --border:rgba(44,44,42,0.12);
+    --font:'IBM Plex Sans Thai',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--bg);color:var(--gray-900);padding-bottom:50px;}
+  .header{background:var(--blue-800);padding:20px;color:#fff;border-bottom:3px solid var(--blue-400);text-align:center;}
+  .wrap{max-width:1000px;margin:20px auto;padding:0 15px;}
+  
+  /* Filter Area */
+  .filter-box{background:var(--surface);padding:15px;border-radius:10px;border:1px solid var(--border);display:flex;gap:15px;margin-bottom:20px;flex-wrap:wrap;}
+  .filter-box select{padding:8px 12px;border:1px solid var(--gray-200);border-radius:6px;font-family:var(--font);flex:1;min-width:200px;}
+  
+  /* Cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:15px;}
+  .area-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:15px;transition:box-shadow 0.2s;}
+  .area-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+  .ac-dept{font-size:11px;color:var(--blue-600);font-weight:600;letter-spacing:1px;}
+  .ac-name{font-size:16px;font-weight:600;color:var(--blue-900);margin-bottom:10px;}
+  
+  /* Steps Tracker */
+  .step-track{display:flex;gap:4px;margin-bottom:15px;}
+  .st-box{flex:1;text-align:center;font-size:10px;font-weight:600;padding:4px 0;border-radius:4px;background:var(--gray-50);color:var(--gray-200);border:1px solid var(--border);}
+  .st-box.pass{background:#E1F5EE;color:var(--teal-600);border-color:var(--teal-600);}
+  .st-box.fail{background:#FCEBEB;color:var(--red-600);border-color:var(--red-600);}
+  
+  .btn-eval{display:block;text-align:center;background:var(--blue-800);color:#fff;padding:8px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:500;}
+  .btn-eval:hover{background:var(--blue-900);}
+  
+  #loader{text-align:center;padding:50px;color:var(--gray-600);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h2>TPM OI — Dashboard & Area Overview</h2>
+  <p style="font-size:12px;color:var(--blue-100)">ติดตามสถานะการประเมิน Office Improvement</p>
+</div>
+
+<div class="wrap">
+  <div class="filter-box">
+    <select id="filter-dept" onchange="renderCards()">
+      <option value="all">ดูทุกแผนก</option>
+      </select>
+    <select id="filter-status" onchange="renderCards()">
+      <option value="all">ทุกสถานะ (ถึง Step ไหนก็ได้)</option>
+      <option value="5">ผ่าน Step 5 แล้ว</option>
+      <option value="none">ยังไม่เคยประเมิน</option>
+    </select>
+  </div>
+
+  <div id="loader">กำลังโหลดข้อมูลจากระบบ...</div>
+  <div class="grid" id="card-container"></div>
+</div>
+
+<script>
+// ⚠️ ใส่ URL ที่ได้จาก Apps Script ของคุณตรงนี้
+const API_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
+
+// ข้อมูล Area ทั้งหมด (ก๊อปปี้มาจาก index.html)
+const areaData = {
+  "RW": ["ห้องจัดเก็บวัตถุดิบ 2","ห้องจัดเก็บวัตถุดิบ 3","ห้องจัดเก็บวัตถุดิบ 7","ห้องจัดเก็บ Barcode","คลังจัดเก็บสารเคมี","ห้องจัดเก็บอะไหล่ต่างประเทศ"],
+  "QC": ["ห้อง Chemical","ห้อง Packaging","ห้อง Micro"],
+  "WH.P": ["ออฟฟิศคลังสินค้า"],
+  "MT": ["ห้องเก็บอะไหล่หน่วย PM ไฟฟ้า","ห้องเก็บอะไหล่หน่วย Utility","ห้องจัดเก็บอะไหล่ต่างประเทศ"],
+  "AC.P": ["ห้องหัวหน้าแผนก","ห้องเก็บกล่องเอกสาร","ห้องประชุมแผนกบัญชี"],
+  "LG.P": ["ห้องลำเลียง"],
+  "SE.P": ["ออฟฟิศ"],
+  "PD": ["ห้องประชุมห้องผสม","ห้องประชุมแผนกผลิต"],
+  "HC.P": ["ห้องพยาบาล","ห้องประชุมแผนก"],
+  "PU.P": ["ห้องจัดซื้อ"],
+  "IT.P": ["ห้อง Server","ออฟฟิศ IT"],
+  "EN": ["ห้องวิศวกรรม","ห้องประชุม EN"],
+  "PE": ["ห้องออกแบบบรรจุภัณฑ์"],
+  "PN": ["ห้องวางแผน"],
+  "SE": ["ออฟฟิศความปลอดภัย"],
+  "PIS": ["ห้อง PIS"],
+  "PAYROLL": ["ห้อง Payroll"]
+};
+
+let sheetData = []; // เก็บประวัติการประเมินจาก Sheet
+
+async function loadData() {
+  try {
+    const res = await fetch(API_URL);
+    const json = await res.json();
+    if(json.status === 'success') {
+      sheetData = json.data;
+      initFilters();
+      renderCards();
+    }
+  } catch(e) {
+    document.getElementById('loader').innerText = "โหลดข้อมูลล้มเหลว กรุณารีเฟรช";
+  }
+}
+
+function initFilters() {
+  const deptSelect = document.getElementById('filter-dept');
+  Object.keys(areaData).forEach(dept => {
+    const opt = document.createElement('option');
+    opt.value = dept; opt.innerText = dept;
+    deptSelect.appendChild(opt);
+  });
+}
+
+function renderCards() {
+  const container = document.getElementById('card-container');
+  const loader = document.getElementById('loader');
+  const filterDept = document.getElementById('filter-dept').value;
+  const filterStatus = document.getElementById('filter-status').value;
+  
+  container.innerHTML = '';
+  loader.style.display = 'none';
+
+  // วนลูปสร้าง Card ตาม Area ทั้งหมดที่มีในระบบ
+  Object.keys(areaData).forEach(dept => {
+    if(filterDept !== 'all' && dept !== filterDept) return; // กรองแผนก
+
+    areaData[dept].forEach(area => {
+      // ค้นหาประวัติของ Area นี้ใน Sheet (เอาอันล่าสุดที่ผ่านเกณฑ์)
+      const history = sheetData.filter(r => r['Department'] === dept && r['Area'] === area);
+      
+      // หา Step สูงสุดที่ผ่าน (สมมติว่า Header ใน Sheet ชื่อ AuditRound และ PassFail)
+      let stepStatus = { 1: '', 2: '', 3: '', 4: '', 5: '' };
+      let maxStepPassed = 0;
+
+      history.forEach(record => {
+        let step = record['AuditRound'];
+        let pf = record['PassFail']; 
+        if(step >= 1 && step <= 5) {
+           if(pf === 'ผ่านเกณฑ์' || pf === 'Pass') {
+             stepStatus[step] = 'pass';
+             if(step > maxStepPassed) maxStepPassed = parseInt(step);
+           } else if(stepStatus[step] !== 'pass') {
+             stepStatus[step] = 'fail'; // ถ้าไม่เคยผ่าน ให้ขึ้นแดง
+           }
+        }
+      });
+
+      // กรองสถานะ
+      if(filterStatus === '5' && maxStepPassed !== 5) return;
+      if(filterStatus === 'none' && history.length > 0) return;
+
+      // สร้าง Card
+      const card = document.createElement('div');
+      card.className = 'area-card';
+      card.innerHTML = `
+        <div class="ac-dept">${dept}</div>
+        <div class="ac-name">${area}</div>
+        <div class="step-track">
+          <div class="st-box ${stepStatus[1]}">S1</div>
+          <div class="st-box ${stepStatus[2]}">S2</div>
+          <div class="st-box ${stepStatus[3]}">S3</div>
+          <div class="st-box ${stepStatus[4]}">S4</div>
+          <div class="st-box ${stepStatus[5]}">S5</div>
+        </div>
+        <a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}" class="btn-eval">
+          ${history.length > 0 ? 'ดูประวัติ / ประเมิน Step ถัดไป' : 'เริ่มประเมินครั้งแรก'}
+        </a>
+      `;
+      container.appendChild(card);
+    });
+  });
+}
+
+// เริ่มทำงาน
+loadData();
+</script>
+</body>
+</html>
