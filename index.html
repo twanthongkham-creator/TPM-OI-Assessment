@@ -18,7 +18,6 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 
-/* พื้นหลังแบบ iOS Mesh Gradient */
 body{
   font-family:var(--font);
   background-color:#E8EEF2;
@@ -33,7 +32,6 @@ body{
   min-height:100vh;
 }
 
-/* Glassmorphism Card */
 .card, .step-card, .page-header {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(24px);
@@ -47,15 +45,22 @@ body{
 .page-header{
   position:sticky; top:10px; z-index:100;
   margin: 10px auto; max-width: 860px; padding: 16px 24px;
-  border-bottom: none;
+  border-bottom: none; display: flex; align-items: center; justify-content: space-between; flex-wrap:wrap; gap:16px;
 }
-.page-header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .page-title{font-size:18px;font-weight:700;color:var(--blue-900); letter-spacing: -0.3px;}
 .page-sub{font-size:12px;color:var(--gray-600);margin-top:2px; font-weight: 500;}
 
-/* Step Dots */
-.step-indicator{display:flex;gap:8px}
-.step-dot{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.6);border:1.5px solid rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--gray-400);box-shadow:0 2px 5px rgba(0,0,0,0.03);transition:all .3s ease;}
+/* 🟢 ปุ่มไป Dashboard */
+.btn-nav-top {
+  display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px;
+  background: linear-gradient(135deg, #fff, #f0f4f8); border: 1px solid rgba(255,255,255,0.9);
+  color:var(--blue-800); font-size:12px; font-weight:700; text-decoration:none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition:all 0.2s;
+}
+.btn-nav-top:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.08); background:#fff; }
+
+.step-indicator{display:flex;gap:8px; margin-top:8px;}
+.step-dot{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.6);border:1.5px solid rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--gray-400);box-shadow:0 2px 5px rgba(0,0,0,0.03);transition:all .3s ease;}
 .step-dot.active{background:var(--blue-400);border-color:var(--blue-400);color:#fff;box-shadow:0 4px 12px rgba(58,134,255,0.3);}
 .step-dot.done{background:var(--teal-600);border-color:var(--teal-600);color:#fff;box-shadow:0 4px 12px rgba(12,164,124,0.3);}
 
@@ -194,13 +199,16 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
     <div>
       <div class="page-title">TPM — Office Improvement (OI) Assessment</div>
       <div class="page-sub">แบบฟอร์มประเมินพื้นที่ตามมาตรฐาน AM Step 1–5</div>
+      <div class="step-indicator">
+        <div class="step-dot" id="dot1">1</div>
+        <div class="step-dot" id="dot2">2</div>
+        <div class="step-dot" id="dot3">3</div>
+        <div class="step-dot" id="dot4">4</div>
+        <div class="step-dot" id="dot5">5</div>
+      </div>
     </div>
-    <div class="step-indicator">
-      <div class="step-dot" id="dot1">1</div>
-      <div class="step-dot" id="dot2">2</div>
-      <div class="step-dot" id="dot3">3</div>
-      <div class="step-dot" id="dot4">4</div>
-      <div class="step-dot" id="dot5">5</div>
+    <div>
+      <a href="dashboard.html" class="btn-nav-top">📊 เปิดดู Dashboard (ภาพรวม)</a>
     </div>
   </div>
 </div>
@@ -222,13 +230,9 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
         <option value="MT">MT — แผนกวิศวกรรมและซ่อมบำรุง</option>
         <option value="HC.P">HC.P — แผนกทรัพยากรบุคคล</option>
         <option value="PU.P">PU.P — แผนกจัดซื้อโรงงาน</option>
-        <option value="IT.P">IT.P — ฝ่ายเทคโนโลยีสารสนเทศ</option>
-        <option value="EN">EN — แผนกวิศวกรรม</option>
-        <option value="PE">PE — แผนกวิศวกรรมบรรจุภัณฑ์</option>
         <option value="PN">PN — แผนกวางแผนการผลิต</option>
         <option value="WH.P">WH.P — แผนกคลังสินค้าโรงงาน</option>
         <option value="LG.P">LG.P — แผนกโลจิสติกส์โรงงาน</option>
-        <option value="SE">SE — ส่วนงานความปลอดภัย</option>
         <option value="SE.P">SE.P — หน่วยงานความปลอดภัย</option>
         <option value="RW">RW — แผนกคลังวัตถุดิบ บรรจุภัณฑ์และอะไหล่</option>
         <option value="PD">PD — แผนกผลิต</option>
@@ -418,9 +422,6 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
 <div class="toast" id="toast"></div>
 
 <script>
-// ================================================================
-// ⚠️ ใส่ลิงก์ Web App URL (ตัวใหม่ล่าสุดที่คุณเพิ่ง Deploy) ตรงนี้
-// ================================================================
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 const scores = {};
@@ -625,7 +626,7 @@ function removeImage(idx, el) { imageStore[idx] = null; el.parentElement.remove(
 function addDocs(fl) {
   const container = document.getElementById('chip-doc');
   Array.from(fl).forEach(f => {
-    if(f.size > 5 * 1024 * 1024) { showToast(`ไฟล์ ${f.name} มีขนาดใหญ่เกิน 5MB`, '#A32D2D', 5000); return; }
+    if(f.size > 5 * 1024 * 1024) { showToast(`ไฟล์ ${f.name} มีขนาดใหญ่เกิน 5MB`, '#D93838', 5000); return; }
     const idx = docStore.push(f) - 1;
     const chip = document.createElement('div');
     chip.className = 'chip';
@@ -652,6 +653,14 @@ function resetForm() {
   document.getElementById('f-auditor').value = 'self';
   document.getElementById('overall-note').value = '';
   document.getElementById('f-pin').value = '';
+  
+  // ปลดล็อกการกรอกข้อมูล
+  document.getElementById('f-dept').disabled = false;
+  document.getElementById('f-auditor').disabled = false;
+  document.getElementById('f-name').disabled = false;
+  document.getElementById('f-area').disabled = false;
+  document.getElementById('f-assess-step').disabled = false;
+
   togglePIN();
   
   imageStore.length = 0; docStore.length = 0;
@@ -808,7 +817,7 @@ function prefillFromURL() {
   if (deptParam) {
     document.getElementById('f-dept').value = deptParam;
     filterAreas();
-    populateUsers(); // 🟢 สำคัญมาก: โหลดรายชื่อทันทีที่รู้แผนก
+    populateUsers(); 
     
     if (areaParam) {
       setTimeout(() => {
@@ -827,7 +836,7 @@ function prefillFromURL() {
            document.getElementById('f-auditor').value = roleParam;
            updateAll();
            togglePIN();
-           populateUsers(); // 🟢 สำคัญมาก: โหลดรายชื่อหัวหน้า/ผู้บริหารทันที
+           populateUsers(); 
            
            setTimeout(() => {
              const nameSelect = document.getElementById('f-name');
@@ -838,11 +847,12 @@ function prefillFromURL() {
              
              document.getElementById('f-dept').disabled = true;
              document.getElementById('f-auditor').disabled = true;
-             document.getElementById('f-name').disabled = false; // 🟢 ปลดล็อกให้หัวหน้าเปลี่ยนชื่อได้
+             // 🟢 ปลดล็อกให้ผู้อนุมัติสามารถกดเลือกรายชื่อหัวหน้าคนอื่นในแผนกได้ (ถ้ามี)
+             document.getElementById('f-name').disabled = false; 
              document.getElementById('f-area').disabled = true;
              document.getElementById('f-assess-step').disabled = true;
              
-           }, 100); 
+           }, 500); 
         }
       }, 150);
     }
