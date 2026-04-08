@@ -46,27 +46,38 @@ body{
 .fg label{font-size:12px;font-weight:600;color:var(--gray-900); padding-left: 4px;}
 .req{background:var(--red-400);color:#fff;font-size:9px;font-weight:600;padding:2px 6px;border-radius:6px;margin-left:4px; box-shadow:0 2px 4px rgba(217,56,56,0.2);}
 
-input[type=text],input[type=password],input[type=date],select,textarea{ width:100%;font-family:var(--font);font-size:14px;color:var(--blue-900); background: rgba(255, 255, 255, 0.7); border: 1.5px solid rgba(255, 255, 255, 0.9); border-radius: 12px;padding:10px 14px;outline:none; box-shadow: inset 0 2px 4px rgba(245,124,0,0.02); transition:all .2s ease; font-weight: 500; }
-input:focus,select:focus,textarea:focus{ background: #fff; border-color:var(--orange-400); box-shadow: 0 0 0 4px rgba(245,124,0,0.15), inset 0 2px 4px rgba(0,0,0,0.02); }
+/* Adjusted Input Styling for clarity */
+input[type=text],input[type=password],input[type=date],select,textarea{ 
+    width:100%;font-family:var(--font);font-size:14px;color:var(--blue-900); 
+    background: #fff; /* Solid white background for clear visibility */
+    border: 1.5px solid var(--gray-200); /* Noticeable default border */
+    border-radius: 12px;padding:10px 14px;outline:none; 
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); /* Subtle inner shadow for depth */
+    transition:all .2s ease; font-weight: 500; 
+}
+input:focus,select:focus,textarea:focus{ 
+    background: #fff; border-color:var(--orange-400); 
+    box-shadow: 0 0 0 4px rgba(245,124,0,0.15), inset 0 2px 4px rgba(0,0,0,0.02); 
+}
 select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%23505A64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
 textarea{resize:vertical;min-height:100px;line-height:1.6;}
-input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--orange-500); cursor:not-allowed; border-color:rgba(245,124,0,0.3); opacity:1;}
+input[readonly], select:disabled{background:var(--gray-50); color:var(--gray-600); cursor:not-allowed; border-color:var(--gray-200); opacity:1;}
 
-.upload-zone{background:rgba(255,255,255,0.5); border:2px dashed rgba(245,124,0,0.2);border-radius:16px;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:all .2s ease; height: 100%; display: flex; flex-direction: column; justify-content: center;}
-.upload-zone:hover{background:rgba(255,255,255,0.9);border-color:var(--orange-400);box-shadow:0 4px 16px rgba(245,124,0,0.1);}
+.upload-zone{background:#fff; border:2px dashed var(--gray-400);border-radius:16px;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:all .2s ease; height: 100%; display: flex; flex-direction: column; justify-content: center;}
+.upload-zone:hover{background:var(--orange-50);border-color:var(--orange-400);box-shadow:0 4px 16px rgba(245,124,0,0.1);}
 .upload-icon{width:48px;height:48px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center; background:var(--orange-50); border-radius:50%; box-shadow:0 2px 8px rgba(0,0,0,0.05); color:var(--orange-500);}
 .upload-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .upload-text{font-size:14px;font-weight:600;color:var(--blue-900)}
 .upload-hint{font-size:11px;font-weight:500;color:var(--gray-400);margin-top:4px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.chip{background:var(--surface);border:1px solid rgba(0,0,0,0.05);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:500;color:var(--orange-500);display:flex;align-items:center;gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.03);}
+.chip{background:#fff;border:1px solid rgba(0,0,0,0.05);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:500;color:var(--orange-500);display:flex;align-items:center;gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.03);}
 .chip-x{cursor:pointer;color:var(--red-400);font-size:16px;line-height:1; font-weight:bold; transition:all .2s;}
 .chip-x:hover{color:var(--red-600);transform:scale(1.1);}
 
 .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:2rem}
 .btn{font-family:var(--font);font-size:14px;font-weight:600;padding:12px 28px;border-radius:12px;cursor:pointer;transition:all .2s ease; border:none; box-shadow:0 4px 12px rgba(0,0,0,0.05);}
-.btn-reset{background:rgba(255,255,255,0.8);color:var(--gray-600); border:1px solid rgba(255,255,255,0.9);}
-.btn-reset:hover{background:#fff; transform:translateY(-1px);}
+.btn-reset{background:#fff;color:var(--gray-600); border:1px solid var(--gray-200);}
+.btn-reset:hover{background:var(--gray-50); transform:translateY(-1px);}
 .btn-pri{background:linear-gradient(135deg, var(--orange-400), var(--orange-500));color:#fff;box-shadow:0 4px 16px rgba(245,124,0,0.3);}
 .btn-pri:hover{background:linear-gradient(135deg, #FFA726, #E65100); transform:translateY(-2px); box-shadow:0 6px 20px rgba(245,124,0,0.4);}
 .btn-pri:disabled{opacity:.6;cursor:not-allowed;transform:none;}
@@ -84,24 +95,24 @@ input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--o
 <div class="page-header card">
   <div class="page-header-inner">
     <div>
-      <div class="page-title"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg> OPL Center — One Point Lesson</div>
+      <div class="page-title">OPL Center — One Point Lesson</div>
       <div class="page-sub">แบบฟอร์มสร้างบทเรียนจุดเดียว สำหรับขยายผลความรู้ในองค์กร</div>
     </div>
-    <div><a href="home.html" class="btn-nav-top">🏠 กลับเมนูหลัก (Home)</a></div>
+    <div><a href="home.html" class="btn-nav-top">กลับเมนูหลัก (Home)</a></div>
   </div>
 </div>
 
 <div class="wrap">
 
 <div class="card card-accent">
-  <div class="sec-label">📌 ข้อมูลผู้จัดทำและรหัสเอกสาร (Primary Info)</div>
+  <div class="sec-label">ข้อมูลผู้จัดทำและรหัสเอกสาร (Primary Info)</div>
   
   <div class="grid2" style="margin-bottom:16px;">
     <div class="fg">
       <label>บทบาท / ผู้ดำเนินการ <span class="req">จำเป็น</span></label>
       <select id="f-role" onchange="togglePIN(); populateUsers();">
-        <option value="self">👨‍🔧 พนักงาน (ผู้สร้าง/ผู้จัดทำ)</option>
-        <option value="lead">👔 หัวหน้าแผนก (ผู้อนุมัติ)</option>
+        <option value="self">พนักงาน (ผู้สร้าง/ผู้จัดทำ)</option>
+        <option value="lead">หัวหน้าแผนก (ผู้อนุมัติ)</option>
       </select>
     </div>
     <div class="fg">
@@ -158,7 +169,7 @@ input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--o
 </div>
 
 <div class="card">
-  <div class="sec-label">💡 เนื้อหา OPL (Content)</div>
+  <div class="sec-label">เนื้อหา OPL (Content)</div>
   <div class="fg" style="margin-bottom:16px;">
     <label>ชื่อเรื่อง (Title) <span class="req">จำเป็น</span></label>
     <input type="text" id="f-title" placeholder="ตั้งชื่อเรื่องให้กระชับ เข้าใจง่าย">
@@ -194,7 +205,7 @@ input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--o
 </div>
 
 <div class="card">
-  <div class="sec-label">📸 ภาพประกอบ & เอกสาร (Attachments)</div>
+  <div class="sec-label">ภาพประกอบ & เอกสาร (Attachments)</div>
   <div class="grid2">
     <div>
       <div class="upload-zone" onclick="document.getElementById('fu-img').click()">
@@ -218,7 +229,7 @@ input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--o
 </div>
 
 <div class="card">
-  <div class="sec-label">👨‍🏫 การสอนและประเมินผล (Training & Result)</div>
+  <div class="sec-label">การสอนและประเมินผล (Training & Result)</div>
   <div class="grid2" style="margin-bottom:16px;">
     <div class="fg">
       <label>วันที่สอน <span class="req">จำเป็น</span></label>
@@ -228,8 +239,8 @@ input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--o
       <label>ผลการ OPL <span class="req">จำเป็น</span></label>
       <select id="f-result" style="font-weight:bold; color:var(--blue-800);">
         <option value="">-- เลือกผลประเมิน --</option>
-        <option value="ผ่าน">✅ ผ่าน (Pass)</option>
-        <option value="ไม่ผ่าน">❌ ไม่ผ่าน (Fail)</option>
+        <option value="ผ่าน">ผ่าน (Pass)</option>
+        <option value="ไม่ผ่าน">ไม่ผ่าน (Fail)</option>
       </select>
     </div>
   </div>
@@ -247,7 +258,7 @@ input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--o
 </div>
 
 <div class="card" id="pin-box" style="display:none; background:var(--orange-50); border: 1px solid var(--orange-400);">
-  <div class="sec-label" style="color:var(--orange-500); border-bottom:none; margin-bottom:5px;">🔑 ยืนยันตัวตนผู้อนุมัติ OPL</div>
+  <div class="sec-label" style="color:var(--orange-500); border-bottom:none; margin-bottom:5px;">ยืนยันตัวตนผู้อนุมัติ OPL</div>
   <div class="fg">
     <input type="password" id="f-pin" placeholder="กรอกรหัส PIN 4 หลักเพื่อเซ็นอนุมัติ" style="border-color:var(--orange-400); max-width:300px; background:#fff;">
   </div>
@@ -356,7 +367,7 @@ function populateUsers() {
     if (approverData[dept] && approverData[dept].lead && approverData[dept].lead.name) {
       const u = approverData[dept].lead;
       const opt = document.createElement('option');
-      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = `(ผู้อนุมัติ) ${u.name}`;
+      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = `${u.name}`;
       nameSelect.appendChild(opt);
     }
   }
@@ -539,13 +550,13 @@ async function handleSubmit() {
     instructor: document.getElementById('f-instructor').value.trim(),
     learners: document.getElementById('f-learners').value.trim(),
     result: result,
-    assessorName: name.replace('(ผู้อนุมัติ) ',''),
+    assessorName: name,
     files: filesData
   };
 
   try {
     await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
-    showToast(role === 'lead' ? '✅ อนุมัติ OPL สำเร็จ!' : 'บันทึก OPL และส่งให้หัวหน้าแล้ว!', '#0CA47C', 4000);
+    showToast(role === 'lead' ? 'อนุมัติ OPL สำเร็จ!' : 'บันทึก OPL และส่งให้หัวหน้าแล้ว!', '#0CA47C', 4000);
     setTimeout(() => { window.location.href = 'home.html'; }, 3000);
   } catch (err) {
     showToast('เกิดข้อผิดพลาด: ' + err.message, '#D93838', 5000);
