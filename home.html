@@ -6,245 +6,232 @@
 <title>OI Center — Office Improvement Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --blue-900:#0A2540; --blue-800:#113A5D; --blue-600:#1E6091; --blue-400:#3A86FF;
-  --teal-700:#087A5C; --teal-600:#0CA47C; --teal-400:#10D2A1;
-  --orange-700:#C46200; --orange-500:#F57C00;
-  --indigo-600:#4F46E5; --indigo-400:#818CF8;
-  --gray-900:#1A1C1E; --gray-600:#505A64; --gray-400:#9BA5B1;
+:root{
+  --blue-900:#0A2540;--blue-800:#113A5D;--blue-600:#1E6091;
+  --teal-700:#087A5C;--orange-700:#C46200;--indigo-600:#4F46E5;
+  --gray-900:#1A1C1E;--gray-600:#505A64;--gray-400:#9BA5B1;
   --font:'IBM Plex Sans Thai',sans-serif;
-  --blur:blur(28px) saturate(200%);
-  --r-lg:22px;
+  --blur:blur(28px) saturate(200%);--r:20px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 
-/* ── Full viewport, no scroll ── */
+/* ─── Desktop: single-viewport, no scroll ─── */
 html,body{
-  width:100%;height:100%;overflow:hidden;
-  font-family:var(--font);
+  font-family:var(--font);width:100%;
   background:linear-gradient(145deg,#c8d9ec 0%,#d4e8e2 35%,#dde0ee 65%,#e8ddd6 100%);
+  background-attachment:fixed;
   color:var(--gray-900);
 }
 
-/* Ambient blobs */
-body::before,body::after{
-  content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;
-  filter:blur(90px);opacity:0.45;
-}
-body::before{
-  width:700px;height:700px;
-  background:radial-gradient(circle,rgba(58,134,255,0.28) 0%,transparent 70%);
-  top:-200px;left:-160px;animation:b1 20s ease-in-out infinite alternate;
-}
-body::after{
-  width:580px;height:580px;
-  background:radial-gradient(circle,rgba(12,164,124,0.22) 0%,transparent 70%);
-  bottom:-120px;right:-120px;animation:b2 25s ease-in-out infinite alternate;
-}
-@keyframes b1{to{transform:translate(100px,80px) scale(1.15)}}
-@keyframes b2{to{transform:translate(-80px,-60px) scale(0.88)}}
+/* Blobs */
+body::before,body::after{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(90px);opacity:0.4}
+body::before{width:650px;height:650px;background:radial-gradient(circle,rgba(58,134,255,0.28) 0%,transparent 70%);top:-180px;left:-140px;animation:b1 20s ease-in-out infinite alternate}
+body::after{width:520px;height:520px;background:radial-gradient(circle,rgba(12,164,124,0.22) 0%,transparent 70%);bottom:-100px;right:-100px;animation:b2 25s ease-in-out infinite alternate}
+@keyframes b1{to{transform:translate(80px,60px) scale(1.12)}}
+@keyframes b2{to{transform:translate(-60px,-50px) scale(0.9)}}
 
-/* ── Layout shell ── */
-.shell{
-  position:relative;z-index:1;
-  height:100vh;
-  display:flex;flex-direction:column;
-  padding:14px 20px 12px;
-  gap:12px;
-  max-width:1200px;margin:0 auto;
-}
-
-/* ── Glass base ── */
+/* ─── Glass base ─── */
 .glass{
   background:rgba(255,255,255,0.52);
   backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
   border:1px solid rgba(255,255,255,0.82);
-  border-bottom-color:rgba(255,255,255,0.28);
-  border-right-color:rgba(255,255,255,0.28);
+  border-bottom-color:rgba(255,255,255,0.28);border-right-color:rgba(255,255,255,0.28);
   box-shadow:0 8px 32px rgba(10,37,64,0.09),inset 0 1px 0 rgba(255,255,255,0.75);
-  border-radius:var(--r-lg);
-  position:relative;overflow:hidden;
+  border-radius:var(--r);position:relative;overflow:hidden;
 }
-.glass::before{
-  content:'';position:absolute;top:0;left:8%;right:8%;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.95) 40%,rgba(255,255,255,0.95) 60%,transparent);
-  pointer-events:none;z-index:1;
+.glass::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.95) 40%,rgba(255,255,255,0.95) 60%,transparent);pointer-events:none;z-index:1}
+
+/* ─── DESKTOP layout (≥768px): fill viewport ─── */
+@media(min-width:768px){
+  html,body{height:100%;overflow:hidden}
+  .shell{
+    position:relative;z-index:1;
+    height:100vh;display:flex;flex-direction:column;
+    padding:clamp(10px,1.4vh,18px) clamp(16px,2vw,28px);
+    gap:clamp(8px,1.2vh,14px);
+    max-width:1280px;margin:0 auto;
+  }
+  .header{flex-shrink:0;padding:clamp(10px,1.3vh,16px) clamp(16px,1.8vw,22px)}
+  .cards-row{
+    flex:1;/* take remaining space between header+label and dashboard+label */
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:clamp(8px,1vw,14px);
+    min-height:0;/* allow shrinking */
+  }
+  .menu-card{height:100%;min-height:0}
+  .dash-card{flex-shrink:0;padding:clamp(14px,1.8vh,22px) clamp(18px,2vw,28px)}
+  .sec-lbl{flex-shrink:0}
 }
 
-/* ── Header bar ── */
-.header{
-  flex-shrink:0;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 22px;gap:12px;flex-wrap:wrap;
+/* ─── MOBILE layout (<768px): scrollable column ─── */
+@media(max-width:767px){
+  body{overflow-y:auto;min-height:100vh}
+  .shell{
+    position:relative;z-index:1;
+    display:flex;flex-direction:column;
+    padding:12px 14px 20px;gap:10px;
+  }
+  .header{padding:13px 16px}
+  .cards-row{
+    display:flex;flex-direction:column;gap:9px;
+  }
+  /* Mobile: horizontal card layout */
+  .menu-card{
+    flex-direction:row!important;
+    align-items:center;
+    padding:13px 16px!important;
+    gap:14px;
+  }
+  .mc-icon-wrap{margin-bottom:0!important;flex-shrink:0}
+  .mc-body{flex:1;min-width:0}
+  .mc-title{font-size:13px!important;margin-bottom:3px!important}
+  .mc-desc{font-size:11px!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .mc-arrow{margin-top:0!important;flex-shrink:0}
+  .mc-glow{display:none}/* hide glow on mobile for perf */
+
+  .dash-card{padding:16px 18px;flex-direction:column;gap:12px}
+  .dash-left{flex-direction:column;align-items:flex-start;gap:10px}
+  .dash-cta{align-self:stretch;justify-content:center}
 }
-.h-title h1{font-size:18px;font-weight:700;color:var(--blue-900);letter-spacing:-0.3px;margin-bottom:2px}
-.h-title p{font-size:11px;color:var(--gray-600);font-weight:500}
+
+/* ─── Header ─── */
+.header{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;flex-wrap:wrap;
+}
+.h-title h1{font-size:clamp(15px,1.6vw,19px);font-weight:700;color:var(--blue-900);letter-spacing:-0.3px;margin-bottom:2px}
+.h-title p{font-size:clamp(10px,1vw,12px);color:var(--gray-600);font-weight:500}
 .datetime-badge{
-  display:flex;align-items:center;gap:7px;
-  padding:8px 16px;border-radius:40px;
-  background:rgba(255,255,255,0.7);
-  border:1px solid rgba(255,255,255,0.9);
-  font-size:12px;font-weight:600;color:var(--blue-800);
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:40px;
+  background:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.9);
+  font-size:11px;font-weight:600;color:var(--blue-800);
   box-shadow:0 2px 10px rgba(0,0,0,0.05),inset 0 1px 0 rgba(255,255,255,0.9);
+  white-space:nowrap;
 }
 .datetime-badge svg{flex-shrink:0;opacity:0.6}
 
-/* ── Section label ── */
+/* ─── Section label ─── */
 .sec-lbl{
-  font-size:10px;font-weight:700;letter-spacing:1.4px;
+  font-size:10px;font-weight:700;letter-spacing:1.3px;
   color:var(--gray-400);text-transform:uppercase;
-  display:flex;align-items:center;gap:8px;flex-shrink:0;
-  padding:0 4px;
+  display:flex;align-items:center;gap:8px;
+  padding:0 2px;
 }
 .sec-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,0.08),transparent)}
 
-/* ── 5-column card grid ── */
-.cards-row{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:12px;
-  flex-shrink:0;
-}
-
-/* ── Menu Card ── */
+/* ─── Menu Card ─── */
 .menu-card{
-  padding:18px 16px 14px;
+  padding:clamp(14px,1.5vh,20px) clamp(14px,1.2vw,18px);
   text-decoration:none;display:flex;flex-direction:column;
-  border-radius:var(--r-lg);
-  position:relative;overflow:hidden;
+  border-radius:var(--r);position:relative;overflow:hidden;
   backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
   border:1px solid rgba(255,255,255,0.75);
-  border-bottom-color:rgba(255,255,255,0.22);
-  border-right-color:rgba(255,255,255,0.22);
+  border-bottom-color:rgba(255,255,255,0.22);border-right-color:rgba(255,255,255,0.22);
   box-shadow:0 6px 24px rgba(10,37,64,0.08),inset 0 1px 0 rgba(255,255,255,0.65);
   transition:all 0.38s cubic-bezier(0.34,1.56,0.64,1);
 }
-.menu-card::before{
-  content:'';position:absolute;top:0;left:6%;right:6%;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.95) 40%,rgba(255,255,255,0.95) 60%,transparent);
-  pointer-events:none;z-index:1;
-}
-/* Glow orb top-right */
+.menu-card::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.95) 40%,rgba(255,255,255,0.95) 60%,transparent);pointer-events:none;z-index:1}
+/* Glow orb */
 .menu-card::after{
   content:'';position:absolute;top:-40%;right:-30%;
-  width:180px;height:180px;border-radius:50%;
+  width:170px;height:170px;border-radius:50%;
   opacity:0.15;filter:blur(40px);pointer-events:none;transition:opacity 0.4s;
 }
-.menu-card:hover{transform:translateY(-7px) scale(1.025);box-shadow:0 20px 44px rgba(10,37,64,0.14),inset 0 1px 0 rgba(255,255,255,0.9)}
+.menu-card:hover{transform:translateY(-6px) scale(1.025);box-shadow:0 18px 40px rgba(10,37,64,0.14),inset 0 1px 0 rgba(255,255,255,0.9)}
 .menu-card:hover::after{opacity:0.28}
+@media(max-width:767px){.menu-card:hover{transform:none;box-shadow:0 6px 24px rgba(10,37,64,0.08)}}
 
-/* Tinted backgrounds per pillar */
+/* Pillar tints */
 .c-am {background:rgba(219,234,255,0.55)} .c-am::after{background:#3A86FF}
 .c-opl{background:rgba(255,237,210,0.52)} .c-opl::after{background:#F57C00}
 .c-fi {background:rgba(224,222,255,0.52)} .c-fi::after{background:#6366F1}
 .c-kz {background:rgba(200,248,232,0.50)} .c-kz::after{background:#0CA47C}
 .c-mk {background:rgba(255,226,194,0.50)} .c-mk::after{background:#E65100}
-.c-am:hover {background:rgba(219,234,255,0.72)}
+.c-am:hover{background:rgba(219,234,255,0.72)}
 .c-opl:hover{background:rgba(255,237,210,0.72)}
-.c-fi:hover {background:rgba(224,222,255,0.72)}
-.c-kz:hover {background:rgba(200,248,232,0.68)}
-.c-mk:hover {background:rgba(255,226,194,0.68)}
+.c-fi:hover{background:rgba(224,222,255,0.72)}
+.c-kz:hover{background:rgba(200,248,232,0.68)}
+.c-mk:hover{background:rgba(255,226,194,0.68)}
 
-/* SVG icon box */
+/* Icon wrap */
 .mc-icon-wrap{
-  width:42px;height:42px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,0.62);
-  border:1px solid rgba(255,255,255,0.9);
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.9);
   box-shadow:0 3px 10px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.85);
-  margin-bottom:14px;flex-shrink:0;position:relative;z-index:2;
+  margin-bottom:clamp(10px,1.2vh,16px);position:relative;z-index:2;
   transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
 }
 .menu-card:hover .mc-icon-wrap{transform:scale(1.12) rotate(-5deg)}
-.mc-icon-wrap svg{width:20px;height:20px}
+.mc-icon-wrap svg{width:19px;height:19px}
 
-.mc-title{font-size:13px;font-weight:700;color:var(--blue-900);margin-bottom:5px;position:relative;z-index:2;line-height:1.3;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.mc-desc{font-size:11px;color:var(--gray-600);line-height:1.55;font-weight:500;position:relative;z-index:2;flex:1}
-
-/* Arrow pill */
+/* Card text */
+.mc-body{display:contents}
+@media(max-width:767px){.mc-body{display:block;flex:1;min-width:0}}
+.mc-title{
+  font-size:clamp(12px,1.1vw,14px);font-weight:700;color:var(--blue-900);
+  margin-bottom:clamp(4px,0.6vh,8px);position:relative;z-index:2;
+  line-height:1.3;display:flex;align-items:center;gap:4px;flex-wrap:wrap;
+}
+.mc-desc{
+  font-size:clamp(10px,0.85vw,12px);color:var(--gray-600);
+  line-height:1.55;font-weight:500;position:relative;z-index:2;flex:1;
+}
 .mc-arrow{
-  align-self:flex-end;margin-top:12px;
-  display:flex;align-items:center;gap:5px;
-  font-size:10px;font-weight:700;color:rgba(10,37,64,0.4);
+  align-self:flex-end;margin-top:clamp(8px,1vh,14px);
+  display:flex;align-items:center;gap:4px;
+  font-size:10px;font-weight:700;color:rgba(10,37,64,0.38);
   opacity:0;transform:translateX(4px);
   transition:all 0.28s ease;position:relative;z-index:2;
 }
 .menu-card:hover .mc-arrow{opacity:1;transform:translateX(0)}
-.mc-arrow svg{width:12px;height:12px}
+.mc-arrow svg{width:11px;height:11px}
+.ext-icon{width:10px;height:10px;opacity:0.55;flex-shrink:0}
 
-/* External icon */
-.ext-icon{width:11px;height:11px;opacity:0.6;flex-shrink:0}
-
-/* ── Dashboard Banner Card ── */
+/* ─── Dashboard Banner ─── */
 .dash-card{
-  padding:20px 24px;
   text-decoration:none;display:flex;align-items:center;justify-content:space-between;
-  gap:20px;flex-wrap:wrap;flex-shrink:0;
-  border-radius:var(--r-lg);
-  position:relative;overflow:hidden;
+  gap:16px;flex-wrap:wrap;
+  border-radius:var(--r);position:relative;overflow:hidden;
   backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
-  background:rgba(10,37,64,0.72);
-  border:1px solid rgba(255,255,255,0.18);
-  border-top-color:rgba(255,255,255,0.35);
-  box-shadow:0 12px 40px rgba(10,37,64,0.25),inset 0 1px 0 rgba(255,255,255,0.15);
+  background:rgba(10,37,64,0.74);
+  border:1px solid rgba(255,255,255,0.18);border-top-color:rgba(255,255,255,0.32);
+  box-shadow:0 12px 40px rgba(10,37,64,0.28),inset 0 1px 0 rgba(255,255,255,0.14);
   transition:all 0.38s cubic-bezier(0.34,1.56,0.64,1);
 }
-/* Specular on dark card */
-.dash-card::before{
-  content:'';position:absolute;top:0;left:8%;right:8%;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4) 40%,rgba(255,255,255,0.4) 60%,transparent);
-  pointer-events:none;z-index:1;
-}
-/* Blue ambient glow */
-.dash-card::after{
-  content:'';position:absolute;top:-60%;left:-20%;
-  width:300px;height:300px;border-radius:50%;
-  background:radial-gradient(circle,rgba(58,134,255,0.3) 0%,transparent 70%);
-  pointer-events:none;z-index:0;
-  animation:dashGlow 4s ease-in-out infinite alternate;
-}
-@keyframes dashGlow{to{opacity:0.5;transform:scale(1.1)}}
-.dash-card:hover{
-  transform:translateY(-5px) scale(1.01);
-  box-shadow:0 20px 52px rgba(10,37,64,0.35),inset 0 1px 0 rgba(255,255,255,0.2);
-  background:rgba(10,37,64,0.82);
-}
+.dash-card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.38) 40%,rgba(255,255,255,0.38) 60%,transparent);pointer-events:none;z-index:1}
+.dash-card::after{content:'';position:absolute;top:-60%;left:-15%;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(58,134,255,0.28) 0%,transparent 70%);pointer-events:none;z-index:0;animation:dg 4s ease-in-out infinite alternate}
+@keyframes dg{to{opacity:0.5;transform:scale(1.1)}}
+.dash-card:hover{transform:translateY(-4px) scale(1.008);box-shadow:0 20px 52px rgba(10,37,64,0.35),inset 0 1px 0 rgba(255,255,255,0.2);background:rgba(10,37,64,0.83)}
 
-.dash-left{display:flex;align-items:center;gap:16px;position:relative;z-index:2;flex:1;min-width:0}
+.dash-left{display:flex;align-items:center;gap:14px;position:relative;z-index:2;flex:1;min-width:0}
 .dash-icon{
-  width:48px;height:48px;border-radius:14px;flex-shrink:0;
-  background:rgba(58,134,255,0.25);
-  border:1px solid rgba(58,134,255,0.35);
+  width:clamp(40px,4vw,50px);height:clamp(40px,4vw,50px);border-radius:13px;flex-shrink:0;
+  background:rgba(58,134,255,0.22);border:1px solid rgba(58,134,255,0.32);
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 16px rgba(58,134,255,0.2),inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow:0 4px 16px rgba(58,134,255,0.18),inset 0 1px 0 rgba(255,255,255,0.1);
 }
-.dash-icon svg{width:22px;height:22px}
-.dash-text-wrap{}
-.dash-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:3px;letter-spacing:-0.2px}
-.dash-desc{font-size:11px;color:rgba(255,255,255,0.6);font-weight:500;line-height:1.5}
-
-/* KPI mini-pills */
-.dash-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.dash-pill{
-  font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:0.3px;
-  background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.65);
-  border:1px solid rgba(255,255,255,0.15);
-}
+.dash-icon svg{width:clamp(18px,2vw,22px);height:clamp(18px,2vw,22px)}
+.dash-title{font-size:clamp(13px,1.3vw,16px);font-weight:700;color:#fff;margin-bottom:3px;letter-spacing:-0.2px}
+.dash-desc{font-size:clamp(10px,0.9vw,12px);color:rgba(255,255,255,0.58);font-weight:500;line-height:1.5}
+.dash-pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.dash-pill{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:0.3px;background:rgba(255,255,255,0.09);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.14)}
 
 .dash-cta{
   display:inline-flex;align-items:center;gap:8px;
-  padding:11px 20px;border-radius:40px;
-  background:rgba(255,255,255,0.12);
-  border:1px solid rgba(255,255,255,0.25);
-  font-family:var(--font);font-size:13px;font-weight:700;
+  padding:clamp(9px,1.1vh,12px) clamp(16px,1.6vw,22px);
+  border-radius:40px;
+  background:rgba(255,255,255,0.11);border:1px solid rgba(255,255,255,0.24);
+  font-family:var(--font);font-size:clamp(12px,1vw,13px);font-weight:700;
   color:#fff;text-decoration:none;
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.2);
   transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  position:relative;z-index:2;white-space:nowrap;flex-shrink:0;
-  letter-spacing:0.2px;
+  position:relative;z-index:2;white-space:nowrap;flex-shrink:0;letter-spacing:0.2px;
 }
-.dash-cta:hover{background:rgba(255,255,255,0.22);transform:translateY(-2px) scale(1.03);box-shadow:0 6px 20px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.3)}
-.dash-cta svg{width:14px;height:14px;transition:transform 0.3s}
+.dash-cta:hover{background:rgba(255,255,255,0.2);transform:translateY(-2px) scale(1.03);box-shadow:0 6px 20px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.3)}
+.dash-cta svg{width:13px;height:13px;transition:transform 0.3s}
 .dash-card:hover .dash-cta svg{transform:translateX(3px)}
 </style>
 </head>
@@ -259,13 +246,12 @@ body::after{
       <p>ศูนย์รวมแอปพลิเคชันระบบงานเสา OI (AM-OI, OPL, FI Theme, Kaizen, Makigami)</p>
     </div>
     <div class="datetime-badge" id="live-time">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       กำลังโหลด...
     </div>
   </div>
 
-  <!-- Section label -->
-  <div class="sec-lbl">ระบบประเมินและบริหารจัดการ (Core Operations)</div>
+  <div class="sec-lbl">ระบบประเมินและบริหารจัดการ</div>
 
   <!-- 5 Module Cards -->
   <div class="cards-row">
@@ -273,104 +259,91 @@ body::after{
     <!-- AM-OI -->
     <a href="index.html" class="menu-card c-am">
       <div class="mc-icon-wrap">
-        <svg width="20" height="20" fill="none" stroke="#1E6091" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <svg width="19" height="19" fill="none" stroke="#1E6091" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
           <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
         </svg>
       </div>
-      <h3 class="mc-title">AM-OI Assessment</h3>
-      <p class="mc-desc">ระบบประเมิน 5ส. ออฟฟิศและพื้นที่โรงงาน (Step 1–5) สำหรับพนักงานและหัวหน้า</p>
-      <div class="mc-arrow">
-        ดูรายละเอียด
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      <div class="mc-body">
+        <div class="mc-title">AM-OI Assessment</div>
+        <p class="mc-desc">ระบบประเมิน 5ส. ออฟฟิศและพื้นที่โรงงาน (Step 1–5) สำหรับพนักงานและหัวหน้า</p>
       </div>
+      <div class="mc-arrow">ดูรายละเอียด <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
     <!-- OPL -->
     <a href="opl.html" class="menu-card c-opl">
       <div class="mc-icon-wrap">
-        <svg width="20" height="20" fill="none" stroke="#C46200" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <svg width="19" height="19" fill="none" stroke="#C46200" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
           <path d="M12 2a7 7 0 00-4 12.74V17a1 1 0 001 1h6a1 1 0 001-1v-2.26A7 7 0 0012 2z"/>
-          <line x1="9" y1="21" x2="15" y2="21"/>
-          <line x1="10" y1="18" x2="14" y2="18"/>
+          <line x1="9" y1="21" x2="15" y2="21"/><line x1="10" y1="18" x2="14" y2="18"/>
         </svg>
       </div>
-      <h3 class="mc-title">OPL Center</h3>
-      <p class="mc-desc">ระบบขึ้นทะเบียนและคลังความรู้ One Point Lesson (บทเรียนจุดเดียว)</p>
-      <div class="mc-arrow">
-        ดูรายละเอียด
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      <div class="mc-body">
+        <div class="mc-title">OPL Center</div>
+        <p class="mc-desc">ระบบขึ้นทะเบียนและคลังความรู้ One Point Lesson (บทเรียนจุดเดียว)</p>
       </div>
+      <div class="mc-arrow">ดูรายละเอียด <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
     <!-- FI Theme -->
     <a href="fitheme.html" class="menu-card c-fi">
       <div class="mc-icon-wrap">
-        <svg width="20" height="20" fill="none" stroke="#4F46E5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <svg width="19" height="19" fill="none" stroke="#4F46E5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
           <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
           <polyline points="16 7 22 7 22 13"/>
         </svg>
       </div>
-      <h3 class="mc-title">FI Theme Center</h3>
-      <p class="mc-desc">ระบบลงทะเบียนและติดตามความคืบหน้าโครงการ Focused Improvement (10 Steps)</p>
-      <div class="mc-arrow">
-        ดูรายละเอียด
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      <div class="mc-body">
+        <div class="mc-title">FI Theme Center</div>
+        <p class="mc-desc">ระบบลงทะเบียนและติดตามความคืบหน้าโครงการ Focused Improvement (10 Steps)</p>
       </div>
+      <div class="mc-arrow">ดูรายละเอียด <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
     <!-- Kaizen -->
     <a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="menu-card c-kz">
       <div class="mc-icon-wrap">
-        <svg width="20" height="20" fill="none" stroke="#087A5C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <svg width="19" height="19" fill="none" stroke="#087A5C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="3"/>
           <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
         </svg>
       </div>
-      <h3 class="mc-title">
-        Kaizen Suggestion
-        <svg class="ext-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      </h3>
-      <p class="mc-desc">ระบบเสนอแนะแนวทางการปรับปรุงงาน (ลิงก์ไปยังระบบปฏิบัติการส่วนกลาง)</p>
-      <div class="mc-arrow">
-        เปิดลิงก์
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      <div class="mc-body">
+        <div class="mc-title">Kaizen Suggestion <svg class="ext-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
+        <p class="mc-desc">ระบบเสนอแนะแนวทางการปรับปรุงงาน (ลิงก์ไปยังระบบปฏิบัติการส่วนกลาง)</p>
       </div>
+      <div class="mc-arrow">เปิดลิงก์ <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
     <!-- Makigami -->
     <a href="makigami.html" class="menu-card c-mk">
       <div class="mc-icon-wrap">
-        <svg width="20" height="20" fill="none" stroke="#C46200" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <svg width="19" height="19" fill="none" stroke="#C46200" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
           <rect x="3" y="3" width="18" height="18" rx="2"/>
           <path d="M3 9h18M9 21V9"/>
           <path d="M15 13l-3 3-2-2"/>
         </svg>
       </div>
-      <h3 class="mc-title">Makigami Analysis</h3>
-      <p class="mc-desc">ระบบวิเคราะห์และจัดทำ Flow Chart กระบวนการทำงาน (Process Mapping)</p>
-      <div class="mc-arrow">
-        ดูรายละเอียด
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      <div class="mc-body">
+        <div class="mc-title">Makigami Analysis</div>
+        <p class="mc-desc">ระบบวิเคราะห์และจัดทำ Flow Chart กระบวนการทำงาน (Process Mapping)</p>
       </div>
+      <div class="mc-arrow">ดูรายละเอียด <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
   </div>
 
-  <!-- Section label -->
-  <div class="sec-lbl">สรุปผลการดำเนินงาน (Performance Tracking)</div>
+  <div class="sec-lbl">สรุปผลการดำเนินงาน</div>
 
   <!-- Dashboard Banner -->
   <a href="dashboard.html" class="dash-card">
-
     <div class="dash-left">
       <div class="dash-icon">
-        <svg width="22" height="22" fill="none" stroke="rgba(147,197,253,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-          <line x1="18" y1="20" x2="18" y2="10"/>
-          <line x1="12" y1="20" x2="12" y2="4"/>
-          <line x1="6" y1="20" x2="6" y2="14"/>
+        <svg fill="none" stroke="rgba(147,197,253,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
         </svg>
       </div>
-      <div class="dash-text-wrap">
+      <div>
         <div class="dash-title">KPI Dashboard — ภาพรวม & แยกแผนก</div>
         <div class="dash-desc">ตรวจสอบความสำเร็จเทียบกับเป้าหมายขององค์กร เจาะลึกข้อมูลแยกตามแผนกได้ทันที</div>
         <div class="dash-pills">
@@ -382,12 +355,10 @@ body::after{
         </div>
       </div>
     </div>
-
     <div class="dash-cta">
       เปิดดู Dashboard
       <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
     </div>
-
   </a>
 
 </div>
@@ -395,10 +366,9 @@ body::after{
 <script>
 function updateTime(){
   const now=new Date();
-  const opt={weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'};
-  const str=now.toLocaleDateString('th-TH',opt).replace(' น.','');
-  const icon=`<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
-  document.getElementById('live-time').innerHTML=icon+' '+str;
+  const str=now.toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).replace(' น.','');
+  const ic=`<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+  document.getElementById('live-time').innerHTML=ic+' '+str;
 }
 setInterval(updateTime,1000);
 updateTime();
