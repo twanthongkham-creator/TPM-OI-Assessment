@@ -63,13 +63,12 @@ body{
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:600px){.grid2{grid-template-columns:1fr}}
 
-/* 🟢 แก้ไขปัญหาวันที่ล้นหน้าจอบนมือถือ */
-.fg{display:flex;flex-direction:column;gap:6px; min-width: 0;}
+.fg{display:flex;flex-direction:column;gap:6px; min-width:0;}
 .fg label{font-size:12px;font-weight:600;color:var(--gray-900); padding-left: 4px;}
 .req{background:var(--red-400);color:#fff;font-size:9px;font-weight:600;padding:2px 6px;border-radius:6px;margin-left:4px; box-shadow:0 2px 4px rgba(217,56,56,0.2);}
 
 input[type=text],input[type=password],input[type=date],select,textarea{
-  width:100%; max-width: 100%; box-sizing: border-box; /* บังคับไม่ให้ล้น */
+  width:100%; max-width:100%; box-sizing:border-box;
   font-family:var(--font);font-size:14px;color:var(--blue-900);
   background: rgba(255, 255, 255, 0.6);
   border: 1.5px solid rgba(255, 255, 255, 0.9);
@@ -153,6 +152,13 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
 .chip{background:#fff;border:1px solid rgba(0,0,0,0.05);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:500;color:var(--blue-800);display:flex;align-items:center;gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.03);}
 .chip-x{cursor:pointer;color:var(--red-400);font-size:16px;line-height:1; font-weight:bold; transition:all .2s;}
 .chip-x:hover{color:var(--red-600);transform:scale(1.1);}
+
+/* 🟢 Gallery & File Link (สำหรับ Leader) */
+.file-gallery { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+.file-preview { width: 140px; height: 140px; border-radius: 12px; object-fit: cover; border: 1px solid var(--gray-200); box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.2s; }
+.file-preview:hover { transform: scale(1.05); }
+.file-link-card { display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--blue-50); border: 1px solid var(--blue-200); border-radius: 12px; color: var(--blue-800); font-weight: 700; font-size: 13px; transition: all 0.2s;}
+.file-link-card:hover { background: #fff; box-shadow: 0 4px 12px rgba(30,96,145,0.1); transform: translateY(-2px); text-decoration:none; }
 
 .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:2rem}
 .btn{font-family:var(--font);font-size:14px;font-weight:600;padding:12px 28px;border-radius:12px;cursor:pointer;transition:all .2s ease; border:none; box-shadow:0 4px 12px rgba(0,0,0,0.05);}
@@ -348,9 +354,10 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
       <div class="tc"><div class="tc-lbl">ผลการประเมิน</div><div class="tc-val" id="t-result" style="font-size:18px;padding-top:6px">—</div><div class="tc-sub" id="t-step-info"></div></div>
     </div>
 
-    <div class="card">
-      <div class="sec-label">แนบหลักฐาน (รูปภาพ และ ไฟล์เอกสาร)</div>
-      <div class="grid2">
+    <div class="card" id="attachment-card">
+      <div class="sec-label" id="attachment-label">แนบหลักฐาน (รูปภาพ และ ไฟล์เอกสาร)</div>
+      
+      <div class="grid2" id="upload-grid">
         <div>
           <div class="upload-zone" onclick="document.getElementById('fu-img').click()">
             <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
@@ -369,6 +376,11 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
           <input type="file" id="fu-doc" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="addDocs(this.files)">
           <div class="chips" id="chip-doc"></div>
         </div>
+      </div>
+
+      <div id="view-files-zone" style="display:none;">
+        <div class="file-gallery" id="file-gallery">
+          </div>
       </div>
     </div>
 
@@ -401,7 +413,7 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 // 🟢 ตัวแปรเก็บข้อมูล
-let areaData = {}; // ปล่อยว่างไว้เพื่อรับค่า Dynamic
+let areaData = {}; 
 let userData = {};
 let approverData = {};
 const scores = {};
@@ -432,7 +444,6 @@ async function loadMasterData() {
           let dept = k['Department'] || Object.values(k)[2];
           let area = k['Area'] || Object.values(k)[3];
           
-          // ดึงเฉพาะแผนกและพื้นที่จากเสา AM-OI
           if(sys === 'AM-OI' && dept && area && area !== 'ALL' && area !== 'All') {
              if(!areaData[dept]) areaData[dept] = [];
              if(!areaData[dept].includes(area)) areaData[dept].push(area);
@@ -440,7 +451,6 @@ async function loadMasterData() {
        });
     }
 
-    // สร้างตัวเลือกแผนก (จาก Dynamic Data)
     const deptSelect = document.getElementById('f-dept');
     deptSelect.innerHTML = '<option value="">-- เลือกแผนก --</option>';
     Object.keys(areaData).sort().forEach(dept => {
@@ -656,6 +666,11 @@ function resetForm() {
     if (document.getElementById('step'+i+'-card')) document.getElementById('step'+i+'-card').style.display = 'block';
   }
   updateAll(); showToast('ล้างข้อมูลแล้ว'); document.getElementById('history-card').style.display = 'none';
+  
+  // ซ่อนโซนโชว์ไฟล์ กลับมาแสดงโซนอัปโหลด
+  document.getElementById('view-files-zone').style.display = 'none';
+  document.getElementById('upload-grid').style.display = 'grid';
+  document.getElementById('attachment-label').innerHTML = 'แนบหลักฐาน (รูปภาพ และ ไฟล์เอกสาร)';
 }
 
 function compressImage(file, maxWidth = 1024, quality = 0.7) {
@@ -684,7 +699,55 @@ function fileToBase64(file) {
   });
 }
 
-async function loadHistoryForArea(dept, area) {
+// 🟢 ฟังก์ชันเรนเดอร์รูปและไฟล์แนบจากฐานข้อมูลมาโชว์บนหน้าเว็บ (สำหรับ Leader)
+function renderAttachedFiles(linksStr) {
+  const uploadGrid = document.getElementById('upload-grid');
+  const viewZone = document.getElementById('view-files-zone');
+  const gallery = document.getElementById('file-gallery');
+  
+  uploadGrid.style.display = 'none';
+  viewZone.style.display = 'block';
+  document.getElementById('attachment-label').innerHTML = '📸 หลักฐานแนบจากผู้ประเมิน (กดเพื่อเปิดดูรูปขนาดเต็ม)';
+
+  if (!linksStr || linksStr.trim() === '') {
+      gallery.innerHTML = '<p style="color:var(--gray-600); font-size:13px; font-weight:600;">ผู้ประเมินไม่ได้แนบไฟล์ประกอบมาด้วย</p>';
+      return;
+  }
+
+  const links = linksStr.split(',').map(s => s.trim()).filter(Boolean);
+  gallery.innerHTML = '';
+  
+  links.forEach((url, i) => {
+      // ดึง ID ของไฟล์จากลิงก์ Google Drive
+      const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+          const fileId = match[1];
+          const imgUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+          
+          const a = document.createElement('a');
+          a.href = url;
+          a.target = '_blank';
+          a.style.textDecoration = 'none';
+          
+          const img = document.createElement('img');
+          img.src = imgUrl;
+          img.className = 'file-preview';
+          img.alt = `ไฟล์แนบ ${i+1}`;
+          // 🟢 ทีเด็ด! ถ้ามันไม่ใช่รูปภาพ (เช่น PDF) มันจะโหลดภาพไม่ขึ้น แล้วเปลี่ยนเป็นปุ่มให้กดดูเอกสารอัตโนมัติ
+          img.onerror = function() {
+              this.outerHTML = `<div class="file-link-card">📄 เปิดดูไฟล์เอกสารแนบ ${i+1}</div>`;
+          };
+          
+          a.appendChild(img);
+          gallery.appendChild(a);
+      } else {
+          // กรณีไม่ใช่ลิงก์ Drive แบบปกติ สร้างเป็นปุ่มกด
+          gallery.innerHTML += `<a href="${url}" target="_blank" class="file-link-card">📄 เปิดดูไฟล์แนบ ${i+1}</a>`;
+      }
+  });
+}
+
+async function loadHistoryForArea(dept, area, roleParam = null, stepParam = null) {
   const histCard = document.getElementById('history-card');
   const histContent = document.getElementById('history-content');
   histCard.style.display = 'block';
@@ -694,24 +757,44 @@ async function loadHistoryForArea(dept, area) {
     const res = await fetch(APPS_SCRIPT_URL + '?action=getHistory');
     const json = await res.json();
     if (json.status === 'success') {
-      const records = json.data.filter(r => r['Department'] === dept && r['Area'] === area);
-      if (records.length === 0) { histContent.innerHTML = '<div style="color:var(--gray-600); text-align:center;">ยังไม่เคยมีการประเมินในพื้นที่นี้ เริ่มประเมินได้เลยครับ</div>'; return; }
+      const records = json.data.filter(r => (r['Department'] === dept || Object.values(r)[3] === dept) && (r['Area'] === area || Object.values(r)[4] === area));
+      
+      if (records.length === 0) { 
+          histContent.innerHTML = '<div style="color:var(--gray-600); text-align:center;">ยังไม่เคยมีการประเมินในพื้นที่นี้ เริ่มประเมินได้เลยครับ</div>'; 
+      } else {
+          let html = `<table class="hist-table">
+            <tr>
+              <th>วันที่</th><th>Step</th><th>คะแนน</th><th>ผล</th><th>สถานะ</th>
+            </tr>`;
+          records.forEach(r => {
+            const isPass = (r['PassFail'] === 'ผ่านเกณฑ์' || r['PassFail'] === 'Pass');
+            const color = isPass ? 'var(--teal-600)' : 'var(--red-600)';
+            const dStr = r['Timestamp'] ? new Date(r['Timestamp']).toLocaleDateString('th-TH') : '-';
+            html += `<tr>
+              <td>${dStr}</td><td style="font-weight:700;">Step ${r['AuditRound'] || Object.values(r)[6]}</td>
+              <td>${r['TotalScore'] || Object.values(r)[13]} (${r['TotalPercent'] || Object.values(r)[14]}%)</td><td style="color:${color}; font-weight:700;">${r['PassFail'] || Object.values(r)[15]}</td>
+              <td style="font-size:11px; color:var(--gray-600);">${r['Status'] || Object.values(r)[23] || 'รอ Review'}</td>
+            </tr>`;
+          });
+          html += '</table>'; histContent.innerHTML = html;
+      }
 
-      let html = `<table class="hist-table">
-        <tr>
-          <th>วันที่</th><th>Step</th><th>คะแนน</th><th>ผล</th><th>สถานะ</th>
-        </tr>`;
-      records.forEach(r => {
-        const isPass = (r['PassFail'] === 'ผ่านเกณฑ์' || r['PassFail'] === 'Pass');
-        const color = isPass ? 'var(--teal-600)' : 'var(--red-600)';
-        const dStr = r['Timestamp'] ? new Date(r['Timestamp']).toLocaleDateString('th-TH') : '-';
-        html += `<tr>
-          <td>${dStr}</td><td style="font-weight:700;">Step ${r['AuditRound']}</td>
-          <td>${r['TotalScore']} (${r['TotalPercent']}%)</td><td style="color:${color}; font-weight:700;">${r['PassFail']}</td>
-          <td style="font-size:11px; color:var(--gray-600);">${r['Status'] || 'รอ Review'}</td>
-        </tr>`;
-      });
-      html += '</table>'; histContent.innerHTML = html;
+      // 🟢 ถ้าเข้าหน้าเว็บมาด้วยสิทธิ์หัวหน้า (Review Mode) ดึงไฟล์จากประวัติล่าสุดมาแสดง!
+      if (roleParam === 'lead' || roleParam === 'exec') {
+         let targetRec = records.slice().reverse().find(r => r['AuditRound'] == stepParam || Object.values(r)[6] == stepParam);
+         if (!targetRec && records.length > 0) targetRec = records[records.length - 1]; // ถ้าหาไม่เจอเอาอันล่าสุด
+         
+         if (targetRec) {
+            // ดึงลิงก์ไฟล์แนบออกมา (ถ้าหาชื่อ Column ไม่เจอ จะสแกนหาข้อความที่มีคำว่า drive.google.com อัตโนมัติ)
+            let fileStr = targetRec['fileLinks'] || targetRec['ไฟล์แนบ'] || Object.values(targetRec)[22] || '';
+            if (!fileStr && Object.values(targetRec).length > 20) {
+               fileStr = Object.values(targetRec).find(v => typeof v === 'string' && v.includes('drive.google.com')) || '';
+            }
+            renderAttachedFiles(fileStr);
+         } else {
+            renderAttachedFiles('');
+         }
+      }
     }
   } catch(e) { histContent.innerHTML = '<div style="color:var(--red-600); text-align:center;">ดึงข้อมูลประวัติล้มเหลว</div>'; }
 }
@@ -736,7 +819,9 @@ function prefillFromURL() {
     if (areaParam) {
       setTimeout(() => {
         document.getElementById('f-area').value = areaParam;
-        loadHistoryForArea(deptParam, areaParam);
+        
+        // 🟢 ส่งข้อมูล role และ step ไปด้วย เพื่อเช็คว่าต้องดึงรูปมาแสดงให้หัวหน้าไหม
+        loadHistoryForArea(deptParam, areaParam, roleParam, stepParam);
 
         if (stepParam && stepParam !== 'all') {
            const stepDropdown = document.getElementById('f-assess-step');
@@ -746,6 +831,7 @@ function prefillFromURL() {
            }
         }
 
+        // 🟢 ระบบ Auto-Select สำหรับหัวหน้า
         if (roleParam === 'lead' || roleParam === 'exec') {
            document.getElementById('f-auditor').value = roleParam;
            updateAll();
@@ -758,6 +844,7 @@ function prefillFromURL() {
                 autoFillEmail(); 
              }
              
+             // ล็อกช่องที่ไม่ให้แก้
              document.getElementById('f-dept').disabled = true;
              document.getElementById('f-auditor').disabled = true;
              document.getElementById('f-name').disabled = false;
@@ -796,20 +883,23 @@ async function handleSubmit() {
   if (!hasScore) { showToast('กรุณาให้คะแนนอย่างน้อย 1 หัวข้อ', '#A32D2D'); return; }
 
   const btn = document.getElementById('btn-submit');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังบีบอัดรูปและส่งข้อมูล...';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังส่งข้อมูลการประเมิน...';
 
+  // 🟢 หากเป็นพนักงานตรวจ (self) จะทำการส่งไฟล์ไปด้วย แต่ถ้าเป็นหัวหน้า จะส่งไฟล์เปล่าเพื่อเป็น Record รีวิว
   const filesData = [];
-  for (const f of imageStore.filter(Boolean)) {
-    try {
-      const b64 = await compressImage(f, 1024, 0.7);
-      filesData.push({ name: f.name, mimeType: 'image/jpeg', data: b64.split(',')[1] });
-    } catch(e) {}
-  }
-  for (const d of docStore.filter(Boolean)) {
-    try {
-      const b64 = await fileToBase64(d);
-      filesData.push({ name: d.name, mimeType: d.type || 'application/pdf', data: b64.split(',')[1] });
-    } catch(e) {}
+  if (auditorType === 'self') {
+    for (const f of imageStore.filter(Boolean)) {
+      try {
+        const b64 = await compressImage(f, 1024, 0.7);
+        filesData.push({ name: f.name, mimeType: 'image/jpeg', data: b64.split(',')[1] });
+      } catch(e) {}
+    }
+    for (const d of docStore.filter(Boolean)) {
+      try {
+        const b64 = await fileToBase64(d);
+        filesData.push({ name: d.name, mimeType: d.type || 'application/pdf', data: b64.split(',')[1] });
+      } catch(e) {}
+    }
   }
 
   const payload = {
@@ -843,7 +933,7 @@ async function handleSubmit() {
 toggleStepCards();
 togglePIN();
 document.getElementById('f-date').valueAsDate = new Date();
-loadMasterData().then(() => prefillFromURL()); 
+loadMasterData(); 
 </script>
 </body>
 </html>
