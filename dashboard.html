@@ -37,17 +37,20 @@
   
   .wrap{max-width:1150px;margin:0 auto;padding:0 16px;}
 
-  /* 🟢 Global Filter */
   .filter-section { padding: 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,250,252,0.9)); border: 1.5px solid var(--blue-400); }
   .filter-section label { font-size: 15px; font-weight: 700; color: var(--blue-900); display: flex; align-items: center; gap: 8px; }
   .filter-select { padding: 10px 16px; border: 1.5px solid var(--gray-200); border-radius: 12px; font-family: var(--font); font-size: 15px; font-weight: 600; color: var(--blue-800); background: #fff; min-width: 250px; outline: none; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
   .filter-select:focus { border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(58,134,255,0.15); }
 
-  /* 🟢 KPI Dashboard Grid */
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
-  .kpi-card { padding: 20px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  
+  .kpi-card { padding: 20px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; transition: all 0.3s; border: 2px solid transparent; }
+  .kpi-card.clickable:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); border-color: var(--blue-400); cursor: pointer; }
+  .kpi-card.active { border-color: var(--blue-600); background: #fff; box-shadow: 0 8px 32px rgba(58,134,255,0.15); }
+  
   .kpi-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-  .kpi-title { font-size: 15px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .kpi-title { font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; display:flex; justify-content:space-between; align-items:center;}
+  .click-hint { font-size: 10px; color: var(--blue-600); background: var(--blue-50); padding: 2px 6px; border-radius: 10px; opacity: 0.8;}
   .kpi-data { display: flex; align-items: flex-end; gap: 8px; margin-bottom: 12px; }
   .kpi-val { font-size: 32px; font-weight: 700; color: var(--blue-900); line-height: 1; letter-spacing: -1px; }
   .kpi-target { font-size: 13px; font-weight: 600; color: var(--gray-400); margin-bottom: 4px; }
@@ -55,14 +58,28 @@
   .progress-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.06); border-radius: 4px; overflow: hidden; position: relative; }
   .progress-bar { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   
-  /* Pillar Colors */
   .p-am .kpi-icon { background: var(--blue-50); color: var(--blue-600); } .p-am .progress-bar { background: var(--blue-500); }
   .p-opl .kpi-icon { background: #FFF3E0; color: var(--orange-500); } .p-opl .progress-bar { background: var(--orange-500); }
   .p-fi .kpi-icon { background: var(--indigo-50); color: var(--indigo-600); } .p-fi .progress-bar { background: var(--indigo-500); }
   .p-kz .kpi-icon { background: #E0F2F1; color: var(--teal-600); }
-  .p-mk .kpi-icon { background: #FFF3E0; color: var(--orange-600); }
+  .p-mk .kpi-icon { background: #FCEBEB; color: var(--red-600); }
 
-  /* 🟢 Gap Analysis (Action Required) */
+  /* Details Panel */
+  .details-panel { padding: 24px; border: 2px solid var(--blue-400); margin-bottom: 24px; display: none; animation: slideDown 0.3s ease-out; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  .dp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 12px; }
+  .dp-title { font-size: 18px; font-weight: 700; color: var(--blue-900); display: flex; align-items: center; gap: 8px; }
+
+  .data-table-wrapper { overflow-x: auto; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 800px; }
+  .data-table th { background: rgba(58,134,255,0.08); color: var(--blue-900); padding: 12px 16px; text-align: left; font-weight: 700; border-bottom: 2px solid var(--blue-200); white-space: nowrap; }
+  .data-table td { padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--gray-900); vertical-align: middle; }
+  .data-table tr:hover { background: rgba(255,255,255,0.6); }
+  .badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; display: inline-block;}
+  .b-wait { background: #FFF3E0; color: var(--orange-600); }
+  .b-pass { background: #E1F5EE; color: var(--teal-600); }
+
+  /* Gap Analysis */
   .gap-section { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; margin-bottom: 24px; }
   @media(max-width: 800px) { .gap-section { grid-template-columns: 1fr; } }
   
@@ -80,12 +97,10 @@
 
   .chart-card { padding: 20px; height: 320px; display: flex; flex-direction: column; }
 
-  /* 🟢 AM-OI Detailed Area Cards */
-  .section-subtitle { font-size: 16px; font-weight: 700; color: var(--blue-900); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
-  
+  /* AM-OI Detailed Area Cards */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
-  .area-card{padding:16px; display:flex; flex-direction:column; transition:all 0.3s;}
-  .area-card:hover{box-shadow:0 12px 32px rgba(10,37,64,0.1); transform:translateY(-3px);}
+  .area-card{padding:16px; display:flex; flex-direction:column; transition:all 0.3s; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.05); border-radius: 16px;}
+  .area-card:hover{box-shadow:0 8px 24px rgba(10,37,64,0.08); transform:translateY(-2px);}
   .ac-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
   .ac-dept{font-size:11px;color:var(--blue-800);font-weight:700;background:rgba(58,134,255,0.15);padding:4px 8px;border-radius:6px;}
   .ac-status{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;}
@@ -108,6 +123,9 @@
   .btn-lead { background: linear-gradient(135deg, #FFB74D, var(--orange-500)); color: #fff; }
   .btn-exec { background: linear-gradient(135deg, #60A5FA, var(--blue-600)); color: #fff; }
   
+  .btn-close { background: #fff; border: 1px solid var(--gray-200); color: var(--gray-600); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s;}
+  .btn-close:hover { background: var(--red-50); color: var(--red-600); border-color: var(--red-200); }
+
   #loader{text-align:center;padding:80px 20px;color:var(--blue-800);font-size:16px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:16px;}
   .spinner{width:32px;height:32px;border:4px solid rgba(58,134,255,0.2);border-top-color:var(--blue-600);border-radius:50%;animation:spin 0.8s cubic-bezier(0.5,0,0.5,1) infinite;}
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -118,7 +136,7 @@
 <div class="header glass-panel">
   <div class="h-title">
     <h2>TPM OI — KPI Dashboard & Gap Analysis</h2>
-    <p>วิเคราะห์ความสำเร็จและสิ่งที่ต้องดำเนินการเพิ่มเพื่อบรรลุเป้าหมาย</p>
+    <p>คลิกที่การ์ดเพื่อดูรายละเอียดการดำเนินงานแต่ละประเภท</p>
   </div>
   <a href="home.html" class="btn-nav">🏠 กลับเมนูหลัก</a>
 </div>
@@ -132,18 +150,42 @@
     </select>
   </div>
 
-  <div id="loader"><div class="spinner"></div>กำลังโหลดข้อมูลและประมวลผลความสำเร็จของ KPI...</div>
+  <div id="loader"><div class="spinner"></div>กำลังเชื่อมต่อฐานข้อมูล และประมวลผล KPI อัตโนมัติ...</div>
 
   <div id="dashboard-content" style="display:none;">
     
     <div class="kpi-grid" id="kpi-cards-container">
       </div>
 
+    <div class="details-panel glass-panel" id="details-panel">
+      <div class="dp-header">
+        <div class="dp-title" id="details-title">รายละเอียด</div>
+        <button class="btn-close" onclick="closeDetails()">❌ ปิดหน้าต่าง</button>
+      </div>
+      
+      <div id="detail-am" style="display:none;">
+        <div class="grid" id="am-card-container"></div>
+      </div>
+      
+      <div id="detail-opl" style="display:none;" class="data-table-wrapper">
+        <table class="data-table">
+          <thead><tr><th>วันที่ทำ OPL</th><th>รหัส OPL</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้จัดทำ</th><th>สถานะ</th></tr></thead>
+          <tbody id="opl-table-body"></tbody>
+        </table>
+      </div>
+
+      <div id="detail-fi" style="display:none;" class="data-table-wrapper">
+        <table class="data-table">
+          <thead><tr><th>รหัส FI</th><th>แผนก</th><th>ชื่อเรื่อง (Theme)</th><th>ผู้รับผิดชอบ</th><th>ความคืบหน้า (Step)</th><th>สถานะ</th></tr></thead>
+          <tbody id="fi-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
     <div class="gap-section">
       <div class="action-card glass-panel" id="action-required-card">
         <div class="action-title">⚠️ รายการที่ต้องดำเนินการเพิ่ม (Action Required)</div>
-        <ul class="action-list" id="action-list">
-          </ul>
+        <ul class="action-list" id="action-list"></ul>
       </div>
       <div class="chart-card glass-panel">
         <div style="font-size:14px; font-weight:700; color:var(--blue-900); margin-bottom:10px;">📊 สัดส่วน 5ส (AM-OI) แยกตาม Step ปัจจุบัน</div>
@@ -151,41 +193,25 @@
       </div>
     </div>
 
-    <div class="section-subtitle">🏢 สถานะการประเมินพื้นที่ 5ส (AM-OI Assessment)</div>
-    <div class="grid" id="am-card-container"></div>
-
   </div>
 </div>
 
 <script>
-// ⚠️ ใส่ลิงก์ Web App URL เดิม
 const API_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-const areaData = {
-  "RW": ["ห้องจัดเก็บวัตถุดิบ 2","ห้องจัดเก็บวัตถุดิบ 3","ห้องจัดเก็บวัตถุดิบ 7","ห้องจัดเก็บ Barcode","คลังจัดเก็บสารเคมี","ห้องจัดเก็บอะไหล่ต่างประเทศ"],
-  "QC": ["ห้อง Chemical","ห้อง Packaging","ห้อง Micro"],
-  "WH.P": ["ออฟฟิศคลังสินค้า"],
-  "MT": ["ห้องเก็บอะไหล่หน่วย PM ไฟฟ้า","ห้องเก็บอะไหล่หน่วย Utility","ห้องจัดเก็บอะไหล่ต่างประเทศ"],
-  "AC.P": ["ห้องหัวหน้าแผนก","ห้องเก็บกล่องเอกสาร","ห้องประชุมแผนกบัญชี"],
-  "LG.P": ["ห้องลำเลียง"],
-  "SE.P": ["ออฟฟิศ"],
-  "PD": ["ห้องประชุมห้องผสม","ห้องประชุมแผนกผลิต"],
-  "HC.P": ["ห้องพยาบาล","ห้องประชุมแผนก"],
-  "PU.P": ["ห้องจัดซื้อ"],
-  "IT.P": ["ห้อง Server","ออฟฟิศ IT"],
-  "EN": ["ห้องวิศวกรรม","ห้องประชุม EN"],
-  "PE": ["ห้องออกแบบบรรจุภัณฑ์"],
-  "PN": ["ห้องวางแผน"],
-  "SE": ["ออฟฟิศความปลอดภัย"],
-  "PIS": ["ห้อง PIS"],
-  "PAYROLL": ["ห้อง Payroll"]
-};
+// 🟢 ตัวแปรรับข้อมูลจากฐานข้อมูลโดยตรง
+let areaData = {}; 
 
 let kpiMaster = [];
 let amHistory = [];
 let oplHistory = [];
 let fiHistory = [];
 let chartInstance = null;
+
+const safeGet = (row, keyStr, fallbackIndex) => {
+  if (row[keyStr] !== undefined) return row[keyStr];
+  return Object.values(row)[fallbackIndex];
+};
 
 async function loadData() {
   try {
@@ -196,7 +222,21 @@ async function loadData() {
       fetch(API_URL + '?action=getFiHistory').then(r => r.json())
     ]);
 
-    if(kRes.status === 'success') kpiMaster = kRes.data || [];
+    if(kRes.status === 'success') {
+       kpiMaster = kRes.data || [];
+       // 🟢 สกัดชื่อแผนกและพื้นที่แบบ Dynamic 100%
+       kpiMaster.forEach(k => {
+          let sys = safeGet(k, 'System', 0);
+          let dept = safeGet(k, 'Department', 2);
+          let area = safeGet(k, 'Area', 3);
+          
+          if(sys === 'AM-OI' && dept && area && area !== 'ALL' && area !== 'All') {
+             if(!areaData[dept]) areaData[dept] = [];
+             if(!areaData[dept].includes(area)) areaData[dept].push(area);
+          }
+       });
+    }
+    
     if(amRes.status === 'success') amHistory = amRes.data || [];
     if(oplRes.status === 'success') oplHistory = oplRes.data || [];
     if(fiRes.status === 'success') fiHistory = fiRes.data || [];
@@ -204,16 +244,44 @@ async function loadData() {
     initFilter();
     processAndRender();
   } catch(e) {
-    document.getElementById('loader').innerHTML = `<span style="color:var(--red-600)">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชหน้าจอ</span>`;
+    document.getElementById('loader').innerHTML = `<span style="color:var(--red-600)">❌ โหลดข้อมูลล้มเหลว กรุณาตรวจสอบว่าใน Code.gs ดึงข้อมูลถูกต้องหรือไม่</span>`;
   }
 }
 
 function initFilter() {
   const sel = document.getElementById('global-filter-dept');
-  Object.keys(areaData).forEach(dept => {
+  Object.keys(areaData).sort().forEach(dept => {
     const opt = document.createElement('option'); opt.value = dept; opt.innerText = `แผนก ${dept}`;
     sel.appendChild(opt);
   });
+}
+
+function getAmTarget(dept, area) {
+  let target = 3; 
+  kpiMaster.forEach(r => {
+    let rSys = safeGet(r, 'System', 0);
+    let rDept = safeGet(r, 'Department', 2);
+    let rArea = safeGet(r, 'Area', 3);
+    let rVal = parseInt(safeGet(r, 'Target_Value', 4)) || 0;
+    if (rSys === 'AM-OI') {
+      if (rDept === dept && (rArea === area || rArea === 'ALL' || rArea === 'All')) { target = rVal; } 
+      else if (rDept === 'ALL' || rDept === 'All') { target = rVal; }
+    }
+  });
+  return target;
+}
+
+function getSystemTarget(sys, filterDept) {
+  let target = 0;
+  kpiMaster.forEach(r => {
+    let rSys = safeGet(r, 'System', 0);
+    let rDept = safeGet(r, 'Department', 2);
+    let rVal = parseInt(safeGet(r, 'Target_Value', 4)) || 0;
+    if (rSys && rSys.trim() === sys) {
+      if (filterDept === 'all' || (rDept && rDept.trim() === filterDept)) { target += rVal; }
+    }
+  });
+  return target;
 }
 
 function getStepLogic(stepRecords) {
@@ -227,244 +295,169 @@ function getStepLogic(stepRecords) {
   return { class: 'st-wait-lead', text: 'รอหัวหน้า', rank: 2 };
 }
 
-// 🟢 ตัวดึงข้อมูลแบบถึกทน (ป้องกันการเรียกชื่อ Column ผิด)
-const safeGet = (row, keyStr, fallbackIndex) => {
-  if (row[keyStr] !== undefined) return row[keyStr];
-  return Object.values(row)[fallbackIndex];
-};
-
-// 🟢 ดึงเป้าหมาย AM-OI 
-function getAmTarget(dept, area) {
-  let target = 3; // Default
-  kpiMaster.forEach(r => {
-    let rSys = safeGet(r, 'System', 0);
-    let rDept = safeGet(r, 'Department', 2);
-    let rArea = safeGet(r, 'Area', 3);
-    let rVal = parseInt(safeGet(r, 'Target_Value', 4)) || 0;
-
-    if (rSys === 'AM-OI') {
-      if (rDept === dept && (rArea === area || rArea === 'ALL' || rArea === 'All')) {
-        target = rVal;
-      } else if (rDept === 'ALL' || rDept === 'All') {
-        target = rVal; // General rule overrides default
-      }
-    }
-  });
-  return target;
-}
-
-// 🟢 ดึงเป้าหมายรวมของ OPL, FI, Kaizen, Makigami
-function getSystemTarget(sys, filterDept) {
-  let target = 0;
-  kpiMaster.forEach(r => {
-    let rSys = safeGet(r, 'System', 0);
-    let rDept = safeGet(r, 'Department', 2);
-    let rVal = parseInt(safeGet(r, 'Target_Value', 4)) || 0;
-
-    if (rSys && rSys.trim() === sys) {
-      if (filterDept === 'all' || (rDept && rDept.trim() === filterDept)) {
-        target += rVal;
-      }
-    }
-  });
-  return target;
-}
-
 function processAndRender() {
   const filterDept = document.getElementById('global-filter-dept').value;
-  
   document.getElementById('loader').style.display = 'none';
   document.getElementById('dashboard-content').style.display = 'block';
 
-  // ----------------------------------------------------
-  // คำนวณข้อมูล AM-OI
-  // ----------------------------------------------------
-  let amTotalAreas = 0; let amHitAreas = 0; let stepDist = [0,0,0,0,0,0];
-  let amShortList = []; 
-
+  let amTotalAreas = 0; let amHitAreas = 0; let stepDist = [0,0,0,0,0,0]; let amShortList = []; 
   const amContainer = document.getElementById('am-card-container');
   amContainer.innerHTML = '';
 
   const deptsToProcess = filterDept === 'all' ? Object.keys(areaData) : [filterDept];
-  
   deptsToProcess.forEach(dept => {
-    areaData[dept].forEach(area => {
-      amTotalAreas++;
-      const history = amHistory.filter(r => safeGet(r, 'Department', 3) === dept && safeGet(r, 'Area', 4) === area);
-      
-      let stepsInfo = {}; let hasStarted = false; let pendingStep = 1; let currentPassedStep = 0;
-      let overallStatus = { text: 'ยังไม่เริ่ม', color: 'var(--gray-600)', bg: 'rgba(0,0,0,0.05)', rank: 0 };
+    if(areaData[dept]) {
+      areaData[dept].forEach(area => {
+        amTotalAreas++;
+        const history = amHistory.filter(r => safeGet(r, 'Department', 3) === dept && safeGet(r, 'Area', 4) === area);
+        
+        let stepsInfo = {}; let hasStarted = false; let pendingStep = 1; let currentPassedStep = 0;
+        let overallStatus = { text: 'ยังไม่เริ่ม', color: 'var(--gray-600)', bg: 'rgba(0,0,0,0.05)', rank: 0 };
 
-      for(let s=1; s<=5; s++) {
-        const sRecords = history.filter(r => safeGet(r, 'AuditRound', 6) == s);
-        stepsInfo[s] = getStepLogic(sRecords);
-        if(stepsInfo[s].rank > 0) hasStarted = true;
-        if(stepsInfo[s].rank === 4) currentPassedStep = s;
-      }
-
-      let targetStep = getAmTarget(dept, area);
-      let isHitKPI = currentPassedStep >= targetStep;
-      
-      if(isHitKPI) { amHitAreas++; }
-      else { amShortList.push({ dept, area, current: currentPassedStep, target: targetStep }); }
-      
-      stepDist[currentPassedStep]++; 
-
-      if(currentPassedStep === 5) {
-        overallStatus = { text: 'ผ่านครบ 5 Step', color: '#0CA47C', bg: '#E1F5EE', rank: 4 }; pendingStep = 'all';
-      } else {
         for(let s=1; s<=5; s++) {
-          let st = stepsInfo[s];
-          if(st.rank === 0) { overallStatus = { text: `รอตรวจ Step ${s}`, color: 'var(--blue-800)', bg: 'rgba(58,134,255,0.1)', rank: 0 }; pendingStep = s; break; } 
-          else if(st.rank === 1) { overallStatus = { text: `แก้ไข Step ${s}`, color: 'var(--red-600)', bg: '#FCEBEB', rank: 1 }; pendingStep = s; break; } 
-          else if(st.rank === 2) { overallStatus = { text: `รอ หน. Step ${s}`, color: '#fff', bg: 'var(--orange-500)', rank: 2 }; pendingStep = s; break; } 
-          else if(st.rank === 3) { overallStatus = { text: `รอ ผบร. Step ${s}`, color: '#fff', bg: 'var(--blue-600)', rank: 3 }; pendingStep = s; break; }
+          const sRecords = history.filter(r => safeGet(r, 'AuditRound', 6) == s);
+          stepsInfo[s] = getStepLogic(sRecords);
+          if(stepsInfo[s].rank > 0) hasStarted = true;
+          if(stepsInfo[s].rank === 4) currentPassedStep = s;
         }
-      }
 
-      let trackerHTML = '<div class="step-tracker">';
-      for(let i=1; i<=5; i++) {
-         let st = stepsInfo[i]; trackerHTML += `<div class="step-node ${st.class}">${i}</div>`;
-         if(i < 5) trackerHTML += `<div class="step-line ${(st.rank === 4 && stepsInfo[i+1].rank > 0) ? 'line-pass' : ''}"></div>`;
-      }
-      trackerHTML += '</div>';
+        let targetStep = getAmTarget(dept, area);
+        let isHitKPI = currentPassedStep >= targetStep;
+        if(isHitKPI) amHitAreas++; else amShortList.push({ dept, area, current: currentPassedStep, target: targetStep });
+        stepDist[currentPassedStep]++; 
 
-      let actionBtns = `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pendingStep}" class="btn-eval btn-user">📝 เข้าประเมิน (พนักงาน)</a>`;
-      if(overallStatus.rank === 2) actionBtns += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pendingStep}" class="btn-eval btn-lead">🔑 ตรวจ (หัวหน้า)</a>`;
-      else if(overallStatus.rank === 3) actionBtns += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pendingStep}" class="btn-eval btn-exec">🔑 ตรวจ (ผู้บริหาร)</a>`;
+        if(currentPassedStep === 5) {
+          overallStatus = { text: 'ผ่านครบ 5 Step', color: '#0CA47C', bg: '#E1F5EE', rank: 4 }; pendingStep = 'all';
+        } else {
+          for(let s=1; s<=5; s++) {
+            let st = stepsInfo[s];
+            if(st.rank === 0) { overallStatus = { text: `รอตรวจ Step ${s}`, color: 'var(--blue-800)', bg: 'rgba(58,134,255,0.1)', rank: 0 }; pendingStep = s; break; } 
+            else if(st.rank === 1) { overallStatus = { text: `แก้ไข Step ${s}`, color: 'var(--red-600)', bg: '#FCEBEB', rank: 1 }; pendingStep = s; break; } 
+            else if(st.rank === 2) { overallStatus = { text: `รอ หน. Step ${s}`, color: '#fff', bg: 'var(--orange-500)', rank: 2 }; pendingStep = s; break; } 
+            else if(st.rank === 3) { overallStatus = { text: `รอ ผบร. Step ${s}`, color: '#fff', bg: 'var(--blue-600)', rank: 3 }; pendingStep = s; break; }
+          }
+        }
 
-      let badge = isHitKPI ? `<span style="background:var(--teal-600); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">⭐ ถึงเป้า Step ${targetStep}</span>` : `<span style="background:var(--gray-200); color:var(--gray-600); font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">เป้า Step ${targetStep}</span>`;
+        let trackerHTML = '<div class="step-tracker">';
+        for(let i=1; i<=5; i++) {
+           let st = stepsInfo[i]; trackerHTML += `<div class="step-node ${st.class}">${i}</div>`;
+           if(i < 5) trackerHTML += `<div class="step-line ${(st.rank === 4 && stepsInfo[i+1].rank > 0) ? 'line-pass' : ''}"></div>`;
+        }
+        trackerHTML += '</div>';
 
-      const card = document.createElement('div'); card.className = 'area-card glass-panel';
-      card.innerHTML = `<div class="ac-top"><div><span class="ac-dept">${dept}</span>${badge}</div><span class="ac-status" style="background:${overallStatus.bg}; color:${overallStatus.color}">${overallStatus.text}</span></div><div class="ac-name">${area}</div>${trackerHTML}<div style="margin-top:auto;">${actionBtns}</div>`;
-      amContainer.appendChild(card);
-    });
+        let actionBtns = `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pendingStep}" class="btn-eval btn-user">📝 เข้าประเมิน (พนักงาน)</a>`;
+        if(overallStatus.rank === 2) actionBtns += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pendingStep}" class="btn-eval btn-lead">🔑 ตรวจ (หัวหน้า)</a>`;
+        else if(overallStatus.rank === 3) actionBtns += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pendingStep}" class="btn-eval btn-exec">🔑 ตรวจ (ผู้บริหาร)</a>`;
+
+        let badge = isHitKPI ? `<span style="background:var(--teal-600); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">⭐ ถึงเป้า Step ${targetStep}</span>` : `<span style="background:var(--gray-200); color:var(--gray-600); font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">เป้า Step ${targetStep}</span>`;
+
+        const card = document.createElement('div'); card.className = 'area-card';
+        card.innerHTML = `<div class="ac-top"><div><span class="ac-dept">${dept}</span>${badge}</div><span class="ac-status" style="background:${overallStatus.bg}; color:${overallStatus.color}">${overallStatus.text}</span></div><div class="ac-name">${area}</div>${trackerHTML}<div style="margin-top:auto;">${actionBtns}</div>`;
+        amContainer.appendChild(card);
+      });
+    }
   });
 
-  // ----------------------------------------------------
-  // คำนวณ OPL, FI, Kaizen, Makigami Targets & Actuals
-  // ----------------------------------------------------
   let targetOpl = getSystemTarget('OPL', filterDept);
   let targetFi = getSystemTarget('FI', filterDept);
   let targetKz = getSystemTarget('Kaizen', filterDept);
   let targetMk = getSystemTarget('Makigami', filterDept);
 
-  let actualOpl = 0; let actualFi = 0;
-  if(filterDept === 'all') {
-     actualOpl = new Set(oplHistory.map(r => safeGet(r, 'OPL ID', 1))).size;
-     actualFi = new Set(fiHistory.map(r => safeGet(r, 'FI ID', 1))).size;
-  } else {
-     actualOpl = new Set(oplHistory.filter(r => safeGet(r, 'Department', 4) === filterDept).map(r => safeGet(r, 'OPL ID', 1))).size;
-     actualFi = new Set(fiHistory.filter(r => safeGet(r, 'Department', 4) === filterDept).map(r => safeGet(r, 'FI ID', 1))).size;
-  }
+  let currentOplList = filterDept === 'all' ? oplHistory : oplHistory.filter(r => safeGet(r, 'Department', 4) === filterDept);
+  let currentFiList = filterDept === 'all' ? fiHistory : fiHistory.filter(r => safeGet(r, 'Department', 4) === filterDept);
 
-  // ----------------------------------------------------
-  // Render KPI Cards 
-  // ----------------------------------------------------
+  let uniqueOpls = [...new Map(currentOplList.map(item => [safeGet(item, 'OPL ID', 1), item])).values()];
+  let uniqueFis = [...new Map(currentFiList.map(item => [safeGet(item, 'FI ID', 1), item])).values()];
+  
+  let actualOpl = uniqueOpls.length; let actualFi = uniqueFis.length;
+
   const kpiContainer = document.getElementById('kpi-cards-container');
   kpiContainer.innerHTML = '';
   
-  const createCard = (title, icon, typeClass, current, max, unit) => {
+  const createClickableCard = (title, icon, typeClass, current, max, unit, detailId) => {
     let pct = max > 0 ? Math.min(Math.round((current/max)*100), 100) : 0;
     return `
-      <div class="kpi-card glass-panel p-${typeClass}">
+      <div class="kpi-card glass-panel clickable p-${typeClass}" id="card-${detailId}" onclick="showDetails('${detailId}', '${title}')">
         <div class="kpi-icon">${icon}</div>
-        <div class="kpi-title">${title}</div>
+        <div class="kpi-title">${title} <span class="click-hint">คลิกดูข้อมูล</span></div>
         <div class="kpi-data"><div class="kpi-val">${pct}%</div><div class="kpi-target">(${current}/${max} ${unit})</div></div>
         <div class="progress-bg"><div class="progress-bar" style="width:${pct}%;"></div></div>
       </div>
     `;
   };
 
-  kpiContainer.innerHTML += createCard('AM-OI Assessment', '🧹', 'am', amHitAreas, amTotalAreas, 'พื้นที่');
-  kpiContainer.innerHTML += createCard('OPL (One Point Lesson)', '💡', 'opl', actualOpl, targetOpl, 'เรื่อง');
-  kpiContainer.innerHTML += createCard('FI Theme', '📈', 'fi', actualFi, targetFi, 'โครงการ');
+  kpiContainer.innerHTML += createClickableCard('AM-OI Assessment', '🧹', 'am', amHitAreas, amTotalAreas, 'พื้นที่', 'am');
+  kpiContainer.innerHTML += createClickableCard('OPL (One Point Lesson)', '💡', 'opl', actualOpl, targetOpl, 'เรื่อง', 'opl');
+  kpiContainer.innerHTML += createClickableCard('FI Theme', '📈', 'fi', actualFi, targetFi, 'โครงการ', 'fi');
   
-  // แยก Card Kaizen 
   kpiContainer.innerHTML += `
-      <div class="kpi-card glass-panel p-kz">
+      <div class="kpi-card glass-panel p-kz" style="border: 1px solid rgba(255,255,255,0.5);">
         <div class="kpi-icon">🚀</div>
         <div class="kpi-title">Kaizen Suggestion</div>
-        <div class="kpi-data" style="margin-bottom:0;"><div class="kpi-val" style="font-size:28px;">เป้า ${targetKz}</div><div class="kpi-target">เรื่อง</div></div>
-        <div style="font-size:11px; color:var(--gray-400); margin-top:8px;">(รวบรวมข้อมูลผ่านระบบส่วนกลาง)</div>
+        <div class="kpi-data" style="margin-bottom:0;"><div class="kpi-val" style="font-size:24px;">เป้าหมาย ${targetKz}</div><div class="kpi-target" style="padding-bottom:3px;">เรื่อง</div></div>
+        <div style="font-size:11px; color:var(--gray-400); margin-top:8px;">* รวบรวมข้อมูลผ่านระบบส่วนกลาง</div>
       </div>
-  `;
-
-  // แยก Card Makigami 
-  kpiContainer.innerHTML += `
-      <div class="kpi-card glass-panel p-mk" style="border-left: 4px solid var(--orange-400);">
+      <div class="kpi-card glass-panel p-mk" style="border: 1px solid rgba(255,255,255,0.5);">
         <div class="kpi-icon">🗺️</div>
         <div class="kpi-title">Makigami Analysis</div>
-        <div class="kpi-data" style="margin-bottom:0;"><div class="kpi-val" style="font-size:28px; color:var(--orange-600);">เป้า ${targetMk}</div><div class="kpi-target">เรื่อง</div></div>
-        <div style="font-size:11px; color:var(--gray-400); margin-top:8px;">(รวบรวมข้อมูลผ่านระบบส่วนกลาง)</div>
+        <div class="kpi-data" style="margin-bottom:0;"><div class="kpi-val" style="font-size:24px; color:var(--red-600);">เป้าหมาย ${targetMk}</div><div class="kpi-target" style="padding-bottom:3px;">เรื่อง</div></div>
+        <div style="font-size:11px; color:var(--gray-400); margin-top:8px;">* รวบรวมข้อมูลผ่านระบบส่วนกลาง</div>
       </div>
   `;
 
-  // ----------------------------------------------------
-  // Render Gap Analysis (Action Required)
-  // ----------------------------------------------------
-  const actionList = document.getElementById('action-list');
-  actionList.innerHTML = '';
-  let hasGap = false;
-
-  if (amShortList.length > 0) {
-    hasGap = true;
-    amShortList.forEach(item => {
-      let li = document.createElement('li');
-      li.innerHTML = `<strong>AM-OI [${item.dept}]:</strong> "${item.area}" ปัจจุบัน Step ${item.current} (ต้องการให้ผ่าน Step ${item.target})`;
-      actionList.appendChild(li);
-    });
+  const oplTbody = document.getElementById('opl-table-body');
+  oplTbody.innerHTML = '';
+  if(uniqueOpls.length === 0) { oplTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--gray-400);">ไม่มีประวัติของแผนกนี้</td></tr>'; } 
+  else {
+     uniqueOpls.forEach(r => {
+        let date = safeGet(r, 'วันที่ทำ OPL', 2); if(date && date.includes('T')) date = date.split('T')[0];
+        let status = safeGet(r, 'Status', 14); let badge = status.includes('อนุมัติสมบูรณ์') ? `<span class="badge b-pass">✅ สมบูรณ์</span>` : `<span class="badge b-wait">⏳ รออนุมัติ</span>`;
+        oplTbody.innerHTML += `<tr><td>${date}</td><td>${safeGet(r, 'OPL ID', 1)}</td><td>${safeGet(r, 'Department', 4)}</td><td><strong>${safeGet(r, 'ชื่อเรื่อง', 5)}</strong></td><td>${safeGet(r, 'ชื่อผู้สอน', 10)}</td><td>${badge}</td></tr>`;
+     });
   }
 
-  if (actualOpl < targetOpl) {
-    hasGap = true; let li = document.createElement('li');
-    li.innerHTML = `<strong>OPL Center:</strong> ต้องจัดทำ OPL เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${targetOpl - actualOpl}</span> เรื่อง (เป้าหมายทั้งหมด ${targetOpl} เรื่อง)`;
-    actionList.appendChild(li);
+  const fiTbody = document.getElementById('fi-table-body');
+  fiTbody.innerHTML = '';
+  if(uniqueFis.length === 0) { fiTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--gray-400);">ไม่มีประวัติของแผนกนี้</td></tr>'; } 
+  else {
+     uniqueFis.forEach(r => {
+        let status = safeGet(r, 'Status', 14); let badge = status.includes('สมบูรณ์') ? `<span class="badge b-pass">✅ ${status}</span>` : `<span class="badge b-wait">⏳ ${status}</span>`;
+        fiTbody.innerHTML += `<tr><td>${safeGet(r, 'FI ID', 1)}</td><td>${safeGet(r, 'Department', 4)}</td><td><strong>${safeGet(r, 'ชื่อเรื่อง', 5)}</strong></td><td>${safeGet(r, 'ผู้รับผิดชอบ', 2)}</td><td><span style="color:var(--indigo-600); font-weight:bold;">${safeGet(r, 'Step ปัจจุบัน', 13)}</span></td><td>${badge}</td></tr>`;
+     });
   }
 
-  if (actualFi < targetFi) {
-    hasGap = true; let li = document.createElement('li');
-    li.innerHTML = `<strong>FI Theme:</strong> ต้องจัดทำโครงการ FI เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${targetFi - actualFi}</span> โครงการ (เป้าหมายทั้งหมด ${targetFi} โครงการ)`;
-    actionList.appendChild(li);
-  }
+  const actionList = document.getElementById('action-list'); actionList.innerHTML = ''; let hasGap = false;
+  if (amShortList.length > 0) { hasGap = true; amShortList.forEach(item => { let li = document.createElement('li'); li.innerHTML = `<strong>AM-OI [${item.dept}]:</strong> "${item.area}" ปัจจุบัน Step ${item.current} (ต้องการให้ผ่าน Step ${item.target})`; actionList.appendChild(li); }); }
+  if (actualOpl < targetOpl) { hasGap = true; let li = document.createElement('li'); li.innerHTML = `<strong>OPL Center:</strong> ต้องจัดทำ OPL เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${targetOpl - actualOpl}</span> เรื่อง (เป้าหมายทั้งหมด ${targetOpl} เรื่อง)`; actionList.appendChild(li); }
+  if (actualFi < targetFi) { hasGap = true; let li = document.createElement('li'); li.innerHTML = `<strong>FI Theme:</strong> ต้องจัดทำโครงการ FI เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${targetFi - actualFi}</span> โครงการ`; actionList.appendChild(li); }
+  
+  if(targetKz > 0) { let li = document.createElement('li'); li.className = 'manual-msg'; li.innerHTML = `<strong>Kaizen:</strong> อย่าลืมติดตามยอดส่ง Kaizen (${targetKz} เรื่อง) ผ่านระบบส่วนกลาง`; actionList.appendChild(li); }
+  if(targetMk > 0) { let li = document.createElement('li'); li.className = 'manual-msg'; li.innerHTML = `<strong>Makigami:</strong> อย่าลืมติดตามยอดส่ง Makigami (${targetMk} เรื่อง) ผ่านระบบส่วนกลาง`; actionList.appendChild(li); }
 
-  // แยกแจ้งเตือนของ Kaizen
-  if(targetKz > 0) {
-    let li = document.createElement('li'); li.className = 'manual-msg';
-    li.innerHTML = `<strong>Kaizen:</strong> อย่าลืมติดตามยอดส่ง Kaizen (${targetKz} เรื่อง) ผ่านระบบส่วนกลาง`;
-    actionList.appendChild(li);
-  }
+  if (!hasGap && amTotalAreas > 0) { let li = document.createElement('li'); li.className = 'success-msg'; li.innerHTML = `สุดยอด! 🎉 คุณบรรลุเป้าหมาย KPI หลักครบถ้วนแล้ว`; actionList.appendChild(li); }
 
-  // แยกแจ้งเตือนของ Makigami
-  if(targetMk > 0) {
-    let li = document.createElement('li'); li.className = 'manual-msg';
-    li.innerHTML = `<strong>Makigami:</strong> อย่าลืมติดตามยอดส่ง Makigami (${targetMk} เรื่อง) ผ่านระบบส่วนกลาง`;
-    actionList.appendChild(li);
-  }
-
-  if (!hasGap && amTotalAreas > 0) {
-    let li = document.createElement('li'); li.className = 'success-msg';
-    li.innerHTML = `สุดยอด! 🎉 คุณบรรลุเป้าหมาย KPI หลักในส่วนที่ระบบตรวจวัดได้ครบถ้วนแล้ว`;
-    actionList.appendChild(li);
-  }
-
-  // ----------------------------------------------------
-  // Render Chart
-  // ----------------------------------------------------
   const ctx = document.getElementById('stepChart').getContext('2d');
   if (chartInstance) chartInstance.destroy();
-  chartInstance = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['S0 (ยังไม่เริ่ม)', 'S1', 'S2', 'S3', 'S4', 'S5 (ครบ)'],
-      datasets: [{
-        data: stepDist,
-        backgroundColor: ['rgba(155, 165, 177, 0.5)','rgba(58, 134, 255, 0.7)','rgba(58, 134, 255, 0.7)','rgba(16, 210, 161, 0.8)','rgba(16, 210, 161, 0.8)','rgba(12, 164, 124, 0.9)'],
-        borderRadius: 6
-      }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { grid: { display: false } } } }
-  });
+  chartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['S0', 'S1', 'S2', 'S3', 'S4', 'S5'], datasets: [{ data: stepDist, backgroundColor: ['rgba(155, 165, 177, 0.5)','rgba(58, 134, 255, 0.7)','rgba(58, 134, 255, 0.7)','rgba(16, 210, 161, 0.8)','rgba(16, 210, 161, 0.8)','rgba(12, 164, 124, 0.9)'], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { grid: { display: false } } } } });
+  
+  closeDetails();
+}
+
+function showDetails(type, title) {
+  document.querySelectorAll('.kpi-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('card-' + type).classList.add('active');
+  document.getElementById('detail-am').style.display = 'none';
+  document.getElementById('detail-opl').style.display = 'none';
+  document.getElementById('detail-fi').style.display = 'none';
+  document.getElementById('details-title').innerHTML = `🔍 เจาะลึกข้อมูล: ${title}`;
+  const panel = document.getElementById('details-panel'); panel.style.display = 'block';
+  document.getElementById('detail-' + type).style.display = 'block';
+  setTimeout(() => { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+}
+
+function closeDetails() {
+  document.getElementById('details-panel').style.display = 'none';
+  document.querySelectorAll('.kpi-card').forEach(c => c.classList.remove('active'));
 }
 
 loadData();
