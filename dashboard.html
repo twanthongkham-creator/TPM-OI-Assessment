@@ -346,7 +346,9 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 const API_URL='https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 let areaData={},kpiMaster=[],amHistory=[],oplHistory=[],fiHistory=[],kzHistory=[],mkHistory=[];
+let userDataObj={}, approverDataObj={}; // 💡 [เพิ่มแล้ว] ตัวแปรเก็บรายชื่อ
 let chartKPI=null,chartAM=null;
+
 let appData={
   am:{key:'am',title:'AM-OI Assessment',target:0,actual:0,wip:0,stepDist:[0,0,0,0,0,0]},
   opl:{key:'opl',title:'OPL Center',target:0,actual:0,wip:0},
@@ -368,13 +370,15 @@ const sg=(r,k,i)=>r[k]!==undefined?r[k]:Object.values(r)[i];
 
 async function loadData(){
   try{
-    const[kR,aR,oR,fR,kzR,mR]=await Promise.all([
+    // 💡 [เพิ่มแล้ว] ดึงข้อมูล getUsers มาด้วย
+    const[kR,aR,oR,fR,kzR,mR,uR]=await Promise.all([
       fetch(API_URL+'?action=getKPIs').then(r=>r.json()),
       fetch(API_URL+'?action=getHistory').then(r=>r.json()),
       fetch(API_URL+'?action=getOplHistory').then(r=>r.json()),
       fetch(API_URL+'?action=getFiHistory').then(r=>r.json()),
       fetch(API_URL+'?action=getKaizenHistory').then(r=>r.json()),
-      fetch(API_URL+'?action=getMakigamiHistory').then(r=>r.json())
+      fetch(API_URL+'?action=getMakigamiHistory').then(r=>r.json()),
+      fetch(API_URL+'?action=getUsers').then(r=>r.json()) 
     ]);
     if(kR.status==='success'){kpiMaster=kR.data||[];kpiMaster.forEach(k=>{let s=sg(k,'System',0),d=sg(k,'Department',2),a=sg(k,'Area',3);if(s==='AM-OI'&&d&&a&&a!=='ALL'&&a!=='All'){if(!areaData[d])areaData[d]=[];if(!areaData[d].includes(a))areaData[d].push(a)}});}
     if(aR.status==='success')amHistory=aR.data||[];
@@ -382,6 +386,13 @@ async function loadData(){
     if(fR.status==='success')fiHistory=fR.data||[];
     if(kzR&&kzR.status==='success')kzHistory=kzR.data||[];
     if(mR&&mR.status==='success')mkHistory=mR.data||[];
+    
+    // 💡 [เพิ่มแล้ว] เซฟข้อมูลรายชื่อพนักงาน
+    if(uR && uR.status==='success'){
+        userDataObj = uR.users || {};
+        approverDataObj = uR.approvers || {};
+    }
+
     initFilter();processAndRender();
   }catch(e){document.getElementById('loader').innerHTML='<span style="color:var(--red-600)">❌ โหลดข้อมูลล้มเหลว</span>';}
 }
@@ -631,7 +642,6 @@ async function sendMessage() {
     const typingId = appendTypingIndicator();
 
     // 💡 GOD MODE: แพ็คข้อมูลดิบ (Raw Data) ทุกอย่างในระบบส่งให้ AI อ่านในเสี้ยววินาที!
-    // เราจะจับข้อมูลตารางทั้งหมดแปลงเป็นข้อความ JSON แล้วแนบไปหลังฉาก
     let dbContext = `
 [ฐานข้อมูลบุคลากรและโครงสร้างองค์กร]
 ${JSON.stringify({ พนักงาน: userDataObj, หัวหน้าและผู้บริหาร: approverDataObj })}
@@ -693,6 +703,7 @@ ${dbContext}
         inputEl.focus();
     }
 }
+
 function appendMessage(sender, text) {
     const chatBody = document.getElementById('chat-body');
     const msgWrap = document.createElement('div');
