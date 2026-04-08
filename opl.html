@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPL Center — One Point Lesson</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
+:root{
+  --blue-900:#0A2540;--blue-800:#113A5D;--blue-600:#1E6091;--blue-400:#3A86FF;
+  --teal-600:#0CA47C;--teal-400:#10D2A1;
+  --red-600:#D93838;--red-400:#FF5C5C;
+  --orange-500:#F57C00;--orange-400:#FF9800;
+  --amber-500:#E69500;
+  --gray-900:#1A1C1E;--gray-600:#505A64;--gray-400:#9BA5B1;--gray-200:#D9E2EC;--gray-50:#F8FAFC;
+  --font:'IBM Plex Sans Thai',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+/* พื้นหลัง iOS Mesh Gradient (ใช้โทนสีส้ม/เหลือง ให้ต่างจาก 5ส ที่เป็นสีฟ้า) */
+body{
+  font-family:var(--font);
+  background-color:#FDF8F5;
+  background-image: 
+    radial-gradient(circle at 15% 10%, rgba(245,124,0,0.1) 0%, transparent 40%),
+    radial-gradient(circle at 85% 20%, rgba(58,134,255,0.08) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(230,149,0,0.1) 0%, transparent 50%);
+  background-attachment: fixed;
+  color:var(--gray-900);
+  font-size:14px;
+  line-height:1.6;
+  min-height:100vh;
+}
+
+/* Glassmorphism Card */
+.card, .page-header {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 32px rgba(245, 124, 0, 0.05);
+  border-radius: 20px;
+}
+
+/* Header */
+.page-header{
+  position:sticky; top:10px; z-index:100;
+  margin: 10px auto; max-width: 860px; padding: 16px 24px;
+  border-bottom: none; display: flex; align-items: center; justify-content: space-between; flex-wrap:wrap; gap:16px;
+}
+.page-title{font-size:18px;font-weight:700;color:var(--orange-500); letter-spacing: -0.3px; display:flex; align-items:center; gap:8px;}
+.page-sub{font-size:12px;color:var(--gray-600);margin-top:2px; font-weight: 500;}
+
+/* ปุ่มกลับ Home */
+.btn-nav-top {
+  display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px;
+  background: linear-gradient(135deg, #fff, #FFF3E0); border: 1px solid rgba(255,255,255,0.9);
+  color:var(--orange-500); font-size:12px; font-weight:700; text-decoration:none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition:all 0.2s;
+}
+.btn-nav-top:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(245,124,0,0.15); background:#fff; }
+
+/* Layout */
+.wrap{max-width:860px;margin:0 auto;padding:0.5rem 1rem 5rem}
+.card{padding:1.5rem;margin-bottom:1.25rem;}
+.card-accent{border-left:4px solid var(--orange-400); border-radius: 10px 20px 20px 10px;}
+.sec-label{font-size:12px;font-weight:700;color:var(--orange-500);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.sec-label::after{content:'';flex:1;height:1.5px;background:linear-gradient(to right, rgba(245,124,0,0.2), transparent);}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:600px){.grid2, .grid3{grid-template-columns:1fr}}
+.fg{display:flex;flex-direction:column;gap:6px}
+.fg label{font-size:12px;font-weight:600;color:var(--gray-900); padding-left: 4px;}
+.req{background:var(--red-400);color:#fff;font-size:9px;font-weight:600;padding:2px 6px;border-radius:6px;margin-left:4px; box-shadow:0 2px 4px rgba(217,56,56,0.2);}
+
+/* Controls */
+input[type=text],input[type=date],select,textarea{
+  width:100%;font-family:var(--font);font-size:14px;color:var(--blue-900);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-radius: 12px;padding:10px 14px;outline:none;
+  box-shadow: inset 0 2px 4px rgba(245,124,0,0.02);
+  transition:all .2s ease;
+  font-weight: 500;
+}
+input:focus,select:focus,textarea:focus{
+  background: #fff; border-color:var(--orange-400);
+  box-shadow: 0 0 0 4px rgba(245,124,0,0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%23505A64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+textarea{resize:vertical;min-height:100px;line-height:1.6;}
+input[readonly]{background:rgba(255,243,224,0.6); color:var(--orange-500); cursor:not-allowed; border-color:rgba(245,124,0,0.3);}
+
+/* Upload Zone */
+.upload-zone{background:rgba(255,255,255,0.5); border:2px dashed rgba(245,124,0,0.2);border-radius:16px;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:all .2s ease; height: 100%; display: flex; flex-direction: column; justify-content: center;}
+.upload-zone:hover{background:rgba(255,255,255,0.9);border-color:var(--orange-400);box-shadow:0 4px 16px rgba(245,124,0,0.1);}
+.upload-icon{width:48px;height:48px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center; background:var(--orange-50); border-radius:50%; box-shadow:0 2px 8px rgba(0,0,0,0.05); color:var(--orange-500);}
+.upload-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.upload-text{font-size:14px;font-weight:600;color:var(--blue-900)}
+.upload-hint{font-size:11px;font-weight:500;color:var(--gray-400);margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{background:var(--surface);border:1px solid rgba(0,0,0,0.05);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:500;color:var(--orange-500);display:flex;align-items:center;gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.03);}
+.chip-x{cursor:pointer;color:var(--red-400);font-size:16px;line-height:1; font-weight:bold; transition:all .2s;}
+.chip-x:hover{color:var(--red-600);transform:scale(1.1);}
+
+/* Actions & Buttons */
+.actions{display:flex;justify-content:flex-end;gap:12px;margin-top:2rem}
+.btn{font-family:var(--font);font-size:14px;font-weight:600;padding:12px 28px;border-radius:12px;cursor:pointer;transition:all .2s ease; border:none; box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+.btn-reset{background:rgba(255,255,255,0.8);color:var(--gray-600); border:1px solid rgba(255,255,255,0.9);}
+.btn-reset:hover{background:#fff; transform:translateY(-1px);}
+.btn-pri{background:linear-gradient(135deg, var(--orange-400), var(--orange-500));color:#fff;box-shadow:0 4px 16px rgba(245,124,0,0.3);}
+.btn-pri:hover{background:linear-gradient(135deg, #FFA726, #E65100); transform:translateY(-2px); box-shadow:0 6px 20px rgba(245,124,0,0.4);}
+.btn-pri:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;right:2rem;background:rgba(10,37,64,0.9);backdrop-filter:blur(10px);color:#fff;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:500;opacity:0;transform:translateY(20px);transition:all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);pointer-events:none;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* Spinner */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
+
+.opl-id-display { font-size:22px !important; font-weight:700 !important; color:var(--orange-500) !important; text-align:center; letter-spacing:1px; background: rgba(255,152,0,0.08) !important;}
+</style>
+</head>
+<body>
+
+<div class="page-header card">
+  <div class="page-header-inner">
+    <div>
+      <div class="page-title">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+        OPL Center — One Point Lesson
+      </div>
+      <div class="page-sub">แบบฟอร์มสร้างบทเรียนจุดเดียว สำหรับขยายผลความรู้ในองค์กร</div>
+    </div>
+    <div>
+      <a href="home.html" class="btn-nav-top">🏠 กลับเมนูหลัก (Home)</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<div class="card card-accent">
+  <div class="sec-label">📌 ข้อมูลหลัก OPL (Primary Info)</div>
+  
+  <div class="grid3" style="margin-bottom:16px;">
+    <div class="fg">
+      <label>โรงงาน (Factory) <span class="req">จำเป็น</span></label>
+      <select id="f-factory" onchange="generateOplId()">
+        <option value="">-- เลือกโรงงาน --</option>
+        <option value="PT">ปทุมธานี (PT)</option>
+        <option value="KR">นครราชสีมา (KR)</option>
+        <option value="NS">นครสวรรค์ (NS)</option>
+        <option value="CH">ชลบุรี (CH)</option>
+        <option value="NP">นครปฐม (NP)</option>
+        <option value="SR">สุราษฎร์ธานี (SR)</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>แผนก / กลุ่ม (Dept) <span class="req">จำเป็น</span></label>
+      <select id="f-dept" onchange="generateOplId()">
+        <option value="">-- เลือกแผนก --</option>
+        <option value="MT">MT (วิศวกรรม/ซ่อมบำรุง)</option>
+        <option value="RW">RW (คลังวัตถุดิบ/อะไหล่)</option>
+        <option value="QC">QC (ควบคุมคุณภาพ)</option>
+        <option value="PD">PD (แผนกผลิต)</option>
+        <option value="WH">WH (คลังสินค้า)</option>
+        <option value="EN">EN (วิศวกรรม)</option>
+        <option value="SE">SE (ความปลอดภัย)</option>
+        <option value="HC">HC (ทรัพยากรบุคคล)</option>
+        <option value="AC">AC (บัญชี)</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>วันที่ทำ OPL <span class="req">จำเป็น</span></label>
+      <input type="date" id="f-date">
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="fg">
+      <label>ปี Fiscal Year</label>
+      <input type="text" id="f-year" value="2026" maxlength="4" onkeyup="generateOplId()">
+    </div>
+    <div class="fg">
+      <label>ลำดับ (จำนวน OPL ของแผนก)</label>
+      <input type="text" id="f-run" placeholder="เช่น 001, 002" maxlength="3" onkeyup="generateOplId()">
+    </div>
+  </div>
+
+  <div class="fg" style="margin-top:16px;">
+    <label>รหัสเอกสาร (OPL ID)</label>
+    <input type="text" id="f-opl-id" class="opl-id-display" readonly placeholder="OPL-[โรงงาน]-[แผนก]-[ปี]-[ลำดับ]">
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-label">💡 เนื้อหา OPL (Content)</div>
+  <div class="fg" style="margin-bottom:16px;">
+    <label>ชื่อเรื่อง (Title) <span class="req">จำเป็น</span></label>
+    <input type="text" id="f-title" placeholder="ตั้งชื่อเรื่องให้กระชับ เข้าใจง่าย">
+  </div>
+
+  <div class="grid2" style="margin-bottom:16px;">
+    <div class="fg">
+      <label>ประเภทของ OPL (Type) <span class="req">จำเป็น</span></label>
+      <select id="f-category">
+        <option value="">-- เลือกประเภท --</option>
+        <option value="5S">5 ส. (5S)</option>
+        <option value="Environment">สิ่งแวดล้อม (Environment)</option>
+        <option value="ReduceTime">ลดขั้นตอน/ลดเวลา (Reduce Time)</option>
+        <option value="Safety">ความปลอดภัย (Safety)</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>การจำแนก (Classification) <span class="req">จำเป็น</span></label>
+      <select id="f-class">
+        <option value="">-- เลือกการจำแนก --</option>
+        <option value="Basic">ความรู้พื้นฐาน (Basic Knowledge)</option>
+        <option value="Improvement">การปรับปรุง (Improvement Cases)</option>
+        <option value="Trouble">ปัญหาที่เกิดขึ้น (Trouble Cases)</option>
+        <option value="CostReduction">ลดต้นทุน (Cost Reduction)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="fg">
+    <label>รายละเอียด / ขั้นตอนการทำ <span class="req">จำเป็น</span></label>
+    <textarea id="f-details" placeholder="อธิบายจุดที่เป็นปัญหา และวิธีการแก้ไขหรือขั้นตอนที่ถูกต้อง..."></textarea>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-label">📸 ภาพประกอบ & เอกสาร (Attachments)</div>
+  <div class="grid2">
+    <div>
+      <div class="upload-zone" onclick="document.getElementById('fu-img').click()">
+        <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <div class="upload-text">คลิกแนบรูปภาพ (Before/After)</div>
+        <div class="upload-hint">รองรับ JPG, PNG (แคปจอหรือถ่ายรูปได้)</div>
+      </div>
+      <input type="file" id="fu-img" multiple accept="image/*" style="display:none" onchange="addImages(this.files)">
+      <div class="chips" id="chip-img"></div>
+    </div>
+    <div>
+      <div class="upload-zone" onclick="document.getElementById('fu-doc').click()">
+        <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+        <div class="upload-text">คลิกแนบไฟล์เอกสาร (PDF)</div>
+        <div class="upload-hint">คู่มือ, สเปคงาน (ไม่เกิน 5MB)</div>
+      </div>
+      <input type="file" id="fu-doc" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="addDocs(this.files)">
+      <div class="chips" id="chip-doc"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-label">👨‍🏫 การสอนและประเมินผล (Training & Result)</div>
+  <div class="grid2" style="margin-bottom:16px;">
+    <div class="fg">
+      <label>วันที่สอน <span class="req">จำเป็น</span></label>
+      <input type="date" id="f-teach-date">
+    </div>
+    <div class="fg">
+      <label>ผลการ OPL <span class="req">จำเป็น</span></label>
+      <select id="f-result" style="font-weight:bold;">
+        <option value="">-- เลือกผลประเมิน --</option>
+        <option value="ผ่าน" style="color:var(--teal-600);">✅ ผ่าน (Pass)</option>
+        <option value="ไม่ผ่าน" style="color:var(--red-600);">❌ ไม่ผ่าน (Fail)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="fg">
+      <label>ชื่อผู้สอน (Instructor)</label>
+      <input type="text" id="f-instructor" placeholder="ชื่อผู้สอน / ผู้ถ่ายทอด">
+    </div>
+    <div class="fg">
+      <label>ชื่อผู้เรียน (Learners)</label>
+      <textarea id="f-learners" placeholder="ระบุชื่อผู้รับการสอน (หากมีหลายคนให้ใช้ลูกน้ำ , คั่น)" style="min-height:44px;"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="actions">
+  <button class="btn btn-reset" onclick="resetForm()">ล้างข้อมูล</button>
+  <button class="btn btn-pri" id="btn-submit" onclick="handleSubmit()">ส่งแบบฟอร์ม OPL</button>
+</div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ================================================================
+// ⚠️ ใส่ลิงก์ Web App URL (ตัวเดียวกันกับฟอร์ม 5ส)
+// ================================================================
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
+
+const imageStore = []; 
+const docStore = [];   
+
+// 🟢 ฟังก์ชันสร้าง OPL ID อัตโนมัติแบบ Real-time
+function generateOplId() {
+  const fac = document.getElementById('f-factory').value || 'XX';
+  const dept = document.getElementById('f-dept').value || 'XX';
+  const year = document.getElementById('f-year').value || 'XXXX';
+  let run = document.getElementById('f-run').value || '000';
+  
+  // จัด Format ลำดับให้เป็น 3 หลักเสมอ
+  if(run !== '000' && run.length < 3 && run !== '') {
+     run = run.padStart(3, '0');
+  }
+  
+  const oplId = `OPL-${fac}-${dept}-${year}-${run}`;
+  document.getElementById('f-opl-id').value = oplId;
+}
+
+// ================================================================
+// ฟังก์ชันแนบไฟล์ (นำมาจากระบบเดิม)
+// ================================================================
+function addImages(fl) {
+  const container = document.getElementById('chip-img');
+  Array.from(fl).forEach(f => {
+    const idx = imageStore.push(f) - 1;
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.innerHTML = `<span>${f.name}</span><span class="chip-x" onclick="removeImage(${idx},this)">×</span>`;
+    container.appendChild(chip);
+  });
+}
+function removeImage(idx, el) { imageStore[idx] = null; el.parentElement.remove(); }
+
+function addDocs(fl) {
+  const container = document.getElementById('chip-doc');
+  Array.from(fl).forEach(f => {
+    if(f.size > 5 * 1024 * 1024) { showToast(`ไฟล์ ${f.name} มีขนาดใหญ่เกิน 5MB`, '#D93838', 5000); return; }
+    const idx = docStore.push(f) - 1;
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.innerHTML = `<span>${f.name}</span><span class="chip-x" onclick="removeDoc(${idx},this)">×</span>`;
+    container.appendChild(chip);
+  });
+}
+function removeDoc(idx, el) { docStore[idx] = null; el.parentElement.remove(); }
+
+function showToast(msg, color, ms) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = color || 'var(--orange-500)';
+  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), ms || 3500);
+}
+
+function resetForm() {
+  if (!confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) return;
+  document.querySelectorAll('input[type="text"], input[type="date"], select, textarea').forEach(el => el.value = '');
+  document.getElementById('f-year').value = '2026';
+  generateOplId();
+  
+  imageStore.length = 0; docStore.length = 0;
+  document.getElementById('chip-img').innerHTML = '';
+  document.getElementById('chip-doc').innerHTML = '';
+  document.getElementById('f-date').valueAsDate = new Date();
+  document.getElementById('f-teach-date').valueAsDate = new Date();
+  showToast('ล้างข้อมูลแล้ว'); 
+}
+
+function compressImage(file, maxWidth = 1024, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader(); reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const img = new Image(); img.src = e.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      }; img.onerror = reject;
+    }; reader.onerror = reject;
+  });
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
+}
+
+// ================================================================
+// ฟังก์ชันส่งข้อมูล OPL
+// ================================================================
+async function handleSubmit() {
+  const fac = document.getElementById('f-factory').value;
+  const dept = document.getElementById('f-dept').value;
+  const date = document.getElementById('f-date').value;
+  const title = document.getElementById('f-title').value.trim();
+  const category = document.getElementById('f-category').value;
+  const classification = document.getElementById('f-class').value;
+  const details = document.getElementById('f-details').value.trim();
+  const teachDate = document.getElementById('f-teach-date').value;
+  const result = document.getElementById('f-result').value;
+
+  // Validate
+  if (!fac) { showToast('กรุณาเลือกโรงงาน', '#D93838'); return; }
+  if (!dept) { showToast('กรุณาเลือกแผนก', '#D93838'); return; }
+  if (!date) { showToast('กรุณาระบุวันที่ทำ OPL', '#D93838'); return; }
+  if (!title) { showToast('กรุณาระบุชื่อเรื่อง', '#D93838'); return; }
+  if (!category) { showToast('กรุณาเลือกประเภท OPL', '#D93838'); return; }
+  if (!classification) { showToast('กรุณาเลือกการจำแนก', '#D93838'); return; }
+  if (!details) { showToast('กรุณาระบุรายละเอียด', '#D93838'); return; }
+  if (!teachDate) { showToast('กรุณาระบุวันที่สอน', '#D93838'); return; }
+  if (!result) { showToast('กรุณาเลือกผลการประเมิน', '#D93838'); return; }
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังส่งข้อมูล...';
+
+  // เตรียมไฟล์แนบ
+  const filesData = [];
+  for (const f of imageStore.filter(Boolean)) {
+    try {
+      const b64 = await compressImage(f, 1024, 0.7);
+      filesData.push({ name: f.name, mimeType: 'image/jpeg', data: b64.split(',')[1] });
+    } catch(e) {}
+  }
+  for (const d of docStore.filter(Boolean)) {
+    try {
+      const b64 = await fileToBase64(d);
+      filesData.push({ name: d.name, mimeType: d.type || 'application/pdf', data: b64.split(',')[1] });
+    } catch(e) {}
+  }
+
+  // 🟢 Payload โครงสร้างใหม่ แนบ type: 'opl' ไปให้หลังบ้านรู้
+  const payload = {
+    type: 'opl', // <-- สำคัญมาก
+    oplId: document.getElementById('f-opl-id').value,
+    oplDate: date,
+    factory: fac,
+    department: dept,
+    title: title,
+    category: category,
+    classification: classification,
+    details: details,
+    teachDate: teachDate,
+    instructor: document.getElementById('f-instructor').value.trim(),
+    learners: document.getElementById('f-learners').value.trim(),
+    result: result,
+    files: filesData
+  };
+
+  try {
+    await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
+    showToast('บันทึก OPL สำเร็จแล้ว!', '#0CA47C', 4000);
+    setTimeout(() => resetForm(), 4500);
+  } catch (err) {
+    showToast('เกิดข้อผิดพลาด: ' + err.message, '#D93838', 5000);
+  } finally {
+    btn.disabled = false; btn.innerHTML = 'ส่งแบบฟอร์ม OPL';
+  }
+}
+
+// Init
+document.getElementById('f-date').valueAsDate = new Date();
+document.getElementById('f-teach-date').valueAsDate = new Date();
+generateOplId();
+</script>
+</body>
+</html>
