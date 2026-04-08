@@ -630,35 +630,45 @@ async function sendMessage() {
     btnEl.disabled = true;
     const typingId = appendTypingIndicator();
 
-    // รวบรวมข้อมูลจริงจากตัวแปรในหน้า Dashboard เพื่อยัดใส่สมอง AI
-    let liveData = "สรุป KPI ล่าสุดของทุกแผนก (รูปแบบ: อนุมัติผ่านแล้ว / เป้าหมาย):\n";
-    
-    if (typeof areaData !== 'undefined' && Object.keys(areaData).length > 0) {
-        Object.keys(areaData).sort().forEach(dept => {
-            let amT = getSysTarget('AM-OI', dept);
-            let amA = amHistory.filter(h => (sg(h,'Department',3)===dept) && (sg(h,'Status',23)==='อนุมัติสมบูรณ์')).length;
-            let oplT = getSysTarget('OPL', dept);
-            let oplA = [...new Map(oplHistory.filter(r=>sg(r,'Department',4)===dept).map(i=>[sg(i,'OPL ID',1), i])).values()].filter(r=>sg(r,'Status',14)&&sg(r,'Status',14).includes('สมบูรณ์')).length;
-            let fiT = getSysTarget('FI', dept);
-            let fiA = [...new Map(fiHistory.filter(r=>sg(r,'Department',4)===dept).map(i=>[sg(i,'FI ID',1), i])).values()].filter(r=>sg(r,'Status',14)&&sg(r,'Status',14).includes('สมบูรณ์')).length;
-            let mkT = getSysTarget('Makigami', dept);
-            let mkA = [...new Map(mkHistory.filter(r=>sg(r,'แผนก',3)===dept).map(i=>[sg(i,'Makigami ID',1), i])).values()].filter(r=>sg(r,'Status',9)==='Completed').length;
-            
-            liveData += `- แผนก ${dept}: 5ส(${amA}/${amT} พื้นที่), OPL(${oplA}/${oplT} เรื่อง), FI(${fiA}/${fiT} โครงการ), Makigami(${mkA}/${mkT})\n`;
-        });
-    } else {
-        liveData += "(กำลังรอซิงค์ข้อมูล หรือยังไม่มีข้อมูลในระบบ)\n";
-    }
+    // 💡 GOD MODE: แพ็คข้อมูลดิบ (Raw Data) ทุกอย่างในระบบส่งให้ AI อ่านในเสี้ยววินาที!
+    // เราจะจับข้อมูลตารางทั้งหมดแปลงเป็นข้อความ JSON แล้วแนบไปหลังฉาก
+    let dbContext = `
+[ฐานข้อมูลบุคลากรและโครงสร้างองค์กร]
+${JSON.stringify({ พนักงาน: userDataObj, หัวหน้าและผู้บริหาร: approverDataObj })}
 
-    const systemPrompt = `คุณคือ AI Advisor ประจำโรงงาน ให้คำปรึกษาผู้บริหารโดยอ้างอิงจาก "ข้อมูลจริง" ด้านล่างนี้เท่านั้น:
-${liveData}
+[เป้าหมาย KPI ระดับโรงงาน]
+${JSON.stringify(kpiMaster)}
 
-คำถามจากผู้ใช้งาน: "${text}"
+[ข้อมูลการประเมิน 5S (AM-OI)]
+${JSON.stringify(amHistory)}
 
-วิธีการตอบ:
-1. หากผู้ใช้ถามถึง KPI แผนกใด ให้วิเคราะห์ข้อมูลด้านบน แจ้งว่า "ทำอะไรผ่านไปแล้วบ้าง" และ "เหลือที่ต้องดันให้จบอีกเท่าไหร่" (ระบุตัวเลขให้ชัดเจน)
-2. แนะนำแนวทางว่าแผนกนั้นควรเน้นทำอะไรต่อเพื่อให้ผ่าน KPI โดยนำหลักการ TPM มาอธิบายเสริม
-3. ใช้ Bullet point ให้อ่านง่าย กระชับ`;
+[ฐานข้อมูลคลังความรู้ OPL]
+${JSON.stringify(oplHistory)}
+
+[ฐานข้อมูลโครงการ FI Theme]
+${JSON.stringify(fiHistory)}
+
+[ฐานข้อมูล Kaizen]
+${JSON.stringify(kzHistory)}
+
+[ฐานข้อมูลกระบวนการ Makigami]
+${JSON.stringify(mkHistory)}
+    `;
+
+    // 💡 สร้าง Prompt สั่งการขั้นเด็ดขาด ให้ยึดข้อมูลจาก JSON เป็นหลัก
+    const systemPrompt = `คุณคือ "AI Data Analyst & TPM Advisor" ประจำโรงงาน 
+นี่คือฐานข้อมูลจริงทั้งหมดของระบบ OI Center ในรูปแบบ JSON ที่คุณต้องใช้อ้างอิงในการตอบ:
+
+${dbContext}
+
+กฎเหล็กในการตอบคำถาม:
+1. คุณต้องอ่านและค้นหาคำตอบจากฐานข้อมูล JSON ด้านบน "เท่านั้น" ห้ามแต่งตั้งรายชื่อ ตัวเลข หรือสถานะโครงการขึ้นมาเองเด็ดขาด
+2. หากผู้ใช้ถามถึง "บุคคล" (เช่น นาย A ทำอะไรบ้าง): ให้ค้นหาชื่อของเขาในฐานข้อมูล OPL, FI, Kaizen, Makigami และ AM-OI ทั้งหมด แล้วสรุปผลงานมาให้
+3. หากผู้ใช้ถาม "เชิงวิเคราะห์" (เช่น ใครทำ OPL เยอะสุด, แผนกไหนยังไม่ทำ 5ส): ให้คำนวณและสรุปจากฐานข้อมูลดิบมาตอบ
+4. หากค้นหาข้อมูลไม่พบใน JSON ให้ตอบอย่างสุภาพว่า "ยังไม่มีข้อมูลเรื่องนี้ในระบบฐานข้อมูลครับ"
+5. ใช้ภาษาเป็นกันเอง เป็นมืออาชีพ (มีครับ/ค่ะ) และใช้ Bullet point หรือตัวหนา (Bold) เพื่อให้อ่านง่าย
+
+คำถามจากผู้บริหาร/พนักงาน: "${text}"`;
 
     try {
         const response = await fetch(API_URL, {
@@ -683,7 +693,6 @@ ${liveData}
         inputEl.focus();
     }
 }
-
 function appendMessage(sender, text) {
     const chatBody = document.getElementById('chat-body');
     const msgWrap = document.createElement('div');
