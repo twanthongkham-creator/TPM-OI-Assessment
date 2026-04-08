@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OI Center — KPI Dashboard & Gap Analysis</title>
+<title>OI Center — Smart KPI Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
@@ -27,7 +27,7 @@
     background-attachment: fixed; color:var(--gray-900); padding-bottom:60px;
   }
   
-  .glass-panel { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 8px 32px rgba(10, 37, 64, 0.05); border-radius: 20px; }
+  .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 8px 32px rgba(10, 37, 64, 0.05); border-radius: 20px; }
 
   .header{ position:sticky; top:10px; z-index:100; max-width: 1150px; margin: 10px auto 20px; padding: 16px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
   .h-title h2{font-size:20px;font-weight:700;color:var(--blue-900);letter-spacing:-0.5px; margin-bottom:4px;}
@@ -37,42 +37,66 @@
   
   .wrap{max-width:1150px;margin:0 auto;padding:0 16px;}
 
-  /* Global Filter */
-  .filter-section { padding: 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,250,252,0.9)); border: 1.5px solid var(--blue-400); }
+  /* 🟢 Global Filter */
+  .filter-section { padding: 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); border: 1.5px solid var(--blue-400); }
   .filter-section label { font-size: 15px; font-weight: 700; color: var(--blue-900); display: flex; align-items: center; gap: 8px; }
-  .filter-select { padding: 10px 16px; border: 1.5px solid var(--gray-200); border-radius: 12px; font-family: var(--font); font-size: 15px; font-weight: 600; color: var(--blue-800); background: #fff; min-width: 250px; outline: none; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+  .filter-select { padding: 10px 16px; border: 1.5px solid var(--gray-200); border-radius: 12px; font-family: var(--font); font-size: 15px; font-weight: 600; color: var(--blue-800); background: #fff; min-width: 250px; outline: none; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: all 0.2s;}
   .filter-select:focus { border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(58,134,255,0.15); }
 
-  /* KPI Dashboard Grid */
+  /* 🟢 Priority Action Board (New Design) */
+  .priority-board { margin-bottom: 32px; }
+  .pb-title { font-size: 18px; font-weight: 700; color: var(--blue-900); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .pb-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, rgba(30,96,145,0.1), transparent); }
+  
+  .priority-list { display: flex; flex-direction: column; gap: 12px; }
+  .priority-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-radius: 16px; background: #fff; border-left: 6px solid var(--gray-200); box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: transform 0.2s;}
+  .priority-item:hover { transform: translateX(4px); }
+  
+  /* Priority Colors */
+  .pi-critical { border-left-color: var(--red-500); background: linear-gradient(90deg, #FFF5F5, #fff); }
+  .pi-warning { border-left-color: var(--orange-500); background: linear-gradient(90deg, #FFF8F0, #fff); }
+  .pi-good { border-left-color: var(--teal-500); background: linear-gradient(90deg, #F0FDF4, #fff); }
+  
+  .pi-left { display: flex; align-items: center; gap: 16px; }
+  .pi-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; }
+  
+  .pi-critical .pi-icon { background: rgba(244,67,54,0.1); color: var(--red-600); }
+  .pi-warning .pi-icon { background: rgba(245,124,0,0.1); color: var(--orange-600); }
+  .pi-good .pi-icon { background: rgba(12,164,124,0.1); color: var(--teal-600); }
+  
+  .pi-details h4 { font-size: 15px; font-weight: 700; color: var(--blue-900); margin-bottom: 2px; }
+  .pi-details p { font-size: 13px; font-weight: 500; color: var(--gray-600); }
+  .pi-action { font-size: 13px; font-weight: 700; padding: 6px 16px; border-radius: 20px; text-align: center; }
+  
+  .pi-critical .pi-action { background: var(--red-500); color: #fff; }
+  .pi-warning .pi-action { background: var(--orange-100); color: var(--orange-600); border: 1px solid var(--orange-200); }
+  .pi-good .pi-action { background: var(--teal-50); color: var(--teal-600); border: 1px solid var(--teal-200); }
+
+  /* 🟢 KPI Overview Cards */
   .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .kpi-card { padding: 20px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; transition: all 0.3s; border: 2px solid transparent; cursor: pointer;}
   .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(10,37,64,0.1); border-color: var(--blue-400); }
+  
   .kpi-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
   .kpi-title { font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; display:flex; justify-content:space-between; align-items:center;}
   .click-hint { font-size: 10px; color: var(--blue-600); background: var(--blue-50); padding: 4px 8px; border-radius: 12px; font-weight:700; transition:all 0.2s;}
   .kpi-card:hover .click-hint { background: var(--blue-600); color: #fff; }
+
   .kpi-data { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap:wrap;}
   .kpi-val { font-size: 32px; font-weight: 700; color: var(--blue-900); line-height: 1; letter-spacing: -1px; }
   .kpi-target { font-size: 13px; font-weight: 600; color: var(--gray-600); margin-bottom: 2px; }
-  .wip-badge { font-size:11px; color:var(--orange-600); background:rgba(245,124,0,0.1); padding:2px 8px; border-radius:6px; font-weight:700;}
   
   .progress-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.06); border-radius: 4px; overflow: hidden; position: relative; }
   .progress-bar { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   
-  /* Colors */
+  /* Colors for Cards */
   .p-am .kpi-icon { background: var(--blue-50); color: var(--blue-600); } .p-am .progress-bar { background: var(--blue-500); }
   .p-opl .kpi-icon { background: #FFF3E0; color: var(--orange-500); } .p-opl .progress-bar { background: var(--orange-500); }
   .p-fi .kpi-icon { background: var(--indigo-50); color: var(--indigo-600); } .p-fi .progress-bar { background: var(--indigo-500); }
   .p-kz .kpi-icon { background: #E0F2F1; color: var(--teal-600); } .p-kz .progress-bar { background: var(--teal-500); }
   .p-mk .kpi-icon { background: #FFF3E0; color: var(--orange-600); } .p-mk .progress-bar { background: var(--orange-600); }
 
-  /* 🟢 New Main Charts Grid */
-  .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
-  .donut-card { padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .donut-card h4 { font-size: 13px; font-weight: 700; color: var(--blue-900); margin-bottom: 12px; text-align: center;}
-  .canvas-wrapper { width: 140px; height: 140px; position: relative;}
-
-  /* 🟢 Detail Page & Action Required */
+  /* 🟢 Detail Page */
   .detail-view { display: none; animation: fadeIn 0.3s ease-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   
@@ -82,19 +106,7 @@
   .detail-header-title { font-size: 22px; font-weight: 700; color: var(--blue-900); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
   .detail-header-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, rgba(30,96,145,0.1), transparent); }
 
-  .action-card { padding: 24px; border-left: 5px solid var(--red-400); background: linear-gradient(135deg, #fff, #FFF5F5); margin-bottom: 24px;}
-  .action-title { font-size: 16px; font-weight: 700; color: var(--red-600); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  .action-list { list-style: none; padding: 0; max-height: 250px; overflow-y: auto; padding-right: 5px;}
-  .action-list::-webkit-scrollbar { width: 6px; }
-  .action-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 3px; }
-  .action-list li { font-size: 13px; font-weight: 600; color: var(--gray-900); padding: 10px 12px; background: rgba(255,255,255,0.8); border-radius: 8px; margin-bottom: 8px; border: 1px solid rgba(217,56,56,0.1); display: flex; align-items: flex-start; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-  .action-list li::before { content: '👉'; flex-shrink: 0; }
-  .action-list li.success-msg { border-left: 4px solid var(--teal-500); background: #F0FDF4; border-color: rgba(16,210,161,0.2); }
-  .action-list li.success-msg::before { content: '🎉'; }
-  .action-list li.manual-msg { border-left: 4px solid var(--gray-400); background: #F8FAFC; }
-  .action-list li.manual-msg::before { content: 'ℹ️'; }
-
-  .chart-card { padding: 20px; height: 320px; display: flex; flex-direction: column; margin-bottom: 24px; }
+  .chart-card { padding: 20px; height: 300px; display: flex; flex-direction: column; margin-bottom: 24px; }
 
   /* Data Tables */
   .data-table-wrapper { overflow-x: auto; background: rgba(255,255,255,0.9); border-radius: 16px; padding: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.05); }
@@ -142,15 +154,15 @@
 
 <div class="header glass-panel">
   <div class="h-title">
-    <h2>TPM OI — KPI Dashboard & Gap Analysis</h2>
-    <p>ภาพรวมความสำเร็จและเจาะลึกข้อมูลแต่ละแผนก</p>
+    <h2>TPM OI — Executive Dashboard</h2>
+    <p>ระบบประเมินความสำเร็จและจัดการงานสำคัญ</p>
   </div>
   <a href="home.html" class="btn-nav">🏠 กลับเมนูหลัก</a>
 </div>
 
 <div class="wrap">
 
-  <div id="loader"><div class="spinner"></div>กำลังเชื่อมต่อฐานข้อมูล และประมวลผล KPI อัตโนมัติ...</div>
+  <div id="loader"><div class="spinner"></div>กำลังวิเคราะห์และจัดลำดับความสำคัญของงาน...</div>
 
   <div id="main-dashboard-view" style="display:none;">
     
@@ -161,18 +173,14 @@
       </select>
     </div>
 
-    <div class="kpi-grid" id="kpi-cards-container"></div>
+    <div class="priority-board">
+      <div class="pb-title">📌 ลำดับงานที่ต้องจัดการ (Priority Action Board)</div>
+      <div class="priority-list" id="priority-board-list">
+        </div>
+    </div>
 
-    <div style="font-size:16px; font-weight:700; color:var(--blue-900); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px;">
-      📊 สรุปสัดส่วนภาพรวม (Visual Overview)
-    </div>
-    <div class="charts-grid" id="donut-charts-container">
-      <div class="donut-card glass-panel"><h4>AM-OI Assessment</h4><div class="canvas-wrapper"><canvas id="donut-am"></canvas></div></div>
-      <div class="donut-card glass-panel"><h4>OPL Center</h4><div class="canvas-wrapper"><canvas id="donut-opl"></canvas></div></div>
-      <div class="donut-card glass-panel"><h4>FI Theme</h4><div class="canvas-wrapper"><canvas id="donut-fi"></canvas></div></div>
-      <div class="donut-card glass-panel"><h4>Kaizen Suggestion</h4><div class="canvas-wrapper"><canvas id="donut-kz"></canvas></div></div>
-      <div class="donut-card glass-panel"><h4>Makigami Analysis</h4><div class="canvas-wrapper"><canvas id="donut-mk"></canvas></div></div>
-    </div>
+    <div class="pb-title" style="margin-top: 40px;">📊 สรุปความคืบหน้าภาพรวม (Overall Progress)</div>
+    <div class="kpi-grid" id="kpi-cards-container"></div>
 
   </div>
 
@@ -180,19 +188,14 @@
     
     <button class="btn-back" onclick="goBackToDashboard()">
       <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-      กลับหน้า Dashboard สรุป
+      กลับหน้า Dashboard หลัก
     </button>
 
     <div class="detail-header-title" id="detail-page-title">รายละเอียดข้อมูล</div>
-    
-    <div class="action-card glass-panel" id="detail-action-card">
-      <div class="action-title">⚠️ คำแนะนำ / สิ่งที่ต้องดำเนินการเพิ่ม (Action Required)</div>
-      <ul class="action-list" id="detail-action-list"></ul>
-    </div>
 
     <div id="detail-am" style="display:none;">
       <div class="chart-card glass-panel">
-        <div style="font-size:14px; font-weight:700; color:var(--blue-900); margin-bottom:10px;">📊 สัดส่วน 5ส แยกตาม Step ปัจจุบัน</div>
+        <div style="font-size:14px; font-weight:700; color:var(--blue-900); margin-bottom:10px;">📊 สัดส่วน 5ส (AM-OI) แยกตาม Step ปัจจุบัน</div>
         <div style="flex:1; position:relative;"><canvas id="stepChart"></canvas></div>
       </div>
       <div class="grid" id="am-card-container"></div>
@@ -222,15 +225,14 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw
 
 let areaData = {}; 
 let kpiMaster = []; let amHistory = []; let oplHistory = []; let fiHistory = []; let kzHistory = []; let mkHistory = []; 
+let chartInstance = null;
 
-// Variables for Data and Charts
-let charts = {};
 let appData = {
-  am: { target: 0, actual: 0, wip: 0, gaps: [], stepDist: [0,0,0,0,0,0] },
-  opl: { target: 0, actual: 0, wip: 0 },
-  fi: { target: 0, actual: 0, wip: 0 },
-  kz: { target: 0, actual: 0, wip: 0 },
-  mk: { target: 0, actual: 0, wip: 0 }
+  am: { key: 'am', title: 'AM-OI Assessment', target: 0, actual: 0, wip: 0, gaps: [], stepDist: [0,0,0,0,0,0] },
+  opl: { key: 'opl', title: 'OPL Center', target: 0, actual: 0, wip: 0 },
+  fi: { key: 'fi', title: 'FI Theme', target: 0, actual: 0, wip: 0 },
+  kz: { key: 'kz', title: 'Kaizen Suggestion', target: 0, actual: 0, wip: 0 },
+  mk: { key: 'mk', title: 'Makigami Analysis', target: 0, actual: 0, wip: 0 }
 };
 
 const safeGet = (row, keyStr, fallbackIndex) => {
@@ -308,35 +310,6 @@ function getStepLogic(stepRecords) {
   return { class: 'st-wait-lead', text: 'รอหัวหน้า', rank: 2 };
 }
 
-function createDonutChart(canvasId, actual, wip, target, colors) {
-  const ctx = document.getElementById(canvasId).getContext('2d');
-  if (charts[canvasId]) charts[canvasId].destroy();
-
-  let remaining = Math.max(0, target - actual - wip);
-  // กรณีพิเศษ ถ้าไม่มี Target เลย ให้โชว์กราฟเทาๆ
-  if(target === 0) {
-     charts[canvasId] = new Chart(ctx, { type: 'doughnut', data: { datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] }, options: { cutout: '70%', plugins: { tooltip: { enabled: false } }, events: [] } });
-     return;
-  }
-
-  charts[canvasId] = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['สำเร็จ (Actual)', 'กำลังทำ (WIP)', 'รอเริ่ม (Remaining)'],
-      datasets: [{
-        data: [actual, wip, remaining],
-        backgroundColor: colors,
-        borderWidth: 2, borderColor: '#ffffff',
-        hoverOffset: 4
-      }]
-    },
-    options: {
-      cutout: '70%',
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c) { return ' ' + c.label + ': ' + c.raw; } } } }
-    }
-  });
-}
-
 function processAndRender() {
   const filterDept = document.getElementById('global-filter-dept').value;
   document.getElementById('loader').style.display = 'none';
@@ -345,8 +318,6 @@ function processAndRender() {
   // =====================================
   // 1. Process Data
   // =====================================
-  
-  // -- AM-OI --
   appData.am.target = 0; appData.am.actual = 0; appData.am.wip = 0; appData.am.stepDist = [0,0,0,0,0,0]; appData.am.gaps = [];
   const amContainer = document.getElementById('am-card-container'); amContainer.innerHTML = '';
   const deptsToProcess = filterDept === 'all' ? Object.keys(areaData) : [filterDept];
@@ -354,9 +325,8 @@ function processAndRender() {
   deptsToProcess.forEach(dept => {
     if(areaData[dept]) {
       areaData[dept].forEach(area => {
-        appData.am.target++; // นับพื้นที่เป็น 1 target
+        appData.am.target++;
         const history = amHistory.filter(r => safeGet(r, 'Department', 3) === dept && safeGet(r, 'Area', 4) === area);
-        
         let stepsInfo = {}; let pendingStep = 1; let currentPassedStep = 0;
         let overallStatus = { text: 'ยังไม่เริ่ม', color: 'var(--gray-600)', bg: 'rgba(0,0,0,0.05)', rank: 0 };
 
@@ -370,10 +340,7 @@ function processAndRender() {
         let isHitKPI = currentPassedStep >= targetStep;
         
         if(isHitKPI) appData.am.actual++; 
-        else {
-           appData.am.wip++; // ถือว่ากำลังทำ
-           appData.am.gaps.push({ dept, area, current: currentPassedStep, target: targetStep });
-        }
+        else { appData.am.wip++; appData.am.gaps.push({ dept, area, current: currentPassedStep, target: targetStep }); }
         
         appData.am.stepDist[currentPassedStep]++; 
 
@@ -394,10 +361,7 @@ function processAndRender() {
            if(i < 5) trackerHTML += `<div class="step-line ${(st.rank === 4 && stepsInfo[i+1].rank > 0) ? 'line-pass' : ''}"></div>`;
         } trackerHTML += '</div>';
 
-        let actionBtns = `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pendingStep}" class="btn-eval btn-user">📝 เข้าประเมิน (พนักงาน)</a>`;
-        if(overallStatus.rank === 2) actionBtns += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pendingStep}" class="btn-eval btn-lead">🔑 ตรวจ (หัวหน้า)</a>`;
-        else if(overallStatus.rank === 3) actionBtns += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pendingStep}" class="btn-eval btn-exec">🔑 ตรวจ (ผู้บริหาร)</a>`;
-
+        let actionBtns = `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pendingStep}" class="btn-eval btn-user">📝 เข้าประเมิน</a>`;
         let badge = isHitKPI ? `<span style="background:var(--teal-600); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">⭐ ถึงเป้า Step ${targetStep}</span>` : `<span style="background:var(--gray-200); color:var(--gray-600); font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">เป้า Step ${targetStep}</span>`;
 
         const card = document.createElement('div'); card.className = 'area-card';
@@ -407,7 +371,6 @@ function processAndRender() {
     }
   });
 
-  // -- Other Systems --
   appData.opl.target = getSystemTarget('OPL', filterDept);
   appData.fi.target = getSystemTarget('FI', filterDept);
   appData.kz.target = getSystemTarget('Kaizen', filterDept);
@@ -423,31 +386,78 @@ function processAndRender() {
   let uniqueKzs = [...new Map(currentKzList.map(item => [safeGet(item, 'เลขที่ Kaizen', 0), item])).values()];
   let uniqueMks = [...new Map(currentMkList.map(item => [safeGet(item, 'Makigami ID', 1), item])).values()];
   
-  // Calculate Actuals (Only Completed/Approved count as Actual for KPI)
   appData.opl.actual = uniqueOpls.filter(r => { let s = safeGet(r, 'Status', 14); return s && s.includes('สมบูรณ์'); }).length; 
   appData.fi.actual = uniqueFis.filter(r => { let s = safeGet(r, 'Status', 14); return s && s.includes('สมบูรณ์'); }).length;
-  appData.kz.actual = uniqueKzs.length; // Kaizen just needs to be submitted
+  appData.kz.actual = uniqueKzs.length; 
   appData.mk.actual = uniqueMks.filter(r => safeGet(r, 'Status', 9) === 'Completed').length;
 
-  // Calculate WIP (Total items - Completed items)
   appData.opl.wip = uniqueOpls.length - appData.opl.actual;
   appData.fi.wip = uniqueFis.length - appData.fi.actual;
-  appData.kz.wip = 0; // Kaizen has no WIP state in our simple logic
+  appData.kz.wip = 0; 
   appData.mk.wip = uniqueMks.length - appData.mk.actual;
 
+  // Calculate Percentages for Sorting
+  Object.keys(appData).forEach(k => {
+    appData[k].pct = appData[k].target > 0 ? (appData[k].actual / appData[k].target) * 100 : 100;
+  });
+
   // =====================================
-  // 2. Render Main KPI Cards
+  // 2. Render Priority Action Board (NEW!)
+  // =====================================
+  const pBoard = document.getElementById('priority-board-list');
+  pBoard.innerHTML = '';
+  
+  // Sort tasks by completion percentage (lowest = most critical)
+  let tasks = [appData.am, appData.opl, appData.fi, appData.kz, appData.mk]
+    .filter(t => t.target > 0 && t.pct < 100)
+    .sort((a, b) => a.pct - b.pct);
+
+  if (tasks.length === 0) {
+    pBoard.innerHTML = `
+      <div class="priority-item pi-good">
+        <div class="pi-left">
+          <div class="pi-icon">🎉</div>
+          <div class="pi-details"><h4>ยอดเยี่ยมมาก! ไม่มีงานตกค้าง</h4><p>คุณบรรลุเป้าหมาย KPI ครบทุกระบบแล้ว</p></div>
+        </div>
+      </div>
+    `;
+  } else {
+    tasks.forEach(t => {
+      let statusClass = t.pct < 50 ? 'pi-critical' : 'pi-warning';
+      let icon = t.key === 'am' ? '🧹' : (t.key === 'opl' ? '💡' : (t.key === 'fi' ? '📈' : (t.key === 'kz' ? '🚀' : '🗺️')));
+      let gap = t.target - t.actual;
+      
+      let actionText = '';
+      let btnText = 'จัดการทันที';
+      if (t.key === 'am') { actionText = `มี ${gap} พื้นที่ ที่ยังไม่ถึง Step เป้าหมาย`; }
+      else if (t.key === 'opl') { actionText = `ต้องดันให้จบสมบูรณ์อีก ${gap} เรื่อง (รอตรวจอยู่ ${t.wip})`; }
+      else if (t.key === 'fi') { actionText = `ต้องทำโปรเจกต์ให้เสร็จอีก ${gap} โครงการ (กำลังทำ ${t.wip})`; }
+      else if (t.key === 'kz') { actionText = `ต้องส่งเรื่องให้ครบเป้าอีก ${gap} เรื่อง`; }
+      else if (t.key === 'mk') { actionText = `ต้องทำให้อยู่ใน Phase 4 อีก ${gap} โครงการ (กำลังวิเคราะห์ ${t.wip})`; }
+
+      pBoard.innerHTML += `
+        <div class="priority-item ${statusClass}" onclick="openDetailView('${t.key}', '${t.title}')" style="cursor:pointer;">
+          <div class="pi-left">
+            <div class="pi-icon">${icon}</div>
+            <div class="pi-details"><h4>${t.title} (${Math.round(t.pct)}%)</h4><p>${actionText}</p></div>
+          </div>
+          <div class="pi-action">${btnText} ➔</div>
+        </div>
+      `;
+    });
+  }
+
+  // =====================================
+  // 3. Render Minimalist KPI Cards
   // =====================================
   const kpiContainer = document.getElementById('kpi-cards-container'); kpiContainer.innerHTML = '';
-  
   const createCard = (title, icon, typeClass, dataObj, unit, detailId) => {
-    let pct = dataObj.target > 0 ? Math.min(Math.round((dataObj.actual / dataObj.target)*100), 100) : 0;
-    let wipBadge = dataObj.wip > 0 ? `<span class="wip-badge">⏳ ทำอยู่ ${dataObj.wip}</span>` : '';
+    let pct = dataObj.target > 0 ? Math.min(Math.round((dataObj.actual / dataObj.target)*100), 100) : (dataObj.actual > 0 ? 100 : 0);
     return `
       <div class="kpi-card glass-panel p-${typeClass}" onclick="openDetailView('${detailId}', '${title}')">
         <div class="kpi-icon">${icon}</div>
-        <div class="kpi-title">${title} <span class="click-hint">ดูรายละเอียด ➔</span></div>
-        <div class="kpi-data"><div class="kpi-val">${pct}%</div><div class="kpi-target">(${dataObj.actual}/${dataObj.target} ${unit}) ${wipBadge}</div></div>
+        <div class="kpi-title">${title} <span class="click-hint">ดูข้อมูล ➔</span></div>
+        <div class="kpi-data"><div class="kpi-val">${pct}%</div><div class="kpi-target">(${dataObj.actual}/${dataObj.target} ${unit})</div></div>
         <div class="progress-bg"><div class="progress-bar" style="width:${pct}%;"></div></div>
       </div>
     `;
@@ -458,15 +468,6 @@ function processAndRender() {
   kpiContainer.innerHTML += createCard('FI Theme', '📈', 'fi', appData.fi, 'โครงการ', 'fi');
   kpiContainer.innerHTML += createCard('Kaizen Suggestion', '🚀', 'kz', appData.kz, 'เรื่อง', 'kz');
   kpiContainer.innerHTML += createCard('Makigami Analysis', '🗺️', 'mk', appData.mk, 'โครงการ', 'mk');
-
-  // =====================================
-  // 3. Render Visual Summary (Donut Charts)
-  // =====================================
-  createDonutChart('donut-am', appData.am.actual, appData.am.wip, appData.am.target, ['#3A86FF', '#9BA5B1', '#e2e8f0']);
-  createDonutChart('donut-opl', appData.opl.actual, appData.opl.wip, appData.opl.target, ['#F57C00', '#FFB74D', '#e2e8f0']);
-  createDonutChart('donut-fi', appData.fi.actual, appData.fi.wip, appData.fi.target, ['#4F46E5', '#818CF8', '#e2e8f0']);
-  createDonutChart('donut-kz', appData.kz.actual, 0, appData.kz.target, ['#0CA47C', '#10D2A1', '#e2e8f0']);
-  createDonutChart('donut-mk', appData.mk.actual, appData.mk.wip, appData.mk.target, ['#E65100', '#FF9800', '#e2e8f0']);
 
   // =====================================
   // 4. Update Detail Tables
@@ -510,7 +511,7 @@ function processAndRender() {
      });
   }
 
-  // 🟢 Create Chart for AM-OI inside the Detail view
+  // 🟢 Create Chart specifically for AM-OI
   if (chartInstance) chartInstance.destroy();
   chartInstance = new Chart(document.getElementById('stepChart').getContext('2d'), { 
     type: 'bar', 
@@ -529,57 +530,10 @@ function openDetailView(type, title) {
   document.getElementById('main-dashboard-view').style.display = 'none';
   document.getElementById('detail-view').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  document.getElementById('detail-page-title').innerHTML = `🔍 เจาะลึกข้อมูล: ${title}`;
+  document.getElementById('detail-page-title').innerHTML = `🔍 ข้อมูลเชิงลึก: ${title}`;
 
-  // ซ่อนเนื้อหาทั้งหมด
   ['am', 'opl', 'fi', 'kz', 'mk'].forEach(t => document.getElementById('detail-' + t).style.display = 'none');
-  
-  // เปิดเนื้อหาที่เลือก
   document.getElementById('detail-' + type).style.display = 'block';
-
-  // สร้าง Action Required เฉพาะหน้า
-  const actionList = document.getElementById('detail-action-list'); 
-  actionList.innerHTML = ''; 
-  let hasGap = false;
-
-  if (type === 'am' && appData.am.gaps.length > 0) {
-    hasGap = true;
-    appData.am.gaps.forEach(item => { 
-      let li = document.createElement('li'); 
-      li.innerHTML = `<strong>พื้นที่ [${item.dept}]:</strong> "${item.area}" ปัจจุบัน Step ${item.current} (ต้องการให้ผ่าน Step ${item.target})`; 
-      actionList.appendChild(li); 
-    });
-  } 
-  else if (type === 'opl' && appData.opl.actual < appData.opl.target) {
-    hasGap = true; let li = document.createElement('li'); 
-    let wTxt = appData.opl.wip > 0 ? ` <span style="color:var(--orange-600);">(กำลังดำเนินการอยู่/รออนุมัติ ${appData.opl.wip} เรื่อง)</span>` : ''; 
-    li.innerHTML = `ต้องจัดทำให้จบสมบูรณ์เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${appData.opl.target - appData.opl.actual}</span> เรื่อง${wTxt}`; 
-    actionList.appendChild(li);
-  }
-  else if (type === 'fi' && appData.fi.actual < appData.fi.target) {
-    hasGap = true; let li = document.createElement('li'); 
-    let wTxt = appData.fi.wip > 0 ? ` <span style="color:var(--orange-600);">(กำลังดำเนินการอยู่ ${appData.fi.wip} โครงการ)</span>` : ''; 
-    li.innerHTML = `ต้องทำโครงการให้จบสมบูรณ์เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${appData.fi.target - appData.fi.actual}</span> โครงการ${wTxt}`; 
-    actionList.appendChild(li);
-  }
-  else if (type === 'kz' && appData.kz.actual < appData.kz.target) {
-    hasGap = true; let li = document.createElement('li'); 
-    li.innerHTML = `ต้องส่ง Kaizen เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${appData.kz.target - appData.kz.actual}</span> เรื่อง`; 
-    actionList.appendChild(li);
-  }
-  else if (type === 'mk' && appData.mk.actual < appData.mk.target) {
-    hasGap = true; let li = document.createElement('li'); 
-    let wTxt = appData.mk.wip > 0 ? ` <span style="color:var(--orange-600);">(อยู่ระหว่างการวิเคราะห์ ${appData.mk.wip} โครงการ)</span>` : ''; 
-    li.innerHTML = `ต้องทำโปรเจกต์ให้เสร็จสมบูรณ์ (Phase 4) เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${appData.mk.target - appData.mk.actual}</span> โครงการ${wTxt}`; 
-    actionList.appendChild(li);
-  }
-
-  // ถ้าไม่มีงานค้างเลย (ทะลุเป้า)
-  if (!hasGap) {
-    let li = document.createElement('li'); li.className = 'success-msg'; 
-    li.innerHTML = `สุดยอด! 🎉 คุณบรรลุเป้าหมาย KPI สำหรับหัวข้อนี้เรียบร้อยแล้วครับ`; 
-    actionList.appendChild(li);
-  }
 }
 
 function goBackToDashboard() {
