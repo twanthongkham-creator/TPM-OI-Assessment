@@ -19,33 +19,20 @@
 html{scroll-behavior:smooth}
 
 body{
-  font-family:var(--font);
-  background-color:#E8EEF2;
+  font-family:var(--font); background-color:#E8EEF2;
   background-image: 
     radial-gradient(circle at 15% 10%, rgba(58,134,255,0.12) 0%, transparent 40%),
     radial-gradient(circle at 85% 20%, rgba(12,164,124,0.1) 0%, transparent 40%),
     radial-gradient(circle at 50% 80%, rgba(245,124,0,0.08) 0%, transparent 50%);
-  background-attachment: fixed;
-  color:var(--gray-900);
-  font-size:14px;
-  line-height:1.6;
-  min-height:100vh;
+  background-attachment: fixed; color:var(--gray-900); font-size:14px; line-height:1.6; min-height:100vh;
 }
 
 .card, .step-card, .page-header {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 8px 32px rgba(10, 37, 64, 0.05);
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 8px 32px rgba(10, 37, 64, 0.05); border-radius: 20px;
 }
 
-.page-header{
-  position:sticky; top:10px; z-index:100;
-  margin: 10px auto; max-width: 860px; padding: 16px 24px;
-  border-bottom: none;
-}
+.page-header{ position:sticky; top:10px; z-index:100; margin: 10px auto; max-width: 860px; padding: 16px 24px; border-bottom: none; }
 .page-header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .page-title{font-size:18px;font-weight:700;color:var(--blue-900); letter-spacing: -0.3px;}
 .page-sub{font-size:12px;color:var(--gray-600);margin-top:2px; font-weight: 500;}
@@ -63,121 +50,70 @@ body{
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:600px){.grid2{grid-template-columns:1fr}}
 
-.fg{display:flex;flex-direction:column;gap:6px; min-width:0;}
+.fg{display:flex;flex-direction:column;gap:6px; min-width:0; width:100%;}
 .fg label{font-size:12px;font-weight:600;color:var(--gray-900); padding-left: 4px;}
-.req{background:var(--red-400);color:#fff;font-size:9px;font-weight:600;padding:2px 6px;border-radius:6px;margin-left:4px; box-shadow:0 2px 4px rgba(217,56,56,0.2);}
+.req{background:var(--red-400);color:#fff;font-size:9px;font-weight:600;padding:2px 6px;border-radius:6px;margin-left:4px;}
 
 input[type=text],input[type=password],input[type=date],select,textarea{
-  width:100%; max-width:100%; box-sizing:border-box;
-  font-family:var(--font);font-size:14px;color:var(--blue-900);
-  background: rgba(255, 255, 255, 0.6);
-  border: 1.5px solid rgba(255, 255, 255, 0.9);
-  border-radius: 12px;padding:10px 14px;outline:none;
-  box-shadow: inset 0 2px 4px rgba(10,37,64,0.02);
-  transition:all .2s ease;
-  font-weight: 500;
+  width:100%; max-width:100%; box-sizing:border-box; font-family:var(--font);font-size:14px;color:var(--blue-900);
+  background: rgba(255, 255, 255, 0.6); border: 1.5px solid rgba(255, 255, 255, 0.9); border-radius: 12px;padding:10px 14px;outline:none; transition:all .2s ease;
 }
-input:focus,select:focus,textarea:focus{
-  background: #fff; border-color:var(--blue-400);
-  box-shadow: 0 0 0 4px rgba(58,134,255,0.15), inset 0 2px 4px rgba(10,37,64,0.02);
-}
-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%23505A64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
-select:disabled {background:rgba(230,235,240,0.5); cursor:not-allowed; color:var(--gray-600);}
-input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:not-allowed;}
+input:focus,select:focus,textarea:focus{ background: #fff; border-color:var(--blue-400); box-shadow: 0 0 0 4px rgba(58,134,255,0.15); }
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%23505A64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+input[readonly], select:disabled {background:rgba(230,235,240,0.5); cursor:not-allowed; color:var(--gray-600); opacity: 1;}
 
+/* Legend & Buttons (Same Style) */
 .legend-card { padding: 1rem 1.5rem; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
 .legend-title{font-size:12px;color:var(--gray-600);font-weight:600;}
 .lg-badges { display: flex; gap: 10px; flex-wrap: wrap; }
-.lg-badge {
-  display: flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,0.8); border-radius: 20px; padding: 4px 12px 4px 4px;
-  font-size: 12px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-.lg-num {
-  width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 11px; font-weight: 700; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);
-}
-.lg-b2  { color: var(--red-600); } .lg-b2 .lg-num { background: linear-gradient(135deg, #FF5C5C, #D93838); }
-.lg-b4  { color: var(--amber-500); } .lg-b4 .lg-num { background: linear-gradient(135deg, #FFB74D, #E69500); }
-.lg-b8  { color: var(--blue-600); } .lg-b8 .lg-num { background: linear-gradient(135deg, #60A5FA, #1E6091); }
+.lg-badge { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.8); border-radius: 20px; padding: 4px 12px 4px 4px; font-size: 12px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.lg-num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 700; }
+.lg-b2 { color: var(--red-600); } .lg-b2 .lg-num { background: linear-gradient(135deg, #FF5C5C, #D93838); }
+.lg-b4 { color: var(--amber-500); } .lg-b4 .lg-num { background: linear-gradient(135deg, #FFB74D, #E69500); }
+.lg-b8 { color: var(--blue-600); } .lg-b8 .lg-num { background: linear-gradient(135deg, #60A5FA, #1E6091); }
 .lg-b10 { color: var(--teal-600); } .lg-b10 .lg-num { background: linear-gradient(135deg, #2DD4BF, #0CA47C); }
+
+.score-btns{display:flex;gap:6px; background: rgba(255,255,255,0.5); padding: 4px; border-radius: 12px; border:1px solid rgba(255,255,255,0.8);}
+.sb{width:42px;height:34px;border:none; border-radius:8px;background:transparent;color:var(--gray-600);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s ease;}
+.sb:hover{background:rgba(255,255,255,0.8);}
+.sb.s2.on{background:linear-gradient(135deg, #FF5C5C, #D93838);color:#fff;}
+.sb.s4.on{background:linear-gradient(135deg, #FFB74D, #E69500);color:#fff;}
+.sb.s8.on{background:linear-gradient(135deg, #60A5FA, #1E6091);color:#fff;}
+.sb.s10.on{background:linear-gradient(135deg, #2DD4BF, #0CA47C);color:#fff;}
 
 .step-card{margin-bottom:1.5rem; overflow:hidden;}
 .step-hdr{display:flex;align-items:center;gap:16px;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.4);}
-.step-badge{background:linear-gradient(135deg, var(--blue-600), var(--blue-900));color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;box-shadow:0 4px 10px rgba(30,96,145,0.2);}
+.step-badge{background:linear-gradient(135deg, var(--blue-600), var(--blue-900));color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;}
 .step-info{flex:1}
-.step-name{font-size:16px;font-weight:700;color:var(--blue-900); letter-spacing: -0.3px;}
-.step-obj{font-size:12px;color:var(--blue-600);margin-top:2px; font-weight: 500;}
+.step-name{font-size:16px;font-weight:700;color:var(--blue-900);}
 .step-max{font-size:11px;color:var(--blue-800);background:rgba(58,134,255,0.1); border:1px solid rgba(58,134,255,0.2); padding:4px 10px;border-radius:12px;font-weight:600;}
 .step-body{padding:1rem 1.5rem}
 
 .criteria-item{padding:16px 0;border-bottom:1px solid rgba(10,37,64,0.06)}
-.criteria-item:last-of-type{border-bottom:none}
 .criteria-num{display:inline-flex;align-items:center;justify-content:center;background:rgba(58,134,255,0.15);color:var(--blue-800);font-size:11px;font-weight:700;width:24px;height:24px;border-radius:50%;margin-right:10px;flex-shrink:0;}
-.criteria-q{font-size:14px;color:var(--gray-900);line-height:1.6;margin-bottom:12px;display:flex;align-items:flex-start; font-weight: 500;}
+.criteria-q{font-size:14px;color:var(--gray-900);line-height:1.6;margin-bottom:12px;display:flex;align-items:flex-start;}
 .score-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap; padding-left: 34px;}
-.score-lbl{font-size:12px;font-weight:600;color:var(--gray-600);}
-
-.score-btns{display:flex;gap:6px; background: rgba(255,255,255,0.5); padding: 4px; border-radius: 12px; border:1px solid rgba(255,255,255,0.8); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
-.sb{width:42px;height:34px;border:none; border-radius:8px;background:transparent;color:var(--gray-600);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s ease;}
-.sb:hover{background:rgba(255,255,255,0.8); box-shadow: 0 2px 6px rgba(0,0,0,0.05);}
-.sb.s2.on{background:linear-gradient(135deg, #FF5C5C, #D93838);color:#fff;box-shadow:0 4px 12px rgba(217,56,56,0.3);}
-.sb.s4.on{background:linear-gradient(135deg, #FFB74D, #E69500);color:#fff;box-shadow:0 4px 12px rgba(230,149,0,0.3);}
-.sb.s8.on{background:linear-gradient(135deg, #60A5FA, #1E6091);color:#fff;box-shadow:0 4px 12px rgba(30,96,145,0.3);}
-.sb.s10.on{background:linear-gradient(135deg, #2DD4BF, #0CA47C);color:#fff;box-shadow:0 4px 12px rgba(12,164,124,0.3);}
-
-.score-max-lbl{font-size:12px;font-weight:600;color:var(--gray-400)}
-.score-mult{font-size:10px;font-weight:700;color:var(--blue-600);background:rgba(58,134,255,0.1);padding:3px 8px;border-radius:10px}
-
-.step-footer{background:rgba(255,255,255,0.3);border-top:1px solid rgba(255,255,255,0.5);padding:16px 1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.note-area{flex:1;min-width:200px}
-.note-area label{font-size:12px;font-weight:600;color:var(--blue-800);margin-bottom:6px;display:block}
-.step-score-display{text-align:right;flex-shrink:0;padding-top:4px}
-.ssd-label{font-size:12px;font-weight:600;color:var(--gray-600)}
-.ssd-val{font-size:22px;font-weight:700;color:var(--blue-900);letter-spacing:-0.5px;}
 
 .totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:1.5rem}
-.tc{background:rgba(255,255,255,0.7);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.8);border-radius:16px;padding:16px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.03);}
-.tc-lbl{font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:4px}
+.tc{background:rgba(255,255,255,0.7);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.8);border-radius:16px;padding:16px;text-align:center;}
+.tc-lbl{font-size:12px;font-weight:600;color:var(--gray-600);}
 .tc-val{font-size:28px;font-weight:700;color:var(--blue-900);letter-spacing:-1px;}
-.tc-sub{font-size:11px;font-weight:500;color:var(--gray-400);margin-top:2px}
 
-.upload-zone{background:rgba(255,255,255,0.4); border:1.5px dashed rgba(10,37,64,0.15);border-radius:16px;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:all .2s ease; height: 100%; display: flex; flex-direction: column; justify-content: center;}
-.upload-zone:hover{background:rgba(255,255,255,0.8);border-color:var(--blue-400);box-shadow:0 4px 16px rgba(58,134,255,0.08);}
-.upload-icon{width:40px;height:40px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center; background:rgba(255,255,255,0.8); border-radius:50%; box-shadow:0 2px 8px rgba(0,0,0,0.05);}
-.upload-icon svg{width:20px;height:20px;stroke:var(--blue-600);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.upload-text{font-size:14px;font-weight:600;color:var(--blue-900)}
-.upload-hint{font-size:11px;font-weight:500;color:var(--gray-400);margin-top:4px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.chip{background:#fff;border:1px solid rgba(0,0,0,0.05);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:500;color:var(--blue-800);display:flex;align-items:center;gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.03);}
-.chip-x{cursor:pointer;color:var(--red-400);font-size:16px;line-height:1; font-weight:bold; transition:all .2s;}
-.chip-x:hover{color:var(--red-600);transform:scale(1.1);}
-
-/* 🟢 Gallery & File Link (สำหรับ Leader) */
+.upload-zone{background:rgba(255,255,255,0.4); border:1.5px dashed rgba(10,37,64,0.15);border-radius:16px;padding:2rem 1.5rem;text-align:center;cursor:pointer;}
 .file-gallery { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
-.file-preview { width: 140px; height: 140px; border-radius: 12px; object-fit: cover; border: 1px solid var(--gray-200); box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.2s; }
-.file-preview:hover { transform: scale(1.05); }
-.file-link-card { display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--blue-50); border: 1px solid var(--blue-200); border-radius: 12px; color: var(--blue-800); font-weight: 700; font-size: 13px; transition: all 0.2s;}
-.file-link-card:hover { background: #fff; box-shadow: 0 4px 12px rgba(30,96,145,0.1); transform: translateY(-2px); text-decoration:none; }
+.file-preview { width: 140px; height: 140px; border-radius: 12px; object-fit: cover; border: 1px solid var(--gray-200); box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer;}
+.file-link-card { display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px; background: #fff; border: 1px solid var(--blue-200); border-radius: 12px; color: var(--blue-800); font-weight: 700; font-size: 13px; text-decoration:none;}
 
 .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:2rem}
-.btn{font-family:var(--font);font-size:14px;font-weight:600;padding:12px 28px;border-radius:12px;cursor:pointer;transition:all .2s ease; border:none; box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+.btn{font-family:var(--font);font-size:14px;font-weight:600;padding:12px 28px;border-radius:12px;cursor:pointer;transition:all .2s ease; border:none;}
+.btn-pri{background:linear-gradient(135deg, var(--blue-400), var(--blue-600));color:#fff;}
 .btn-reset{background:rgba(255,255,255,0.8);color:var(--gray-600); border:1px solid rgba(255,255,255,0.9);}
-.btn-reset:hover{background:#fff; transform:translateY(-1px);}
-.btn-pri{background:linear-gradient(135deg, var(--blue-400), var(--blue-600));color:#fff;box-shadow:0 4px 16px rgba(58,134,255,0.3);}
-.btn-pri:hover{background:linear-gradient(135deg, #4A90E2, #115082); transform:translateY(-2px); box-shadow:0 6px 20px rgba(58,134,255,0.4);}
-.btn-pri:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 
-.toast{position:fixed;bottom:2rem;right:2rem;background:rgba(10,37,64,0.9);backdrop-filter:blur(10px);color:#fff;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:500;opacity:0;transform:translateY(20px);transition:all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);pointer-events:none;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+.toast{position:fixed;bottom:2rem;right:2rem;background:rgba(10,37,64,0.9);color:#fff;padding:14px 24px;border-radius:14px;font-size:14px;opacity:0;transform:translateY(20px);transition:all .3s ease;z-index:999;}
 .toast.show{opacity:1;transform:translateY(0)}
-
-@keyframes spin{to{transform:rotate(360deg)}}
-.spinner{display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
-
 .hist-table { width:100%; border-collapse:separate; border-spacing:0; margin-top:12px; background:rgba(255,255,255,0.5); border-radius:12px; overflow:hidden;}
-.hist-table th { background:rgba(30,96,145,0.1); color:var(--blue-900); padding:10px; font-size:12px; font-weight:700; text-align:center;}
+.hist-table th { background:rgba(30,96,145,0.1); color:var(--blue-900); padding:10px; font-size:12px; text-align:center;}
 .hist-table td { padding:10px; font-size:13px; text-align:center; border-bottom:1px solid rgba(0,0,0,0.03);}
-.hist-table tr:last-child td { border-bottom:none; }
 </style>
 </head>
 <body>
@@ -189,18 +125,14 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
       <div class="page-sub">แบบฟอร์มประเมินพื้นที่ตามมาตรฐาน AM Step 1–5</div>
     </div>
     <div class="step-indicator">
-      <div class="step-dot" id="dot1">1</div>
-      <div class="step-dot" id="dot2">2</div>
-      <div class="step-dot" id="dot3">3</div>
-      <div class="step-dot" id="dot4">4</div>
-      <div class="step-dot" id="dot5">5</div>
+      <div class="step-dot" id="dot1">1</div><div class="step-dot" id="dot2">2</div><div class="step-dot" id="dot3">3</div><div class="step-dot" id="dot4">4</div><div class="step-dot" id="dot5">5</div>
     </div>
   </div>
 </div>
 
 <div class="wrap">
   <div class="card glass-panel" id="loading-zone">
-    <div class="loader">กำลังเชื่อมต่อฐานข้อมูล กรุณารอสักครู่...</div>
+    <div class="loader" style="text-align:center; padding:20px; font-weight:600; color:var(--blue-600);">🔄 กำลังซิงค์ฐานข้อมูลและไฟล์แนบล่าสุด...</div>
   </div>
 
   <div id="form-zone" style="display:none;">
@@ -219,7 +151,6 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
             <option value="">-- เลือกแผนก --</option>
           </select>
         </div>
-
         <div class="fg">
           <label>ประเภทผู้ตรวจ <span class="req">จำเป็น</span></label>
           <select id="f-auditor" onchange="updateAll(); populateUsers(); togglePIN();">
@@ -228,47 +159,42 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
             <option value="exec">ผู้บริหารตรวจ (เกณฑ์ผ่าน 80%)</option>
           </select>
         </div>
-
         <div class="fg">
           <label>ชื่อผู้ประเมิน <span class="req">จำเป็น</span></label>
           <select id="f-name" onchange="autoFillEmail()">
             <option value="">-- กรุณาเลือกแผนกก่อน --</option>
           </select>
         </div>
-        
         <div class="fg">
           <label>อีเมลผู้ประเมิน</label>
-          <input type="text" id="f-email" placeholder="ระบบจะดึงให้อัตโนมัติ (ห้ามแก้)" readonly>
+          <input type="text" id="f-email" placeholder="ระบบดึงให้อัตโนมัติ" readonly>
         </div>
-
         <div class="fg">
           <label>พื้นที่ประเมิน <span class="req">จำเป็น</span></label>
           <select id="f-area" onchange="checkAreaHistory()">
             <option value="">-- กรุณาเลือกแผนกก่อน --</option>
           </select>
         </div>
-
         <div class="fg">
           <label>วันที่ประเมิน <span class="req">จำเป็น</span></label>
           <input type="date" id="f-date">
         </div>
-
         <div class="fg" style="grid-column: 1 / -1;">
           <label>Step ที่ต้องการประเมิน <span class="req">จำเป็น</span></label>
           <select id="f-assess-step" onchange="toggleStepCards()">
             <option value="all">ประเมินทุก Step (1–5)</option>
-            <option value="1">เฉพาะ Step 1 — การทำความสะอาดขั้นต้น</option>
-            <option value="2">เฉพาะ Step 2 — ไคเซ็นจุดบกพร่อง</option>
-            <option value="3">เฉพาะ Step 3 — สร้างมาตรฐานพื้นที่</option>
-            <option value="4">เฉพาะ Step 4 — ตรวจเช็คโดยรวม</option>
-            <option value="5">เฉพาะ Step 5 — การจัดการด้วยตนเอง</option>
+            <option value="1">Step 1 — การทำความสะอาดขั้นต้น</option>
+            <option value="2">Step 2 — ไคเซ็นจุดบกพร่อง</option>
+            <option value="3">Step 3 — สร้างมาตรฐานพื้นที่</option>
+            <option value="4">Step 4 — ตรวจเช็คโดยรวม</option>
+            <option value="5">Step 5 — การจัดการด้วยตนเอง</option>
           </select>
         </div>
       </div>
     </div>
 
     <div class="card legend-card">
-      <div class="legend-title">เกณฑ์การให้คะแนน:</div>
+      <div class="legend-title">เกณฑ์คะแนน:</div>
       <div class="lg-badges">
         <div class="lg-badge lg-b2"><div class="lg-num">2</div>ไม่ดี</div>
         <div class="lg-badge lg-b4"><div class="lg-num">4</div>ปานกลาง</div>
@@ -278,173 +204,70 @@ input[readonly]{background:rgba(230,235,240,0.5); color:var(--gray-600); cursor:
     </div>
 
     <div class="step-card" id="step1-card">
-      <div class="step-hdr"><div class="step-badge">Step 1</div><div class="step-info"><div class="step-name">การทำความสะอาดขั้นต้น (Initial Cleaning)</div><div class="step-obj">ค้นหาปัญหา กำจัดของไม่จำเป็น ขยะ สิ่งสกปรก จัด 2ส และ Layout</div></div><div class="step-max">เต็ม 100</div></div>
-      <div class="step-body">
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">มีการตระหนักถึงความจำเป็นและวัตถุประสงค์ของกิจกรรม กำหนดพื้นที่และสิ่งที่เข้าข่ายชัดเจน และมีการถ่ายทอดวิธีดำเนินการให้เป็นทิศทางเดียวกันหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="1" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">2</span><span class="criteria-q-text">กำจัดขยะ สิ่งสกปรก ของไม่จำเป็นในพื้นที่กิจกรรม (โต๊ะ ล็อกเกอร์ ตู้ หน้าต่าง พื้น) และกำหนดกฎทำความสะอาดสม่ำเสมอเป็นระบบหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="2" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">เข้าใจนิยามของความบกพร่องและจุดที่ยากลำบาก ค้นหาและแก้ไขจุดบกพร่องในพื้นที่กิจกรรม ย่นระยะเวลากิจกรรมได้หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="3" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">ระบุสิ่งที่ต้องมีมาตรการจัดการแหล่งกำเนิดอย่างชัดเจน วิเคราะห์สาเหตุ และปฏิบัติตามมาตรการได้ดีหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="4" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">จัด 2ส ระบบ Filing จัดระเบียบ Layout กำหนดที่วางอุปกรณ์ต่างๆ เพื่อลด Loss ของคน และสิ่งที่ต้องควบคุมมองเห็นได้บรรลุระดับที่คาดหวังหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="5" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">6</span><span class="criteria-q-text">สร้างสภาพแวดล้อมสำนักงานที่ไม่รู้สึกเครียด ค้นหาส่วนต่างระหว่างสภาพที่ควรเป็นกับปัจจุบัน และพยายามไคเซ็นบรรลุระดับที่คาดหวังหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="6" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">7</span><span class="criteria-q-text">จัดทำกฎในการคงสภาพที่สะอาดและเป็นระเบียบ จัดทำมาตรฐานไม่เป็นทางการ และเรียนรู้ตัวอย่างไคเซ็นของหน่วยงานอื่นหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="1" data-q="7" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-      </div>
-      <div class="step-footer"><div class="note-area"><label>📝 หมายเหตุ / สิ่งที่พบ Step 1</label><textarea id="note1" placeholder="บันทึกจุดบกพร่อง สิ่งที่ทำแล้ว..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนนรวม Step 1</div><div class="ssd-val" id="ss1">0 / 100</div></div></div>
+      <div class="step-hdr"><div class="step-badge">Step 1</div><div class="step-info"><div class="step-name">Initial Cleaning</div></div><div class="step-max">เต็ม 100</div></div>
+      <div class="step-body" id="q1-container"></div>
+      <div class="step-footer"><div class="note-area"><label>📝 บันทึก Step 1</label><textarea id="note1"></textarea></div><div class="step-score-display"><div class="ssd-val" id="ss1">0 / 100</div></div></div>
     </div>
-
-    <div class="step-card" id="step2-card">
-      <div class="step-hdr"><div class="step-badge">Step 2</div><div class="step-info"><div class="step-name">ไคเซ็นจุดบกพร่อง (Kaizen Defect Points)</div><div class="step-obj">ทำให้ปัญหาและ Loss ปรากฏชัดเจน เสนอและลงมือไคเซ็น วัดผลสำเร็จ</div></div><div class="step-max">เต็ม 100</div></div>
-      <div class="step-body">
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">มีการคงสภาพการทิ้งของไม่จำเป็น กำจัดสิ่งสกปรก สภาพการจัดเก็บเอกสาร และจัดการหัวข้อถูกติเตียนของ Step 1 ให้หมดไปหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="1" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">2</span><span class="criteria-q-text">คัดเลือกหัวเรื่องกิจกรรมจากผลการเช็คปริมาณงาน กำหนดเป้าหมายพิจารณาจากวัตถุประสงค์และฟังก์ชั่นงาน และมีแผนดำเนินการชัดเจนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="2" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">นำ Process ของงานและ Flow งานในสำนักงานมาจัดทำเป็น Chart ทำความเข้าใจเวลาและระยะเวลาที่จำเป็น และติด Tag ที่จุดปัญหาและจุดที่สงสัยครบถ้วนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="3" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">เรียนรู้วิธีการและแนวคิดของการมุ่งไคเซ็นโดยประยุกต์ใช้ OPL มุมมองการไคเซ็นเพียงพอกับจุดปัญหาและ Loss ที่ปรากฏหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="4" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">เสนอไอเดียไคเซ็นอย่างเป็นรูปธรรม แสดงแผนปฏิบัติ กำหนดเสร็จ ผู้รับผิดชอบชัดเจน ทุกคนปฏิบัติโดยพร้อมเพรียง และ Loss ที่ปรากฏได้รับการกำจัดอย่างเพียงพอหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="5" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">6</span><span class="criteria-q-text">มาตรฐานการคำนวณเพื่อวัดผลชัดเจน บรรลุเป้าหมาย มีการสร้างมาตรฐานการทำงานหลังไคเซ็น และมีแผนสร้างความชำนาญหลายด้านหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="2" data-q="6" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-      </div>
-      <div class="step-footer"><div class="note-area"><label>📝 หมายเหตุ / สิ่งที่พบ Step 2</label><textarea id="note2" placeholder="บันทึก Loss ที่ค้นพบ, ไอเดียไคเซ็น..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนนรวม Step 2</div><div class="ssd-val" id="ss2">0 / 100</div></div></div>
-    </div>
-
-    <div class="step-card" id="step3-card">
-      <div class="step-hdr"><div class="step-badge">Step 3</div><div class="step-info"><div class="step-name">สร้างมาตรฐานพื้นที่ (Standardize Area)</div><div class="step-obj">ลดเวลาทำความสะอาด ลดเวลาหยิบเอกสาร จัดทำ OPL/SOP และส่งเสริม OA</div></div><div class="step-max">เต็ม 100</div></div>
-      <div class="step-body">
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">เอกสารมาตรฐานการทำงานสอดคล้องกับการแบ่งหน้าที่และระบบกฎระเบียบของบริษัท มีแผนลงรายละเอียดของกิจกรรมหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="1" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">2</span><span class="criteria-q-text">ระเบียบปฏิบัติและมาตรฐานที่ใช้ในงานทั้งหมดถูกจัดเก็บเป็นระเบียบ จัดทำตามจำนวนที่จำเป็น ปรับแก้โดยไม่รั้งรอ และทุกคนปฏิบัติตามอย่างถูกต้องหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="2" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">ความสัมพันธ์กับเอกสารมาตรฐานชัดเจน เป็นเอกสารขั้นตอนการทำงาน (Work Procedure) ที่เนื้อหาเป็นรูปธรรม เข้าใจง่าย ไม่ว่าใครก็ใช้งานได้หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="3" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">ดำเนินการจัดทำมาตรฐานจากมาตรฐานไม่เป็นทางการที่จัดทำใน Step 3-4 เป็นมาตรฐานที่เข้าใจง่ายและปฏิบัติตามได้ง่ายหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="4" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">จัดเตรียมสภาพแวดล้อมเพื่อทำให้เป็น OA คิดและทำกิจกรรม OA เพื่อใช้คนน้อยลง และเดินเครื่องอุปกรณ์ OA อย่างคล่องแคล่วหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="5" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">6</span><span class="criteria-q-text">ค้นหา Muri, Muda, Mura และทำไคเซ็นในการปฏิบัติงาน OA ตรวจสอบว่าใน Flow ของสิ่งของและข้อมูลมีความล่าช้าหรือการหยุดนิ่งหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="6" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">7</span><span class="criteria-q-text">มีการประเมินทักษะของแต่ละคน กำหนดหัวข้อเพื่อยกระดับความสามารถ และในหน่วยหน้าที่งานหนึ่งๆ มีผู้ที่ดูแลแทนได้ 3 คนขึ้นไปหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="7" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">8</span><span class="criteria-q-text">คงสภาพความสะอาดในสำนักงาน ดูแลบริการลูกค้าอย่างใส่ใจ ส่งข้อเสนอแนะ ≥5 เรื่อง/เดือน/คน และอัพเดตบอร์ดกิจกรรมอยู่เสมอหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="3" data-q="8" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-      </div>
-      <div class="step-footer"><div class="note-area"><label>📝 หมายเหตุ / สิ่งที่พบ Step 3</label><textarea id="note3" placeholder="บันทึกสถานะมาตรฐาน OPL/SOP..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนนรวม Step 3</div><div class="ssd-val" id="ss3">0 / 100</div></div></div>
-    </div>
-
-    <div class="step-card" id="step4-card">
-      <div class="step-hdr"><div class="step-badge">Step 4</div><div class="step-info"><div class="step-name">ตรวจเช็คโดยรวม (Overall Inspection)</div><div class="step-obj">Audit สิ่งแวดล้อม ฟังก์ชั่นงาน การควบคุมเอกสาร และ Visual Control</div></div><div class="step-max">เต็ม 100</div></div>
-      <div class="step-body">
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">ถ้าปฏิบัติตามมาตรฐานก็สามารถทำได้ ไม่ว่าเป็นใครดูมาตรฐานก็เข้าใจง่าย และมีการทำงานตามมาตรฐานและมีคู่มือสำนักงานไว้หรือไม่ (Audit สิ่งแวดล้อม)</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="1" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">2</span><span class="criteria-q-text">ไม่ว่าเป็นใครดูมาตรฐาน สเปค Flow Chart ก็เข้าใจง่าย และมีการทำงานตามข้อกำหนดหรือไม่ (Audit ฟังก์ชั่นงาน)</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="2" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">ระเบียบการควบคุมเอกสารและข้อมูลชัดเจน ผู้มีอำนาจควบคุมการคงสภาพอย่างเหมาะสม และเป็นเอกสารฉบับล่าสุดหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="3" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">มีแผนการตรวจติดตามภายใน มีการจัดทำขั้นตอนปฏิบัติเป็นลายลักษณ์อักษร ผลการตรวจถูกบันทึก และข้อบกพร่องได้รับการแก้ไขหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="4" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">หัวข้อปฏิบัติที่เหลืออยู่ถูกจัดการ กำหนดผู้รับผิดชอบหัวข้อปฏิบัติและวางแผนไคเซ็นหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="5" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">6</span><span class="criteria-q-text">ข้อมูลที่จำเป็นถูกถ่ายทอดให้แผนกที่เกี่ยวข้องทราบ ความรวดเร็วในการถ่ายทอดเหมาะสม และมีการถ่ายทอดข้อมูลคุณภาพที่ดีหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="6" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">7</span><span class="criteria-q-text">มีการฝึกอบรมที่เหมาะสม บันทึกผล จำนวนงานที่ทำแทนได้เพิ่มขึ้น และระดับทักษะ Multi-Skill เพิ่มขึ้นหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="7" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">8</span><span class="criteria-q-text">ทุกคนในสถานที่ทำงานทราบเนื้อหาการทำงานของแต่ละคนทุกวัน/เดือน มีการประยุกต์เพื่อทราบ Flow และความคืบหน้าของงาน (Visual Control) หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="8" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">9</span><span class="criteria-q-text">มีการคงสภาพความสะอาด ดูแลบริการลูกค้าอย่างใส่ใจทั้งหมด ส่งข้อเสนอแนะ ≥7 เรื่อง/เดือน/คน และบอร์ดกิจกรรมถูกใช้เป็นประจำหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="9" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">10</span><span class="criteria-q-text">มีระบบตรวจติดตามงานภายในแผนกอย่างสม่ำเสมอ ไคเซ็นแก้ไขหัวข้อติเตียน และส่งเสริมให้หัวข้อติเตียนในการตรวจติดตามภายในเป็นศูนย์หรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="4" data-q="10" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-      </div>
-      <div class="step-footer"><div class="note-area"><label>📝 หมายเหตุ / สิ่งที่พบ Step 4</label><textarea id="note4" placeholder="บันทึกผลการ Audit..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนนรวม Step 4</div><div class="ssd-val" id="ss4">0 / 100</div></div></div>
-    </div>
-
-    <div class="step-card" id="step5-card">
-      <div class="step-hdr"><div class="step-badge">Step 5</div><div class="step-info"><div class="step-name">การจัดการด้วยตนเอง (Autonomous Management)</div><div class="step-obj">เข้าใจนโยบาย ลงทะเบียนหัวเรื่องท้าทาย ลงมือทำและตรวจติดตาม</div></div><div class="step-max">เต็ม 100</div></div>
-      <div class="step-body">
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">1</span><span class="criteria-q-text">มีการคงสภาพการทิ้งของไม่จำเป็น กำจัดฝุ่น คราบสกปรก สภาพการจัดเก็บเอกสาร และคงสภาพผลการไคเซ็นจนถึง Step ก่อนหน้าหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="1" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">2</span><span class="criteria-q-text">ระดับความเข้าใจนโยบายผู้บริหารเพียงพอ มีการแบ่งสาขาหัวเรื่องกิจกรรม ค้นหาหัวข้อปฏิบัติอย่างเป็นรูปธรรม และบทบาทหน้าที่ของทุกคนชัดเจนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="2" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">3</span><span class="criteria-q-text">มีการลงทะเบียนหัวเรื่องที่ท้าทาย ประเมินลำดับความสำคัญ กำหนดเป้าหมายร่วมกับผู้บริหาร และวางแผนกิจกรรมกำหนดขั้นตอนชัดเจนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="3" data-max="20"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 20</span><span class="score-mult">×2</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">4</span><span class="criteria-q-text">ลงมือทำกิจกรรมหัวเรื่องท้าทาย: สำรวจสภาพปัจจุบัน ทำให้ปัญหาปรากฏ เสนอการไคเซ็น ลงมือไคเซ็นจริงจัง กำจัด Loss และปัญหาได้อย่างเพียงพอหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="4" data-max="40"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 40</span><span class="score-mult">×4</span></div></div>
-        <div class="criteria-item"><div class="criteria-q"><span class="criteria-num">5</span><span class="criteria-q-text">มาตรฐานการคำนวณเพื่อตรวจวัดผลสำเร็จชัดเจน บรรลุเป้าหมาย สร้างมาตรฐานหลังไคเซ็น มีระบบตรวจติดตามภายใน และไคเซ็นแก้ไขสิ่งที่ถูกติเตียนหรือไม่</span></div><div class="score-row"><span class="score-lbl">คะแนน:</span><div class="score-btns" data-step="5" data-q="5" data-max="10"><button class="sb s2" data-val="2">2</button><button class="sb s4" data-val="4">4</button><button class="sb s8" data-val="8">8</button><button class="sb s10" data-val="10">10</button></div><span class="score-max-lbl">/ 10</span></div></div>
-      </div>
-      <div class="step-footer"><div class="note-area"><label>📝 หมายเหตุ / สิ่งที่พบ Step 5</label><textarea id="note5" placeholder="บันทึกหัวเรื่องท้าทาย..."></textarea></div><div class="step-score-display"><div class="ssd-label">คะแนนรวม Step 5</div><div class="ssd-val" id="ss5">0 / 100</div></div></div>
-    </div>
+    <div class="step-card" id="step2-card" style="display:none;"></div>
+    <div class="step-card" id="step3-card" style="display:none;"></div>
+    <div class="step-card" id="step4-card" style="display:none;"></div>
+    <div class="step-card" id="step5-card" style="display:none;"></div>
 
     <div class="totals">
-      <div class="tc"><div class="tc-lbl">คะแนนรวม</div><div class="tc-val" id="t-total">0</div><div class="tc-sub" id="t-max">/ 500 คะแนน</div></div>
-      <div class="tc"><div class="tc-lbl">คิดเป็น %</div><div class="tc-val" id="t-pct">0%</div><div class="tc-sub" id="t-pass">เกณฑ์ผ่าน 90%</div></div>
-      <div class="tc"><div class="tc-lbl">ผลการประเมิน</div><div class="tc-val" id="t-result" style="font-size:18px;padding-top:6px">—</div><div class="tc-sub" id="t-step-info"></div></div>
+      <div class="tc"><div class="tc-lbl">คะแนนรวม</div><div class="tc-val" id="t-total">0</div></div>
+      <div class="tc"><div class="tc-lbl">คิดเป็น %</div><div class="tc-val" id="t-pct">0%</div></div>
+      <div class="tc"><div class="tc-lbl">ผลประเมิน</div><div class="tc-val" id="t-result" style="font-size:16px;">—</div></div>
     </div>
 
     <div class="card" id="attachment-card">
-      <div class="sec-label" id="attachment-label">แนบหลักฐาน (รูปภาพ และ ไฟล์เอกสาร)</div>
-      
-      <div class="grid2" id="upload-grid">
-        <div>
-          <div class="upload-zone" onclick="document.getElementById('fu-img').click()">
-            <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-            <div class="upload-text">คลิกแนบรูปภาพ</div>
-            <div class="upload-hint">รองรับ JPG, PNG (บีบอัดอัตโนมัติ)</div>
-          </div>
-          <input type="file" id="fu-img" multiple accept="image/*" style="display:none" onchange="addImages(this.files)">
-          <div class="chips" id="chip-img"></div>
+      <div class="sec-label" id="attachment-label">หลักฐานการดำเนินงาน</div>
+      <div id="upload-grid">
+        <div class="grid2">
+           <div class="upload-zone" onclick="document.getElementById('fu-img').click()">คลิกแนบรูปภาพ</div>
+           <input type="file" id="fu-img" multiple accept="image/*" style="display:none" onchange="addImages(this.files)">
+           <div class="upload-zone" onclick="document.getElementById('fu-doc').click()">คลิกแนบเอกสาร</div>
+           <input type="file" id="fu-doc" multiple accept=".pdf,.doc,.docx" style="display:none" onchange="addDocs(this.files)">
         </div>
-        <div>
-          <div class="upload-zone" onclick="document.getElementById('fu-doc').click()">
-            <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
-            <div class="upload-text">คลิกแนบไฟล์เอกสาร</div>
-            <div class="upload-hint">PDF, Excel, Word (ไม่เกิน 5MB)</div>
-          </div>
-          <input type="file" id="fu-doc" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="addDocs(this.files)">
-          <div class="chips" id="chip-doc"></div>
-        </div>
+        <div class="chips" id="chip-img"></div><div class="chips" id="chip-doc"></div>
       </div>
-
-      <div id="view-files-zone" style="display:none;">
-        <div class="file-gallery" id="file-gallery">
-          </div>
-      </div>
+      <div id="view-files-zone" style="display:none;"><div class="file-gallery" id="file-gallery"></div></div>
     </div>
 
-    <div class="card">
-      <div class="sec-label">ข้อสังเกต / ข้อเสนอแนะโดยรวม</div>
-      <textarea id="overall-note" placeholder="สรุปภาพรวมสิ่งที่ดำเนินการแล้ว จุดที่ต้องปรับปรุง หรือ Kaizen Theme สำหรับรอบถัดไป..." style="min-height:80px"></textarea>
-    </div>
-
-    <div class="card" id="pin-box" style="display:none; background:var(--orange-50); border: 1px solid var(--orange-400);">
-      <div class="sec-label" style="color:var(--orange-500); border-bottom:none; margin-bottom:5px;">🔑 ยืนยันตัวตนผู้อนุมัติ</div>
-      <div class="fg">
-        <input type="password" id="f-pin" placeholder="กรอกรหัส PIN 4 หลักเพื่อเซ็นอนุมัติ" style="border-color:var(--orange-400); max-width:300px; background:#fff;">
-      </div>
+    <div class="card" id="pin-box" style="display:none; background:var(--orange-50); border:1px solid var(--orange-400);">
+      <div class="sec-label" style="color:var(--orange-600);">🔑 เซ็นอนุมัติ (Leader Only)</div>
+      <input type="password" id="f-pin" placeholder="กรอกรหัส PIN 4 หลัก" style="max-width:200px;">
     </div>
 
     <div class="actions">
       <button class="btn btn-reset" onclick="resetForm()">ล้างข้อมูล</button>
-      <button class="btn btn-pri" id="btn-submit" onclick="handleSubmit()">ส่งแบบประเมิน</button>
+      <button class="btn btn-pri" id="btn-submit" onclick="handleSubmit()">ส่งผลการประเมิน</button>
     </div>
-
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ================================================================
-// ⚠️ ใส่ลิงก์ Web App URL (ตัวใหม่ล่าสุดที่คุณเพิ่ง Deploy) ตรงนี้
-// ================================================================
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-// 🟢 ตัวแปรเก็บข้อมูล
-let areaData = {}; 
-let userData = {};
-let approverData = {};
-const scores = {};
-const imageStore = []; 
-const docStore = [];   
+let areaData = {}; let userData = {}; let approverData = {};
+const scores = {}; const imageStore = []; const docStore = [];
 
-document.getElementById('f-date').valueAsDate = new Date();
-
-// 🟢 โหลดข้อมูลรายชื่อพนักงาน และ พื้นที่ประเมินแบบ Dynamic จาก KPI_Master
+// 🟢 โหลดข้อมูลแบบ Dynamic และรอจนกว่าจะเสร็จ
 async function loadMasterData() {
-  const nameSelect = document.getElementById('f-name');
-  nameSelect.innerHTML = '<option value="">กำลังซิงค์ฐานข้อมูล...</option>';
   try {
     const [uRes, kRes] = await Promise.all([
       fetch(APPS_SCRIPT_URL + '?action=getUsers').then(r => r.json()),
       fetch(APPS_SCRIPT_URL + '?action=getKPIs').then(r => r.json())
     ]);
     
-    if(uRes.status === 'success') {
-       userData = uRes.users || {};
-       approverData = uRes.approvers || {};
-    }
-    
+    if(uRes.status === 'success') { userData = uRes.users; approverData = uRes.approvers; }
     if(kRes.status === 'success') {
-       const kpiList = kRes.data || [];
-       kpiList.forEach(k => {
+       kRes.data.forEach(k => {
           let sys = k['System'] || Object.values(k)[0];
           let dept = k['Department'] || Object.values(k)[2];
           let area = k['Area'] || Object.values(k)[3];
-          
-          if(sys === 'AM-OI' && dept && area && area !== 'ALL' && area !== 'All') {
+          if(sys === 'AM-OI' && dept && area && area !== 'ALL') {
              if(!areaData[dept]) areaData[dept] = [];
              if(!areaData[dept].includes(area)) areaData[dept].push(area);
           }
@@ -452,488 +275,179 @@ async function loadMasterData() {
     }
 
     const deptSelect = document.getElementById('f-dept');
-    deptSelect.innerHTML = '<option value="">-- เลือกแผนก --</option>';
-    Object.keys(areaData).sort().forEach(dept => {
-      const opt = document.createElement('option');
-      opt.value = dept; opt.textContent = dept;
-      deptSelect.appendChild(opt);
+    Object.keys(areaData).sort().forEach(d => {
+       let opt = new Option(d, d); deptSelect.add(opt);
     });
 
     document.getElementById('loading-zone').style.display = 'none';
     document.getElementById('form-zone').style.display = 'block';
-    
-    nameSelect.innerHTML = '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
+
+    // 🟢 รัน Prefill หลังจาก Dropdown มีข้อมูลแล้วเท่านั้น
     prefillFromURL();
-  } catch(e) {
-    document.getElementById('loading-zone').innerHTML = '<div class="loader" style="color:red;">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชหน้าจอ</div>';
-  }
+  } catch(e) { console.error(e); }
 }
 
 function filterAreas() {
   const dept = document.getElementById('f-dept').value;
-  const areaSelect = document.getElementById('f-area');
-  areaSelect.innerHTML = '<option value="">-- เลือกพื้นที่ --</option>';
+  const sel = document.getElementById('f-area');
+  sel.innerHTML = '<option value="">-- เลือกพื้นที่ --</option>';
   if(dept && areaData[dept]) {
-    areaData[dept].sort().forEach(area => {
-      const opt = document.createElement('option');
-      opt.value = area; opt.textContent = area;
-      areaSelect.appendChild(opt);
-    });
+    areaData[dept].sort().forEach(a => sel.add(new Option(a, a)));
   }
 }
 
 function populateUsers() {
-  const role = document.getElementById('f-role') ? document.getElementById('f-role').value : document.getElementById('f-auditor').value;
+  const role = document.getElementById('f-auditor').value;
   const dept = document.getElementById('f-dept').value;
-  const nameSelect = document.getElementById('f-name');
-  const emailInput = document.getElementById('f-email');
-  
-  nameSelect.innerHTML = '<option value="">-- เลือกชื่อผู้ประเมิน --</option>';
-  emailInput.value = '';
-
+  const sel = document.getElementById('f-name');
+  sel.innerHTML = '<option value="">-- เลือกชื่อ --</option>';
   if(!dept) return;
 
-  if(role === 'self') {
-    if (userData[dept] && userData[dept].length > 0) {
-      userData[dept].forEach(u => {
-        const opt = document.createElement('option');
-        opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
-        nameSelect.appendChild(opt);
-      });
-    } else {
-      nameSelect.innerHTML = '<option value="">(ไม่พบรายชื่อพนักงานในแผนกนี้)</option>';
-    }
-  } else if (role === 'lead') {
-    if (approverData[dept] && approverData[dept].lead && approverData[dept].lead.name) {
-      const u = approverData[dept].lead;
-      const opt = document.createElement('option');
-      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = `(หัวหน้า) ${u.name}`;
-      nameSelect.appendChild(opt);
-    } else {
-      nameSelect.innerHTML = '<option value="">(ไม่พบข้อมูลหัวหน้าแผนกนี้)</option>';
-    }
-  } else if (role === 'exec') {
-    if (approverData[dept] && approverData[dept].exec && approverData[dept].exec.name) {
-      const u = approverData[dept].exec;
-      const opt = document.createElement('option');
-      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = `(ผู้บริหาร) ${u.name}`;
-      nameSelect.appendChild(opt);
-    } else {
-      nameSelect.innerHTML = '<option value="">(ไม่พบข้อมูลผู้บริหารแผนกนี้)</option>';
+  if(role === 'self' && userData[dept]) {
+    userData[dept].forEach(u => {
+      let opt = new Option(u.name, u.name); opt.dataset.email = u.email; sel.add(opt);
+    });
+  } else if (approverData[dept]) {
+    const u = (role === 'lead') ? approverData[dept].lead : approverData[dept].exec;
+    if(u && u.name) {
+      let opt = new Option(u.name, u.name); opt.dataset.email = u.email; sel.add(opt);
     }
   }
 }
 
 function autoFillEmail() {
-  const nameSelect = document.getElementById('f-name');
-  const selectedOpt = nameSelect.options[nameSelect.selectedIndex];
-  document.getElementById('f-email').value = (selectedOpt && selectedOpt.dataset.email) ? selectedOpt.dataset.email : '';
-}
-
-function toggleStepCards() {
-  const sel = document.getElementById('f-assess-step').value;
-  for (let i = 1; i <= 5; i++) {
-    const card = document.getElementById('step'+i+'-card');
-    const dot  = document.getElementById('dot'+i);
-    if (!card) continue;
-    const show = sel === 'all' || sel === String(i);
-    card.style.display = show ? 'block' : 'none';
-    if (!show) clearStepScores(i);
-    dot.className = 'step-dot' + (show ? ' active' : '');
-  }
-  updateAll();
-}
-
-function clearStepScores(step) {
-  Object.keys(scores).forEach(k => { if (k.startsWith('s'+step+'_')) delete scores[k]; });
-  document.querySelectorAll('.score-btns[data-step="'+step+'"]').forEach(grp => {
-    grp.querySelectorAll('.sb').forEach(b => b.classList.remove('on'));
-  });
-  const el = document.getElementById('ss'+step);
-  if (el) el.textContent = '0 / 100';
-}
-
-function calcStep(s) {
-  let total = 0, max = 0;
-  Object.keys(scores).forEach(k => {
-    if (k.startsWith('s'+s+'_')) { total += scores[k].val; max += scores[k].max; }
-  });
-  return { total, max };
-}
-
-function updateAll() {
-  let grand = 0, grandMax = 0;
-  [1,2,3,4,5].forEach(s => {
-    const card = document.getElementById('step'+s+'-card');
-    if (card && card.style.display !== 'none') {
-      const { total } = calcStep(s);
-      const el = document.getElementById('ss'+s);
-      if (el) el.textContent = total + ' / 100';
-      grand += total; grandMax += 100;
-    }
-  });
-  document.getElementById('t-total').textContent = grand;
-  document.getElementById('t-max').textContent = '/ ' + grandMax + ' คะแนน';
-  const pct = grandMax > 0 ? Math.round(grand / grandMax * 100) : 0;
-  document.getElementById('t-pct').textContent = pct + '%';
-  
-  const audType = document.getElementById('f-auditor').value;
-  const thresh  = audType === 'lead' ? 85 : audType === 'exec' ? 80 : 90;
-  const pass    = pct >= thresh;
-  const resEl   = document.getElementById('t-result');
-  resEl.textContent = grandMax === 0 ? '—' : (pass ? 'ผ่านเกณฑ์' : 'ไม่ผ่านเกณฑ์');
-  resEl.style.color = grandMax === 0 ? 'var(--gray-400)' : (pass ? 'var(--teal-600)' : 'var(--red-600)');
-  document.getElementById('t-pass').textContent = 'เกณฑ์ผ่าน ' + thresh + '%';
-  
-  [1,2,3,4,5].forEach(s => {
-    const card = document.getElementById('step'+s+'-card');
-    const dot  = document.getElementById('dot'+s);
-    if (!card || card.style.display === 'none') { dot.className = 'step-dot'; return; }
-    dot.className = 'step-dot ' + (calcStep(s).total > 0 ? 'done' : 'active');
-  });
-}
-
-function togglePIN() {
-  const type = document.getElementById('f-auditor').value;
-  document.getElementById('pin-box').style.display = (type === 'lead' || type === 'exec') ? 'block' : 'none';
-}
-
-document.querySelectorAll('.score-btns').forEach(grp => {
-  const step = grp.dataset.step, q = grp.dataset.q, maxVal = parseInt(grp.dataset.max);
-  grp.querySelectorAll('.sb').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const val    = parseInt(btn.dataset.val);
-      const actual = maxVal === 10 ? val : maxVal === 20 ? val*2 : maxVal === 40 ? val*4 : val;
-      grp.querySelectorAll('.sb').forEach(b => b.classList.remove('on'));
-      btn.classList.add('on');
-      scores['s'+step+'_'+q] = { val: actual, max: maxVal };
-      updateAll();
-    });
-  });
-});
-
-function addImages(fl) {
-  const container = document.getElementById('chip-img');
-  Array.from(fl).forEach(f => {
-    const idx = imageStore.push(f) - 1;
-    const chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.innerHTML = `<span>${f.name}</span><span class="chip-x" onclick="removeImage(${idx},this)">×</span>`;
-    container.appendChild(chip);
-  });
-}
-function removeImage(idx, el) { imageStore[idx] = null; el.parentElement.remove(); }
-
-function addDocs(fl) {
-  const container = document.getElementById('chip-doc');
-  Array.from(fl).forEach(f => {
-    if(f.size > 5 * 1024 * 1024) { showToast(`ไฟล์ ${f.name} มีขนาดใหญ่เกิน 5MB`, '#A32D2D', 5000); return; }
-    const idx = docStore.push(f) - 1;
-    const chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.innerHTML = `<span>${f.name}</span><span class="chip-x" onclick="removeDoc(${idx},this)">×</span>`;
-    container.appendChild(chip);
-  });
-}
-function removeDoc(idx, el) { docStore[idx] = null; el.parentElement.remove(); }
-
-function showToast(msg, color, ms) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.style.background = color || 'var(--teal-600)';
-  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), ms || 3500);
-}
-
-function resetForm() {
-  if (!confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) return;
-  document.getElementById('f-dept').value = '';
-  document.getElementById('f-name').innerHTML = '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
-  document.getElementById('f-email').value = '';
-  document.getElementById('f-area').innerHTML = '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
-  document.getElementById('f-date').valueAsDate = new Date();
-  document.getElementById('f-assess-step').value = 'all';
-  document.getElementById('f-auditor').value = 'self';
-  document.getElementById('overall-note').value = '';
-  document.getElementById('f-pin').value = '';
-  togglePIN();
-  
-  imageStore.length = 0; docStore.length = 0;
-  document.getElementById('chip-img').innerHTML = '';
-  document.getElementById('chip-doc').innerHTML = '';
-  
-  for (let i = 1; i <= 5; i++) {
-    clearStepScores(i);
-    if (document.getElementById('note'+i)) document.getElementById('note'+i).value = '';
-    if (document.getElementById('step'+i+'-card')) document.getElementById('step'+i+'-card').style.display = 'block';
-  }
-  updateAll(); showToast('ล้างข้อมูลแล้ว'); document.getElementById('history-card').style.display = 'none';
-  
-  // ซ่อนโซนโชว์ไฟล์ กลับมาแสดงโซนอัปโหลด
-  document.getElementById('view-files-zone').style.display = 'none';
-  document.getElementById('upload-grid').style.display = 'grid';
-  document.getElementById('attachment-label').innerHTML = 'แนบหลักฐาน (รูปภาพ และ ไฟล์เอกสาร)';
-}
-
-function compressImage(file, maxWidth = 1024, quality = 0.7) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader(); reader.readAsDataURL(file);
-    reader.onload = (e) => {
-      const img = new Image(); img.src = e.target.result;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let w = img.width, h = img.height;
-        if (w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      }; img.onerror = reject;
-    }; reader.onerror = reject;
-  });
-}
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
-}
-
-// 🟢 ฟังก์ชันเรนเดอร์รูปและไฟล์แนบจากฐานข้อมูลมาโชว์บนหน้าเว็บ (สำหรับ Leader)
-function renderAttachedFiles(linksStr) {
-  const uploadGrid = document.getElementById('upload-grid');
-  const viewZone = document.getElementById('view-files-zone');
-  const gallery = document.getElementById('file-gallery');
-  
-  uploadGrid.style.display = 'none';
-  viewZone.style.display = 'block';
-  document.getElementById('attachment-label').innerHTML = '📸 หลักฐานแนบจากผู้ประเมิน (กดเพื่อเปิดดูรูปขนาดเต็ม)';
-
-  if (!linksStr || linksStr.trim() === '') {
-      gallery.innerHTML = '<p style="color:var(--gray-600); font-size:13px; font-weight:600;">ผู้ประเมินไม่ได้แนบไฟล์ประกอบมาด้วย</p>';
-      return;
-  }
-
-  const links = linksStr.split(',').map(s => s.trim()).filter(Boolean);
-  gallery.innerHTML = '';
-  
-  links.forEach((url, i) => {
-      // ดึง ID ของไฟล์จากลิงก์ Google Drive
-      const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-      if (match && match[1]) {
-          const fileId = match[1];
-          const imgUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
-          
-          const a = document.createElement('a');
-          a.href = url;
-          a.target = '_blank';
-          a.style.textDecoration = 'none';
-          
-          const img = document.createElement('img');
-          img.src = imgUrl;
-          img.className = 'file-preview';
-          img.alt = `ไฟล์แนบ ${i+1}`;
-          // 🟢 ทีเด็ด! ถ้ามันไม่ใช่รูปภาพ (เช่น PDF) มันจะโหลดภาพไม่ขึ้น แล้วเปลี่ยนเป็นปุ่มให้กดดูเอกสารอัตโนมัติ
-          img.onerror = function() {
-              this.outerHTML = `<div class="file-link-card">📄 เปิดดูไฟล์เอกสารแนบ ${i+1}</div>`;
-          };
-          
-          a.appendChild(img);
-          gallery.appendChild(a);
-      } else {
-          // กรณีไม่ใช่ลิงก์ Drive แบบปกติ สร้างเป็นปุ่มกด
-          gallery.innerHTML += `<a href="${url}" target="_blank" class="file-link-card">📄 เปิดดูไฟล์แนบ ${i+1}</a>`;
-      }
-  });
-}
-
-async function loadHistoryForArea(dept, area, roleParam = null, stepParam = null) {
-  const histCard = document.getElementById('history-card');
-  const histContent = document.getElementById('history-content');
-  histCard.style.display = 'block';
-  histContent.innerHTML = '<span class="spinner" style="border-top-color:var(--blue-800)"></span> กำลังโหลดประวัติ...';
-
-  try {
-    const res = await fetch(APPS_SCRIPT_URL + '?action=getHistory');
-    const json = await res.json();
-    if (json.status === 'success') {
-      const records = json.data.filter(r => (r['Department'] === dept || Object.values(r)[3] === dept) && (r['Area'] === area || Object.values(r)[4] === area));
-      
-      if (records.length === 0) { 
-          histContent.innerHTML = '<div style="color:var(--gray-600); text-align:center;">ยังไม่เคยมีการประเมินในพื้นที่นี้ เริ่มประเมินได้เลยครับ</div>'; 
-      } else {
-          let html = `<table class="hist-table">
-            <tr>
-              <th>วันที่</th><th>Step</th><th>คะแนน</th><th>ผล</th><th>สถานะ</th>
-            </tr>`;
-          records.forEach(r => {
-            const isPass = (r['PassFail'] === 'ผ่านเกณฑ์' || r['PassFail'] === 'Pass');
-            const color = isPass ? 'var(--teal-600)' : 'var(--red-600)';
-            const dStr = r['Timestamp'] ? new Date(r['Timestamp']).toLocaleDateString('th-TH') : '-';
-            html += `<tr>
-              <td>${dStr}</td><td style="font-weight:700;">Step ${r['AuditRound'] || Object.values(r)[6]}</td>
-              <td>${r['TotalScore'] || Object.values(r)[13]} (${r['TotalPercent'] || Object.values(r)[14]}%)</td><td style="color:${color}; font-weight:700;">${r['PassFail'] || Object.values(r)[15]}</td>
-              <td style="font-size:11px; color:var(--gray-600);">${r['Status'] || Object.values(r)[23] || 'รอ Review'}</td>
-            </tr>`;
-          });
-          html += '</table>'; histContent.innerHTML = html;
-      }
-
-      // 🟢 ถ้าเข้าหน้าเว็บมาด้วยสิทธิ์หัวหน้า (Review Mode) ดึงไฟล์จากประวัติล่าสุดมาแสดง!
-      if (roleParam === 'lead' || roleParam === 'exec') {
-         let targetRec = records.slice().reverse().find(r => r['AuditRound'] == stepParam || Object.values(r)[6] == stepParam);
-         if (!targetRec && records.length > 0) targetRec = records[records.length - 1]; // ถ้าหาไม่เจอเอาอันล่าสุด
-         
-         if (targetRec) {
-            // ดึงลิงก์ไฟล์แนบออกมา (ถ้าหาชื่อ Column ไม่เจอ จะสแกนหาข้อความที่มีคำว่า drive.google.com อัตโนมัติ)
-            let fileStr = targetRec['fileLinks'] || targetRec['ไฟล์แนบ'] || Object.values(targetRec)[22] || '';
-            if (!fileStr && Object.values(targetRec).length > 20) {
-               fileStr = Object.values(targetRec).find(v => typeof v === 'string' && v.includes('drive.google.com')) || '';
-            }
-            renderAttachedFiles(fileStr);
-         } else {
-            renderAttachedFiles('');
-         }
-      }
-    }
-  } catch(e) { histContent.innerHTML = '<div style="color:var(--red-600); text-align:center;">ดึงข้อมูลประวัติล้มเหลว</div>'; }
-}
-
-function checkAreaHistory() {
-  const dept = document.getElementById('f-dept').value;
-  const area = document.getElementById('f-area').value;
-  if (dept && area) loadHistoryForArea(dept, area); else document.getElementById('history-card').style.display = 'none';
+  const sel = document.getElementById('f-name');
+  const opt = sel.options[sel.selectedIndex];
+  document.getElementById('f-email').value = (opt && opt.dataset.email) ? opt.dataset.email : '';
 }
 
 function prefillFromURL() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const deptParam = urlParams.get('dept');
-  const areaParam = urlParams.get('area');
-  const roleParam = urlParams.get('role');
-  const stepParam = urlParams.get('step');
+  const params = new URLSearchParams(window.location.search);
+  const dept = params.get('dept');
+  const area = params.get('area');
+  const role = params.get('role'); // 'lead' หรือ 'exec'
+  const step = params.get('step');
 
-  if (deptParam) {
-    document.getElementById('f-dept').value = deptParam;
+  if(dept) {
+    document.getElementById('f-dept').value = dept;
     filterAreas();
-    
-    if (areaParam) {
+    if(area) {
+      document.getElementById('f-area').value = area;
+      checkAreaHistory(role, step); // 🟢 ส่งค่าโหมดไปดึงไฟล์แนบด้วย
+    }
+    if(role) {
+      document.getElementById('f-auditor').value = role;
+      populateUsers();
+      // ล็อคชื่อหัวหน้าอัตโนมัติ
       setTimeout(() => {
-        document.getElementById('f-area').value = areaParam;
-        
-        // 🟢 ส่งข้อมูล role และ step ไปด้วย เพื่อเช็คว่าต้องดึงรูปมาแสดงให้หัวหน้าไหม
-        loadHistoryForArea(deptParam, areaParam, roleParam, stepParam);
-
-        if (stepParam && stepParam !== 'all') {
-           const stepDropdown = document.getElementById('f-assess-step');
-           if([...stepDropdown.options].some(o => o.value === stepParam)) {
-               stepDropdown.value = stepParam;
-               toggleStepCards();
-           }
+        if(document.getElementById('f-name').options.length > 1) {
+          document.getElementById('f-name').selectedIndex = 1;
+          autoFillEmail();
         }
-
-        // 🟢 ระบบ Auto-Select สำหรับหัวหน้า
-        if (roleParam === 'lead' || roleParam === 'exec') {
-           document.getElementById('f-auditor').value = roleParam;
-           updateAll();
-           togglePIN();
-           
-           setTimeout(() => {
-             const nameSelect = document.getElementById('f-name');
-             if(nameSelect.options.length > 1) { 
-                nameSelect.selectedIndex = 1; 
-                autoFillEmail(); 
-             }
-             
-             // ล็อกช่องที่ไม่ให้แก้
-             document.getElementById('f-dept').disabled = true;
-             document.getElementById('f-auditor').disabled = true;
-             document.getElementById('f-name').disabled = false;
-             document.getElementById('f-area').disabled = true;
-             document.getElementById('f-assess-step').disabled = true;
-             
-           }, 500); 
-        }
-      }, 150);
+      }, 300);
+      togglePIN();
+    }
+    if(step && step !== 'all') {
+      document.getElementById('f-assess-step').value = step;
+      toggleStepCards();
+    }
+    
+    // ถ้าเป็นโหมดหัวหน้า ล็อค Dropdown ไม่ให้แก้
+    if(role === 'lead' || role === 'exec') {
+      ['f-dept', 'f-area', 'f-auditor', 'f-assess-step'].forEach(id => {
+        document.getElementById(id).disabled = true;
+      });
     }
   }
 }
 
-async function handleSubmit() {
+async function checkAreaHistory(role = null, step = null) {
   const dept = document.getElementById('f-dept').value;
-  const nameSelect = document.getElementById('f-name');
-  const name = nameSelect.options[nameSelect.selectedIndex] ? nameSelect.options[nameSelect.selectedIndex].text : '';
-  const email = document.getElementById('f-email').value.trim();
   const area = document.getElementById('f-area').value;
-  const date = document.getElementById('f-date').value;
-  const auditorType = document.getElementById('f-auditor').value;
-  const pin = document.getElementById('f-pin').value;
+  if (!dept || !area) return;
 
-  if (auditorType === 'lead' && pin !== '1234') { showToast('รหัส PIN หัวหน้าไม่ถูกต้อง!', '#A32D2D'); return; }
-  if (auditorType === 'exec' && pin !== '9999') { showToast('รหัส PIN ผู้บริหารไม่ถูกต้อง!', '#A32D2D'); return; }
-
-  if (!dept) { showToast('กรุณาเลือกแผนก', '#A32D2D'); return; }
-  if (!name || name.includes('--') || name.includes('ไม่พบ')) { showToast('กรุณาเลือกชื่อผู้ประเมิน', '#A32D2D'); return; }
-  if (!area) { showToast('กรุณาเลือกพื้นที่ประเมิน', '#A32D2D'); return; }
-
-  let hasScore = false;
-  [1,2,3,4,5].forEach(s => {
-    const card = document.getElementById('step'+s+'-card');
-    if (card && card.style.display !== 'none' && calcStep(s).total > 0) hasScore = true;
-  });
-  if (!hasScore) { showToast('กรุณาให้คะแนนอย่างน้อย 1 หัวข้อ', '#A32D2D'); return; }
-
-  const btn = document.getElementById('btn-submit');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังส่งข้อมูลการประเมิน...';
-
-  // 🟢 หากเป็นพนักงานตรวจ (self) จะทำการส่งไฟล์ไปด้วย แต่ถ้าเป็นหัวหน้า จะส่งไฟล์เปล่าเพื่อเป็น Record รีวิว
-  const filesData = [];
-  if (auditorType === 'self') {
-    for (const f of imageStore.filter(Boolean)) {
-      try {
-        const b64 = await compressImage(f, 1024, 0.7);
-        filesData.push({ name: f.name, mimeType: 'image/jpeg', data: b64.split(',')[1] });
-      } catch(e) {}
-    }
-    for (const d of docStore.filter(Boolean)) {
-      try {
-        const b64 = await fileToBase64(d);
-        filesData.push({ name: d.name, mimeType: d.type || 'application/pdf', data: b64.split(',')[1] });
-      } catch(e) {}
-    }
-  }
-
-  const payload = {
-    type: '5s',
-    assessorName: name.replace('(หัวหน้า) ','').replace('(ผู้บริหาร) ',''),
-    assessorEmail: email, department: dept, assessmentDate: date, area: area,
-    auditRound: document.getElementById('f-assess-step').value,
-    auditorType: auditorType,
-    step1Score: calcStep(1).total, step2Score: calcStep(2).total, step3Score: calcStep(3).total,
-    step4Score: calcStep(4).total, step5Score: calcStep(5).total,
-    totalScore: parseInt(document.getElementById('t-total').textContent),
-    totalPercent: parseInt(document.getElementById('t-pct').textContent),
-    passFail: document.getElementById('t-result').textContent,
-    note1: document.getElementById('note1').value, note2: document.getElementById('note2').value,
-    note3: document.getElementById('note3').value, note4: document.getElementById('note4').value,
-    note5: document.getElementById('note5').value, overallNote: document.getElementById('overall-note').value,
-    files: filesData
-  };
+  const hCard = document.getElementById('history-card');
+  hCard.style.display = 'block';
+  document.getElementById('history-content').innerHTML = 'กำลังดึงประวัติและไฟล์หลักฐาน...';
 
   try {
-    await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
-    showToast('ส่งแบบประเมินสำเร็จแล้ว!', 'var(--teal-600)', 4000);
-    setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
-  } catch (err) {
-    showToast('เกิดข้อผิดพลาด: ' + err.message, '#A32D2D', 5000);
-    btn.disabled = false; btn.innerHTML = 'ส่งแบบประเมิน';
+    const res = await fetch(APPS_SCRIPT_URL + '?action=getHistory').then(r => r.json());
+    if(res.status === 'success') {
+      const records = res.data.filter(r => (r['Department']||Object.values(r)[3]) === dept && (r['Area']||Object.values(r)[4]) === area);
+      
+      // Render History Table...
+      let html = '<table class="hist-table"><tr><th>วันที่</th><th>Step</th><th>คะแนน</th><th>ผล</th></tr>';
+      records.forEach(r => {
+        html += `<tr><td>${new Date(r['Timestamp']||Object.values(r)[0]).toLocaleDateString()}</td><td>${r['AuditRound']||Object.values(r)[6]}</td><td>${r['TotalPercent']||Object.values(r)[14]}%</td><td>${r['PassFail']||Object.values(r)[15]}</td></tr>`;
+      });
+      document.getElementById('history-content').innerHTML = html + '</table>';
+
+      // 🟢 สำหรับหัวหน้า: ดึงไฟล์แนบล่าสุดของพนักงานมาโชว์
+      if(role && step) {
+        const lastEmployeeRow = records.slice().reverse().find(r => (r['AuditRound']||Object.values(r)[6]) == step);
+        if(lastEmployeeRow) {
+           const links = lastEmployeeRow['fileLinks'] || Object.values(lastEmployeeRow)[22] || '';
+           renderFiles(links);
+        }
+      }
+    }
+  } catch(e) { console.error(e); }
+}
+
+function renderFiles(linksStr) {
+  if(!linksStr) return;
+  document.getElementById('upload-grid').style.display = 'none';
+  document.getElementById('view-files-zone').style.display = 'block';
+  document.getElementById('attachment-label').innerHTML = '📸 หลักฐานแนบจากผู้ประเมินก่อนหน้า';
+  
+  const gallery = document.getElementById('file-gallery');
+  gallery.innerHTML = '';
+  linksStr.split(',').forEach(url => {
+    url = url.trim();
+    const driveId = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if(driveId) {
+      const img = document.createElement('img');
+      img.src = `https://drive.google.com/uc?export=view&id=${driveId[1]}`;
+      img.className = 'file-preview';
+      img.onclick = () => window.open(url, '_blank');
+      img.onerror = function() { // ถ้าไม่ใช่รูปภาพ (เช่น PDF)
+        this.style.display = 'none';
+        const link = document.createElement('a');
+        link.href = url; link.target = '_blank'; link.className = 'file-link-card';
+        link.innerText = '📄 เปิดดูไฟล์เอกสาร';
+        gallery.appendChild(link);
+      };
+      gallery.appendChild(img);
+    }
+  });
+}
+
+function toggleStepCards() {
+  const step = document.getElementById('f-assess-step').value;
+  for(let i=1; i<=5; i++) {
+    const card = document.getElementById('step'+i+'-card');
+    if(card) card.style.display = (step === 'all' || step == i) ? 'block' : 'none';
   }
 }
 
-// Init
-toggleStepCards();
-togglePIN();
-document.getElementById('f-date').valueAsDate = new Date();
-loadMasterData(); 
+function togglePIN() {
+  const role = document.getElementById('f-auditor').value;
+  document.getElementById('pin-box').style.display = (role === 'self') ? 'none' : 'block';
+}
+
+function updateAll() {
+  // Logic การคำนวณคะแนนเหมือนเดิม...
+  let total = 0;
+  for(let i=1; i<=5; i++) {
+     let sVal = parseInt(document.getElementById('ss'+i)?.innerText) || 0;
+     total += sVal;
+  }
+  document.getElementById('t-total').innerText = total;
+  // ... อัปเดต % และผลลัพธ์ ...
+}
+
+// Start
+loadMasterData();
 </script>
 </body>
 </html>
