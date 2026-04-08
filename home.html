@@ -448,25 +448,53 @@ async function sendMessage() {
     inputEl.value = '';
     btnEl.disabled = true;
 
-    // 2. แสดงสถานะกำลังพิมพ์ (Typing Indicator)
+    // 2. แสดงสถานะกำลังพิมพ์
     const typingId = appendTypingIndicator();
 
-    // 3. สร้าง Prompt ครอบคำถามเพื่อให้ AI สวมบทบาทที่ปรึกษา TPM
-    const systemPrompt = `คุณคือผู้เชี่ยวชาญระดับสูงด้าน TPM, 5S (AM-OI), OPL, FI Theme, Kaizen และ Makigami ของโรงงาน 
-หน้าที่ของคุณคือให้คำปรึกษา แนะนำไอเดีย และตอบคำถามเชิงปฏิบัติการที่นำไปใช้ได้จริง 
-กรุณาตอบคำถามต่อไปนี้ด้วยภาษาที่เข้าใจง่าย เป็นมิตร มีการใช้ Bullet point หรือเลขข้อเพื่อให้อ่านง่าย:
+    // 💡 3. แอบดึงข้อมูล KPI จริงของทุกแผนก (ดึงจากตัวแปรในหน้า Dashboard)
+    let liveDataContext = "";
+    if (typeof areaData !== 'undefined' && Object.keys(areaData).length > 0) {
+        liveDataContext = "ข้อมูลความคืบหน้า KPI จริงของแต่ละแผนก ณ ปัจจุบัน (อ้างอิงจากข้อมูลนี้ในการตอบคำถาม):\n";
+        Object.keys(areaData).sort().forEach(d => {
+            // คำนวณข้อมูลแบบย่อให้ AI อ่าน
+            let d_am_t = getSysTarget('AM-OI', d);
+            let d_am_a = amHistory.filter(h => (sg(h,'Department',3)===d || Object.values(h)[3]===d) && (sg(h,'Status',23)==='อนุมัติสมบูรณ์' || Object.values(h)[23]==='อนุมัติสมบูรณ์')).length;
+            
+            let d_opl_t = getSysTarget('OPL', d);
+            let d_opl_a = [...new Map(oplHistory.filter(r=>sg(r,'Department',4)===d).map(i=>[sg(i,'OPL ID',1),i])).values()].filter(r=>sg(r,'Status',14)&&sg(r,'Status',14).includes('สมบูรณ์')).length;
+            
+            let d_fi_t = getSysTarget('FI', d);
+            let d_fi_a = [...new Map(fiHistory.filter(r=>sg(r,'Department',4)===d).map(i=>[sg(i,'FI ID',1),i])).values()].filter(r=>sg(r,'Status',14)&&sg(r,'Status',14).includes('สมบูรณ์')).length;
+            
+            let d_mk_t = getSysTarget('Makigami', d);
+            let d_mk_a = [...new Map(mkHistory.filter(r=>sg(r,'แผนก',3)===d).map(i=>[sg(i,'Makigami ID',1),i])).values()].filter(r=>sg(r,'Status',9)==='Completed').length;
+
+            liveDataContext += `- แผนก ${d}: 5ส(ทำแล้ว ${d_am_a}/${d_am_t} พื้นที่), OPL(ทำแล้ว ${d_opl_a}/${d_opl_t} เรื่อง), FI Theme(ทำแล้ว ${d_fi_a}/${d_fi_t} โครงการ), Makigami(เสร็จ ${d_mk_a}/${d_mk_t})\n`;
+        });
+    } else {
+        liveDataContext = "(ไม่พบข้อมูลเรียลไทม์ กรุณาให้คำแนะนำจากหลักการ TPM ทั่วไปแทน)";
+    }
+
+    // 💡 4. ปั้น Prompt ใหม่ โดยเอาข้อมูลจริงแนบไปกับคำสั่ง
+    const systemPrompt = `คุณคือที่ปรึกษาระดับสูงด้าน TPM และ AI Advisor ของโรงงาน 
+นี่คือข้อมูลในระบบ ณ ปัจจุบัน:
+${liveDataContext}
+
+กฎในการตอบ:
+1. หากผู้ใช้ถามถึงสถานะของแผนกใด ให้ดูข้อมูลด้านบนและสรุปให้ฟังว่า "ทำอะไรไปแล้วบ้าง" และ "เหลืออีกเท่าไหร่ถึงจะตามเป้า"
+2. ให้คำแนะนำเชิงรุก (Actionable advice) เสมอว่าแผนกนั้นๆ ควรทำอะไรต่อเพื่อให้ได้ KPI
+3. ใช้ภาษาเป็นกันเอง เข้าใจง่าย มี Bullet point
 
 คำถามจากผู้ใช้งาน: "${text}"`;
 
     try {
-        // 4. ยิง API ไปที่ Code.gs (ใช้ฟังก์ชัน generateAIInsights ตัวเดิมที่มีอยู่แล้ว)
+        // 5. ยิง API (ใช้ระบบ Fallback และ Retry ที่เราทำไว้ใน Code.gs)
         const response = await fetch(API_URL + '?action=generateAIInsights&prompt=' + encodeURIComponent(systemPrompt));
         const data = await response.json();
         
-        removeElement(typingId); // เอาไอคอนกำลังพิมพ์ออก
+        removeElement(typingId);
 
         if (data.status === 'success') {
-            // จัดรูปแบบข้อความ (Markdown to HTML)
             let formattedText = data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
             appendMessage('ai', formattedText);
         } else {
