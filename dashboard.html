@@ -9,10 +9,10 @@
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
   :root{
     --blue-900:#0A2540; --blue-800:#113A5D; --blue-600:#1E6091; --blue-400:#3A86FF;
-    --teal-600:#0CA47C; --teal-400:#10D2A1;
-    --red-600:#D93838; --red-400:#FF5C5C;
-    --orange-500:#F57C00; --orange-600:#E65100;
-    --indigo-500:#6366F1; --indigo-600:#4F46E5;
+    --teal-600:#0CA47C; --teal-500:#14B8A6; --teal-400:#10D2A1;
+    --red-600:#D93838; --red-500:#F44336; --red-400:#FF5C5C;
+    --orange-600:#E65100; --orange-500:#F57C00; --orange-400:#FF9800;
+    --indigo-600:#4F46E5; --indigo-500:#6366F1;
     --gray-900:#1A1C1E; --gray-600:#505A64; --gray-400:#9BA5B1; --gray-200:#D9E2EC;
     --font:'IBM Plex Sans Thai',sans-serif;
   }
@@ -43,36 +43,34 @@
   .filter-select { padding: 10px 16px; border: 1.5px solid var(--gray-200); border-radius: 12px; font-family: var(--font); font-size: 15px; font-weight: 600; color: var(--blue-800); background: #fff; min-width: 250px; outline: none; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: all 0.2s;}
   .filter-select:focus { border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(58,134,255,0.15); }
 
-  /* 🟢 Priority Action Board (New Design) */
-  .priority-board { margin-bottom: 32px; }
-  .pb-title { font-size: 18px; font-weight: 700; color: var(--blue-900); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  .pb-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, rgba(30,96,145,0.1), transparent); }
+  /* 🟢 Smart Alerts (แทนที่ Action Required เดิม) */
+  .alerts-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .alert-banner { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-radius: 16px; background: #fff; border-left: 6px solid var(--gray-200); box-shadow: 0 4px 12px rgba(0,0,0,0.04); flex-wrap: wrap; gap: 16px; transition: transform 0.2s;}
+  .alert-banner:hover { transform: translateX(4px); }
   
-  .priority-list { display: flex; flex-direction: column; gap: 12px; }
-  .priority-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-radius: 16px; background: #fff; border-left: 6px solid var(--gray-200); box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: transform 0.2s;}
-  .priority-item:hover { transform: translateX(4px); }
+  .alert-warning { border-left-color: var(--orange-500); background: linear-gradient(90deg, #FFF8F0, #fff); }
+  .alert-critical { border-left-color: var(--red-500); background: linear-gradient(90deg, #FFF5F5, #fff); }
+  .alert-success { border-left-color: var(--teal-500); background: linear-gradient(90deg, #F0FDF4, #fff); }
   
-  /* Priority Colors */
-  .pi-critical { border-left-color: var(--red-500); background: linear-gradient(90deg, #FFF5F5, #fff); }
-  .pi-warning { border-left-color: var(--orange-500); background: linear-gradient(90deg, #FFF8F0, #fff); }
-  .pi-good { border-left-color: var(--teal-500); background: linear-gradient(90deg, #F0FDF4, #fff); }
+  .alert-content { display: flex; align-items: center; gap: 16px; }
+  .alert-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .alert-warning .alert-icon { background: rgba(245,124,0,0.1); color: var(--orange-600); }
+  .alert-critical .alert-icon { background: rgba(244,67,54,0.1); color: var(--red-600); }
+  .alert-success .alert-icon { background: rgba(20,184,166,0.1); color: var(--teal-600); }
   
-  .pi-left { display: flex; align-items: center; gap: 16px; }
-  .pi-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; }
+  .alert-text h4 { font-size: 15px; font-weight: 700; color: var(--blue-900); margin-bottom: 2px; }
+  .alert-text p { font-size: 13px; font-weight: 500; color: var(--gray-600); }
   
-  .pi-critical .pi-icon { background: rgba(244,67,54,0.1); color: var(--red-600); }
-  .pi-warning .pi-icon { background: rgba(245,124,0,0.1); color: var(--orange-600); }
-  .pi-good .pi-icon { background: rgba(12,164,124,0.1); color: var(--teal-600); }
-  
-  .pi-details h4 { font-size: 15px; font-weight: 700; color: var(--blue-900); margin-bottom: 2px; }
-  .pi-details p { font-size: 13px; font-weight: 500; color: var(--gray-600); }
-  .pi-action { font-size: 13px; font-weight: 700; padding: 6px 16px; border-radius: 20px; text-align: center; }
-  
-  .pi-critical .pi-action { background: var(--red-500); color: #fff; }
-  .pi-warning .pi-action { background: var(--orange-100); color: var(--orange-600); border: 1px solid var(--orange-200); }
-  .pi-good .pi-action { background: var(--teal-50); color: var(--teal-600); border: 1px solid var(--teal-200); }
+  .btn-action-sm { font-family:var(--font); font-size: 13px; font-weight: 700; padding: 8px 16px; border-radius: 12px; text-decoration: none; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); white-space:nowrap;}
+  .alert-warning .btn-action-sm { background: var(--orange-500); color: #fff; }
+  .alert-critical .btn-action-sm { background: var(--red-500); color: #fff; }
+  .alert-warning .btn-action-sm:hover { background: var(--orange-600); transform: translateY(-2px);}
+  .alert-critical .btn-action-sm:hover { background: var(--red-600); transform: translateY(-2px);}
 
-  /* 🟢 KPI Overview Cards */
+  /* 🟢 KPI Dashboard Grid */
+  .section-title { font-size: 18px; font-weight: 700; color: var(--blue-900); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .section-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, rgba(30,96,145,0.1), transparent); }
+  
   .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .kpi-card { padding: 20px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; transition: all 0.3s; border: 2px solid transparent; cursor: pointer;}
   .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(10,37,64,0.1); border-color: var(--blue-400); }
@@ -89,22 +87,25 @@
   .progress-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.06); border-radius: 4px; overflow: hidden; position: relative; }
   .progress-bar { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   
-  /* Colors for Cards */
+  /* Pillar Colors */
   .p-am .kpi-icon { background: var(--blue-50); color: var(--blue-600); } .p-am .progress-bar { background: var(--blue-500); }
   .p-opl .kpi-icon { background: #FFF3E0; color: var(--orange-500); } .p-opl .progress-bar { background: var(--orange-500); }
   .p-fi .kpi-icon { background: var(--indigo-50); color: var(--indigo-600); } .p-fi .progress-bar { background: var(--indigo-500); }
   .p-kz .kpi-icon { background: #E0F2F1; color: var(--teal-600); } .p-kz .progress-bar { background: var(--teal-500); }
   .p-mk .kpi-icon { background: #FFF3E0; color: var(--orange-600); } .p-mk .progress-bar { background: var(--orange-600); }
 
-  /* 🟢 Detail Page */
+  /* 🟢 Detail Page Header & CTA */
   .detail-view { display: none; animation: fadeIn 0.3s ease-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   
-  .btn-back { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; background: var(--blue-50); color: var(--blue-800); border: 1px solid var(--blue-200); border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-bottom: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-  .btn-back:hover { background: #fff; transform: translateX(-4px); box-shadow: 0 6px 14px rgba(0,0,0,0.1); }
+  .btn-back { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--blue-50); color: var(--blue-800); border: 1px solid var(--blue-200); border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-bottom: 20px; }
+  .btn-back:hover { background: #fff; transform: translateX(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
   
-  .detail-header-title { font-size: 22px; font-weight: 700; color: var(--blue-900); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-  .detail-header-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, rgba(30,96,145,0.1), transparent); }
+  .detail-header-wrap { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 2px solid rgba(30,96,145,0.1); padding-bottom: 16px; flex-wrap:wrap; gap:16px;}
+  .detail-header-title { font-size: 24px; font-weight: 700; color: var(--blue-900); display: flex; align-items: center; gap: 10px; line-height:1;}
+  
+  .btn-primary-cta { display:inline-flex; align-items:center; gap:8px; padding:12px 24px; background:linear-gradient(135deg, var(--blue-600), var(--blue-800)); color:#fff; font-size:14px; font-weight:700; border-radius:12px; text-decoration:none; box-shadow:0 4px 16px rgba(30,96,145,0.3); transition:all 0.2s;}
+  .btn-primary-cta:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(30,96,145,0.4); }
 
   .chart-card { padding: 20px; height: 300px; display: flex; flex-direction: column; margin-bottom: 24px; }
 
@@ -139,12 +140,6 @@
   .st-fail { background: linear-gradient(135deg, #FF5C5C, var(--red-600)); }
   .line-pass { background: var(--teal-400); }
 
-  .btn-eval { display:block; text-align:center; padding:10px; border-radius:12px; text-decoration:none; font-size:12px; font-weight:700; transition:all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom:6px; border:none;}
-  .btn-eval:last-child { margin-bottom:0; }
-  .btn-user { background: rgba(255,255,255,0.8); color: var(--blue-800); border: 1px solid rgba(255,255,255,0.9); box-shadow:none;}
-  .btn-lead { background: linear-gradient(135deg, #FFB74D, var(--orange-500)); color: #fff; }
-  .btn-exec { background: linear-gradient(135deg, #60A5FA, var(--blue-600)); color: #fff; }
-
   #loader{text-align:center;padding:80px 20px;color:var(--blue-800);font-size:16px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:16px;}
   .spinner{width:32px;height:32px;border:4px solid rgba(58,134,255,0.2);border-top-color:var(--blue-600);border-radius:50%;animation:spin 0.8s cubic-bezier(0.5,0,0.5,1) infinite;}
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -173,13 +168,10 @@
       </select>
     </div>
 
-    <div class="priority-board">
-      <div class="pb-title">📌 ลำดับงานที่ต้องจัดการ (Priority Action Board)</div>
-      <div class="priority-list" id="priority-board-list">
-        </div>
-    </div>
+    <div class="section-title" id="alert-title" style="display:none;">📌 สิ่งที่ต้องดำเนินการด่วน (Smart Alerts)</div>
+    <div class="alerts-container" id="smart-alerts-container"></div>
 
-    <div class="pb-title" style="margin-top: 40px;">📊 สรุปความคืบหน้าภาพรวม (Overall Progress)</div>
+    <div class="section-title" style="margin-top: 16px;">📊 สรุปความคืบหน้าภาพรวม (Overall KPI)</div>
     <div class="kpi-grid" id="kpi-cards-container"></div>
 
   </div>
@@ -187,11 +179,15 @@
   <div id="detail-view" class="detail-view">
     
     <button class="btn-back" onclick="goBackToDashboard()">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-      กลับหน้า Dashboard หลัก
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      กลับหน้าภาพรวม
     </button>
 
-    <div class="detail-header-title" id="detail-page-title">รายละเอียดข้อมูล</div>
+    <div class="detail-header-wrap">
+      <div class="detail-header-title" id="detail-page-title">รายละเอียดข้อมูล</div>
+      <div id="detail-cta-container">
+        </div>
+    </div>
 
     <div id="detail-am" style="display:none;">
       <div class="chart-card glass-panel">
@@ -361,7 +357,10 @@ function processAndRender() {
            if(i < 5) trackerHTML += `<div class="step-line ${(st.rank === 4 && stepsInfo[i+1].rank > 0) ? 'line-pass' : ''}"></div>`;
         } trackerHTML += '</div>';
 
-        let actionBtns = `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pendingStep}" class="btn-eval btn-user">📝 เข้าประเมิน</a>`;
+        let actionBtns = `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pendingStep}" class="btn-eval btn-user">📝 เข้าประเมิน (พนักงาน)</a>`;
+        if(overallStatus.rank === 2) actionBtns += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pendingStep}" class="btn-eval btn-lead">🔑 ตรวจ (หัวหน้า)</a>`;
+        else if(overallStatus.rank === 3) actionBtns += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pendingStep}" class="btn-eval btn-exec">🔑 ตรวจ (ผู้บริหาร)</a>`;
+
         let badge = isHitKPI ? `<span style="background:var(--teal-600); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">⭐ ถึงเป้า Step ${targetStep}</span>` : `<span style="background:var(--gray-200); color:var(--gray-600); font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">เป้า Step ${targetStep}</span>`;
 
         const card = document.createElement('div'); card.className = 'area-card';
@@ -396,55 +395,59 @@ function processAndRender() {
   appData.kz.wip = 0; 
   appData.mk.wip = uniqueMks.length - appData.mk.actual;
 
-  // Calculate Percentages for Sorting
-  Object.keys(appData).forEach(k => {
-    appData[k].pct = appData[k].target > 0 ? (appData[k].actual / appData[k].target) * 100 : 100;
-  });
+  Object.keys(appData).forEach(k => { appData[k].pct = appData[k].target > 0 ? (appData[k].actual / appData[k].target) * 100 : 100; });
 
   // =====================================
-  // 2. Render Priority Action Board (NEW!)
+  // 2. Render Smart Alerts (Action Center)
   // =====================================
-  const pBoard = document.getElementById('priority-board-list');
-  pBoard.innerHTML = '';
-  
-  // Sort tasks by completion percentage (lowest = most critical)
-  let tasks = [appData.am, appData.opl, appData.fi, appData.kz, appData.mk]
-    .filter(t => t.target > 0 && t.pct < 100)
-    .sort((a, b) => a.pct - b.pct);
+  const alertsContainer = document.getElementById('smart-alerts-container');
+  alertsContainer.innerHTML = '';
+  let hasAnyAlert = false;
 
-  if (tasks.length === 0) {
-    pBoard.innerHTML = `
-      <div class="priority-item pi-good">
-        <div class="pi-left">
-          <div class="pi-icon">🎉</div>
-          <div class="pi-details"><h4>ยอดเยี่ยมมาก! ไม่มีงานตกค้าง</h4><p>คุณบรรลุเป้าหมาย KPI ครบทุกระบบแล้ว</p></div>
+  const createAlertBanner = (key, title, msg, btnText, btnLink, isCritical) => {
+    let bgClass = isCritical ? 'alert-critical' : 'alert-warning';
+    let icon = key === 'am' ? '🧹' : (key === 'opl' ? '💡' : (key === 'fi' ? '📈' : (key === 'kz' ? '🚀' : '🗺️')));
+    return `
+      <div class="alert-banner ${bgClass}">
+        <div class="alert-content">
+          <div class="alert-icon">${icon}</div>
+          <div class="alert-text"><h4>${title}</h4><p>${msg}</p></div>
         </div>
+        <a href="${btnLink}" class="btn-action-sm">${btnText}</a>
       </div>
     `;
-  } else {
-    tasks.forEach(t => {
-      let statusClass = t.pct < 50 ? 'pi-critical' : 'pi-warning';
-      let icon = t.key === 'am' ? '🧹' : (t.key === 'opl' ? '💡' : (t.key === 'fi' ? '📈' : (t.key === 'kz' ? '🚀' : '🗺️')));
-      let gap = t.target - t.actual;
-      
-      let actionText = '';
-      let btnText = 'จัดการทันที';
-      if (t.key === 'am') { actionText = `มี ${gap} พื้นที่ ที่ยังไม่ถึง Step เป้าหมาย`; }
-      else if (t.key === 'opl') { actionText = `ต้องดันให้จบสมบูรณ์อีก ${gap} เรื่อง (รอตรวจอยู่ ${t.wip})`; }
-      else if (t.key === 'fi') { actionText = `ต้องทำโปรเจกต์ให้เสร็จอีก ${gap} โครงการ (กำลังทำ ${t.wip})`; }
-      else if (t.key === 'kz') { actionText = `ต้องส่งเรื่องให้ครบเป้าอีก ${gap} เรื่อง`; }
-      else if (t.key === 'mk') { actionText = `ต้องทำให้อยู่ใน Phase 4 อีก ${gap} โครงการ (กำลังวิเคราะห์ ${t.wip})`; }
+  };
 
-      pBoard.innerHTML += `
-        <div class="priority-item ${statusClass}" onclick="openDetailView('${t.key}', '${t.title}')" style="cursor:pointer;">
-          <div class="pi-left">
-            <div class="pi-icon">${icon}</div>
-            <div class="pi-details"><h4>${t.title} (${Math.round(t.pct)}%)</h4><p>${actionText}</p></div>
-          </div>
-          <div class="pi-action">${btnText} ➔</div>
-        </div>
-      `;
-    });
+  let qParams = filterDept !== 'all' ? `?dept=${encodeURIComponent(filterDept)}` : '';
+
+  if (appData.am.target > 0 && appData.am.pct < 100) {
+    alertsContainer.innerHTML += createAlertBanner('am', appData.am.title, `มี ${appData.am.target - appData.am.actual} พื้นที่ ที่ยังไม่ถึงเกณฑ์ประเมิน (กำลังทำ ${appData.am.wip})`, 'ประเมิน 5ส ➔', `index.html${qParams}`, appData.am.pct < 50);
+    hasAnyAlert = true;
+  }
+  if (appData.opl.target > 0 && appData.opl.pct < 100) {
+    alertsContainer.innerHTML += createAlertBanner('opl', appData.opl.title, `ต้องดันให้จบสมบูรณ์อีก ${appData.opl.target - appData.opl.actual} เรื่อง (รอตรวจอยู่ ${appData.opl.wip})`, 'เขียน OPL ใหม่ ➔', `opl.html${qParams}`, appData.opl.pct < 50);
+    hasAnyAlert = true;
+  }
+  if (appData.fi.target > 0 && appData.fi.pct < 100) {
+    alertsContainer.innerHTML += createAlertBanner('fi', appData.fi.title, `ต้องทำโปรเจกต์ให้เสร็จอีก ${appData.fi.target - appData.fi.actual} โครงการ (กำลังทำ ${appData.fi.wip})`, 'สร้าง FI Theme ➔', `fitheme.html${qParams}`, appData.fi.pct < 50);
+    hasAnyAlert = true;
+  }
+  if (appData.kz.target > 0 && appData.kz.pct < 100) {
+    alertsContainer.innerHTML += createAlertBanner('kz', appData.kz.title, `ต้องส่งเรื่องให้ครบเป้าอีก ${appData.kz.target - appData.kz.actual} เรื่อง`, 'ไปที่ระบบส่วนกลาง ➔', `https://ops.sermsukplc.com/kaizen/`, appData.kz.pct < 50);
+    hasAnyAlert = true;
+  }
+  if (appData.mk.target > 0 && appData.mk.pct < 100) {
+    alertsContainer.innerHTML += createAlertBanner('mk', appData.mk.title, `ต้องทำให้เสร็จ (Phase 4) อีก ${appData.mk.target - appData.mk.actual} โครงการ (กำลังวิเคราะห์ ${appData.mk.wip})`, 'อัปเดต Makigami ➔', `makigami.html${qParams}`, appData.mk.pct < 50);
+    hasAnyAlert = true;
+  }
+
+  if (hasAnyAlert) { document.getElementById('alert-title').style.display = 'block'; } 
+  else {
+    document.getElementById('alert-title').style.display = 'block';
+    alertsContainer.innerHTML = `
+      <div class="alert-banner alert-success">
+        <div class="alert-content"><div class="alert-icon">🎉</div><div class="alert-text"><h4>ยอดเยี่ยมมาก! สำเร็จ 100%</h4><p>คุณบรรลุเป้าหมาย KPI ครบทุกระบบในแผนกที่เลือกแล้ว</p></div></div>
+      </div>`;
   }
 
   // =====================================
@@ -470,7 +473,7 @@ function processAndRender() {
   kpiContainer.innerHTML += createCard('Makigami Analysis', '🗺️', 'mk', appData.mk, 'โครงการ', 'mk');
 
   // =====================================
-  // 4. Update Detail Tables
+  // 4. Update Detail Tables & AM Chart
   // =====================================
   const oplTbody = document.getElementById('opl-table-body'); oplTbody.innerHTML = '';
   if(uniqueOpls.length === 0) { oplTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--gray-400);">ไม่มีประวัติของแผนกนี้</td></tr>'; } 
@@ -511,7 +514,6 @@ function processAndRender() {
      });
   }
 
-  // 🟢 Create Chart specifically for AM-OI
   if (chartInstance) chartInstance.destroy();
   chartInstance = new Chart(document.getElementById('stepChart').getContext('2d'), { 
     type: 'bar', 
@@ -524,13 +526,27 @@ function processAndRender() {
 }
 
 // =========================================
-// 🟢 SPA Router & Specific Gap Analysis
+// 🟢 SPA Router & Dynamic CTA Button
 // =========================================
 function openDetailView(type, title) {
   document.getElementById('main-dashboard-view').style.display = 'none';
   document.getElementById('detail-view').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  document.getElementById('detail-page-title').innerHTML = `🔍 ข้อมูลเชิงลึก: ${title}`;
+  
+  document.getElementById('detail-page-title').innerHTML = `<span style="font-size:28px;">${type==='am'?'🧹':type==='opl'?'💡':type==='fi'?'📈':type==='kz'?'🚀':'🗺️'}</span> ${title}`;
+
+  // 🟢 Create dynamic CTA button based on selected filter
+  const filterDept = document.getElementById('global-filter-dept').value;
+  let qParams = filterDept !== 'all' ? `?dept=${encodeURIComponent(filterDept)}` : '';
+  let ctaHTML = '';
+  
+  if (type === 'am') ctaHTML = `<a href="index.html${qParams}" class="btn-primary-cta">📝 ทำประเมิน 5ส พื้นที่</a>`;
+  else if (type === 'opl') ctaHTML = `<a href="opl.html${qParams}" class="btn-primary-cta">➕ สร้าง OPL เรื่องใหม่</a>`;
+  else if (type === 'fi') ctaHTML = `<a href="fitheme.html${qParams}" class="btn-primary-cta">➕ สร้างโครงการ FI</a>`;
+  else if (type === 'kz') ctaHTML = `<a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="btn-primary-cta">🌐 ไปที่ระบบ Kaizen ส่วนกลาง</a>`;
+  else if (type === 'mk') ctaHTML = `<a href="makigami.html${qParams}" class="btn-primary-cta">🔄 อัปเดตสถานะ Makigami</a>`;
+
+  document.getElementById('detail-cta-container').innerHTML = ctaHTML;
 
   ['am', 'opl', 'fi', 'kz', 'mk'].forEach(t => document.getElementById('detail-' + t).style.display = 'none');
   document.getElementById('detail-' + type).style.display = 'block';
