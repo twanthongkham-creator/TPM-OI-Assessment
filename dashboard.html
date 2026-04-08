@@ -158,6 +158,10 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 }
 .btn-cta:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 28px rgba(10,37,64,0.35)}
 
+/* 🟢 Button Edit Theme-Matched */
+.btn-edit { background: rgba(255,255,255,0.6); color: var(--blue-800); border: 1px solid rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+.btn-edit:hover { background: #fff; color: var(--blue-600); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-color: var(--blue-200); }
+
 .data-table-wrapper{background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.85);border-radius:var(--r-lg);box-shadow:0 6px 24px rgba(10,37,64,0.07);overflow:hidden}
 .tbl-scroll{overflow-x:auto}
 .data-table{width:100%;border-collapse:collapse;font-size:13px;min-width:740px}
@@ -280,10 +284,11 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
       <div id="detail-cta-container"></div>
     </div>
     <div id="detail-am" style="display:none;"><div class="grid" id="am-card-container"></div></div>
-    <div id="detail-opl" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่</th><th>รหัส OPL</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้จัดทำ</th><th>สถานะ</th></tr></thead><tbody id="opl-table-body"></tbody></table></div></div>
-    <div id="detail-fi" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>รหัส FI</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้รับผิดชอบ</th><th>ความคืบหน้า</th><th>สถานะ</th></tr></thead><tbody id="fi-table-body"></tbody></table></div></div>
-    <div id="detail-kz" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่</th><th>เลขที่</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้ดำเนินการ</th><th>ประเภท</th></tr></thead><tbody id="kz-table-body"></tbody></table></div></div>
-    <div id="detail-mk" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>รหัส</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้รับผิดชอบ</th><th>Phase</th><th>สถานะ</th></tr></thead><tbody id="mk-table-body"></tbody></table></div></div>
+    
+    <div id="detail-opl" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่</th><th>รหัส OPL</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้จัดทำ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="opl-table-body"></tbody></table></div></div>
+    <div id="detail-fi" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>รหัส FI</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้รับผิดชอบ</th><th>ความคืบหน้า</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="fi-table-body"></tbody></table></div></div>
+    <div id="detail-kz" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่</th><th>เลขที่</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้ดำเนินการ</th><th>ประเภท</th><th>จัดการ</th></tr></thead><tbody id="kz-table-body"></tbody></table></div></div>
+    <div id="detail-mk" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>รหัส</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้รับผิดชอบ</th><th>Phase</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="mk-table-body"></tbody></table></div></div>
   </div>
 </div>
 
@@ -441,11 +446,37 @@ function processAndRender(){
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:gc},ticks:{stepSize:1,font:cf}},x:{grid:{display:false},ticks:{font:cf}}}}
   });
 
+  // 🟢 2. เปลี่ยน Cols จาก 6 เป็น 7 และแนบลิงก์สำหรับหน้า Detail ทั้งหมด
   const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;color:var(--gray-400);padding:36px 16px;font-size:13px;">ไม่มีข้อมูล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
-  tbl('opl-table-body',uOpl,6,r=>{let d=sg(r,'วันที่ทำ OPL',2);if(d&&d.includes('T'))d=d.split('T')[0];const s=sg(r,'Status',14);return`<td>${d}</td><td>${sg(r,'OPL ID',1)}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ชื่อผู้สอน',10)}</td><td>${s.includes('สมบูรณ์')?`<span class="badge b-pass">✓ ${s}</span>`:`<span class="badge b-wait">⏳ ${s}</span>`}</td>`;});
-  tbl('fi-table-body',uFi,6,r=>{const s=sg(r,'Status',14);return`<td>${sg(r,'FI ID',1)}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',2)}</td><td><span style="color:var(--indigo-600);font-weight:700">${sg(r,'Step ปัจจุบัน',13)}</span></td><td>${s.includes('สมบูรณ์')?`<span class="badge b-pass">✓ ${s}</span>`:`<span class="badge b-wait">⏳ ${s}</span>`}</td>`;});
-  tbl('kz-table-body',uKz,6,r=>{let d=sg(r,'วันที่ทำ Kaizen',1);if(d&&d.includes('T'))d=d.split('T')[0];return`<td>${d}</td><td>${sg(r,'เลขที่ Kaizen',0)}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้ดำเนินการ',7)}</td><td><span class="badge b-pass">${sg(r,'ประเภท',5)}</span></td>`;});
-  tbl('mk-table-body',uMk,6,r=>{const s=sg(r,'Status',9);const bc=s==='Completed'?'b-pass':s==='Delayed'?'b-fail':'b-wait';return`<td>${sg(r,'Makigami ID',1)}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)||sg(r,'ชื่อเรื่อง (Theme Name)',4)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',5)}</td><td><span style="color:var(--orange-600);font-weight:700">${sg(r,'Current Phase',6)}</span></td><td><span class="badge ${bc}">${s}</span></td>`;});
+  
+  tbl('opl-table-body',uOpl,7,r=>{
+      let d=sg(r,'วันที่ทำ OPL',2);if(d&&d.includes('T'))d=d.split('T')[0];
+      const s=sg(r,'Status',14);
+      const oplId=sg(r,'OPL ID',1);
+      const btn=`<a href="opl.html?oplId=${encodeURIComponent(oplId)}" class="btn-edit">✏️ อัปเดต</a>`;
+      return`<td>${d}</td><td>${oplId}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ชื่อผู้สอน',10)}</td><td>${s.includes('สมบูรณ์')?`<span class="badge b-pass">✓ ${s}</span>`:`<span class="badge b-wait">⏳ ${s}</span>`}</td><td>${btn}</td>`;
+  });
+  
+  tbl('fi-table-body',uFi,7,r=>{
+      const s=sg(r,'Status',14);
+      const fiId=sg(r,'FI ID',1);
+      const btn=`<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}" class="btn-edit">✏️ อัปเดต</a>`;
+      return`<td>${fiId}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',2)}</td><td><span style="color:var(--indigo-600);font-weight:700">${sg(r,'Step ปัจจุบัน',13)}</span></td><td>${s.includes('สมบูรณ์')?`<span class="badge b-pass">✓ ${s}</span>`:`<span class="badge b-wait">⏳ ${s}</span>`}</td><td>${btn}</td>`;
+  });
+  
+  tbl('kz-table-body',uKz,7,r=>{
+      let d=sg(r,'วันที่ทำ Kaizen',1);if(d&&d.includes('T'))d=d.split('T')[0];
+      const btn=`<a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="btn-edit">🌐 ระบบกลาง</a>`;
+      return`<td>${d}</td><td>${sg(r,'เลขที่ Kaizen',0)}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้ดำเนินการ',7)}</td><td><span class="badge b-pass">${sg(r,'ประเภท',5)}</span></td><td>${btn}</td>`;
+  });
+  
+  tbl('mk-table-body',uMk,7,r=>{
+      const s=sg(r,'Status',9);
+      const bc=s==='Completed'?'b-pass':s==='Delayed'?'b-fail':'b-wait';
+      const mkId=sg(r,'Makigami ID',1);
+      const btn=`<a href="makigami.html?mkId=${encodeURIComponent(mkId)}" class="btn-edit">✏️ อัปเดต</a>`;
+      return`<td>${mkId}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)||sg(r,'ชื่อเรื่อง (Theme Name)',4)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',5)}</td><td><span style="color:var(--orange-600);font-weight:700">${sg(r,'Current Phase',6)}</span></td><td><span class="badge ${bc}">${s}</span></td><td>${btn}</td>`;
+  });
 }
 
 function openDetail(type,title){
