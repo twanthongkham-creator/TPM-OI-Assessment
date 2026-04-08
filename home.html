@@ -11,7 +11,8 @@
     --teal-600:#0CA47C; --teal-400:#10D2A1;
     --red-600:#D93838; --red-400:#FF5C5C;
     --orange-500:#F57C00; --orange-400:#FF9800;
-    --indigo-500:#6366F1; --indigo-600:#4F46E5;
+    /* 🟢 เพิ่ม --indigo-400 ที่หายไปตรงนี้ครับ */
+    --indigo-400:#818CF8; --indigo-500:#6366F1; --indigo-600:#4F46E5;
     --gray-900:#1A1C1E; --gray-600:#505A64; --gray-400:#9BA5B1; --gray-200:#D9E2EC;
     --font:'IBM Plex Sans Thai',sans-serif;
   }
@@ -35,7 +36,7 @@
   
   .wrap { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
 
-  /* 🟢 Hero Section */
+  /* Hero Section */
   .hero-section { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-bottom: 32px; padding: 32px; border-radius: 24px; }
   .hero-text h1 { font-size: 32px; font-weight: 700; color: var(--blue-900); letter-spacing: -0.5px; margin-bottom: 8px; }
   .hero-text p { font-size: 15px; color: var(--gray-600); font-weight: 500; }
@@ -45,7 +46,7 @@
   .section-title { font-size: 18px; font-weight: 700; color: var(--blue-900); margin-bottom: 20px; margin-top: 32px; display: flex; align-items: center; gap: 10px; }
   .section-title::after { content:''; flex:1; height:2px; background: linear-gradient(90deg, rgba(30,96,145,0.1), transparent); }
   
-  /* 🟢 Menu Grid (4 Modules) */
+  /* Menu Grid (4 Modules) */
   .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; margin-bottom: 32px; }
   
   .menu-card { 
@@ -73,7 +74,7 @@
   .card-kaizen:hover .mc-arrow { background: var(--teal-600); }
   .card-fitheme:hover .mc-arrow { background: var(--indigo-600); }
 
-  /* 🟢 KPI Dashboard Banner */
+  /* KPI Dashboard Banner */
   .kpi-banner {
     display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;
     padding: 32px 40px; border-radius: 24px; text-decoration: none; position: relative; overflow: hidden;
@@ -96,7 +97,6 @@
   .kpi-banner-action svg { transition: transform 0.3s; }
   .kpi-banner:hover .kpi-banner-action svg { transform: translateX(4px); }
 
-  /* Background Graphic for Banner */
   .kpi-banner::after {
     content: '📊'; position: absolute; right: -20px; bottom: -40px; font-size: 180px; opacity: 0.05; z-index: 1; transform: rotate(-10deg);
   }
@@ -114,7 +114,7 @@
       <p>ศูนย์รวมแอปพลิเคชันระบบงานเสา OI (AM-OI, OPL, FI Theme, Kaizen)</p>
     </div>
     <div class="datetime-badge" id="live-time">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
       กำลังโหลดเวลา...
     </div>
   </div>
@@ -124,38 +124,38 @@
   <div class="menu-grid">
     <a href="index.html" class="menu-card glass-panel card-assess">
       <div class="mc-icon">
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
       </div>
       <h3 class="mc-title">AM-OI Assessment</h3>
       <p class="mc-desc">ระบบประเมิน 5ส. ออฟฟิศและพื้นที่โรงงาน (Step 1–5) สำหรับพนักงานและหัวหน้า</p>
-      <div class="mc-arrow"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
+      <div class="mc-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
     </a>
 
     <a href="opl.html" class="menu-card glass-panel card-opl">
       <div class="mc-icon">
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
       </div>
       <h3 class="mc-title">OPL Center</h3>
       <p class="mc-desc">ระบบขึ้นทะเบียนและคลังความรู้ One Point Lesson (บทเรียนจุดเดียว)</p>
-      <div class="mc-arrow"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
+      <div class="mc-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
     </a>
 
     <a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="menu-card glass-panel card-kaizen">
       <div class="mc-icon">
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
       </div>
-      <h3 class="mc-title">Kaizen Suggestion <svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></h3>
+      <h3 class="mc-title">Kaizen Suggestion <svg class="external-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></h3>
       <p class="mc-desc">ระบบเสนอแนะแนวทางการปรับปรุงงาน (ลิงก์ไปยังระบบปฏิบัติการส่วนกลาง)</p>
-      <div class="mc-arrow"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
+      <div class="mc-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
     </a>
 
     <a href="fitheme.html" class="menu-card glass-panel card-fitheme">
       <div class="mc-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
       </div>
       <h3 class="mc-title">FI Theme Center</h3>
       <p class="mc-desc">ระบบลงทะเบียนและติดตามความคืบหน้าโครงการ Focused Improvement (10 Steps)</p>
-      <div class="mc-arrow"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
+      <div class="mc-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
     </a>
   </div>
 
@@ -165,18 +165,18 @@
     <div class="kpi-banner-content">
       <div class="kpi-banner-title">
         <div class="kpi-banner-icon">
-          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
         </div>
         KPI Dashboard (ภาพรวม & แยกแผนก)
       </div>
       <p class="kpi-banner-desc">
-        ตรวจสอบความสำเร็จเทียบกับเป้าหมาย (KPI) ของเสาและองค์กร<br>
+        ตรวจสอบความสำเร็จเทียบกับเป้าหมาย (KPI) ขององค์กร<br>
         เจาะลึกข้อมูล AM-OI, OPL, FI Theme, Kaizen แยกตามแผนกของคุณได้ทันที
       </p>
     </div>
     <div class="kpi-banner-action">
       เปิดดู Dashboard
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
     </div>
   </a>
 
@@ -188,7 +188,7 @@ function updateTime() {
   const now = new Date();
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
   let dateString = now.toLocaleDateString('th-TH', options).replace(' น.', '');
-  const iconHtml = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>`;
+  const iconHtml = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>`;
   document.getElementById('live-time').innerHTML = iconHtml + ' ' + dateString;
 }
 
