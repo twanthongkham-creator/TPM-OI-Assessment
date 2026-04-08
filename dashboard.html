@@ -30,7 +30,7 @@
   .glass-panel { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 8px 32px rgba(10, 37, 64, 0.05); border-radius: 20px; }
 
   .header{ position:sticky; top:10px; z-index:100; max-width: 1150px; margin: 10px auto 20px; padding: 16px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
-  .h-title h2{font-size:20px;font-weight:700;color:var(--blue-900);letter-spacing:-0.5px;}
+  .h-title h2{font-size:20px;font-weight:700;color:var(--blue-900);letter-spacing:-0.5px; margin-bottom:4px;}
   .h-title p{font-size:12px;color:var(--gray-600);font-weight:500;}
   .btn-nav { background: linear-gradient(135deg, #fff, #f0f4f8); border:1px solid #fff; color:var(--blue-800); padding:10px 16px; border-radius:12px; text-decoration:none; font-size:13px; font-weight:700; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition:all 0.2s ease;}
   .btn-nav:hover { transform:translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
@@ -44,13 +44,13 @@
   .filter-select:focus { border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(58,134,255,0.15); }
 
   /* 🟢 KPI Dashboard Grid */
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .kpi-card { padding: 20px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
   .kpi-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-  .kpi-title { font-size: 14px; font-weight: 700; color: var(--gray-600); margin-bottom: 4px; }
+  .kpi-title { font-size: 15px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
   .kpi-data { display: flex; align-items: flex-end; gap: 8px; margin-bottom: 12px; }
-  .kpi-val { font-size: 32px; font-weight: 700; color: var(--blue-900); line-height: 1; }
-  .kpi-target { font-size: 14px; font-weight: 600; color: var(--gray-400); margin-bottom: 4px; }
+  .kpi-val { font-size: 36px; font-weight: 700; color: var(--blue-900); line-height: 1; letter-spacing: -1px; }
+  .kpi-target { font-size: 13px; font-weight: 600; color: var(--gray-400); margin-bottom: 4px; }
   
   .progress-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.06); border-radius: 4px; overflow: hidden; position: relative; }
   .progress-bar { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -67,7 +67,9 @@
   
   .action-card { padding: 24px; border-left: 5px solid var(--red-400); background: linear-gradient(135deg, #fff, #FFF5F5); }
   .action-title { font-size: 16px; font-weight: 700; color: var(--red-600); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  .action-list { list-style: none; padding: 0; }
+  .action-list { list-style: none; padding: 0; max-height: 250px; overflow-y: auto; padding-right: 5px;}
+  .action-list::-webkit-scrollbar { width: 6px; }
+  .action-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 3px; }
   .action-list li { font-size: 13px; font-weight: 600; color: var(--gray-900); padding: 10px 12px; background: rgba(255,255,255,0.8); border-radius: 8px; margin-bottom: 8px; border: 1px solid rgba(217,56,56,0.1); display: flex; align-items: flex-start; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
   .action-list li::before { content: '👉'; flex-shrink: 0; }
   .action-list li.success-msg { border-left: 4px solid var(--teal-500); background: #F0FDF4; border-color: rgba(16,210,161,0.2); }
@@ -75,7 +77,7 @@
   .action-list li.manual-msg { border-left: 4px solid var(--gray-400); background: #F8FAFC; }
   .action-list li.manual-msg::before { content: 'ℹ️'; }
 
-  .chart-card { padding: 20px; height: 300px; display: flex; flex-direction: column; }
+  .chart-card { padding: 20px; height: 320px; display: flex; flex-direction: column; }
 
   /* 🟢 AM-OI Detailed Area Cards */
   .section-subtitle { font-size: 16px; font-weight: 700; color: var(--blue-900); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
@@ -86,7 +88,7 @@
   .ac-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
   .ac-dept{font-size:11px;color:var(--blue-800);font-weight:700;background:rgba(58,134,255,0.15);padding:4px 8px;border-radius:6px;}
   .ac-status{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;}
-  .ac-name{font-size:15px;font-weight:700;color:var(--blue-900);margin-bottom:16px;}
+  .ac-name{font-size:15px;font-weight:700;color:var(--blue-900);margin-bottom:16px; line-height:1.4;}
   
   .step-tracker { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; padding:0 4px; }
   .step-node { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; z-index:2; transition:all 0.3s; box-shadow:inset 0 -2px 0 rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.1); }
@@ -129,7 +131,7 @@
       </select>
   </div>
 
-  <div id="loader"><div class="spinner"></div>กำลังโหลดข้อมูลและประมวลผลความสำเร็จของ KPI...</div>
+  <div id="loader"><div class="spinner"></div>กำลังเชื่อมต่อฐานข้อมูล และประมวลผล KPI อัตโนมัติ...</div>
 
   <div id="dashboard-content" style="display:none;">
     
@@ -143,20 +145,22 @@
           </ul>
       </div>
       <div class="chart-card glass-panel">
-        <div style="font-size:14px; font-weight:700; color:var(--blue-900); margin-bottom:10px;">📊 สัดส่วน 5ส (AM-OI) ตาม Step</div>
+        <div style="font-size:14px; font-weight:700; color:var(--blue-900); margin-bottom:10px;">📊 สัดส่วน 5ส (AM-OI) แยกตาม Step ปัจจุบัน</div>
         <div style="flex:1; position:relative;"><canvas id="stepChart"></canvas></div>
       </div>
     </div>
 
-    <div class="section-subtitle">🏢 สถานะการประเมินพื้นที่ 5ส (AM-OI Details)</div>
+    <div class="section-subtitle">🏢 สถานะการประเมินพื้นที่ 5ส (AM-OI Assessment)</div>
     <div class="grid" id="am-card-container"></div>
 
   </div>
 </div>
 
 <script>
+// ⚠️ ใส่ลิงก์ Web App URL เดิม
 const API_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
+// รายชื่อพื้นที่ทั้งหมดที่ตั้งไว้
 const areaData = {
   "RW": ["ห้องจัดเก็บวัตถุดิบ 2","ห้องจัดเก็บวัตถุดิบ 3","ห้องจัดเก็บวัตถุดิบ 7","ห้องจัดเก็บ Barcode","คลังจัดเก็บสารเคมี","ห้องจัดเก็บอะไหล่ต่างประเทศ"],
   "QC": ["ห้อง Chemical","ห้อง Packaging","ห้อง Micro"],
@@ -170,7 +174,9 @@ const areaData = {
   "PU.P": ["ห้องจัดซื้อ"],
   "IT.P": ["ห้อง Server","ออฟฟิศ IT"],
   "EN": ["ห้องวิศวกรรม","ห้องประชุม EN"],
+  "PE": ["ห้องออกแบบบรรจุภัณฑ์"],
   "PN": ["ห้องวางแผน"],
+  "SE": ["ออฟฟิศความปลอดภัย"],
   "PIS": ["ห้อง PIS"],
   "PAYROLL": ["ห้อง Payroll"]
 };
@@ -198,7 +204,7 @@ async function loadData() {
     initFilter();
     processAndRender();
   } catch(e) {
-    document.getElementById('loader').innerHTML = `<span style="color:var(--red-600)">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชหน้าจอ</span>`;
+    document.getElementById('loader').innerHTML = `<span style="color:var(--red-600)">❌ โหลดข้อมูลล้มเหลว กรุณาตรวจสอบว่าใน Code.gs ดึงข้อมูลถูกต้องหรือไม่</span>`;
   }
 }
 
@@ -221,19 +227,28 @@ function getStepLogic(stepRecords) {
   return { class: 'st-wait-lead', text: 'รอหัวหน้า', rank: 2 };
 }
 
-// 🟢 ดึงเป้าหมายจาก KPI_Master
-function getTargetValue(system, dept, area = 'ALL') {
-  // หาแบบระบุตัวตน 100%
-  let specific = kpiMaster.find(k => k[0] === system && k[2] === dept && k[3] === area);
-  if (specific) return parseInt(specific[4]);
-  // หาแบบระบุแผนก แต่ Area = ALL
-  let deptGeneric = kpiMaster.find(k => k[0] === system && k[2] === dept && k[3] === 'ALL');
-  if (deptGeneric) return parseInt(deptGeneric[4]);
-  // หาแบบเหมารวมทั้งโรงงาน (ALL, ALL)
-  let allGeneric = kpiMaster.find(k => k[0] === system && k[2] === 'ALL' && k[3] === 'ALL');
-  if (allGeneric) return parseInt(allGeneric[4]);
+// 🟢 ดึงเป้าหมาย AM-OI (ดึงจาก KPI_Master โดยตรง)
+function getAmTarget(dept, area) {
+  // 1. หาแบบระบุแผนกและพื้นที่เป๊ะๆ (เช่น RW, คลังจัดเก็บสารเคมี)
+  let specific = kpiMaster.find(r => r.System === 'AM-OI' && r.Department === dept && r.Area === area);
+  if (specific && specific.Target_Value) return parseInt(specific.Target_Value);
   
-  return system === 'AM-OI' ? 5 : 0; // Default
+  // 2. ถ้าไม่เจอ ให้ใช้ค่าเริ่มต้นคือ Step 3
+  return 3; 
+}
+
+// 🟢 ดึงเป้าหมายรวมของระบบอื่นๆ (OPL, FI, Kaizen, Makigami)
+function getSystemTarget(sys, filterDept) {
+  let target = 0;
+  kpiMaster.forEach(r => {
+    if (r.System === sys) {
+      // ถ้าระบุแผนก หรือ ถ้าแสดงทั้งหมดก็บวกเข้าไปให้หมด
+      if (filterDept === 'all' || r.Department === filterDept) {
+        target += parseInt(r.Target_Value) || 0;
+      }
+    }
+  });
+  return target;
 }
 
 function processAndRender() {
@@ -243,42 +258,39 @@ function processAndRender() {
   document.getElementById('dashboard-content').style.display = 'block';
 
   // ----------------------------------------------------
-  // ตัวแปรเก็บค่าเพื่อคำนวณ Dashboard
+  // คำนวณข้อมูล AM-OI
   // ----------------------------------------------------
   let amTotalAreas = 0; let amHitAreas = 0; let stepDist = [0,0,0,0,0,0];
   let amShortList = []; // เก็บรายชื่อพื้นที่ที่ยังไม่ถึงเป้า
 
-  let targetOpl = 0; let actualOpl = 0;
-  let targetFi = 0; let actualFi = 0;
-  let targetKz = 0; let targetMk = 0;
-
   const amContainer = document.getElementById('am-card-container');
   amContainer.innerHTML = '';
 
-  // 1. คำนวณ AM-OI
   const deptsToProcess = filterDept === 'all' ? Object.keys(areaData) : [filterDept];
   
   deptsToProcess.forEach(dept => {
     areaData[dept].forEach(area => {
       amTotalAreas++;
-      const history = amHistory.filter(r => r['Department'] === dept && r['Area'] === area);
+      // ประวัติของพื้นที่นี้
+      const history = amHistory.filter(r => (r['Department'] || Object.values(r)[3]) === dept && (r['Area'] || Object.values(r)[4]) === area);
       
       let stepsInfo = {}; let hasStarted = false; let pendingStep = 1; let currentPassedStep = 0;
       let overallStatus = { text: 'ยังไม่เริ่ม', color: 'var(--gray-600)', bg: 'rgba(0,0,0,0.05)', rank: 0 };
 
       for(let s=1; s<=5; s++) {
-        const sRecords = history.filter(r => r['AuditRound'] == s);
+        const sRecords = history.filter(r => r['AuditRound'] == s || Object.values(r)[6] == s);
         stepsInfo[s] = getStepLogic(sRecords);
         if(stepsInfo[s].rank > 0) hasStarted = true;
-        if(stepsInfo[s].rank === 4) currentPassedStep = s;
+        if(stepsInfo[s].rank === 4) currentPassedStep = s; // เก็บ Step สูงสุดที่ผ่านสมบูรณ์
       }
 
-      let targetStep = getTargetValue('AM-OI', dept, area);
+      let targetStep = getAmTarget(dept, area);
       let isHitKPI = currentPassedStep >= targetStep;
-      if(isHitKPI) amHitAreas++;
-      else amShortList.push({ dept, area, current: currentPassedStep, target: targetStep });
       
-      stepDist[currentPassedStep]++;
+      if(isHitKPI) { amHitAreas++; }
+      else { amShortList.push({ dept, area, current: currentPassedStep, target: targetStep }); }
+      
+      stepDist[currentPassedStep]++; // นำไปเข้ากราฟแท่ง
 
       if(currentPassedStep === 5) {
         overallStatus = { text: 'ผ่านครบ 5 Step', color: '#0CA47C', bg: '#E1F5EE', rank: 4 }; pendingStep = 'all';
@@ -303,7 +315,7 @@ function processAndRender() {
       if(overallStatus.rank === 2) actionBtns += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pendingStep}" class="btn-eval btn-lead">🔑 ตรวจ (หัวหน้า)</a>`;
       else if(overallStatus.rank === 3) actionBtns += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pendingStep}" class="btn-eval btn-exec">🔑 ตรวจ (ผู้บริหาร)</a>`;
 
-      let badge = isHitKPI ? `<span style="background:var(--teal-600); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">⭐ ผ่านเป้า Step ${targetStep}</span>` : `<span style="background:var(--gray-200); color:var(--gray-600); font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">เป้า Step ${targetStep}</span>`;
+      let badge = isHitKPI ? `<span style="background:var(--teal-600); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">⭐ ถึงเป้า Step ${targetStep}</span>` : `<span style="background:var(--gray-200); color:var(--gray-600); font-size:9px; padding:2px 6px; border-radius:4px; margin-left:6px;">เป้า Step ${targetStep}</span>`;
 
       const card = document.createElement('div'); card.className = 'area-card glass-panel';
       card.innerHTML = `<div class="ac-top"><div><span class="ac-dept">${dept}</span>${badge}</div><span class="ac-status" style="background:${overallStatus.bg}; color:${overallStatus.color}">${overallStatus.text}</span></div><div class="ac-name">${area}</div>${trackerHTML}<div style="margin-top:auto;">${actionBtns}</div>`;
@@ -311,36 +323,31 @@ function processAndRender() {
     });
   });
 
-  // 2. คำนวณ OPL, FI, Kaizen, Makigami Targets
-  if (filterDept === 'all') {
-     // สรุปเป้าหมายรวมทุกแผนก
-     Object.keys(areaData).forEach(d => {
-       targetOpl += getTargetValue('OPL', d);
-       targetFi += getTargetValue('FI', d);
-       targetKz += getTargetValue('Kaizen', d);
-       targetMk += getTargetValue('Makigami', d);
-     });
-     actualOpl = new Set(oplHistory.map(r => r['OPL ID'] || Object.values(r)[1])).size;
+  // ----------------------------------------------------
+  // คำนวณ OPL, FI, Kaizen, Makigami Targets
+  // ----------------------------------------------------
+  let targetOpl = getSystemTarget('OPL', filterDept);
+  let targetFi = getSystemTarget('FI', filterDept);
+  let targetKz = getSystemTarget('Kaizen', filterDept);
+  let targetMk = getSystemTarget('Makigami', filterDept);
+
+  let actualOpl = 0; let actualFi = 0;
+  if(filterDept === 'all') {
+     actualOpl = new Set(oplHistory.map(r => r['OPL ID'] || r['เลขที่ OPL'] || Object.values(r)[1])).size;
      actualFi = new Set(fiHistory.map(r => r['FI ID'] || Object.values(r)[1])).size;
   } else {
-     // สรุปเฉพาะแผนกที่เลือก
-     targetOpl = getTargetValue('OPL', filterDept);
-     targetFi = getTargetValue('FI', filterDept);
-     targetKz = getTargetValue('Kaizen', filterDept);
-     targetMk = getTargetValue('Makigami', filterDept);
-     
      actualOpl = new Set(oplHistory.filter(r => (r['Department']||Object.values(r)[4]) === filterDept).map(r => r['OPL ID']||Object.values(r)[1])).size;
      actualFi = new Set(fiHistory.filter(r => (r['Department']||Object.values(r)[4]) === filterDept).map(r => r['FI ID']||Object.values(r)[1])).size;
   }
 
   // ----------------------------------------------------
-  // Render KPI Cards
+  // Render Top KPI Cards
   // ----------------------------------------------------
   const kpiContainer = document.getElementById('kpi-cards-container');
   kpiContainer.innerHTML = '';
   
   const createCard = (title, icon, typeClass, current, max, unit) => {
-    let pct = max > 0 ? Math.min(Math.round((current/max)*100), 100) : 0;
+    let pct = max > 0 ? Math.min(Math.round((current/max)*100), 100) : (current > 0 ? 100 : 0);
     return `
       <div class="kpi-card glass-panel p-${typeClass}">
         <div class="kpi-icon">${icon}</div>
@@ -353,15 +360,14 @@ function processAndRender() {
 
   kpiContainer.innerHTML += createCard('AM-OI Assessment', '🧹', 'am', amHitAreas, amTotalAreas, 'พื้นที่');
   kpiContainer.innerHTML += createCard('OPL (One Point Lesson)', '💡', 'opl', actualOpl, targetOpl, 'เรื่อง');
-  kpiContainer.innerHTML += createCard('FI Theme', '📈', 'fi', actualFi, targetFi, 'เรื่อง');
+  kpiContainer.innerHTML += createCard('FI Theme', '📈', 'fi', actualFi, targetFi, 'โครงการ');
   
-  // Card พิเศษสำหรับ Kaizen/Makigami (ไม่มีหลอดโหลดจริงเพราะข้อมูลแยก)
   kpiContainer.innerHTML += `
       <div class="kpi-card glass-panel p-kz">
         <div class="kpi-icon">🚀</div>
         <div class="kpi-title">Kaizen & Makigami</div>
-        <div style="font-size:13px; font-weight:600; color:var(--gray-600); margin-top:4px;">🎯 เป้าหมาย Kaizen: <span style="color:var(--teal-600); font-size:16px;">${targetKz}</span> เรื่อง</div>
-        <div style="font-size:13px; font-weight:600; color:var(--gray-600); margin-top:4px;">🎯 เป้าหมาย Makigami: <span style="color:var(--teal-600); font-size:16px;">${targetMk}</span> เรื่อง</div>
+        <div style="font-size:13px; font-weight:600; color:var(--gray-600); margin-top:8px;">🎯 เป้า Kaizen: <span style="color:var(--teal-600); font-size:16px;">${targetKz}</span> เรื่อง</div>
+        <div style="font-size:13px; font-weight:600; color:var(--gray-600); margin-top:2px;">🎯 เป้า Makigami: <span style="color:var(--teal-600); font-size:16px;">${targetMk}</span> เรื่อง</div>
         <div style="font-size:11px; color:var(--gray-400); margin-top:auto; padding-top:10px;">(รวบรวมข้อมูลผ่านระบบส่วนกลาง)</div>
       </div>
   `;
@@ -373,40 +379,41 @@ function processAndRender() {
   actionList.innerHTML = '';
   let hasGap = false;
 
-  // วิเคราะห์ AM-OI
+  // แจ้งเตือน AM-OI
   if (amShortList.length > 0) {
     hasGap = true;
     amShortList.forEach(item => {
       let li = document.createElement('li');
-      li.innerHTML = `<strong>AM-OI [${item.dept}]:</strong> พื้นที่ "${item.area}" อยู่ที่ Step ${item.current} (ขาดอีก ${item.target - item.current} Step เพื่อให้ถึงเป้า Step ${item.target})`;
+      li.innerHTML = `<strong>AM-OI [${item.dept}]:</strong> "${item.area}" อยู่ Step ${item.current} (ต้องการให้ผ่าน Step ${item.target})`;
       actionList.appendChild(li);
     });
   }
 
-  // วิเคราะห์ OPL
+  // แจ้งเตือน OPL
   if (actualOpl < targetOpl) {
     hasGap = true; let li = document.createElement('li');
-    li.innerHTML = `<strong>OPL Center:</strong> ต้องจัดทำ OPL เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${targetOpl - actualOpl}</span> เรื่อง (เป้าหมาย ${targetOpl} เรื่อง)`;
+    li.innerHTML = `<strong>OPL Center:</strong> จัดทำ OPL เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${targetOpl - actualOpl}</span> เรื่อง (เป้าหมายทั้งหมด ${targetOpl} เรื่อง)`;
     actionList.appendChild(li);
   }
 
-  // วิเคราะห์ FI Theme
+  // แจ้งเตือน FI Theme
   if (actualFi < targetFi) {
     hasGap = true; let li = document.createElement('li');
-    li.innerHTML = `<strong>FI Theme:</strong> ต้องจัดทำโครงการ FI เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${targetFi - actualFi}</span> โครงการ`;
+    li.innerHTML = `<strong>FI Theme:</strong> จัดทำโครงการ FI เพิ่มอีก <span style="color:var(--red-600); font-weight:700; font-size:15px;">${targetFi - actualFi}</span> โครงการ`;
     actionList.appendChild(li);
   }
 
-  // Kaizen / Makigami (Manual Notice)
+  // เกร็ดเตือนใจ Kaizen/Makigami
   if(targetKz > 0 || targetMk > 0) {
     let li = document.createElement('li'); li.className = 'manual-msg';
-    li.innerHTML = `<strong>Kaizen/Makigami:</strong> อย่าลืมติดตามยอดส่ง Kaizen (${targetKz} เรื่อง) และ Makigami (${targetMk} เรื่อง) ผ่านระบบส่วนกลาง`;
+    li.innerHTML = `<strong>ส่วนกลาง:</strong> อย่าลืมติดตามยอด Kaizen (${targetKz} เรื่อง) และ Makigami (${targetMk} เรื่อง)`;
     actionList.appendChild(li);
   }
 
-  if (!hasGap) {
+  // ถ้าสำเร็จหมดเลย
+  if (!hasGap && amTotalAreas > 0) {
     let li = document.createElement('li'); li.className = 'success-msg';
-    li.innerHTML = `สุดยอด! 🎉 คุณบรรลุเป้าหมาย KPI หลักของเสา OI ทั้งหมดเรียบร้อยแล้ว`;
+    li.innerHTML = `สุดยอด! 🎉 แผนกที่คุณเลือกบรรลุเป้าหมาย KPI หลักครบทุกหัวข้อแล้วครับ`;
     actionList.appendChild(li);
   }
 
