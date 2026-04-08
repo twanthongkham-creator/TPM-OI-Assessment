@@ -7,20 +7,21 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --blue-900:#0A2540;--blue-800:#113A5D;--blue-600:#1E6091;
-  --teal-700:#087A5C;--orange-700:#C46200;--indigo-600:#4F46E5;
+  --blue-900:#0A2540;--blue-800:#113A5D;--blue-600:#1E6091;--blue-400:#3A86FF;
+  --teal-700:#087A5C;--teal-500:#14B8A6;
+  --orange-700:#C46200;--indigo-600:#4F46E5;
   --gray-900:#1A1C1E;--gray-600:#505A64;--gray-400:#9BA5B1;
   --font:'IBM Plex Sans Thai',sans-serif;
   --blur:blur(32px) saturate(180%);--r:24px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 
-/* ─── Desktop: single-viewport, no scroll ─── */
+/* ─── Desktop & Mobile Scroll Setup ─── */
 html,body{
-  font-family:var(--font);width:100%;
+  font-family:var(--font);width:100%; min-height: 100vh;
   background:linear-gradient(145deg,#e0eaf5 0%,#e8f4f0 35%,#eaecf5 65%,#f4eae4 100%);
   background-attachment:fixed;
-  color:var(--gray-900);
+  color:var(--gray-900); overflow-x: hidden;
 }
 
 /* Premium Ambient Blobs */
@@ -39,47 +40,27 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
   border-radius:var(--r);position:relative;overflow:hidden;
 }
 
-/* ─── DESKTOP layout (≥768px): fill viewport ─── */
-@media(min-width:768px){
-  html,body{height:100%;overflow:hidden}
-  .shell{
-    position:relative;z-index:1;
-    height:100vh;display:flex;flex-direction:column;
-    padding:clamp(16px,2vh,24px) clamp(24px,3vw,40px);
-    gap:clamp(12px,1.8vh,20px);
-    max-width:1400px;margin:0 auto;
-  }
-  .header{flex-shrink:0;padding:clamp(16px,2vh,24px) clamp(24px,2.5vw,32px)}
-  .cards-row{
-    flex:1;
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:clamp(12px,1.5vw,20px);
-    min-height:0;
-  }
-  .menu-card{height:100%;min-height:0}
-  .dash-card{flex-shrink:0;padding:clamp(20px,2.5vh,32px) clamp(24px,3vw,40px)}
-  .sec-lbl{flex-shrink:0}
+.shell{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;
+  padding:clamp(16px,2vh,24px) clamp(24px,3vw,40px);
+  gap:clamp(12px,1.8vh,20px);
+  max-width:1400px;margin:0 auto; padding-bottom: 60px;
 }
 
-/* ─── MOBILE layout (<768px): scrollable column ─── */
+.header{flex-shrink:0;padding:clamp(16px,2vh,24px) clamp(24px,2.5vw,32px)}
+.cards-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:clamp(12px,1.5vw,20px);
+}
+.dash-card{flex-shrink:0;padding:clamp(20px,2.5vh,32px) clamp(24px,3vw,40px)}
+
 @media(max-width:767px){
-  body{overflow-y:auto;min-height:100vh}
-  .shell{
-    position:relative;z-index:1;
-    display:flex;flex-direction:column;
-    padding:16px 20px 30px;gap:16px;
-  }
+  .shell{padding:16px 20px 30px;gap:16px;}
   .header{padding:20px}
-  .cards-row{
-    display:flex;flex-direction:column;gap:16px;
-  }
-  .menu-card{
-    flex-direction:row!important;
-    align-items:center;
-    padding:20px!important;
-    gap:20px;
-  }
+  .cards-row{display:flex;flex-direction:column;gap:16px;}
+  .menu-card{flex-direction:row!important;align-items:center;padding:20px!important;gap:20px;}
   .mc-icon-wrap{margin-bottom:0!important;flex-shrink:0}
   .mc-body{flex:1;min-width:0}
   .mc-title{font-size:16px!important;margin-bottom:4px!important}
@@ -112,7 +93,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
   font-size:14px;font-weight:700;letter-spacing:1.5px;
   color:var(--blue-800);text-transform:uppercase;
   display:flex;align-items:center;gap:12px;
-  padding:0 8px; opacity: 0.8;
+  padding:0 8px; opacity: 0.8; margin-top: 8px;
 }
 .sec-lbl::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,rgba(10,37,64,0.1),transparent)}
 
@@ -122,13 +103,12 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
   text-decoration:none;display:flex;flex-direction:column;
   border-radius:28px;position:relative;overflow:hidden;
   backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
-  background:rgba(255,255,255,0.5); /* Clearer glass */
+  background:rgba(255,255,255,0.5); 
   border:1px solid rgba(255,255,255,0.9);
   box-shadow:0 8px 32px rgba(10,37,64,0.06),inset 0 1px 0 rgba(255,255,255,1);
   transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Vibrant Glow orbs */
 .menu-card::after{
   content:'';position:absolute;top:-20%;right:-20%;
   width:220px;height:220px;border-radius:50%;
@@ -136,16 +116,13 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
 }
 .menu-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 24px 48px rgba(10,37,64,0.12),inset 0 1px 0 rgba(255,255,255,1); background:rgba(255,255,255,0.75);}
 .menu-card:hover::after{opacity:0.7; transform:scale(1.2);}
-@media(max-width:767px){.menu-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(10,37,64,0.1)}}
 
-/* Pillar Themes (Border tint & Glow) */
 .c-am  {border-color:rgba(58,134,255,0.4);} .c-am::after{background:radial-gradient(circle, #3A86FF 0%, transparent 70%);}
 .c-opl {border-color:rgba(245,124,0,0.4);}  .c-opl::after{background:radial-gradient(circle, #F57C00 0%, transparent 70%);}
 .c-fi  {border-color:rgba(99,102,241,0.4);} .c-fi::after{background:radial-gradient(circle, #6366F1 0%, transparent 70%);}
 .c-kz  {border-color:rgba(12,164,124,0.4);} .c-kz::after{background:radial-gradient(circle, #0CA47C 0%, transparent 70%);}
 .c-mk  {border-color:rgba(230,81,0,0.4);}   .c-mk::after{background:radial-gradient(circle, #E65100 0%, transparent 70%);}
 
-/* Icon wrap (Bigger & Bolder) */
 .mc-icon-wrap{
   width:clamp(50px, 5vw, 64px); height:clamp(50px, 5vw, 64px); border-radius:18px;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
@@ -157,25 +134,19 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
 .menu-card:hover .mc-icon-wrap{transform:scale(1.15) rotate(-5deg)}
 .mc-icon-wrap svg{width:clamp(24px, 2.5vw, 32px); height:clamp(24px, 2.5vw, 32px);}
 
-/* Themed Icon Colors */
 .c-am .mc-icon-wrap{color:#1E6091;}
 .c-opl .mc-icon-wrap{color:#C46200;}
 .c-fi .mc-icon-wrap{color:#4F46E5;}
 .c-kz .mc-icon-wrap{color:#087A5C;}
 .c-mk .mc-icon-wrap{color:#C46200;}
 
-/* Card text */
 .mc-body{display:contents}
-@media(max-width:767px){.mc-body{display:block;flex:1;min-width:0}}
 .mc-title{
   font-size:clamp(16px,1.4vw,20px);font-weight:700;color:var(--blue-900);
   margin-bottom:clamp(6px,1vh,10px);position:relative;z-index:2;
   line-height:1.3;display:flex;align-items:center;gap:6px;flex-wrap:wrap; letter-spacing:-0.3px;
 }
-.mc-desc{
-  font-size:clamp(12px,1vw,14px);color:var(--gray-600);
-  line-height:1.6;font-weight:500;position:relative;z-index:2;flex:1;
-}
+.mc-desc{font-size:clamp(12px,1vw,14px);color:var(--gray-600);line-height:1.6;font-weight:500;position:relative;z-index:2;flex:1;}
 .mc-arrow{
   align-self:flex-end;margin-top:clamp(12px,1.5vh,20px);
   display:flex;align-items:center;gap:6px;
@@ -227,6 +198,79 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
 .dash-cta:hover{background:#f0f4f8;transform:scale(1.05);box-shadow:0 12px 32px rgba(0,0,0,0.4);}
 .dash-cta svg{width:16px;height:16px;transition:transform 0.3s}
 .dash-card:hover .dash-cta svg{transform:translateX(4px)}
+
+/* ─── 🤖 AI Chat Advisor Styles ─── */
+.chat-container {
+  display: flex; flex-direction: column; height: 500px;
+  background: rgba(255,255,255,0.65); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid rgba(255,255,255,0.9); border-radius: 28px;
+  box-shadow: 0 12px 40px rgba(10,37,64,0.08), inset 0 1px 0 rgba(255,255,255,1);
+  overflow: hidden; position: relative;
+}
+.chat-container::after {
+  content:''; position:absolute; bottom:-10%; left:-10%; width:300px; height:300px;
+  border-radius:50%; background:radial-gradient(circle, rgba(12,164,124,0.15) 0%, transparent 70%);
+  pointer-events:none; z-index:0;
+}
+.chat-header {
+  padding: 16px 24px; background: rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.6);
+  display: flex; align-items: center; gap: 12px; z-index: 1;
+}
+.chat-header-icon {
+  width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--teal-400), var(--teal-600));
+  display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 12px rgba(12,164,124,0.3);
+}
+.chat-header-text h3 { font-size: 16px; font-weight: 700; color: var(--blue-900); line-height: 1.2; }
+.chat-header-text p { font-size: 11px; color: var(--gray-600); font-weight: 600; }
+
+.chat-body {
+  flex: 1; padding: 20px 24px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 16px; z-index: 1;
+}
+.msg-wrap { display: flex; flex-direction: column; max-width: 85%; }
+.msg-wrap.user { align-self: flex-end; }
+.msg-wrap.ai { align-self: flex-start; }
+
+.msg-bubble {
+  padding: 12px 18px; font-size: 14px; line-height: 1.6; font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+.msg-wrap.user .msg-bubble {
+  background: linear-gradient(135deg, var(--blue-600), var(--blue-800)); color: #fff;
+  border-radius: 20px 20px 4px 20px;
+}
+.msg-wrap.ai .msg-bubble {
+  background: rgba(255,255,255,0.9); color: var(--gray-900);
+  border: 1px solid rgba(255,255,255,1); border-radius: 20px 20px 20px 4px;
+}
+.msg-bubble b { color: var(--blue-800); }
+.msg-wrap.user .msg-bubble b { color: #fff; }
+
+.chat-footer {
+  padding: 16px 24px; background: rgba(255,255,255,0.5); border-top: 1px solid rgba(255,255,255,0.6);
+  display: flex; gap: 12px; z-index: 1; align-items: center;
+}
+.chat-input {
+  flex: 1; padding: 14px 20px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.8); font-family: var(--font); font-size: 14px; outline: none;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.02); transition: all 0.3s;
+}
+.chat-input:focus { background: #fff; border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(58,134,255,0.15); }
+.chat-send-btn {
+  background: linear-gradient(135deg, var(--teal-500), var(--teal-700)); color: #fff;
+  border: none; border-radius: 40px; padding: 0 24px; height: 46px; font-family: var(--font); font-weight: 700; font-size: 14px;
+  cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 16px rgba(12,164,124,0.3);
+  display: flex; align-items: center; gap: 6px;
+}
+.chat-send-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(12,164,124,0.4); }
+.chat-send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* Typing Indicator */
+.typing { display: flex; gap: 4px; padding: 8px 4px; }
+.typing .dot { width: 6px; height: 6px; background: var(--gray-400); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+.typing .dot:nth-child(1) { animation-delay: -0.32s; }
+.typing .dot:nth-child(2) { animation-delay: -0.16s; }
+@keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 </style>
 </head>
 <body>
@@ -347,9 +391,39 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
     </div>
   </a>
 
+  <div class="sec-lbl" style="margin-top: 10px;">🤖 ที่ปรึกษาส่วนตัว (AI TPM Advisor)</div>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="chat-header-icon">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      </div>
+      <div class="chat-header-text">
+        <h3>สอบถามผู้เชี่ยวชาญ TPM (Gemini AI)</h3>
+        <p>ถามเรื่อง 5ส, OPL, FI Theme, Kaizen, Makigami ได้เลยครับ</p>
+      </div>
+    </div>
+    
+    <div class="chat-body" id="chat-body">
+      <div class="msg-wrap ai">
+        <div class="msg-bubble">สวัสดีครับ! ผมคือ <b>AI Advisor</b> ประจำศูนย์ OI Center 👋<br><br>มีอะไรให้ผมช่วยแนะนำไหมครับ? (เช่น <i>"ขั้นตอนการทำ FI Theme มีอะไรบ้าง?"</i> หรือ <i>"ขอไอเดียทำ OPL สำหรับพนักงานออฟฟิศหน่อย"</i>)</div>
+      </div>
+    </div>
+
+    <div class="chat-footer">
+      <input type="text" id="chat-input" class="chat-input" placeholder="พิมพ์คำถามของคุณที่นี่..." onkeypress="handleEnter(event)">
+      <button id="chat-btn" class="chat-send-btn" onclick="sendMessage()">
+        ส่ง
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
 </div>
 
 <script>
+// ⚠️ เปลี่ยนใส่ URL ของ Google Apps Script ของคุณตรงนี้
+const API_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
+
 function updateTime(){
   const now=new Date();
   const str=now.toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).replace(' น.','');
@@ -357,6 +431,86 @@ function updateTime(){
 }
 setInterval(updateTime,1000);
 updateTime();
+
+// 🤖 ระบบแชท AI
+function handleEnter(e) {
+    if (e.key === 'Enter') sendMessage();
+}
+
+async function sendMessage() {
+    const inputEl = document.getElementById('chat-input');
+    const btnEl = document.getElementById('chat-btn');
+    const text = inputEl.value.trim();
+    if (!text) return;
+
+    // 1. เพิ่มข้อความ User ลงในหน้าจอ
+    appendMessage('user', text);
+    inputEl.value = '';
+    btnEl.disabled = true;
+
+    // 2. แสดงสถานะกำลังพิมพ์ (Typing Indicator)
+    const typingId = appendTypingIndicator();
+
+    // 3. สร้าง Prompt ครอบคำถามเพื่อให้ AI สวมบทบาทที่ปรึกษา TPM
+    const systemPrompt = `คุณคือผู้เชี่ยวชาญระดับสูงด้าน TPM, 5S (AM-OI), OPL, FI Theme, Kaizen และ Makigami ของโรงงาน 
+หน้าที่ของคุณคือให้คำปรึกษา แนะนำไอเดีย และตอบคำถามเชิงปฏิบัติการที่นำไปใช้ได้จริง 
+กรุณาตอบคำถามต่อไปนี้ด้วยภาษาที่เข้าใจง่าย เป็นมิตร มีการใช้ Bullet point หรือเลขข้อเพื่อให้อ่านง่าย:
+
+คำถามจากผู้ใช้งาน: "${text}"`;
+
+    try {
+        // 4. ยิง API ไปที่ Code.gs (ใช้ฟังก์ชัน generateAIInsights ตัวเดิมที่มีอยู่แล้ว)
+        const response = await fetch(API_URL + '?action=generateAIInsights&prompt=' + encodeURIComponent(systemPrompt));
+        const data = await response.json();
+        
+        removeElement(typingId); // เอาไอคอนกำลังพิมพ์ออก
+
+        if (data.status === 'success') {
+            // จัดรูปแบบข้อความ (Markdown to HTML)
+            let formattedText = data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+            appendMessage('ai', formattedText);
+        } else {
+            appendMessage('ai', `<span style="color:var(--red-600)">❌ ขออภัยครับ เกิดข้อผิดพลาด: ${data.message}</span>`);
+        }
+    } catch(err) {
+        removeElement(typingId);
+        appendMessage('ai', `<span style="color:var(--red-600)">❌ ไม่สามารถเชื่อมต่อกับ AI ได้ในขณะนี้ กรุณาลองใหม่อีกครั้งครับ</span>`);
+    } finally {
+        btnEl.disabled = false;
+        inputEl.focus();
+    }
+}
+
+function appendMessage(sender, text) {
+    const chatBody = document.getElementById('chat-body');
+    const msgWrap = document.createElement('div');
+    msgWrap.className = `msg-wrap ${sender}`;
+    msgWrap.innerHTML = `<div class="msg-bubble">${text}</div>`;
+    chatBody.appendChild(msgWrap);
+    scrollToBottom();
+}
+
+function appendTypingIndicator() {
+    const chatBody = document.getElementById('chat-body');
+    const msgWrap = document.createElement('div');
+    const id = 'typing-' + Date.now();
+    msgWrap.id = id;
+    msgWrap.className = `msg-wrap ai`;
+    msgWrap.innerHTML = `<div class="msg-bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+    chatBody.appendChild(msgWrap);
+    scrollToBottom();
+    return id;
+}
+
+function removeElement(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+}
+
+function scrollToBottom() {
+    const chatBody = document.getElementById('chat-body');
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
 </script>
 </body>
 </html>
