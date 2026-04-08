@@ -519,45 +519,67 @@ function goBackToDashboard(){
   document.getElementById('main-dashboard-view').style.display='block';
 }
 
-// 🟢 ฟังก์ชันสำหรับให้ AI ช่วยวิเคราะห์ (เชื่อมต่อ Gemini API)
+// 🟢 ฟังก์ชันสำหรับให้ AI ช่วยวิเคราะห์ (อัปเกรด: ส่งข้อมูลเชิงลึกแยกตามแผนก)
 async function generateInsights() {
     const btn = document.getElementById('btn-ai-analyze');
     const resBox = document.getElementById('ai-result-box');
     
-    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;display:inline-block;"></span> กำลังวิเคราะห์...';
+    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;display:inline-block;"></span> กำลังวิเคราะห์เชิงลึก...';
     btn.disabled = true;
     resBox.style.display = 'block';
-    resBox.innerHTML = '<div style="text-align:center; padding:10px;"><span class="spinner" style="border-top-color:var(--blue-600); width:20px; height:20px; display:inline-block; margin-bottom:10px;"></span><br><span style="color:var(--gray-600);">กำลังส่งข้อมูลให้ Gemini AI ประมวลผล กรุณารอสักครู่...</span></div>';
+    resBox.innerHTML = '<div style="text-align:center; padding:10px;"><span class="spinner" style="border-top-color:var(--blue-600); width:20px; height:20px; display:inline-block; margin-bottom:10px;"></span><br><span style="color:var(--gray-600);">Gemini AI กำลังวิเคราะห์ข้อมูลเชิงลึกของแต่ละแผนก กรุณารอสักครู่...</span></div>';
 
     const fd = document.getElementById('global-filter-dept').value;
-    const deptText = fd === 'all' ? 'ภาพรวมทั้งโรงงาน' : `แผนก ${fd}`;
+    const deptText = fd === 'all' ? 'ภาพรวมทั้งโรงงาน (แยกตามแผนก)' : `เฉพาะแผนก ${fd}`;
 
-    // เตรียมชุดข้อมูลให้ AI
-    const summary = `
-ข้อมูล KPI ปัจจุบัน (${deptText}):
-1. AM-OI (5ส): เป้าหมาย ${appData.am.target} พื้นที่, อนุมัติผ่านเป้าแล้ว ${appData.am.actual} พื้นที่, กำลังทำ(WIP) ${appData.am.wip} พื้นที่ (สำเร็จ ${appData.am.pct}%)
-2. OPL Center: เป้าหมาย ${appData.opl.target} เรื่อง, ผ่านแล้ว ${appData.opl.actual} เรื่อง, ค้างอนุมัติ ${appData.opl.wip} เรื่อง (สำเร็จ ${appData.opl.pct}%)
-3. FI Theme: เป้าหมาย ${appData.fi.target} โครงการ, เสร็จสมบูรณ์ ${appData.fi.actual} โครงการ, กำลังทำ ${appData.fi.wip} โครงการ (สำเร็จ ${appData.fi.pct}%)
-4. Kaizen: เป้าหมาย ${appData.kz.target} เรื่อง, ส่งแล้ว ${appData.kz.actual} เรื่อง (คิดเป็น ${appData.kz.pct}%)
-5. Makigami: เป้าหมาย ${appData.mk.target} โครงการ, เสร็จ ${appData.mk.actual} โครงการ, กำลังทำ ${appData.mk.wip} โครงการ (สำเร็จ ${appData.mk.pct}%)
-    `;
+    // 💡 ปั้นข้อมูลเชิงลึก (Deep Data) ส่งให้ AI
+    let deepDataStr = "";
+    
+    if (fd === 'all') {
+        // กรณีดูภาพรวม: สรุปข้อมูลแยกตามแผนกให้ AI เห็นความต่าง
+        const depts = Object.keys(areaData).sort();
+        depts.forEach(d => {
+            let d_am_t = getSysTarget('AM-OI', d);
+            let d_am_a = amHistory.filter(h => (sg(h,'Department',3)===d || Object.values(h)[3]===d) && (sg(h,'Status',23)==='อนุมัติสมบูรณ์' || Object.values(h)[23]==='อนุมัติสมบูรณ์')).length;
+            let d_opl_t = getSysTarget('OPL', d);
+            let d_opl_a = [...new Map(oplHistory.filter(r=>sg(r,'Department',4)===d).map(i=>[sg(i,'OPL ID',1),i])).values()].filter(r=>sg(r,'Status',14)&&sg(r,'Status',14).includes('สมบูรณ์')).length;
+            let d_fi_t = getSysTarget('FI', d);
+            let d_fi_a = [...new Map(fiHistory.filter(r=>sg(r,'Department',4)===d).map(i=>[sg(i,'FI ID',1),i])).values()].filter(r=>sg(r,'Status',14)&&sg(r,'Status',14).includes('สมบูรณ์')).length;
+            let d_kz_a = [...new Map(kzHistory.filter(r=>sg(r,'แผนก',3)===d).map(i=>[sg(i,'เลขที่ Kaizen',0),i])).values()].length;
+            let d_mk_a = [...new Map(mkHistory.filter(r=>sg(r,'แผนก',3)===d).map(i=>[sg(i,'Makigami ID',1),i])).values()].filter(r=>sg(r,'Status',9)==='Completed').length;
+            
+            deepDataStr += `- แผนก ${d}: 5ส(${d_am_a}/${d_am_t}), OPL(${d_opl_a}/${d_opl_t}), FI(${d_fi_a}/${d_fi_t}), Kaizen(ส่ง ${d_kz_a}), Makigami(เสร็จ ${d_mk_a})\n`;
+        });
+    } else {
+        // กรณี Filter แผนก: ส่งรายละเอียด Step/Phase ของแผนกนั้นให้ AI
+        deepDataStr = `รายละเอียดงานค้าง (WIP) ของแผนก ${fd}:\n`;
+        deepDataStr += `- 5ส (AM-OI): เป้า ${appData.am.target}, อนุมัติแล้ว ${appData.am.actual}, กำลังทำ ${appData.am.wip} พื้นที่ (รายละเอียด Step: ${appData.am.stepDist.join(', ')})\n`;
+        deepDataStr += `- OPL: เป้า ${appData.opl.target}, เสร็จ ${appData.opl.actual}, ค้างอนุมัติ/กำลังทำ ${appData.opl.wip} เรื่อง\n`;
+        deepDataStr += `- FI Theme: เป้า ${appData.fi.target}, เสร็จ ${appData.fi.actual}, กำลังทำ ${appData.fi.wip} โครงการ\n`;
+        deepDataStr += `- Kaizen: ส่งแล้ว ${appData.kz.actual} เรื่อง (เป้า ${appData.kz.target})\n`;
+        deepDataStr += `- Makigami: เป้า ${appData.mk.target}, เสร็จ ${appData.mk.actual}, กำลังทำ ${appData.mk.wip} โครงการ\n`;
+    }
 
-    const promptText = `คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง 
-โปรดวิเคราะห์ข้อมูล KPI ต่อไปนี้อย่างสั้นๆ กระชับ (ไม่เกิน 3 ย่อหน้า):
-${summary}
+    // Prompt ที่โหดและรีดประสิทธิภาพ AI ออกมาให้มากที่สุด
+    const promptText = `คุณคือ "ที่ปรึกษาและนักวิเคราะห์ข้อมูลระดับผู้บริหาร (Executive Data Analyst)" ประจำโรงงาน
+โปรดวิเคราะห์ข้อมูล Performance (KPI) ล่าสุดของ ${deptText} อย่างเจาะลึก
 
-รูปแบบการตอบ:
-1. ชื่นชมจุดแข็งที่โดดเด่น
-2. ชี้จุดที่ต้องระวัง (คอขวด) หรือเสี่ยงไม่ถึงเป้า
-3. คำแนะนำที่หัวหน้าควร Action ทันที
-ห้ามใช้คำทักทายเยิ่นเย้อ เข้าประเด็นเลย`;
+นี่คือข้อมูลดิบ:
+${deepDataStr}
+
+ข้อกำหนดในการตอบ (ห้ามใช้คำทักทาย ให้เริ่มวิเคราะห์ทันที):
+1. [ภาพรวม] สรุปสถานการณ์ปัจจุบัน สั้นๆ 1-2 บรรทัด
+2. [จุดเด่น (Strengths)] แผนกไหนหรือระบบไหนทำผลงานได้ดีเยี่ยม (ถึงเป้า/ทะลุเป้า)
+3. [จุดคอขวด (Bottlenecks / Critical Alerts)] แผนกไหนหรือระบบไหนที่ "น่าเป็นห่วง" อืดอาด หรือล้าหลังเป้าหมายมากที่สุด (ระบุชื่อแผนกและตัวเลขให้ชัดเจน)
+4. [คำแนะนำผู้บริหาร (Executive Actions)] แนะนำ Action Plan สั้นๆ 2-3 ข้อ ว่าผู้บริหารควรไปจี้ หรือช่วยเหลือแผนกไหน เรื่องอะไรเป็นอันดับแรก
+
+จัดรูปแบบให้น่าอ่าน ใช้ Bullet และตัวหนา (Markdown) สำหรับคีย์เวิร์ดสำคัญ ไม่ต้องเขียนเกริ่นนำหรือลงท้าย`;
 
     try {
         const response = await fetch(API_URL + '?action=generateAIInsights&prompt=' + encodeURIComponent(promptText));
         const data = await response.json();
         
         if (data.status === 'success') {
-            // จัดการ Markdown เบื้องต้น (ตัวหนา และขึ้นบรรทัดใหม่)
             let formattedText = data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
             resBox.innerHTML = formattedText;
         } else {
@@ -566,7 +588,7 @@ ${summary}
     } catch(err) {
         resBox.innerHTML = `<div style="color:var(--red-600); text-align:center;">❌ เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย</div>`;
     } finally {
-        btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> วิเคราะห์อีกครั้ง';
+        btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> วิเคราะห์ข้อมูลเชิงลึกอีกครั้ง';
         btn.disabled = false;
     }
 }
