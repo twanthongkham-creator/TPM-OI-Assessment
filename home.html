@@ -69,7 +69,9 @@
   .card-opl .mc-icon { background: linear-gradient(135deg, #FFB74D, var(--orange-500)); }
   .card-kaizen .mc-icon { background: linear-gradient(135deg, var(--teal-400), var(--teal-600)); }
   .card-fitheme .mc-icon { background: linear-gradient(135deg, var(--indigo-400), var(--indigo-600)); }
+  
   .card-kaizen:hover .mc-arrow { background: var(--teal-600); }
+  .card-fitheme:hover .mc-arrow { background: var(--indigo-600); }
 
   /* 🟢 KPI Dashboard Banner */
   .kpi-banner {
@@ -149,7 +151,7 @@
 
     <a href="fitheme.html" class="menu-card glass-panel card-fitheme">
       <div class="mc-icon">
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
       </div>
       <h3 class="mc-title">FI Theme Center</h3>
       <p class="mc-desc">ระบบลงทะเบียนและติดตามความคืบหน้าโครงการ Focused Improvement (10 Steps)</p>
@@ -181,16 +183,12 @@
 </div>
 
 <script>
-// สคริปต์แสดงวันและเวลาแบบ Real-time (ภาษาไทย)
+// สคริปต์แสดงวันและเวลาแบบ Real-time
 function updateTime() {
   const now = new Date();
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-  let dateString = now.toLocaleDateString('th-TH', options);
-  // ลบคำว่า "น." ออกเพื่อให้ดูคลีนขึ้น
-  dateString = dateString.replace(' น.', '');
-  
-  const iconHtml = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
-  
+  let dateString = now.toLocaleDateString('th-TH', options).replace(' น.', '');
+  const iconHtml = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>`;
   document.getElementById('live-time').innerHTML = iconHtml + ' ' + dateString;
 }
 
