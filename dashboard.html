@@ -572,21 +572,35 @@ function processAndRender(){
 
   const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:30px;color:#9BA5B1;">ไม่มีข้อมูล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
   
-  // 💡 อัปเดตตาราง OPL: เพิ่มปุ่ม "หัวหน้าอนุมัติ" คู่กับ "แก้ไข"
-  tbl('opl-table-body',uOpl,7,r=>`
-    <td>${sg(r,'วันที่ทำ OPL',2)}</td>
-    <td>${sg(r,'OPL ID',1)}</td>
-    <td>${sg(r,'Department',4)}</td>
-    <td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td>
-    <td>${sg(r,'ชื่อผู้สอน',10)}</td>
-    <td><span class="badge b-pass">${sg(r,'Status',14)}</span></td>
-    <td>
-      <div style="display:flex; gap:6px;">
-        <a href="opl.html?oplId=${encodeURIComponent(sg(r,'OPL ID',1))}&role=edit" class="btn-edit">✏️ อัปเดต</a>
-        <a href="opl.html?oplId=${encodeURIComponent(sg(r,'OPL ID',1))}&role=lead" class="btn-edit" style="background:rgba(12,164,124,0.1); color:var(--teal-700); border-color:rgba(12,164,124,0.3);">✅ หัวหน้าอนุมัติ</a>
-      </div>
-    </td>
-  `);
+  // 💡 อัปเดต OPL Table (โชว์ปุ่มหัวหน้าอนุมัติ เฉพาะตอนสถานะรอหัวหน้า)
+  tbl('opl-table-body', uOpl, 7, r => {
+    const oplId = sg(r, 'OPL ID', 1);
+    const status = sg(r, 'Status', 14) || '';
+    const isWaiting = status.includes('รอหัวหน้า');
+    
+    let btns = `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=edit" class="btn-edit">✏️ อัปเดต</a>`;
+    if (isWaiting) {
+      btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-edit" style="background:rgba(12,164,124,0.1); color:var(--teal-700); border-color:rgba(12,164,124,0.3);">✅ หัวหน้าอนุมัติ</a>`;
+    }
+    
+    let badgeClass = 'b-pass';
+    if (status.includes('รอ')) badgeClass = 'b-wait';
+    if (status.includes('ไม่อนุมัติ') || status.includes('ไม่ผ่าน')) badgeClass = 'b-fail';
+
+    // จัดการวันที่แสดงผลให้สวยงาม
+    let dateStr = sg(r, 'วันที่ทำ OPL', 2) || '';
+    if (dateStr.includes('T')) dateStr = dateStr.split('T')[0];
+
+    return `
+      <td>${dateStr}</td>
+      <td>${oplId}</td>
+      <td>${sg(r, 'Department', 4)}</td>
+      <td><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td>
+      <td>${sg(r, 'ชื่อผู้สอน', 10)}</td>
+      <td><span class="badge ${badgeClass}">${status}</span></td>
+      <td><div style="display:flex; gap:6px;">${btns}</div></td>
+    `;
+  });
   
   tbl('fi-table-body',uFi,7,r=>`<td>${sg(r,'FI ID',1)}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',2)}</td><td>${sg(r,'Step ปัจจุบัน',13)}</td><td><span class="badge b-pass">${sg(r,'Status',14)}</span></td><td><a href="fitheme.html?fiId=${encodeURIComponent(sg(r,'FI ID',1))}" class="btn-edit">✏️ อัปเดต</a></td>`);
   tbl('kz-table-body',uKz,7,r=>`<td>${sg(r,'วันที่ทำ Kaizen',1)}</td><td>${sg(r,'เลขที่ Kaizen',0)}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้ดำเนินการ',7)}</td><td><span class="badge b-pass">${sg(r,'ประเภท',5)}</span></td><td><a href="#" class="btn-edit">🔍 ดู</a></td>`);
