@@ -42,18 +42,16 @@ body{
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 @media(max-width:600px){.grid2, .grid3{grid-template-columns:1fr}}
-.fg{display:flex;flex-direction:column;gap:6px}
+.fg{display:flex;flex-direction:column;gap:6px; min-width:0;}
 .fg label{font-size:12px;font-weight:600;color:var(--gray-900); padding-left: 4px;}
 .req{background:var(--red-400);color:#fff;font-size:9px;font-weight:600;padding:2px 6px;border-radius:6px;margin-left:4px; box-shadow:0 2px 4px rgba(217,56,56,0.2);}
 
-/* Adjusted Input Styling for clarity */
+/* Input Styling */
 input[type=text],input[type=password],input[type=date],select,textarea{ 
     width:100%;font-family:var(--font);font-size:14px;color:var(--blue-900); 
-    background: #fff; /* Solid white background for clear visibility */
-    border: 1.5px solid var(--gray-200); /* Noticeable default border */
+    background: #fff; border: 1.5px solid var(--gray-200); 
     border-radius: 12px;padding:10px 14px;outline:none; 
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); /* Subtle inner shadow for depth */
-    transition:all .2s ease; font-weight: 500; 
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition:all .2s ease; font-weight: 500; 
 }
 input:focus,select:focus,textarea:focus{ 
     background: #fff; border-color:var(--orange-400); 
@@ -61,8 +59,9 @@ input:focus,select:focus,textarea:focus{
 }
 select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%23505A64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
 textarea{resize:vertical;min-height:100px;line-height:1.6;}
-input[readonly], select:disabled{background:var(--gray-50); color:var(--gray-600); cursor:not-allowed; border-color:var(--gray-200); opacity:1;}
+input[readonly], input:disabled, select:disabled, textarea:disabled{background:var(--gray-50); color:var(--gray-600); cursor:not-allowed; border-color:var(--gray-200); opacity:1;}
 
+/* Upload & Gallery */
 .upload-zone{background:#fff; border:2px dashed var(--gray-400);border-radius:16px;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:all .2s ease; height: 100%; display: flex; flex-direction: column; justify-content: center;}
 .upload-zone:hover{background:var(--orange-50);border-color:var(--orange-400);box-shadow:0 4px 16px rgba(245,124,0,0.1);}
 .upload-icon{width:48px;height:48px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center; background:var(--orange-50); border-radius:50%; box-shadow:0 2px 8px rgba(0,0,0,0.05); color:var(--orange-500);}
@@ -73,6 +72,12 @@ input[readonly], select:disabled{background:var(--gray-50); color:var(--gray-600
 .chip{background:#fff;border:1px solid rgba(0,0,0,0.05);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:500;color:var(--orange-500);display:flex;align-items:center;gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.03);}
 .chip-x{cursor:pointer;color:var(--red-400);font-size:16px;line-height:1; font-weight:bold; transition:all .2s;}
 .chip-x:hover{color:var(--red-600);transform:scale(1.1);}
+
+.file-gallery { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+.file-preview { width: 140px; height: 140px; border-radius: 12px; object-fit: cover; border: 1px solid var(--gray-200); box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.2s; cursor: pointer; }
+.file-preview:hover { transform: scale(1.05); }
+.file-link-card { display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--orange-50); border: 1px solid rgba(245,124,0,0.2); border-radius: 12px; color: var(--orange-700); font-weight: 700; font-size: 13px; transition: all 0.2s; text-decoration: none;}
+.file-link-card:hover { background: #fff; box-shadow: 0 4px 12px rgba(245,124,0,0.1); transform: translateY(-2px); }
 
 .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:2rem}
 .btn{font-family:var(--font);font-size:14px;font-weight:600;padding:12px 28px;border-radius:12px;cursor:pointer;transition:all .2s ease; border:none; box-shadow:0 4px 12px rgba(0,0,0,0.05);}
@@ -103,172 +108,183 @@ input[readonly], select:disabled{background:var(--gray-50); color:var(--gray-600
 </div>
 
 <div class="wrap">
-
-<div class="card card-accent">
-  <div class="sec-label">ข้อมูลผู้จัดทำและรหัสเอกสาร (Primary Info)</div>
-  
-  <div class="grid2" style="margin-bottom:16px;">
-    <div class="fg">
-      <label>บทบาท / ผู้ดำเนินการ <span class="req">จำเป็น</span></label>
-      <select id="f-role" onchange="togglePIN(); populateUsers();">
-        <option value="self">พนักงาน (ผู้สร้าง/ผู้จัดทำ)</option>
-        <option value="lead">หัวหน้าแผนก (ผู้อนุมัติ)</option>
-      </select>
-    </div>
-    <div class="fg">
-      <label>ชื่อ-นามสกุล <span class="req">จำเป็น</span></label>
-      <select id="f-name" onchange="autoFillEmail()">
-        <option value="">-- กรุณาเลือกแผนกก่อน --</option>
-      </select>
-    </div>
+  <div class="card" id="loading-zone" style="text-align:center; padding: 40px;">
+    <div class="spinner" style="border-top-color:var(--orange-500); width:30px; height:30px; border-width:4px;"></div>
+    <div style="margin-top:16px; color:var(--blue-900); font-weight:700; font-size:16px;">กำลังซิงค์ฐานข้อมูล OPL...</div>
+    <div style="color:var(--gray-600); font-size:13px;">กรุณารอสักครู่ ระบบกำลังจัดเตรียมข้อมูลให้คุณ</div>
   </div>
 
-  <div class="grid3" style="margin-bottom:16px;">
-    <div class="fg">
-      <label>โรงงาน (Factory) <span class="req">จำเป็น</span></label>
-      <select id="f-factory" onchange="generateOplId()">
-        <option value="">-- เลือกโรงงาน --</option>
-        <option value="PT">ปทุมธานี (PT)</option>
-        <option value="KR">นครราชสีมา (KR)</option>
-        <option value="NS">นครสวรรค์ (NS)</option>
-        <option value="CH">ชลบุรี (CH)</option>
-        <option value="NP">นครปฐม (NP)</option>
-        <option value="SR">สุราษฎร์ธานี (SR)</option>
-      </select>
-    </div>
-    <div class="fg">
-      <label>แผนก / กลุ่ม (Dept) <span class="req">จำเป็น</span></label>
-      <select id="f-dept" onchange="generateOplId(); populateUsers();">
-        <option value="">-- เลือกแผนก --</option>
-        <option value="MT">MT (วิศวกรรม/ซ่อมบำรุง)</option>
-        <option value="RW">RW (คลังวัตถุดิบ/อะไหล่)</option>
-        <option value="QC">QC (ควบคุมคุณภาพ)</option>
-        <option value="PD">PD (แผนกผลิต)</option>
-        <option value="WH">WH (คลังสินค้า)</option>
-        <option value="EN">EN (วิศวกรรม)</option>
-        <option value="SE">SE (ความปลอดภัย)</option>
-        <option value="HC">HC (ทรัพยากรบุคคล)</option>
-        <option value="AC">AC (บัญชี)</option>
-      </select>
-    </div>
-    <div class="fg">
-      <label>วันที่บันทึก OPL <span class="req">จำเป็น</span></label>
-      <input type="date" id="f-date">
-    </div>
-  </div>
+  <div id="form-zone" style="display:none;">
 
-  <div class="grid2" style="margin-bottom:16px; display:none;">
-    <input type="text" id="f-year" value="2026" maxlength="4">
-    <input type="text" id="f-email">
-  </div>
-
-  <div class="fg">
-    <label>รหัสเอกสาร (OPL ID) <span style="font-weight:normal; color:var(--gray-400);">(สร้างอัตโนมัติ)</span></label>
-    <input type="text" id="f-opl-id" class="opl-id-display" readonly placeholder="OPL-[โรงงาน]-[แผนก]-[ปี]-[ลำดับ]">
-  </div>
-</div>
-
-<div class="card">
-  <div class="sec-label">เนื้อหา OPL (Content)</div>
-  <div class="fg" style="margin-bottom:16px;">
-    <label>ชื่อเรื่อง (Title) <span class="req">จำเป็น</span></label>
-    <input type="text" id="f-title" placeholder="ตั้งชื่อเรื่องให้กระชับ เข้าใจง่าย">
-  </div>
-
-  <div class="grid2" style="margin-bottom:16px;">
-    <div class="fg">
-      <label>ประเภทของ OPL (Type) <span class="req">จำเป็น</span></label>
-      <select id="f-category">
-        <option value="">-- เลือกประเภท --</option>
-        <option value="5S">5 ส. (5S)</option>
-        <option value="Environment">สิ่งแวดล้อม (Environment)</option>
-        <option value="ReduceTime">ลดขั้นตอน/ลดเวลา (Reduce Time)</option>
-        <option value="Safety">ความปลอดภัย (Safety)</option>
-      </select>
-    </div>
-    <div class="fg">
-      <label>การจำแนก (Classification) <span class="req">จำเป็น</span></label>
-      <select id="f-class">
-        <option value="">-- เลือกการจำแนก --</option>
-        <option value="Basic">ความรู้พื้นฐาน (Basic Knowledge)</option>
-        <option value="Improvement">การปรับปรุง (Improvement Cases)</option>
-        <option value="Trouble">ปัญหาที่เกิดขึ้น (Trouble Cases)</option>
-        <option value="CostReduction">ลดต้นทุน (Cost Reduction)</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="fg">
-    <label>รายละเอียด / ขั้นตอนการทำ <span class="req">จำเป็น</span></label>
-    <textarea id="f-details" placeholder="อธิบายจุดที่เป็นปัญหา และวิธีการแก้ไขหรือขั้นตอนที่ถูกต้อง..."></textarea>
-  </div>
-</div>
-
-<div class="card">
-  <div class="sec-label">ภาพประกอบ & เอกสาร (Attachments)</div>
-  <div class="grid2">
-    <div>
-      <div class="upload-zone" onclick="document.getElementById('fu-img').click()">
-        <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-        <div class="upload-text">คลิกแนบรูปภาพ (Before/After)</div>
-        <div class="upload-hint">รองรับ JPG, PNG (แคปจอหรือถ่ายรูปได้)</div>
+    <div class="card card-accent">
+      <div class="sec-label">ข้อมูลผู้จัดทำและรหัสเอกสาร (Primary Info)</div>
+      
+      <div class="grid2" style="margin-bottom:16px;">
+        <div class="fg">
+          <label>บทบาท / ผู้ดำเนินการ <span class="req">จำเป็น</span></label>
+          <select id="f-role" onchange="togglePIN(); populateUsers();">
+            <option value="self">พนักงาน (ผู้สร้าง/ผู้จัดทำ)</option>
+            <option value="lead">หัวหน้าแผนก (ผู้อนุมัติ)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>ชื่อ-นามสกุล <span class="req">จำเป็น</span></label>
+          <select id="f-name" onchange="autoFillEmail()">
+            <option value="">-- กรุณาเลือกแผนกก่อน --</option>
+          </select>
+        </div>
       </div>
-      <input type="file" id="fu-img" multiple accept="image/*" style="display:none" onchange="addImages(this.files)">
-      <div class="chips" id="chip-img"></div>
-    </div>
-    <div>
-      <div class="upload-zone" onclick="document.getElementById('fu-doc').click()">
-        <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
-        <div class="upload-text">คลิกแนบไฟล์เอกสาร (PDF)</div>
-        <div class="upload-hint">คู่มือ, สเปคงาน (ไม่เกิน 5MB)</div>
+
+      <div class="grid3" style="margin-bottom:16px;">
+        <div class="fg">
+          <label>โรงงาน (Factory) <span class="req">จำเป็น</span></label>
+          <select id="f-factory" onchange="generateOplId()">
+            <option value="">-- เลือกโรงงาน --</option>
+            <option value="PT">ปทุมธานี (PT)</option>
+            <option value="KR">นครราชสีมา (KR)</option>
+            <option value="NS">นครสวรรค์ (NS)</option>
+            <option value="CH">ชลบุรี (CH)</option>
+            <option value="NP">นครปฐม (NP)</option>
+            <option value="SR">สุราษฎร์ธานี (SR)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>แผนก / กลุ่ม (Dept) <span class="req">จำเป็น</span></label>
+          <select id="f-dept" onchange="generateOplId(); populateUsers();">
+            <option value="">-- เลือกแผนก --</option>
+            <option value="MT">MT (วิศวกรรม/ซ่อมบำรุง)</option>
+            <option value="RW">RW (คลังวัตถุดิบ/อะไหล่)</option>
+            <option value="QC">QC (ควบคุมคุณภาพ)</option>
+            <option value="PD">PD (แผนกผลิต)</option>
+            <option value="WH">WH (คลังสินค้า)</option>
+            <option value="EN">EN (วิศวกรรม)</option>
+            <option value="SE">SE (ความปลอดภัย)</option>
+            <option value="HC">HC (ทรัพยากรบุคคล)</option>
+            <option value="AC">AC (บัญชี)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>วันที่บันทึก OPL <span class="req">จำเป็น</span></label>
+          <input type="date" id="f-date">
+        </div>
       </div>
-      <input type="file" id="fu-doc" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="addDocs(this.files)">
-      <div class="chips" id="chip-doc"></div>
+
+      <div class="grid2" style="margin-bottom:16px; display:none;">
+        <input type="text" id="f-year" value="2026" maxlength="4">
+        <input type="text" id="f-email">
+      </div>
+
+      <div class="fg">
+        <label>รหัสเอกสาร (OPL ID) <span style="font-weight:normal; color:var(--gray-400);">(สร้างอัตโนมัติ)</span></label>
+        <input type="text" id="f-opl-id" class="opl-id-display" readonly placeholder="OPL-[โรงงาน]-[แผนก]-[ปี]-[ลำดับ]">
+      </div>
     </div>
+
+    <div class="card">
+      <div class="sec-label">เนื้อหา OPL (Content)</div>
+      <div class="fg" style="margin-bottom:16px;">
+        <label>ชื่อเรื่อง (Title) <span class="req">จำเป็น</span></label>
+        <input type="text" id="f-title" placeholder="ตั้งชื่อเรื่องให้กระชับ เข้าใจง่าย">
+      </div>
+
+      <div class="grid2" style="margin-bottom:16px;">
+        <div class="fg">
+          <label>ประเภทของ OPL (Type) <span class="req">จำเป็น</span></label>
+          <select id="f-category">
+            <option value="">-- เลือกประเภท --</option>
+            <option value="5S">5 ส. (5S)</option>
+            <option value="Environment">สิ่งแวดล้อม (Environment)</option>
+            <option value="ReduceTime">ลดขั้นตอน/ลดเวลา (Reduce Time)</option>
+            <option value="Safety">ความปลอดภัย (Safety)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>การจำแนก (Classification) <span class="req">จำเป็น</span></label>
+          <select id="f-class">
+            <option value="">-- เลือกการจำแนก --</option>
+            <option value="Basic">ความรู้พื้นฐาน (Basic Knowledge)</option>
+            <option value="Improvement">การปรับปรุง (Improvement Cases)</option>
+            <option value="Trouble">ปัญหาที่เกิดขึ้น (Trouble Cases)</option>
+            <option value="CostReduction">ลดต้นทุน (Cost Reduction)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>รายละเอียด / ขั้นตอนการทำ <span class="req">จำเป็น</span></label>
+        <textarea id="f-details" placeholder="อธิบายจุดที่เป็นปัญหา และวิธีการแก้ไขหรือขั้นตอนที่ถูกต้อง..."></textarea>
+      </div>
+    </div>
+
+    <div class="card" id="attachment-card">
+      <div class="sec-label" id="attachment-label">ภาพประกอบ & เอกสาร (Attachments)</div>
+      <div class="grid2" id="upload-grid">
+        <div>
+          <div class="upload-zone" onclick="document.getElementById('fu-img').click()">
+            <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+            <div class="upload-text">คลิกแนบรูปภาพ (Before/After)</div>
+            <div class="upload-hint">รองรับ JPG, PNG (แคปจอหรือถ่ายรูปได้)</div>
+          </div>
+          <input type="file" id="fu-img" multiple accept="image/*" style="display:none" onchange="addImages(this.files)">
+          <div class="chips" id="chip-img"></div>
+        </div>
+        <div>
+          <div class="upload-zone" onclick="document.getElementById('fu-doc').click()">
+            <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+            <div class="upload-text">คลิกแนบไฟล์เอกสาร (PDF)</div>
+            <div class="upload-hint">คู่มือ, สเปคงาน (ไม่เกิน 5MB)</div>
+          </div>
+          <input type="file" id="fu-doc" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="addDocs(this.files)">
+          <div class="chips" id="chip-doc"></div>
+        </div>
+      </div>
+      <div id="view-files-zone" style="display:none;">
+        <div class="file-gallery" id="file-gallery"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label">การสอนและประเมินผล (Training & Result)</div>
+      <div class="grid2" style="margin-bottom:16px;">
+        <div class="fg">
+          <label>วันที่สอน <span class="req">จำเป็น</span></label>
+          <input type="date" id="f-teach-date">
+        </div>
+        <div class="fg">
+          <label>ผลการ OPL <span class="req">จำเป็น</span></label>
+          <select id="f-result" style="font-weight:bold; color:var(--blue-800);">
+            <option value="">-- เลือกผลประเมิน --</option>
+            <option value="ผ่าน">ผ่าน (Pass)</option>
+            <option value="ไม่ผ่าน">ไม่ผ่าน (Fail)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="fg">
+          <label>ชื่อผู้สอน (Instructor)</label>
+          <input type="text" id="f-instructor" placeholder="ชื่อผู้สอน / ผู้ถ่ายทอด">
+        </div>
+        <div class="fg">
+          <label>ชื่อผู้เรียน (Learners)</label>
+          <textarea id="f-learners" placeholder="ระบุชื่อผู้รับการสอน (หากมีหลายคนให้ใช้ลูกน้ำ , คั่น)" style="min-height:44px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="pin-box" style="display:none; background:var(--orange-50); border: 1px solid var(--orange-400);">
+      <div class="sec-label" style="color:var(--orange-500); border-bottom:none; margin-bottom:5px;">🔑 ยืนยันตัวตนผู้อนุมัติ OPL</div>
+      <div class="fg">
+        <input type="password" id="f-pin" placeholder="กรอกรหัส PIN 4 หลักเพื่อเซ็นอนุมัติ" style="border-color:var(--orange-400); max-width:300px; background:#fff;">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-reset" onclick="resetForm()">ล้างข้อมูล</button>
+      <button class="btn btn-pri" id="btn-submit" onclick="handleSubmit()">บันทึก / อนุมัติ OPL</button>
+    </div>
+
   </div>
-</div>
-
-<div class="card">
-  <div class="sec-label">การสอนและประเมินผล (Training & Result)</div>
-  <div class="grid2" style="margin-bottom:16px;">
-    <div class="fg">
-      <label>วันที่สอน <span class="req">จำเป็น</span></label>
-      <input type="date" id="f-teach-date">
-    </div>
-    <div class="fg">
-      <label>ผลการ OPL <span class="req">จำเป็น</span></label>
-      <select id="f-result" style="font-weight:bold; color:var(--blue-800);">
-        <option value="">-- เลือกผลประเมิน --</option>
-        <option value="ผ่าน">ผ่าน (Pass)</option>
-        <option value="ไม่ผ่าน">ไม่ผ่าน (Fail)</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="grid2">
-    <div class="fg">
-      <label>ชื่อผู้สอน (Instructor)</label>
-      <input type="text" id="f-instructor" placeholder="ชื่อผู้สอน / ผู้ถ่ายทอด">
-    </div>
-    <div class="fg">
-      <label>ชื่อผู้เรียน (Learners)</label>
-      <textarea id="f-learners" placeholder="ระบุชื่อผู้รับการสอน (หากมีหลายคนให้ใช้ลูกน้ำ , คั่น)" style="min-height:44px;"></textarea>
-    </div>
-  </div>
-</div>
-
-<div class="card" id="pin-box" style="display:none; background:var(--orange-50); border: 1px solid var(--orange-400);">
-  <div class="sec-label" style="color:var(--orange-500); border-bottom:none; margin-bottom:5px;">ยืนยันตัวตนผู้อนุมัติ OPL</div>
-  <div class="fg">
-    <input type="password" id="f-pin" placeholder="กรอกรหัส PIN 4 หลักเพื่อเซ็นอนุมัติ" style="border-color:var(--orange-400); max-width:300px; background:#fff;">
-  </div>
-</div>
-
-<div class="actions">
-  <button class="btn btn-reset" onclick="resetForm()">ล้างข้อมูล</button>
-  <button class="btn btn-pri" id="btn-submit" onclick="handleSubmit()">บันทึก / อนุมัติ OPL</button>
-</div>
-
 </div>
 <div class="toast" id="toast"></div>
 
@@ -281,12 +297,13 @@ const docStore = [];
 
 let userData = {};
 let approverData = {};
-let oplHistoryData = []; // เก็บประวัติเพื่อมานับ Auto-Run
+let oplHistoryData = []; 
+
+document.getElementById('f-date').valueAsDate = new Date();
+document.getElementById('f-teach-date').valueAsDate = new Date();
 
 async function initData() {
-  document.getElementById('f-name').innerHTML = '<option value="">กำลังซิงค์ฐานข้อมูล...</option>';
   try {
-    // โหลดรายชื่อผู้ใช้งาน และ ประวัติ OPL ไปพร้อมๆ กัน
     const [uRes, oRes] = await Promise.all([
       fetch(APPS_SCRIPT_URL + '?action=getUsers').then(r => r.json()),
       fetch(APPS_SCRIPT_URL + '?action=getOplHistory').then(r => r.json())
@@ -295,21 +312,78 @@ async function initData() {
     if(uRes.status === 'success') {
        userData = uRes.users || {};
        approverData = uRes.approvers || {};
-       document.getElementById('f-name').innerHTML = '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
     }
     if(oRes.status === 'success') {
        oplHistoryData = oRes.data || [];
     }
     
+    // โหลดเสร็จ ซ่อน Loading แสดง Form
+    document.getElementById('loading-zone').style.display = 'none';
+    document.getElementById('form-zone').style.display = 'block';
+
     prefillFromURL();
   } catch(e) {
-    document.getElementById('f-name').innerHTML = '<option value="">เชื่อมต่อฐานข้อมูลล้มเหลว</option>';
+    document.getElementById('loading-zone').innerHTML = '<div style="color:red; font-weight:bold;">❌ เชื่อมต่อฐานข้อมูลล้มเหลว กรุณารีเฟรชหน้าจอ</div>';
   }
 }
 
-// 🟢 ฟังก์ชันคำนวณ Auto-Run OPL ID
+// 🟢 ระบบดึงข้อมูลจาก Dashboard/Magic Link
+function prefillFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const paramOplId = urlParams.get('oplId');
+  const roleParam = urlParams.get('role');
+
+  if (roleParam) {
+      document.getElementById('f-role').value = roleParam;
+      togglePIN();
+  }
+
+  if (paramOplId && oplHistoryData.length > 0) {
+      const record = oplHistoryData.slice().reverse().find(r => (r['OPL ID'] || r['เลขที่ OPL'] || Object.values(r)[1]) === paramOplId);
+      
+      if (record) {
+          const vals = Object.values(record); 
+          
+          document.getElementById('f-opl-id').value = paramOplId;
+          document.getElementById('f-factory').value = vals[3] || '';
+          document.getElementById('f-dept').value = vals[4] || '';
+          document.getElementById('f-title').value = vals[5] || '';
+          document.getElementById('f-category').value = vals[6] || '';
+          document.getElementById('f-class').value = vals[7] || '';
+          document.getElementById('f-details').value = vals[8] || '';
+          document.getElementById('f-instructor').value = vals[10] || '';
+          document.getElementById('f-learners').value = vals[11] || '';
+          document.getElementById('f-result').value = vals[12] || '';
+          
+          try {
+             if(vals[2]) document.getElementById('f-date').value = new Date(vals[2]).toISOString().split('T')[0];
+             if(vals[9]) document.getElementById('f-teach-date').value = new Date(vals[9]).toISOString().split('T')[0];
+          } catch(e) {}
+          
+          // ล็อกฟิลด์ห้ามแก้เนื้อหา
+          ['f-factory', 'f-dept', 'f-title', 'f-category', 'f-class', 'f-details', 'f-date', 'f-teach-date', 'f-instructor', 'f-learners', 'f-result'].forEach(id => {
+             const el = document.getElementById(id);
+             if(el) el.disabled = true;
+          });
+
+          populateUsers(); 
+
+          if (roleParam === 'lead') {
+             setTimeout(() => {
+                const nameSelect = document.getElementById('f-name');
+                if(nameSelect.options.length > 1) { nameSelect.selectedIndex = 1; autoFillEmail(); }
+             }, 300);
+             showToast('โหมดผู้อนุมัติ: กรุณาตรวจสอบและกดอนุมัติ', 'var(--orange-500)', 5000);
+          }
+
+          // แสดงไฟล์แนบ
+          const fileStr = vals[13] || ''; 
+          renderAttachedFiles(fileStr);
+      }
+  }
+}
+
 function generateOplId() {
-  // หากเข้าผ่าน Magic Link จะมี oplId อยู่แล้ว ไม่ต้อง Gen ใหม่
   const urlParams = new URLSearchParams(window.location.search);
   if(urlParams.get('oplId')) return; 
 
@@ -317,19 +391,15 @@ function generateOplId() {
   const dept = document.getElementById('f-dept').value;
   const year = document.getElementById('f-year').value || '2026';
   
-  if(!fac || !dept) {
-     document.getElementById('f-opl-id').value = ''; return;
-  }
+  if(!fac || !dept) { document.getElementById('f-opl-id').value = ''; return; }
 
-  // ค้นหาประวัติทั้งหมดที่เป็นของโรงงานและแผนกนี้
   const prefix = `OPL-${fac}-${dept}-${year}-`;
   let maxRun = 0;
   
   oplHistoryData.forEach(r => {
-    // สมมติว่าคอลัมน์ชื่อ 'OPL ID' (ต้องตรงกับ Header ใน Google Sheet)
     const id = r['OPL ID'] || r['เลขที่ OPL'] || Object.values(r)[1]; 
     if(id && id.startsWith(prefix)) {
-      const numPart = id.split('-')[4]; // เอาส่วนที่ 4 (ลำดับรัน)
+      const numPart = id.split('-')[4]; 
       if(numPart) {
          const num = parseInt(numPart, 10);
          if(num > maxRun) maxRun = num;
@@ -337,11 +407,8 @@ function generateOplId() {
     }
   });
 
-  // +1 จากเลขสูงสุดที่มีในระบบ
   const nextRun = String(maxRun + 1).padStart(3, '0');
-  const newOplId = `${prefix}${nextRun}`;
-  
-  document.getElementById('f-opl-id').value = newOplId;
+  document.getElementById('f-opl-id').value = `${prefix}${nextRun}`;
 }
 
 function populateUsers() {
@@ -367,7 +434,7 @@ function populateUsers() {
     if (approverData[dept] && approverData[dept].lead && approverData[dept].lead.name) {
       const u = approverData[dept].lead;
       const opt = document.createElement('option');
-      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = `${u.name}`;
+      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = `(หัวหน้า) ${u.name}`;
       nameSelect.appendChild(opt);
     }
   }
@@ -382,7 +449,7 @@ function autoFillEmail() {
 function togglePIN() {
   const role = document.getElementById('f-role').value;
   document.getElementById('pin-box').style.display = (role === 'lead') ? 'block' : 'none';
-  document.getElementById('btn-submit').textContent = (role === 'lead') ? 'ตรวจสอบและอนุมัติ OPL' : 'ส่งแบบฟอร์ม OPL';
+  document.getElementById('btn-submit').textContent = (role === 'lead') ? 'ตรวจสอบและอนุมัติ OPL' : 'บันทึก OPL (รออนุมัติ)';
 }
 
 function addImages(fl) {
@@ -410,6 +477,40 @@ function addDocs(fl) {
 }
 function removeDoc(idx, el) { docStore[idx] = null; el.parentElement.remove(); }
 
+function renderAttachedFiles(linksStr) {
+  const uploadGrid = document.getElementById('upload-grid');
+  const viewZone = document.getElementById('view-files-zone');
+  const gallery = document.getElementById('file-gallery');
+  
+  uploadGrid.style.display = 'none';
+  viewZone.style.display = 'block';
+  document.getElementById('attachment-label').innerHTML = '📸 เอกสารประกอบ (กดเพื่อเปิดดู)';
+
+  if (!linksStr || linksStr.trim() === '') {
+      gallery.innerHTML = '<p style="color:var(--gray-600); font-size:13px;">ไม่มีไฟล์แนบในระบบ</p>'; return;
+  }
+
+  const links = linksStr.split(',').map(s => s.trim()).filter(Boolean);
+  gallery.innerHTML = '';
+  
+  links.forEach((url, i) => {
+      const driveId = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+      if (driveId && driveId[1]) {
+          const img = document.createElement('img');
+          img.src = `https://drive.google.com/uc?export=view&id=${driveId[1]}`;
+          img.className = 'file-preview';
+          img.onerror = function() { this.outerHTML = `<a href="${url}" target="_blank" class="file-link-card">📄 เปิดไฟล์เอกสาร ${i+1}</a>`; };
+          
+          const a = document.createElement('a');
+          a.href = url; a.target = '_blank';
+          a.appendChild(img);
+          gallery.appendChild(a);
+      } else {
+          gallery.innerHTML += `<a href="${url}" target="_blank" class="file-link-card">📄 เปิดไฟล์ ${i+1}</a>`;
+      }
+  });
+}
+
 function showToast(msg, color, ms) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.style.background = color || 'var(--orange-500)';
@@ -418,7 +519,12 @@ function showToast(msg, color, ms) {
 
 function resetForm() {
   if (!confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) return;
-  document.querySelectorAll('input[type="text"], input[type="date"], select, textarea').forEach(el => el.value = '');
+  
+  ['f-factory', 'f-dept', 'f-title', 'f-category', 'f-class', 'f-details', 'f-date', 'f-teach-date', 'f-instructor', 'f-learners', 'f-result'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) { el.disabled = false; el.value = ''; }
+  });
+
   document.getElementById('f-year').value = '2026';
   document.getElementById('f-role').value = 'self';
   togglePIN();
@@ -428,6 +534,11 @@ function resetForm() {
   document.getElementById('chip-doc').innerHTML = '';
   document.getElementById('f-date').valueAsDate = new Date();
   document.getElementById('f-teach-date').valueAsDate = new Date();
+  
+  document.getElementById('view-files-zone').style.display = 'none';
+  document.getElementById('upload-grid').style.display = 'grid';
+  document.getElementById('attachment-label').innerHTML = 'ภาพประกอบ & เอกสาร (Attachments)';
+  
   generateOplId();
   showToast('ล้างข้อมูลแล้ว'); 
 }
@@ -458,49 +569,6 @@ function fileToBase64(file) {
   });
 }
 
-// 🟢 ระบบดึงข้อมูลจาก Magic Link กลับมาใส่ในฟอร์ม (กรณีหัวหน้ากดมาอนุมัติ)
-function prefillFromURL() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const paramOplId = urlParams.get('oplId');
-  const roleParam = urlParams.get('role');
-
-  if(paramOplId && oplHistoryData.length > 0) {
-     // หา Record ล่าสุดที่ตรงกับ OPL ID นี้
-     const record = oplHistoryData.slice().reverse().find(r => (r['OPL ID'] || r['เลขที่ OPL'] || Object.values(r)[1]) === paramOplId);
-     
-     if(record) {
-        document.getElementById('f-opl-id').value = paramOplId;
-        // การ Mapping ค่า ต้องระวังเรื่องชื่อคอลัมน์ภาษาไทย แนะนำให้ดึงตาม Index ถ้าชัวร์
-        const vals = Object.values(record); 
-        document.getElementById('f-factory').value = vals[3] || '';
-        document.getElementById('f-dept').value = vals[4] || '';
-        document.getElementById('f-title').value = vals[5] || '';
-        document.getElementById('f-category').value = vals[6] || '';
-        document.getElementById('f-class').value = vals[7] || '';
-        document.getElementById('f-details').value = vals[8] || '';
-        document.getElementById('f-instructor').value = vals[10] || '';
-        document.getElementById('f-learners').value = vals[11] || '';
-        document.getElementById('f-result').value = vals[12] || '';
-        
-        // ล็อกฟิลด์ห้ามหัวหน้าแก้เนื้อหาหลัก
-        ['f-factory', 'f-dept', 'f-title', 'f-category', 'f-class', 'f-details'].forEach(id => {
-           document.getElementById(id).disabled = true;
-        });
-
-        if(roleParam === 'lead') {
-           document.getElementById('f-role').value = 'lead';
-           togglePIN();
-           populateUsers();
-           setTimeout(() => {
-              const nameSelect = document.getElementById('f-name');
-              if(nameSelect.options.length > 1) { nameSelect.selectedIndex = 1; autoFillEmail(); }
-           }, 200);
-           showToast('โหมดผู้อนุมัติ: กรุณาตรวจสอบ OPL และกดยืนยัน', 'var(--orange-500)', 5000);
-        }
-     }
-  }
-}
-
 async function handleSubmit() {
   const role = document.getElementById('f-role').value;
   const pin = document.getElementById('f-pin').value;
@@ -520,7 +588,7 @@ async function handleSubmit() {
   const nameSelect = document.getElementById('f-name');
   const name = nameSelect.options[nameSelect.selectedIndex] ? nameSelect.options[nameSelect.selectedIndex].text : '';
 
-  if (!fac || !dept || !title || !category || !classification || !details || !result || name === '') { 
+  if (!fac || !dept || !title || !category || !classification || !details || !result || name === '' || name.includes('--')) { 
       showToast('กรุณากรอกข้อมูลในช่องที่จำเป็นให้ครบถ้วน', '#D93838'); return; 
   }
 
@@ -528,11 +596,13 @@ async function handleSubmit() {
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังบันทึกข้อมูล...';
 
   const filesData = [];
-  for (const f of imageStore.filter(Boolean)) {
-    try { const b64 = await compressImage(f, 1024, 0.7); filesData.push({ name: f.name, mimeType: 'image/jpeg', data: b64.split(',')[1] }); } catch(e) {}
-  }
-  for (const d of docStore.filter(Boolean)) {
-    try { const b64 = await fileToBase64(d); filesData.push({ name: d.name, mimeType: d.type || 'application/pdf', data: b64.split(',')[1] }); } catch(e) {}
+  if (role === 'self') {
+      for (const f of imageStore.filter(Boolean)) {
+        try { const b64 = await compressImage(f, 1024, 0.7); filesData.push({ name: f.name, mimeType: 'image/jpeg', data: b64.split(',')[1] }); } catch(e) {}
+      }
+      for (const d of docStore.filter(Boolean)) {
+        try { const b64 = await fileToBase64(d); filesData.push({ name: d.name, mimeType: d.type || 'application/pdf', data: b64.split(',')[1] }); } catch(e) {}
+      }
   }
 
   const payload = {
@@ -550,25 +620,21 @@ async function handleSubmit() {
     instructor: document.getElementById('f-instructor').value.trim(),
     learners: document.getElementById('f-learners').value.trim(),
     result: result,
-    assessorName: name,
+    assessorName: name.replace('(หัวหน้า) ', ''),
     files: filesData
   };
 
   try {
     await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
     showToast(role === 'lead' ? 'อนุมัติ OPL สำเร็จ!' : 'บันทึก OPL และส่งให้หัวหน้าแล้ว!', '#0CA47C', 4000);
-    setTimeout(() => { window.location.href = 'home.html'; }, 3000);
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
   } catch (err) {
     showToast('เกิดข้อผิดพลาด: ' + err.message, '#D93838', 5000);
-  } finally {
     btn.disabled = false; btn.textContent = role === 'lead' ? 'ตรวจสอบและอนุมัติ OPL' : 'ส่งแบบฟอร์ม OPL';
   }
 }
 
-// Init Execution
-document.getElementById('f-date').valueAsDate = new Date();
-document.getElementById('f-teach-date').valueAsDate = new Date();
-togglePIN();
+// 🟢 โหลดข้อมูลเมื่อเปิดหน้า
 initData(); 
 </script>
 </body>
