@@ -48,18 +48,20 @@ input[type=text],input[type=number],input[type=date],select,textarea{ width:100%
 input:focus,select:focus,textarea:focus{ background: #fff; border-color:var(--indigo-500); box-shadow: 0 0 0 4px rgba(99,102,241,0.15), inset 0 2px 4px rgba(0,0,0,0.02); }
 select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%23505A64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
 textarea{resize:vertical;min-height:80px;line-height:1.6;}
-input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--indigo-600); cursor:not-allowed; border-color:rgba(99,102,241,0.3); opacity:1;}
+input[readonly], input:disabled, select:disabled, textarea:disabled{background:rgba(238,242,255,0.6); color:var(--indigo-600); cursor:not-allowed; border-color:rgba(99,102,241,0.3); opacity:1;}
 
 .id-display { font-size:20px !important; font-weight:700 !important; color:var(--indigo-600) !important; text-align:center; letter-spacing:1px; background: rgba(99,102,241,0.08) !important;}
 .update-zone { background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(238,242,255,0.9)); border: 1.5px solid var(--indigo-400); }
 
-.actions{display:flex;justify-content:flex-end;gap:12px;margin-top:2rem}
+.actions{display:flex;justify-content:flex-end;gap:12px;margin-top:2rem; flex-wrap:wrap;}
 .btn{font-family:var(--font);font-size:14px;font-weight:600;padding:12px 28px;border-radius:12px;cursor:pointer;transition:all .2s ease; border:none; box-shadow:0 4px 12px rgba(0,0,0,0.05);}
 .btn-reset{background:rgba(255,255,255,0.8);color:var(--gray-600); border:1px solid rgba(255,255,255,0.9);}
 .btn-reset:hover{background:#fff; transform:translateY(-1px);}
+.btn-reject { background: #FFF0F0; color: #D93838; border: 1px solid #FFCACA; display:none; }
+.btn-reject:hover { background: #FFE0E0; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(217,56,56,0.2); }
 .btn-pri{background:linear-gradient(135deg, var(--indigo-500), var(--indigo-600));color:#fff;box-shadow:0 4px 16px rgba(79,70,229,0.3);}
 .btn-pri:hover{background:linear-gradient(135deg, #4F46E5, #3730A3); transform:translateY(-2px); box-shadow:0 6px 20px rgba(79,70,229,0.4);}
-.btn-pri:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.btn-pri:disabled, .btn-reject:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 
 .toast{position:fixed;bottom:2rem;right:2rem;background:rgba(10,37,64,0.9);backdrop-filter:blur(10px);color:#fff;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:500;opacity:0;transform:translateY(20px);transition:all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);pointer-events:none;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
 .toast.show{opacity:1;transform:translateY(0)}
@@ -85,208 +87,296 @@ input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--i
 </div>
 
 <div class="wrap">
-
-<div class="card card-accent">
-  <div class="sec-label">📌 1. ข้อมูลหลัก (Primary Information)</div>
-  
-  <div class="grid3" style="margin-bottom:16px;">
-    <div class="fg">
-      <label>ผู้รับผิดชอบ <span class="req">จำเป็น</span></label>
-      <select id="f-name" onchange="autoFillEmail()">
-        <option value="">-- รอการดึงข้อมูล --</option>
-      </select>
-    </div>
-    <div class="fg">
-      <label>โรงงาน (Factory) <span class="req">จำเป็น</span></label>
-      <select id="f-factory" onchange="generateFiId()">
-        <option value="">-- เลือกโรงงาน --</option>
-        <option value="PT">ปทุมธานี (PT)</option>
-        <option value="KR">นครราชสีมา (KR)</option>
-        <option value="NS">นครสวรรค์ (NS)</option>
-        <option value="CH">ชลบุรี (CH)</option>
-        <option value="NP">นครปฐม (NP)</option>
-        <option value="SR">สุราษฎร์ธานี (SR)</option>
-      </select>
-    </div>
-    <div class="fg">
-      <label>แผนก / กลุ่ม (Dept) <span class="req">จำเป็น</span></label>
-      <select id="f-dept" onchange="generateFiId(); populateUsers();">
-        <option value="">-- เลือกแผนก --</option>
-        <option value="MT">MT (วิศวกรรม/ซ่อมบำรุง)</option>
-        <option value="RW">RW (คลังวัตถุดิบ/อะไหล่)</option>
-        <option value="QC">QC (ควบคุมคุณภาพ)</option>
-        <option value="PD">PD (แผนกผลิต)</option>
-        <option value="WH">WH (คลังสินค้า)</option>
-        <option value="EN">EN (วิศวกรรม)</option>
-        <option value="SE">SE (ความปลอดภัย)</option>
-        <option value="HC">HC (ทรัพยากรบุคคล)</option>
-        <option value="AC">AC (บัญชี)</option>
-      </select>
-    </div>
+  <div class="card" id="loading-zone" style="text-align:center; padding: 40px;">
+    <div class="spinner" style="border-top-color:var(--indigo-500); width:30px; height:30px; border-width:4px;"></div>
+    <div style="margin-top:16px; color:var(--blue-900); font-weight:700; font-size:16px;">กำลังซิงค์ฐานข้อมูล FI Theme...</div>
+    <div style="color:var(--gray-600); font-size:13px;">กรุณารอสักครู่ ระบบกำลังจัดเตรียมข้อมูลให้คุณ</div>
   </div>
 
-  <div class="fg" style="margin-bottom:16px;">
-    <label>ชื่อเรื่อง (Theme Name) <span class="req">จำเป็น</span></label>
-    <input type="text" id="f-title" placeholder="ระบุชื่อเรื่องการปรับปรุง เช่น การลดเวลาสูญเสียในการตั้งเครื่อง...">
-  </div>
+  <div id="form-zone" style="display:none;">
+    <div class="card card-accent">
+      <div class="sec-label">📌 1. ข้อมูลหลัก (Primary Information)</div>
 
-  <div class="grid2" style="margin-bottom:16px;">
-    <div class="fg">
-      <label>ประเภท FI (Type) <span class="req">จำเป็น</span></label>
-      <select id="f-type">
-        <option value="">-- เลือกประเภท --</option>
-        <option value="Paperless">ลดการใช้กระดาษ (Paperless)</option>
-        <option value="Time Reduction">ลดเวลาดำเนินการ (Time Reduction)</option>
-        <option value="Efficiency">เพิ่มประสิทธิภาพ (Efficiency)</option>
-        <option value="Paper Reduction">ลดปริมาณกระดาษ (Paper Reduction)</option>
-      </select>
+      <div class="grid2" style="margin-bottom:16px;">
+        <div class="fg">
+          <label>บทบาท / ผู้ดำเนินการ <span class="req">จำเป็น</span></label>
+          <select id="f-role" onchange="togglePIN(); populateUsers();">
+            <option value="self">พนักงาน (ผู้จัดทำ/อัปเดต)</option>
+            <option value="lead">หัวหน้าแผนก (ผู้อนุมัติ)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>ผู้รับผิดชอบ <span class="req">จำเป็น</span></label>
+          <select id="f-name" onchange="autoFillEmail()">
+            <option value="">-- กรุณาเลือกแผนกก่อน --</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="grid2" style="margin-bottom:16px;">
+        <div class="fg">
+          <label>โรงงาน (Factory) <span class="req">จำเป็น</span></label>
+          <select id="f-factory" onchange="generateFiId()">
+            <option value="">-- เลือกโรงงาน --</option>
+            <option value="PT">ปทุมธานี (PT)</option>
+            <option value="KR">นครราชสีมา (KR)</option>
+            <option value="NS">นครสวรรค์ (NS)</option>
+            <option value="CH">ชลบุรี (CH)</option>
+            <option value="NP">นครปฐม (NP)</option>
+            <option value="SR">สุราษฎร์ธานี (SR)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>แผนก / กลุ่ม (Dept) <span class="req">จำเป็น</span></label>
+          <select id="f-dept" onchange="generateFiId(); populateUsers();">
+            <option value="">-- เลือกแผนก --</option>
+            <option value="MT">MT (วิศวกรรม/ซ่อมบำรุง)</option>
+            <option value="RW">RW (คลังวัตถุดิบ/อะไหล่)</option>
+            <option value="QC">QC (ควบคุมคุณภาพ)</option>
+            <option value="PD">PD (แผนกผลิต)</option>
+            <option value="WH">WH (คลังสินค้า)</option>
+            <option value="EN">EN (วิศวกรรม)</option>
+            <option value="SE">SE (ความปลอดภัย)</option>
+            <option value="HC">HC (ทรัพยากรบุคคล)</option>
+            <option value="AC">AC (บัญชี)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fg" style="margin-bottom:16px;">
+        <label>ชื่อเรื่อง (Theme Name) <span class="req">จำเป็น</span></label>
+        <input type="text" id="f-title" placeholder="ระบุชื่อเรื่องการปรับปรุง เช่น การลดเวลาสูญเสียในการตั้งเครื่อง...">
+      </div>
+
+      <div class="grid2" style="margin-bottom:16px;">
+        <div class="fg">
+          <label>ประเภท FI (Type) <span class="req">จำเป็น</span></label>
+          <select id="f-type">
+            <option value="">-- เลือกประเภท --</option>
+            <option value="Paperless">ลดการใช้กระดาษ (Paperless)</option>
+            <option value="Time Reduction">ลดเวลาดำเนินการ (Time Reduction)</option>
+            <option value="Efficiency">เพิ่มประสิทธิภาพ (Efficiency)</option>
+            <option value="Paper Reduction">ลดปริมาณกระดาษ (Paper Reduction)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>ประเภทของการสูญเสีย (Loss Type) <span class="req">จำเป็น</span></label>
+          <select id="f-loss">
+            <option value="">-- เลือกประเภทความสูญเสีย --</option>
+            <option value="Idling and Minor Stops">การหยุดเล็กน้อยและเดินเครื่องเปล่า (Idling and Minor Stops)</option>
+            <option value="Reduced Speed">ความเร็วลดลง (Reduced Speed)</option>
+            <option value="Equipment Failure">เครื่องจักรขัดข้อง (Equipment Failure)</option>
+            <option value="Setup and Adjustment">การตั้งค่าและปรับแต่ง (Setup and Adjustment)</option>
+            <option value="Process Defects">ของเสียจากกระบวนการ (Process Defects)</option>
+            <option value="Startup Loss">ความสูญเสียช่วงเริ่มต้น (Startup Loss)</option>
+            <option value="Material Waste">ความสูญเสียด้านวัตถุดิบ (Material Waste)</option>
+            <option value="Energy Saving">การประหยัดพลังงาน (Energy Saving)</option>
+            <option value="Paperless">การลดใช้กระดาษ (Paperless)</option>
+            <option value="Time Saving">การประหยัดเวลา (Time Saving)</option>
+            <option value="Inventory Loss">ความสูญเสียจากสินค้าคงคลัง (Inventory Loss)</option>
+            <option value="Information Loss">ความสูญเสียด้านข้อมูล (Information Loss)</option>
+            <option value="Labor Loss">ความสูญเสียด้านแรงงาน (Labor Loss)</option>
+            <option value="Safety Risk">ความเสี่ยงด้านความปลอดภัย (Safety Risk)</option>
+            <option value="Cost Saving">การประหยัดต้นทุน (Cost Saving)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid2" style="display:none;">
+        <input type="text" id="f-year" value="2026">
+        <input type="text" id="f-email">
+      </div>
+
+      <div class="fg">
+        <label>รหัส FI Theme (ID) <span style="font-weight:normal; color:var(--gray-400);">(ระบบรันให้อัตโนมัติ)</span></label>
+        <input type="text" id="f-fi-id" class="id-display" readonly placeholder="FI-[โรงงาน]-[แผนก]-[ปี]-[ลำดับ]">
+      </div>
     </div>
-    <div class="fg">
-      <label>ประเภทของการสูญเสีย (Loss Type) <span class="req">จำเป็น</span></label>
-      <select id="f-loss">
-        <option value="">-- เลือกประเภทความสูญเสีย --</option>
-        <option value="Idling and Minor Stops">การหยุดเล็กน้อยและเดินเครื่องเปล่า (Idling and Minor Stops)</option>
-        <option value="Reduced Speed">ความเร็วลดลง (Reduced Speed)</option>
-        <option value="Equipment Failure">เครื่องจักรขัดข้อง (Equipment Failure)</option>
-        <option value="Setup and Adjustment">การตั้งค่าและปรับแต่ง (Setup and Adjustment)</option>
-        <option value="Process Defects">ของเสียจากกระบวนการ (Process Defects)</option>
-        <option value="Startup Loss">ความสูญเสียช่วงเริ่มต้น (Startup Loss)</option>
-        <option value="Material Waste">ความสูญเสียด้านวัตถุดิบ (Material Waste)</option>
-        <option value="Energy Saving">การประหยัดพลังงาน (Energy Saving)</option>
-        <option value="Paperless">การลดใช้กระดาษ (Paperless)</option>
-        <option value="Time Saving">การประหยัดเวลา (Time Saving)</option>
-        <option value="Inventory Loss">ความสูญเสียจากสินค้าคงคลัง (Inventory Loss)</option>
-        <option value="Information Loss">ความสูญเสียด้านข้อมูล (Information Loss)</option>
-        <option value="Labor Loss">ความสูญเสียด้านแรงงาน (Labor Loss)</option>
-        <option value="Safety Risk">ความเสี่ยงด้านความปลอดภัย (Safety Risk)</option>
-        <option value="Cost Saving">การประหยัดต้นทุน (Cost Saving)</option>
-      </select>
+
+    <div class="card">
+      <div class="sec-label">🎯 2. ข้อมูลตั้งต้นและเป้าหมาย (Baseline & Target)</div>
+      <div class="grid3" style="margin-bottom:16px;">
+        <div class="fg">
+          <label>หน่วยชี้วัด (Unit) <span class="req">จำเป็น</span></label>
+          <select id="f-unit">
+            <option value="">-- เลือกหน่วย --</option>
+            <option value="Sheets/Month">แผ่น/เดือน (Sheets/Month)</option>
+            <option value="Reams/Year">รีม/ปี (Reams/Year)</option>
+            <option value="Forms Converted to Digital">ฟอร์มที่แปลงเป็นดิจิทัล (Forms Converted)</option>
+            <option value="Minutes/Task">นาที/งาน (Minutes/Task)</option>
+            <option value="Hours/Week">ชั่วโมง/สัปดาห์ (Hours/Week)</option>
+            <option value="% Time Reduced">% เวลาที่ลดลง (% Time Reduced)</option>
+            <option value="% Paper Usage Reduced">% การใช้กระดาษที่ลดลง (% Paper Reduced)</option>
+            <option value="Steps Reduced">ขั้นตอนที่ลดลง (Steps Reduced)</option>
+            <option value="Error Events/Month">ข้อผิดพลาด/เดือน (Error Events/Month)</option>
+            <option value="% Accuracy Improved">% ความแม่นยำที่เพิ่มขึ้น (% Accuracy Improved)</option>
+            <option value="Sheets/Year">แผ่น/ปี (Sheets/Year)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>ก่อนทำ (Baseline) <span class="req">จำเป็น</span></label>
+          <input type="text" id="f-baseline" placeholder="เช่น 20">
+        </div>
+        <div class="fg">
+          <label>เป้าหมาย (Target) <span class="req">จำเป็น</span></label>
+          <input type="text" id="f-target" placeholder="เช่น 5">
+        </div>
+      </div>
+      <div class="fg">
+        <label>วิธีการวัดผล (Measurement Method) <span class="req">จำเป็น</span></label>
+        <textarea id="f-measure" placeholder="อธิบายว่าจะเก็บข้อมูลหรือวัดผลความสำเร็จนี้อย่างไร..."></textarea>
+      </div>
     </div>
-  </div>
 
-  <div class="grid2" style="display:none;">
-    <input type="text" id="f-year" value="2026">
-    <input type="text" id="f-email">
-  </div>
+    <div class="card update-zone">
+      <div class="sec-label" style="color:var(--indigo-800);">📈 3. อัปเดตความคืบหน้า (Progress Update)</div>
+      <p style="font-size:12px; color:var(--gray-600); margin-bottom:16px;">ส่วนนี้สามารถกลับมาอัปเดตเพิ่มเติมได้ภายหลัง จนกว่าจะดำเนินงานเสร็จสิ้น (Step 10)</p>
+      
+      <div class="grid2" style="margin-bottom:16px;">
+        <div class="fg">
+          <label>ขั้นตอนปัจจุบัน (Current Step) <span class="req">จำเป็น</span></label>
+          <select id="f-step" style="font-weight:bold; color:var(--indigo-600);">
+            <option value="Step 1">Step 1: Theme (เลือกหัวข้อ)</option>
+            <option value="Step 2">Step 2: Background (ความเป็นมา)</option>
+            <option value="Step 3">Step 3: Target (ตั้งเป้าหมาย)</option>
+            <option value="Step 4">Step 4: Outline of Process (สรุปขั้นตอน)</option>
+            <option value="Step 5">Step 5: Current Situation Analysis (วิเคราะห์ปัจจุบัน)</option>
+            <option value="Step 6">Step 6: Context of KAIZEN (การปรับปรุง)</option>
+            <option value="Step 7">Step 7: Results (สรุปผลการปรับปรุง)</option>
+            <option value="Step 8">Step 8: Prevention of Repeat Problem (สร้างมาตรฐาน)</option>
+            <option value="Step 9">Step 9: Horizontal Expansion (การขยายผล)</option>
+            <option value="Step 10">Step 10: Next Theme (เรื่องถัดไป / จบงาน)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>สถานะ (Status) <span class="req">จำเป็น</span></label>
+          <select id="f-status" style="font-weight:bold;">
+            <option value="ยังไม่ดำเนินการ" style="color:var(--gray-600);">ยังไม่ดำเนินการ</option>
+            <option value="อยู่ระหว่างดำเนินการ" style="color:var(--orange-500);" selected>อยู่ระหว่างดำเนินการ</option>
+            <option value="รอหัวหน้าอนุมัติ" style="color:var(--blue-600);">รอหัวหน้าอนุมัติ</option>
+            <option value="อนุมัติสมบูรณ์" style="color:var(--teal-600);">อนุมัติสมบูรณ์</option>
+            <option value="ไม่อนุมัติ (ส่งกลับแก้ไข)" style="color:var(--red-600);">ไม่อนุมัติ (ส่งกลับแก้ไข)</option>
+            <option value="ยกเลิก" style="color:var(--red-600);">ยกเลิก (Cancelled)</option>
+          </select>
+        </div>
+      </div>
 
-  <div class="fg">
-    <label>รหัส FI Theme (ID) <span style="font-weight:normal; color:var(--gray-400);">(ระบบรันให้อัตโนมัติ)</span></label>
-    <input type="text" id="f-fi-id" class="id-display" readonly placeholder="FI-[โรงงาน]-[แผนก]-[ปี]-[ลำดับ]">
-  </div>
-</div>
-
-<div class="card">
-  <div class="sec-label">🎯 2. ข้อมูลตั้งต้นและเป้าหมาย (Baseline & Target)</div>
-  <div class="grid3" style="margin-bottom:16px;">
-    <div class="fg">
-      <label>หน่วยชี้วัด (Unit) <span class="req">จำเป็น</span></label>
-      <select id="f-unit">
-        <option value="">-- เลือกหน่วย --</option>
-        <option value="Sheets/Month">แผ่น/เดือน (Sheets/Month)</option>
-        <option value="Reams/Year">รีม/ปี (Reams/Year)</option>
-        <option value="Forms Converted to Digital">ฟอร์มที่แปลงเป็นดิจิทัล (Forms Converted)</option>
-        <option value="Minutes/Task">นาที/งาน (Minutes/Task)</option>
-        <option value="Hours/Week">ชั่วโมง/สัปดาห์ (Hours/Week)</option>
-        <option value="% Time Reduced">% เวลาที่ลดลง (% Time Reduced)</option>
-        <option value="% Paper Usage Reduced">% การใช้กระดาษที่ลดลง (% Paper Reduced)</option>
-        <option value="Steps Reduced">ขั้นตอนที่ลดลง (Steps Reduced)</option>
-        <option value="Error Events/Month">ข้อผิดพลาด/เดือน (Error Events/Month)</option>
-        <option value="% Accuracy Improved">% ความแม่นยำที่เพิ่มขึ้น (% Accuracy Improved)</option>
-        <option value="Sheets/Year">แผ่น/ปี (Sheets/Year)</option>
-      </select>
+      <div class="fg">
+        <label>ผลที่ได้รับจริง (Result) <span style="font-weight:normal; color:var(--gray-400);">(กรอกเมื่อเสร็จสิ้นโครงการ)</span></label>
+        <input type="text" id="f-result" placeholder="เช่น 3 (กรอกเฉพาะตัวเลขหรือข้อความสั้นๆ ตามหน่วยที่เลือกไว้)">
+      </div>
     </div>
-    <div class="fg">
-      <label>ก่อนทำ (Baseline) <span class="req">จำเป็น</span></label>
-      <input type="text" id="f-baseline" placeholder="เช่น 20">
-    </div>
-    <div class="fg">
-      <label>เป้าหมาย (Target) <span class="req">จำเป็น</span></label>
-      <input type="text" id="f-target" placeholder="เช่น 5">
-    </div>
-  </div>
-  <div class="fg">
-    <label>วิธีการวัดผล (Measurement Method) <span class="req">จำเป็น</span></label>
-    <textarea id="f-measure" placeholder="อธิบายว่าจะเก็บข้อมูลหรือวัดผลความสำเร็จนี้อย่างไร..."></textarea>
-  </div>
-</div>
 
-<div class="card update-zone">
-  <div class="sec-label" style="color:var(--indigo-800);">📈 3. อัปเดตความคืบหน้า (Progress Update)</div>
-  <p style="font-size:12px; color:var(--gray-600); margin-bottom:16px;">ส่วนนี้สามารถกลับมาอัปเดตเพิ่มเติมได้ภายหลัง จนกว่าจะดำเนินงานเสร็จสิ้น (Step 10)</p>
-  
-  <div class="grid2" style="margin-bottom:16px;">
-    <div class="fg">
-      <label>ขั้นตอนปัจจุบัน (Current Step) <span class="req">จำเป็น</span></label>
-      <select id="f-step" style="font-weight:bold; color:var(--indigo-600);">
-        <option value="Step 1">Step 1: Theme (เลือกหัวข้อ)</option>
-        <option value="Step 2">Step 2: Background (ความเป็นมา)</option>
-        <option value="Step 3">Step 3: Target (ตั้งเป้าหมาย)</option>
-        <option value="Step 4">Step 4: Outline of Process (สรุปขั้นตอน)</option>
-        <option value="Step 5">Step 5: Current Situation Analysis (วิเคราะห์ปัจจุบัน)</option>
-        <option value="Step 6">Step 6: Context of KAIZEN (การปรับปรุง)</option>
-        <option value="Step 7">Step 7: Results (สรุปผลการปรับปรุง)</option>
-        <option value="Step 8">Step 8: Prevention of Repeat Problem (สร้างมาตรฐาน)</option>
-        <option value="Step 9">Step 9: Horizontal Expansion (การขยายผล)</option>
-        <option value="Step 10">Step 10: Next Theme (เรื่องถัดไป / จบงาน)</option>
-      </select>
+    <div class="card" id="pin-box" style="display:none; background:var(--indigo-50); border: 1px solid var(--indigo-400);">
+      <div class="sec-label" style="color:var(--indigo-600); border-bottom:none; margin-bottom:5px;">🔑 ยืนยันตัวตนผู้อนุมัติ FI Theme</div>
+      <div class="fg">
+        <input type="password" id="f-pin" placeholder="กรอกรหัส PIN 4 หลักเพื่อเซ็นอนุมัติ" style="border-color:var(--indigo-400); max-width:300px; background:#fff;">
+      </div>
     </div>
-    <div class="fg">
-      <label>สถานะ (Status) <span class="req">จำเป็น</span></label>
-      <select id="f-status" style="font-weight:bold;">
-        <option value="ยังไม่ดำเนินการ" style="color:var(--gray-600);">ยังไม่ดำเนินการ</option>
-        <option value="อยู่ระหว่างดำเนินการ" style="color:var(--orange-500);" selected>อยู่ระหว่างดำเนินการ</option>
-        <option value="สมบูรณ์" style="color:var(--teal-600);">สมบูรณ์ (Completed)</option>
-        <option value="ยกเลิก" style="color:var(--red-600);">ยกเลิก (Cancelled)</option>
-      </select>
+
+    <div class="actions">
+      <button class="btn btn-reset" onclick="resetForm()">ล้างข้อมูล</button>
+      <button class="btn btn-reject" id="btn-reject" onclick="handleSubmit('reject')">❌ ไม่อนุมัติ (ส่งกลับแก้ไข)</button>
+      <button class="btn btn-pri" id="btn-submit" onclick="handleSubmit('approve')">บันทึก / อัปเดต FI Theme</button>
     </div>
+
   </div>
-
-  <div class="fg">
-    <label>ผลที่ได้รับจริง (Result) <span style="font-weight:normal; color:var(--gray-400);">(กรอกเมื่อเสร็จสิ้นโครงการ)</span></label>
-    <input type="text" id="f-result" placeholder="เช่น 3 (กรอกเฉพาะตัวเลขหรือข้อความสั้นๆ ตามหน่วยที่เลือกไว้)">
-  </div>
-</div>
-
-<div class="actions">
-  <button class="btn btn-reset" onclick="resetForm()">ล้างข้อมูล</button>
-  <button class="btn btn-pri" id="btn-submit" onclick="handleSubmit()">บันทึก / อัปเดต FI Theme</button>
-</div>
-
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ⚠️ ใส่ลิงก์ Web App URL ตัวเดิม (เชื่อมกับ Code.gs)
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 let userData = {};
-let fiHistoryData = []; // เก็บประวัติ FI ทั้งหมดเพื่อมารันรหัสและโหลดข้อมูลเก่า
+let approverData = {};
+let fiHistoryData = [];
 
 async function initData() {
-  document.getElementById('f-name').innerHTML = '<option value="">กำลังซิงค์ฐานข้อมูล...</option>';
   try {
     const [uRes, fRes] = await Promise.all([
-      fetch(APPS_SCRIPT_URL + '?action=getUsers').then(r => r.json()),
-      fetch(APPS_SCRIPT_URL + '?action=getFiHistory').then(r => r.json()) // ดึงประวัติ FI
+      fetch(APPS_SCRIPT_URL + '?action=getUsers&t=' + Date.now()).then(r => r.json()),
+      fetch(APPS_SCRIPT_URL + '?action=getFiHistory&t=' + Date.now()).then(r => r.json())
     ]);
     
     if(uRes.status === 'success') {
        userData = uRes.users || {};
-       document.getElementById('f-name').innerHTML = '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
+       approverData = uRes.approvers || {};
     }
     if(fRes.status === 'success') {
        fiHistoryData = fRes.data || [];
     }
     
-    prefillFromURL(); // ถ้ามี ID แนบมาให้โหลดข้อมูลเก่า
+    document.getElementById('loading-zone').style.display = 'none';
+    document.getElementById('form-zone').style.display = 'block';
+    
+    prefillFromURL();
   } catch(e) {
-    document.getElementById('f-name').innerHTML = '<option value="">เชื่อมต่อฐานข้อมูลล้มเหลว</option>';
+    document.getElementById('loading-zone').innerHTML = '<div style="color:red; font-weight:bold;">❌ เชื่อมต่อฐานข้อมูลล้มเหลว กรุณารีเฟรชหน้าจอ</div>';
   }
 }
 
-// 🟢 ฟังก์ชันคำนวณ Auto-Run FI ID
+function prefillFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const paramFiId = urlParams.get('fiId');
+  const roleParam = urlParams.get('role');
+
+  if (roleParam) {
+      document.getElementById('f-role').value = roleParam;
+      togglePIN();
+  }
+
+  if (paramFiId && fiHistoryData.length > 0) {
+      const record = fiHistoryData.slice().reverse().find(r => (r['FI ID'] || Object.values(r)[1]) === paramFiId);
+      
+      if (record) {
+          const vals = Object.values(record); 
+          
+          document.getElementById('f-fi-id').value = paramFiId;
+          document.getElementById('f-factory').value = vals[3] || '';
+          document.getElementById('f-dept').value = vals[4] || '';
+          document.getElementById('f-title').value = vals[5] || '';
+          document.getElementById('f-type').value = vals[6] || '';
+          document.getElementById('f-loss').value = vals[7] || '';
+          document.getElementById('f-unit').value = vals[8] || '';
+          document.getElementById('f-baseline').value = vals[9] || '';
+          document.getElementById('f-target').value = vals[10] || '';
+          document.getElementById('f-result').value = vals[11] || '';
+          document.getElementById('f-measure').value = vals[12] || '';
+          document.getElementById('f-step').value = vals[13] || 'Step 1';
+          document.getElementById('f-status').value = vals[14] || 'อยู่ระหว่างดำเนินการ';
+          
+          // 💡 ไม่ล็อกข้อมูลอื่นๆ ปล่อยให้หัวหน้าแก้ได้หมดเหมือน OPL
+
+          if (roleParam === 'lead') {
+             document.getElementById('f-role').value = 'lead';
+             document.getElementById('f-role').disabled = true; 
+             togglePIN();
+             document.getElementById('btn-reject').style.display = 'inline-flex';
+             showToast('โหมดผู้อนุมัติ: สามารถแก้ไขข้อมูลก่อนอนุมัติ หรือกดไม่อนุมัติได้', 'var(--indigo-500)', 5000);
+          } else if (roleParam === 'edit') {
+             document.getElementById('f-role').value = 'self';
+             document.getElementById('f-role').disabled = true;
+             togglePIN();
+             showToast('โหมดแก้ไขข้อมูล', 'var(--blue-500)', 3000);
+          }
+
+          populateUsers();
+          setTimeout(() => {
+              const nameSelect = document.getElementById('f-name');
+              if (roleParam === 'lead' && nameSelect.options.length > 1) { 
+                  nameSelect.selectedIndex = 1; 
+              } else {
+                  nameSelect.value = vals[2] || '';
+              }
+              autoFillEmail(); 
+          }, 300);
+      }
+  } else {
+      generateFiId();
+  }
+}
+
 function generateFiId() {
-  // หากโหลดข้อมูลเก่ามาแก้ไข ไม่ต้อง Gen ใหม่
   const urlParams = new URLSearchParams(window.location.search);
   if(urlParams.get('fiId')) return; 
 
@@ -294,15 +384,12 @@ function generateFiId() {
   const dept = document.getElementById('f-dept').value;
   const year = document.getElementById('f-year').value || '2026';
   
-  if(!fac || !dept) {
-     document.getElementById('f-fi-id').value = ''; return;
-  }
+  if(!fac || !dept) { document.getElementById('f-fi-id').value = ''; return; }
 
   const prefix = `FI-${fac}-${dept}-${year}-`;
   let maxRun = 0;
   
   fiHistoryData.forEach(r => {
-    // สมมติว่าใน Google Sheet Tab FI_Data คอลัมน์ B (Index 1) คือ 'FI ID'
     const id = r['FI ID'] || Object.values(r)[1]; 
     if(id && id.startsWith(prefix)) {
       const numPart = id.split('-')[4]; 
@@ -319,6 +406,7 @@ function generateFiId() {
 
 function populateUsers() {
   const dept = document.getElementById('f-dept').value;
+  const role = document.getElementById('f-role').value;
   const nameSelect = document.getElementById('f-name');
   const emailInput = document.getElementById('f-email');
 
@@ -327,14 +415,25 @@ function populateUsers() {
 
   if (!dept) return;
 
-  if (userData[dept] && userData[dept].length > 0) {
-    userData[dept].forEach(u => {
+  if (role === 'self') {
+    if (userData[dept] && userData[dept].length > 0) {
+      userData[dept].forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
+        nameSelect.appendChild(opt);
+      });
+    } else {
+      nameSelect.innerHTML = '<option value="">(ไม่พบรายชื่อพนักงาน)</option>';
+    }
+  } else if (role === 'lead') {
+    if (approverData[dept] && approverData[dept].lead && approverData[dept].lead.name) {
+      const u = approverData[dept].lead;
       const opt = document.createElement('option');
-      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
+      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = `${u.name}`;
       nameSelect.appendChild(opt);
-    });
-  } else {
-    nameSelect.innerHTML = '<option value="">(ไม่พบรายชื่อพนักงาน)</option>';
+    } else {
+      nameSelect.innerHTML = '<option value="">(ไม่พบข้อมูลหัวหน้า)</option>';
+    }
   }
 }
 
@@ -342,6 +441,13 @@ function autoFillEmail() {
   const nameSelect = document.getElementById('f-name');
   const selectedOpt = nameSelect.options[nameSelect.selectedIndex];
   document.getElementById('f-email').value = (selectedOpt && selectedOpt.dataset.email) ? selectedOpt.dataset.email : '';
+}
+
+function togglePIN() {
+  const role = document.getElementById('f-role').value;
+  document.getElementById('pin-box').style.display = (role === 'lead') ? 'block' : 'none';
+  document.getElementById('btn-submit').textContent = (role === 'lead') ? 'บันทึก / อนุมัติ FI Theme' : 'บันทึกแบบฟอร์ม FI Theme';
+  document.getElementById('btn-reject').style.display = (role === 'lead') ? 'inline-flex' : 'none';
 }
 
 function showToast(msg, color, ms) {
@@ -352,54 +458,15 @@ function showToast(msg, color, ms) {
 
 function resetForm() {
   if (!confirm('ต้องการล้างข้อมูลใหม่ทั้งหมดหรือไม่?')) return;
-  window.location.href = 'fitheme.html'; // รีเฟรชหน้าเพื่อเริ่มใหม่เคลียร์ๆ
+  window.location.href = 'fitheme.html'; 
 }
 
-// 🟢 โหลดข้อมูล FI เก่าเพื่อทำการ Update (ถ้ามี Parameter fiId)
-function prefillFromURL() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const paramFiId = urlParams.get('fiId');
+async function handleSubmit(actionType = 'approve') {
+  const role = document.getElementById('f-role').value;
+  const pin = document.getElementById('f-pin').value;
+  
+  if (role === 'lead' && pin !== '1234') { showToast('รหัส PIN ผู้อนุมัติไม่ถูกต้อง!', '#D93838'); return; }
 
-  if(paramFiId && fiHistoryData.length > 0) {
-     const record = fiHistoryData.slice().reverse().find(r => (r['FI ID'] || Object.values(r)[1]) === paramFiId);
-     
-     if(record) {
-        document.getElementById('f-fi-id').value = paramFiId;
-        const vals = Object.values(record); 
-        // อ้างอิง Index ตามที่ให้สร้างใน Google Sheet ด้านล่าง
-        document.getElementById('f-factory').value = vals[3] || '';
-        document.getElementById('f-dept').value = vals[4] || '';
-        
-        populateUsers();
-        setTimeout(() => {
-          document.getElementById('f-name').value = vals[2] || ''; // ชื่อผู้ทำ
-          autoFillEmail();
-        }, 300);
-
-        document.getElementById('f-title').value = vals[5] || '';
-        document.getElementById('f-type').value = vals[6] || '';
-        document.getElementById('f-loss').value = vals[7] || '';
-        document.getElementById('f-unit').value = vals[8] || '';
-        document.getElementById('f-baseline').value = vals[9] || '';
-        document.getElementById('f-target').value = vals[10] || '';
-        document.getElementById('f-result').value = vals[11] || '';
-        document.getElementById('f-measure').value = vals[12] || '';
-        document.getElementById('f-step').value = vals[13] || 'Step 1';
-        document.getElementById('f-status').value = vals[14] || 'อยู่ระหว่างดำเนินการ';
-        
-        // ล็อกฟิลด์ส่วนตั้งต้น เพื่อให้ผู้ใช้อัปเดตแค่ Progress
-        ['f-factory', 'f-dept', 'f-title', 'f-type', 'f-loss', 'f-unit', 'f-baseline', 'f-target', 'f-measure'].forEach(id => {
-           document.getElementById(id).disabled = true;
-        });
-
-        showToast('โหลดข้อมูลเดิมสำเร็จ กรุณาอัปเดตความคืบหน้า', 'var(--indigo-500)', 4000);
-     }
-  } else {
-     generateFiId();
-  }
-}
-
-async function handleSubmit() {
   const fac = document.getElementById('f-factory').value;
   const dept = document.getElementById('f-dept').value;
   const title = document.getElementById('f-title').value.trim();
@@ -409,9 +476,8 @@ async function handleSubmit() {
   const baseline = document.getElementById('f-baseline').value.trim();
   const target = document.getElementById('f-target').value.trim();
   const measure = document.getElementById('f-measure').value.trim();
-  
   const step = document.getElementById('f-step').value;
-  const status = document.getElementById('f-status').value;
+  let status = document.getElementById('f-status').value;
   const result = document.getElementById('f-result').value.trim();
   
   const nameSelect = document.getElementById('f-name');
@@ -422,14 +488,24 @@ async function handleSubmit() {
       showToast('กรุณากรอกข้อมูลในช่องที่จำเป็นให้ครบถ้วน', '#D93838'); return; 
   }
 
-  const btn = document.getElementById('btn-submit');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังบันทึกข้อมูล...';
+  // จัดการสถานะพิเศษสำหรับหัวหน้า
+  if (role === 'lead') {
+      if (actionType === 'reject') {
+          status = 'ไม่อนุมัติ (ส่งกลับแก้ไข)';
+      } else if (actionType === 'approve' && status.includes('รอหัวหน้า')) {
+          status = 'อนุมัติสมบูรณ์';
+      }
+  }
 
-  // 🟢 Payload โครงสร้างสำหรับ FI Theme
+  const btn = document.getElementById('btn-submit');
+  const btnRej = document.getElementById('btn-reject');
+  btn.disabled = true; btnRej.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>กำลังบันทึกข้อมูล...';
+
   const payload = {
     type: 'fitheme', 
     fiId: document.getElementById('f-fi-id').value,
-    ownerName: name,
+    ownerName: name.replace('(หัวหน้า) ', ''),
     ownerEmail: email,
     factory: fac,
     department: dept,
@@ -447,16 +523,19 @@ async function handleSubmit() {
 
   try {
     await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
-    showToast('บันทึกความคืบหน้า FI Theme สำเร็จ!', '#0CA47C', 4000);
-    setTimeout(() => { window.location.href = 'home.html'; }, 3000);
+    
+    let msg = 'บันทึกความคืบหน้า FI Theme สำเร็จ!';
+    if (role === 'lead') msg = actionType === 'reject' ? 'บันทึกสถานะ "ไม่อนุมัติ" เรียบร้อยแล้ว' : 'อนุมัติ FI Theme สำเร็จ!';
+
+    showToast(msg, actionType === 'reject' ? '#D93838' : '#0CA47C', 4000);
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
   } catch (err) {
     showToast('เกิดข้อผิดพลาด: ' + err.message, '#D93838', 5000);
-  } finally {
-    btn.disabled = false; btn.textContent = 'บันทึก / อัปเดต FI Theme';
+    btn.disabled = false; btnRej.disabled = false; 
+    btn.textContent = role === 'lead' ? 'บันทึก / อนุมัติ FI Theme' : 'บันทึกแบบฟอร์ม FI Theme';
   }
 }
 
-// Init
 initData(); 
 </script>
 </body>
