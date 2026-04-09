@@ -198,79 +198,6 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
 .dash-cta:hover{background:#f0f4f8;transform:scale(1.05);box-shadow:0 12px 32px rgba(0,0,0,0.4);}
 .dash-cta svg{width:16px;height:16px;transition:transform 0.3s}
 .dash-card:hover .dash-cta svg{transform:translateX(4px)}
-
-/* ─── 🤖 AI Chat Advisor Styles ─── */
-.chat-container {
-  display: flex; flex-direction: column; height: 500px;
-  background: rgba(255,255,255,0.65); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-  border: 1px solid rgba(255,255,255,0.9); border-radius: 28px;
-  box-shadow: 0 12px 40px rgba(10,37,64,0.08), inset 0 1px 0 rgba(255,255,255,1);
-  overflow: hidden; position: relative;
-}
-.chat-container::after {
-  content:''; position:absolute; bottom:-10%; left:-10%; width:300px; height:300px;
-  border-radius:50%; background:radial-gradient(circle, rgba(12,164,124,0.15) 0%, transparent 70%);
-  pointer-events:none; z-index:0;
-}
-.chat-header {
-  padding: 16px 24px; background: rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.6);
-  display: flex; align-items: center; gap: 12px; z-index: 1;
-}
-.chat-header-icon {
-  width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--teal-400), var(--teal-600));
-  display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 12px rgba(12,164,124,0.3);
-}
-.chat-header-text h3 { font-size: 16px; font-weight: 700; color: var(--blue-900); line-height: 1.2; }
-.chat-header-text p { font-size: 11px; color: var(--gray-600); font-weight: 600; }
-
-.chat-body {
-  flex: 1; padding: 20px 24px; overflow-y: auto;
-  display: flex; flex-direction: column; gap: 16px; z-index: 1;
-}
-.msg-wrap { display: flex; flex-direction: column; max-width: 85%; }
-.msg-wrap.user { align-self: flex-end; }
-.msg-wrap.ai { align-self: flex-start; }
-
-.msg-bubble {
-  padding: 12px 18px; font-size: 14px; line-height: 1.6; font-weight: 500;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-}
-.msg-wrap.user .msg-bubble {
-  background: linear-gradient(135deg, var(--blue-600), var(--blue-800)); color: #fff;
-  border-radius: 20px 20px 4px 20px;
-}
-.msg-wrap.ai .msg-bubble {
-  background: rgba(255,255,255,0.9); color: var(--gray-900);
-  border: 1px solid rgba(255,255,255,1); border-radius: 20px 20px 20px 4px;
-}
-.msg-bubble b { color: var(--blue-800); }
-.msg-wrap.user .msg-bubble b { color: #fff; }
-
-.chat-footer {
-  padding: 16px 24px; background: rgba(255,255,255,0.5); border-top: 1px solid rgba(255,255,255,0.6);
-  display: flex; gap: 12px; z-index: 1; align-items: center;
-}
-.chat-input {
-  flex: 1; padding: 14px 20px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.9);
-  background: rgba(255,255,255,0.8); font-family: var(--font); font-size: 14px; outline: none;
-  box-shadow: inset 0 2px 6px rgba(0,0,0,0.02); transition: all 0.3s;
-}
-.chat-input:focus { background: #fff; border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(58,134,255,0.15); }
-.chat-send-btn {
-  background: linear-gradient(135deg, var(--teal-500), var(--teal-700)); color: #fff;
-  border: none; border-radius: 40px; padding: 0 24px; height: 46px; font-family: var(--font); font-weight: 700; font-size: 14px;
-  cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 16px rgba(12,164,124,0.3);
-  display: flex; align-items: center; gap: 6px;
-}
-.chat-send-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(12,164,124,0.4); }
-.chat-send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-/* Typing Indicator */
-.typing { display: flex; gap: 4px; padding: 8px 4px; }
-.typing .dot { width: 6px; height: 6px; background: var(--gray-400); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
-.typing .dot:nth-child(1) { animation-delay: -0.32s; }
-.typing .dot:nth-child(2) { animation-delay: -0.16s; }
-@keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 </style>
 </head>
 <body>
@@ -391,33 +318,6 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
     </div>
   </a>
 
-  <div class="sec-lbl" style="margin-top: 10px;">🤖 ที่ปรึกษาส่วนตัว (AI TPM Advisor)</div>
-  <div class="chat-container">
-    <div class="chat-header">
-      <div class="chat-header-icon">
-        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-      </div>
-      <div class="chat-header-text">
-        <h3>สอบถามผู้เชี่ยวชาญ TPM (Gemini AI)</h3>
-        <p>ถามเรื่อง 5ส, OPL, FI Theme, Kaizen, Makigami ได้เลยครับ</p>
-      </div>
-    </div>
-    
-    <div class="chat-body" id="chat-body">
-      <div class="msg-wrap ai">
-        <div class="msg-bubble">สวัสดีครับ! ผมคือ <b>AI Advisor</b> ประจำหน้าแรกของระบบ OI Center 👋<br><br>ต้องการให้ผมแนะนำขั้นตอนการทำงาน หรือหาไอเดียสำหรับเรื่องไหน พิมพ์ถามมาได้เลยครับ! (เช่น <i>"ขั้นตอนการทำ FI Theme มีอะไรบ้าง?"</i> หรือ <i>"ขอไอเดียทำ OPL ของออฟฟิศหน่อย"</i>)</div>
-      </div>
-    </div>
-
-    <div class="chat-footer">
-      <input type="text" id="chat-input" class="chat-input" placeholder="พิมพ์คำถามของคุณที่นี่..." onkeypress="handleEnter(event)">
-      <button id="chat-btn" class="chat-send-btn" onclick="sendMessage()">
-        ส่ง
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      </button>
-    </div>
-  </div>
-
 </div>
 
 <script>
@@ -431,88 +331,6 @@ function updateTime(){
 }
 setInterval(updateTime,1000);
 updateTime();
-
-// 🤖 ระบบแชท AI
-function handleEnter(e) {
-    if (e.key === 'Enter') sendMessage();
-}
-
-async function sendMessage() {
-    const inputEl = document.getElementById('chat-input');
-    const btnEl = document.getElementById('chat-btn');
-    const text = inputEl.value.trim();
-    if (!text) return;
-
-    // 1. เพิ่มข้อความ User ลงในหน้าจอ
-    appendMessage('user', text);
-    inputEl.value = '';
-    btnEl.disabled = true;
-
-    // 2. แสดงสถานะกำลังพิมพ์
-    const typingId = appendTypingIndicator();
-
-    // 3. สร้าง Prompt ครอบคำถามเพื่อให้ AI สวมบทบาทที่ปรึกษา TPM
-    const systemPrompt = `คุณคือผู้เชี่ยวชาญระดับสูงด้าน TPM, 5S (AM-OI), OPL, FI Theme, Kaizen และ Makigami ของโรงงาน 
-หน้าที่ของคุณคือให้คำปรึกษา แนะนำไอเดีย และตอบคำถามเชิงปฏิบัติการที่นำไปใช้ได้จริง 
-กรุณาตอบคำถามต่อไปนี้ด้วยภาษาที่เข้าใจง่าย เป็นมิตร มีการใช้ Bullet point หรือเลขข้อเพื่อให้อ่านง่าย:
-
-คำถามจากผู้ใช้งาน: "${text}"`;
-
-    try {
-        // 4. เปลี่ยนมาใช้ POST (เหมือนในหน้า Dashboard เพื่อความเสถียร)
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ type: 'ai_advisor', prompt: systemPrompt })
-        });
-        
-        const data = await response.json();
-        removeElement(typingId);
-
-        if (data.status === 'success') {
-            let formattedText = data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
-            appendMessage('ai', formattedText);
-        } else {
-            appendMessage('ai', `<span style="color:var(--red-600)">❌ ขออภัยครับ เกิดข้อผิดพลาด: ${data.message}</span>`);
-        }
-    } catch(err) {
-        removeElement(typingId);
-        appendMessage('ai', `<span style="color:var(--red-600)">❌ ไม่สามารถเชื่อมต่อกับ AI ได้ในขณะนี้ กรุณาลองใหม่อีกครั้งครับ</span>`);
-    } finally {
-        btnEl.disabled = false;
-        inputEl.focus();
-    }
-}
-
-function appendMessage(sender, text) {
-    const chatBody = document.getElementById('chat-body');
-    const msgWrap = document.createElement('div');
-    msgWrap.className = `msg-wrap ${sender}`;
-    msgWrap.innerHTML = `<div class="msg-bubble">${text}</div>`;
-    chatBody.appendChild(msgWrap);
-    scrollToBottom();
-}
-
-function appendTypingIndicator() {
-    const chatBody = document.getElementById('chat-body');
-    const msgWrap = document.createElement('div');
-    const id = 'typing-' + Date.now();
-    msgWrap.id = id;
-    msgWrap.className = `msg-wrap ai`;
-    msgWrap.innerHTML = `<div class="msg-bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
-    chatBody.appendChild(msgWrap);
-    scrollToBottom();
-    return id;
-}
-
-function removeElement(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
-}
-
-function scrollToBottom() {
-    const chatBody = document.getElementById('chat-body');
-    chatBody.scrollTop = chatBody.scrollHeight;
-}
 </script>
 </body>
 </html>
