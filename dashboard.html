@@ -578,9 +578,9 @@ function processAndRender(){
     const status = sg(r, 'Status', 14) || '';
     const isWaiting = status.includes('รอหัวหน้า');
     
-    let btns = `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=edit" class="btn-edit">✏️ อัปเดต</a>`;
+    let btns = `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=edit" class="btn-edit">แก้ไข</a>`;
     if (isWaiting) {
-      btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-edit" style="background:rgba(12,164,124,0.1); color:var(--teal-700); border-color:rgba(12,164,124,0.3);">✅ หัวหน้าอนุมัติ</a>`;
+      btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-edit" style="background:rgba(12,164,124,0.1); color:var(--teal-700); border-color:rgba(12,164,124,0.3);">รอหัวหน้าอนุมัติ</a>`;
     }
     
     let badgeClass = 'b-pass';
