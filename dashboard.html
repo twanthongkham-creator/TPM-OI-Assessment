@@ -345,9 +345,9 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 // ⚠️ เปลี่ยน URL ของ Google Apps Script ของคุณตรงนี้
 const API_URL='https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-let areaData={},kpiMaster=[],amHistory=[],oplHistory=[],fiHistory=[],kzHistory=[],mkHistory=[];
-let userDataObj={}, approverDataObj={}; // 💡 [เพิ่มแล้ว] ตัวแปรเก็บรายชื่อ
-let chartKPI=null,chartAM=null;
+let areaData={}, kpiMaster=[], amHistory=[], oplHistory=[], fiHistory=[], kzHistory=[], mkHistory=[];
+let userDataObj={}, approverDataObj={}; // เก็บข้อมูลรายชื่อพนักงานและหัวหน้า
+let chartKPI=null, chartAM=null;
 
 let appData={
   am:{key:'am',title:'AM-OI Assessment',target:0,actual:0,wip:0,stepDist:[0,0,0,0,0,0]},
@@ -365,36 +365,31 @@ const IC={
   mk:{c:'#C46200',svg:`<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/><path d="M15 13l-3 3-2-2"/>`}
 };
 const mkSVG=(k,sz=22)=>`<svg width="${sz}" height="${sz}" fill="none" stroke="${IC[k].c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">${IC[k].svg}</svg>`;
-
 const sg=(r,k,i)=>r[k]!==undefined?r[k]:Object.values(r)[i];
 
 async function loadData(){
-  try{
-    // 💡 [เพิ่มแล้ว] ดึงข้อมูล getUsers มาด้วย
+  try {
+    // 💡 ดึงข้อมูลครบทุกส่วนรวมถึงรายชื่อพนักงาน
     const[kR,aR,oR,fR,kzR,mR,uR]=await Promise.all([
-      fetch(API_URL+'?action=getKPIs').then(r=>r.json()),
-      fetch(API_URL+'?action=getHistory').then(r=>r.json()),
-      fetch(API_URL+'?action=getOplHistory').then(r=>r.json()),
-      fetch(API_URL+'?action=getFiHistory').then(r=>r.json()),
-      fetch(API_URL+'?action=getKaizenHistory').then(r=>r.json()),
-      fetch(API_URL+'?action=getMakigamiHistory').then(r=>r.json()),
-      fetch(API_URL+'?action=getUsers').then(r=>r.json()) 
+      fetch(API_URL+'?action=getKPIs&t='+Date.now()).then(r=>r.json()),
+      fetch(API_URL+'?action=getHistory&t='+Date.now()).then(r=>r.json()),
+      fetch(API_URL+'?action=getOplHistory&t='+Date.now()).then(r=>r.json()),
+      fetch(API_URL+'?action=getFiHistory&t='+Date.now()).then(r=>r.json()),
+      fetch(API_URL+'?action=getKaizenHistory&t='+Date.now()).then(r=>r.json()),
+      fetch(API_URL+'?action=getMakigamiHistory&t='+Date.now()).then(r=>r.json()),
+      fetch(API_URL+'?action=getUsers&t='+Date.now()).then(r=>r.json())
     ]);
+
     if(kR.status==='success'){kpiMaster=kR.data||[];kpiMaster.forEach(k=>{let s=sg(k,'System',0),d=sg(k,'Department',2),a=sg(k,'Area',3);if(s==='AM-OI'&&d&&a&&a!=='ALL'&&a!=='All'){if(!areaData[d])areaData[d]=[];if(!areaData[d].includes(a))areaData[d].push(a)}});}
     if(aR.status==='success')amHistory=aR.data||[];
     if(oR.status==='success')oplHistory=oR.data||[];
     if(fR.status==='success')fiHistory=fR.data||[];
     if(kzR&&kzR.status==='success')kzHistory=kzR.data||[];
     if(mR&&mR.status==='success')mkHistory=mR.data||[];
-    
-    // 💡 [เพิ่มแล้ว] เซฟข้อมูลรายชื่อพนักงาน
-    if(uR && uR.status==='success'){
-        userDataObj = uR.users || {};
-        approverDataObj = uR.approvers || {};
-    }
+    if(uR&&uR.status==='success'){ userDataObj=uR.users||{}; approverDataObj=uR.approvers||{}; }
 
-    initFilter();processAndRender();
-  }catch(e){document.getElementById('loader').innerHTML='<span style="color:var(--red-600)">❌ โหลดข้อมูลล้มเหลว</span>';}
+    initFilter(); processAndRender();
+  } catch(e) { document.getElementById('loader').innerHTML='<span style="color:var(--red-600)">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชอีกครั้ง</span>'; }
 }
 
 function initFilter(){
@@ -422,17 +417,17 @@ function processAndRender(){
   document.getElementById('main-dashboard-view').style.display='block';
 
   appData.am.target=0;appData.am.actual=0;appData.am.wip=0;appData.am.stepDist=[0,0,0,0,0,0];
-  const amC=document.getElementById('am-card-container');amC.innerHTML='';
+  const amC=document.getElementById('am-card-container'); amC.innerHTML='';
 
   const amT=kpiMaster.filter(k=>sg(k,'System',0)==='AM-OI'&&(fd==='all'||sg(k,'Department',2)===fd)&&sg(k,'Area',3)!=='ALL'&&sg(k,'Area',3)!=='All');
   appData.am.target=amT.length;
 
   amT.forEach(tr=>{
-    const dept=sg(tr,'Department',2),area=sg(tr,'Area',3),tStep=parseInt(sg(tr,'Target_Value',4))||4;
+    const dept=sg(tr,'Department',2), area=sg(tr,'Area',3), tStep=parseInt(sg(tr,'Target_Value',4))||4;
     const ah=amHistory.filter(h=>(sg(h,'Department',3)===dept||Object.values(h)[3]===dept)&&(sg(h,'Area',4)===area||Object.values(h)[4]===area));
     const approved=ah.filter(h=>sg(h,'Status',23)==='อนุมัติสมบูรณ์'||Object.values(h)[23]==='อนุมัติสมบูรณ์');
     const maxStep=approved.length>0?Math.max(...approved.map(h=>parseInt(sg(h,'AuditRound',6))||0)):0;
-    if(maxStep>=tStep)appData.am.actual++;else if(ah.length>0)appData.am.wip++;
+    if(maxStep>=tStep)appData.am.actual++; else if(ah.length>0)appData.am.wip++;
     appData.am.stepDist[maxStep]++;
 
     let si={},pStep=1,os={text:'ยังไม่เริ่ม',color:'var(--gray-600)',bg:'rgba(0,0,0,0.05)',rank:0};
@@ -444,18 +439,18 @@ function processAndRender(){
     for(let i=1;i<=5;i++){tn+=`<div class="step-node ${si[i].class}">${i}</div>`;if(i<5)tn+=`<div class="step-line ${si[i].rank===4?'line-pass':''}"></div>`;}
     tn+='</div>';
 
-    let acts=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pStep}" class="btn-eval btn-user">ประเมิน (พนักงาน)</a>`;
-    if(os.rank===2)acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pStep}" class="btn-eval btn-lead">ตรวจ (หัวหน้า)</a>`;
-    else if(os.rank===3)acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pStep}" class="btn-eval btn-exec">ตรวจ (ผู้บริหาร)</a>`;
+    let acts=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pStep}" class="btn-eval btn-user">ประเมิน</a>`;
+    if(os.rank===2)acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pStep}" class="btn-eval btn-lead">หัวหน้า</a>`;
+    else if(os.rank===3)acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pStep}" class="btn-eval btn-exec">ผู้บริหาร</a>`;
 
     const hb=maxStep>=tStep?`<span class="kpi-badge-hit">Step ${tStep} ✓</span>`:`<span class="kpi-badge-miss">เป้า Step ${tStep}</span>`;
-    const card=document.createElement('div');card.className='area-card';
+    const card=document.createElement('div'); card.className='area-card';
     card.innerHTML=`<div class="ac-top"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;"><span class="ac-dept">${dept}</span>${hb}</div><span class="ac-status" style="background:${os.bg};color:${os.color};border:1px solid ${os.color}22;">${os.text}</span></div><div class="ac-name">${area}</div>${tn}<div style="margin-top:auto;">${acts}</div>`;
     amC.appendChild(card);
   });
   appData.am.pct=appData.am.target>0?Math.min(Math.round(appData.am.actual/appData.am.target*100),100):0;
 
-  appData.opl.target=getSysTarget('OPL',fd);appData.fi.target=getSysTarget('FI',fd);appData.kz.target=getSysTarget('Kaizen',fd);appData.mk.target=getSysTarget('Makigami',fd);
+  appData.opl.target=getSysTarget('OPL',fd); appData.fi.target=getSysTarget('FI',fd); appData.kz.target=getSysTarget('Kaizen',fd); appData.mk.target=getSysTarget('Makigami',fd);
   const fOpl=fd==='all'?oplHistory:oplHistory.filter(r=>sg(r,'Department',4)===fd);
   const fFi=fd==='all'?fiHistory:fiHistory.filter(r=>sg(r,'Department',4)===fd);
   const fKz=fd==='all'?kzHistory:kzHistory.filter(r=>sg(r,'แผนก',3)===fd);
@@ -466,78 +461,43 @@ function processAndRender(){
   const uMk=[...new Map(fMk.map(i=>[sg(i,'Makigami ID',1),i])).values()];
   appData.opl.actual=uOpl.filter(r=>{const s=sg(r,'Status',14);return s&&s.includes('สมบูรณ์')}).length;
   appData.fi.actual=uFi.filter(r=>{const s=sg(r,'Status',14);return s&&s.includes('สมบูรณ์')}).length;
-  appData.kz.actual=uKz.length;appData.mk.actual=uMk.filter(r=>sg(r,'Status',9)==='Completed').length;
-  appData.opl.wip=uOpl.length-appData.opl.actual;appData.fi.wip=uFi.length-appData.fi.actual;appData.kz.wip=0;appData.mk.wip=uMk.length-appData.mk.actual;
+  appData.kz.actual=uKz.length; appData.mk.actual=uMk.filter(r=>sg(r,'Status',9)==='Completed').length;
+  appData.opl.wip=uOpl.length-appData.opl.actual; appData.fi.wip=uFi.length-appData.fi.actual; appData.kz.wip=0; appData.mk.wip=uMk.length-appData.mk.actual;
   ['opl','fi','kz','mk'].forEach(k=>{appData[k].pct=appData[k].target>0?Math.round((appData[k].actual/appData[k].target)*100):0;});
 
   const defs=[{k:'am',tc:'am',unit:'พื้นที่',did:'am'},{k:'opl',tc:'opl',unit:'เรื่อง',did:'opl'},{k:'fi',tc:'fi',unit:'โครงการ',did:'fi'},{k:'kz',tc:'kz',unit:'เรื่อง',did:'kz'},{k:'mk',tc:'mk',unit:'โครงการ',did:'mk'}];
-  const con=document.getElementById('kpi-cards-container');con.innerHTML='';
+  const con=document.getElementById('kpi-cards-container'); con.innerHTML='';
   defs.forEach(def=>{
     const d=appData[def.k];
     const pct=d.target>0?Math.min(Math.round(d.actual/d.target*100),100):(d.actual>0?100:0);
     const wip=d.wip>0?`<span class="wip-badge">⏳ ${d.wip}</span>`:'';
-    const card=document.createElement('div');card.className=`kpi-card p-${def.tc}`;
+    const card=document.createElement('div'); card.className=`kpi-card p-${def.tc}`;
     card.onclick=()=>openDetail(def.did,d.title);
-    card.innerHTML=`
-      <div class="kpi-icon-row">
-        <div class="kpi-svg-wrap">${mkSVG(def.k)}</div>
-        <span class="hint-arrow">ดูข้อมูล →</span>
-      </div>
-      <div class="kpi-title">${d.title}</div>
-      <div class="kpi-val-row"><span class="kpi-val">${pct}%</span><span class="kpi-unit">(${d.actual}/${d.target})</span></div>
-      <div class="kpi-sub">${def.unit} ${wip}</div>
-      <div class="progress-track"><div class="progress-fill" style="width:0" data-w="${pct}"></div></div>`;
+    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูข้อมูล →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${pct}%</span><span class="kpi-unit">(${d.actual}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${pct}"></div></div>`;
     con.appendChild(card);
   });
 
-  document.querySelectorAll('.kpi-card').forEach((c,i)=>{
-    setTimeout(()=>{c.classList.add('visible');const f=c.querySelector('.progress-fill');if(f)setTimeout(()=>{f.style.width=f.dataset.w+'%'},60);},i*70);
-  });
+  document.querySelectorAll('.kpi-card').forEach((c,i)=>{ setTimeout(()=>{c.classList.add('visible');const f=c.querySelector('.progress-fill');if(f)setTimeout(()=>{f.style.width=f.dataset.w+'%'},60);},i*70); });
 
-  const cf={family:'IBM Plex Sans Thai',size:12},gc='rgba(0,0,0,0.04)';
+  const cf={family:'IBM Plex Sans Thai',size:12}, gc='rgba(0,0,0,0.04)';
   if(chartKPI)chartKPI.destroy();
   chartKPI=new Chart(document.getElementById('kpiBarChart').getContext('2d'),{
     type:'bar',
-    data:{labels:['AM-OI','OPL','FI Theme','Kaizen','Makigami'],datasets:[{data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct].map(v=>Math.round(v)),backgroundColor:['rgba(58,134,255,0.70)','rgba(245,124,0,0.70)','rgba(79,70,229,0.70)','rgba(12,164,124,0.70)','rgba(230,81,0,0.70)'],borderRadius:8,borderSkipped:false}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.parsed.x+'%'}}},scales:{x:{max:100,grid:{color:gc},ticks:{callback:v=>v+'%',font:cf}},y:{grid:{display:false},ticks:{font:cf}}}}
+    data:{labels:['AM-OI','OPL','FI Theme','Kaizen','Makigami'],datasets:[{data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct].map(v=>Math.round(v)),backgroundColor:['#3A86FF','#F57C00','#4F46E5','#0CA47C','#E65100'],borderRadius:8}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{max:100,grid:{color:gc}},y:{grid:{display:false}}}}
   });
   if(chartAM)chartAM.destroy();
   chartAM=new Chart(document.getElementById('amStepChart').getContext('2d'),{
     type:'bar',
-    data:{labels:['Step 0','Step 1','Step 2','Step 3','Step 4','Step 5'],datasets:[{data:appData.am.stepDist,backgroundColor:['rgba(155,165,177,0.55)','rgba(58,134,255,0.65)','rgba(58,134,255,0.65)','rgba(16,210,161,0.65)','rgba(16,210,161,0.65)','rgba(12,164,124,0.88)'],borderRadius:6,borderSkipped:false}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:gc},ticks:{stepSize:1,font:cf}},x:{grid:{display:false},ticks:{font:cf}}}}
+    data:{labels:['Step 0','Step 1','Step 2','Step 3','Step 4','Step 5'],datasets:[{data:appData.am.stepDist,backgroundColor:['#9BA5B1','#3A86FF','#3A86FF','#10D2A1','#10D2A1','#0CA47C'],borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:gc},ticks:{stepSize:1}},x:{grid:{display:false}}}}
   });
 
-  const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;color:var(--gray-400);padding:36px 16px;font-size:13px;">ไม่มีข้อมูล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
-  
-  tbl('opl-table-body',uOpl,7,r=>{
-      let d=sg(r,'วันที่ทำ OPL',2);if(d&&d.includes('T'))d=d.split('T')[0];
-      const s=sg(r,'Status',14);
-      const oplId=sg(r,'OPL ID',1);
-      const btn=`<a href="opl.html?oplId=${encodeURIComponent(oplId)}" class="btn-edit">✏️ อัปเดต</a>`;
-      return`<td>${d}</td><td>${oplId}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ชื่อผู้สอน',10)}</td><td>${s.includes('สมบูรณ์')?`<span class="badge b-pass">✓ ${s}</span>`:`<span class="badge b-wait">⏳ ${s}</span>`}</td><td>${btn}</td>`;
-  });
-  
-  tbl('fi-table-body',uFi,7,r=>{
-      const s=sg(r,'Status',14);
-      const fiId=sg(r,'FI ID',1);
-      const btn=`<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}" class="btn-edit">✏️ อัปเดต</a>`;
-      return`<td>${fiId}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',2)}</td><td><span style="color:var(--indigo-600);font-weight:700">${sg(r,'Step ปัจจุบัน',13)}</span></td><td>${s.includes('สมบูรณ์')?`<span class="badge b-pass">✓ ${s}</span>`:`<span class="badge b-wait">⏳ ${s}</span>`}</td><td>${btn}</td>`;
-  });
-  
-  tbl('kz-table-body',uKz,7,r=>{
-      let d=sg(r,'วันที่ทำ Kaizen',1);if(d&&d.includes('T'))d=d.split('T')[0];
-      const btn=`<a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="btn-edit">🌐 ระบบกลาง</a>`;
-      return`<td>${d}</td><td>${sg(r,'เลขที่ Kaizen',0)}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้ดำเนินการ',7)}</td><td><span class="badge b-pass">${sg(r,'ประเภท',5)}</span></td><td>${btn}</td>`;
-  });
-  
-  tbl('mk-table-body',uMk,7,r=>{
-      const s=sg(r,'Status',9);
-      const bc=s==='Completed'?'b-pass':s==='Delayed'?'b-fail':'b-wait';
-      const mkId=sg(r,'Makigami ID',1);
-      const btn=`<a href="makigami.html?mkId=${encodeURIComponent(mkId)}" class="btn-edit">✏️ อัปเดต</a>`;
-      return`<td>${mkId}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)||sg(r,'ชื่อเรื่อง (Theme Name)',4)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',5)}</td><td><span style="color:var(--orange-600);font-weight:700">${sg(r,'Current Phase',6)}</span></td><td><span class="badge ${bc}">${s}</span></td><td>${btn}</td>`;
-  });
+  const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:30px;color:#9BA5B1;">ไม่มีข้อมูล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
+  tbl('opl-table-body',uOpl,7,r=>`<td>${sg(r,'วันที่ทำ OPL',2)}</td><td>${sg(r,'OPL ID',1)}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ชื่อผู้สอน',10)}</td><td><span class="badge b-pass">${sg(r,'Status',14)}</span></td><td><a href="opl.html?oplId=${encodeURIComponent(sg(r,'OPL ID',1))}" class="btn-edit">✏️ อัปเดต</a></td>`);
+  tbl('fi-table-body',uFi,7,r=>`<td>${sg(r,'FI ID',1)}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',2)}</td><td>${sg(r,'Step ปัจจุบัน',13)}</td><td><span class="badge b-pass">${sg(r,'Status',14)}</span></td><td><a href="fitheme.html?fiId=${encodeURIComponent(sg(r,'FI ID',1))}" class="btn-edit">✏️ อัปเดต</a></td>`);
+  tbl('kz-table-body',uKz,7,r=>`<td>${sg(r,'วันที่ทำ Kaizen',1)}</td><td>${sg(r,'เลขที่ Kaizen',0)}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้ดำเนินการ',7)}</td><td><span class="badge b-pass">${sg(r,'ประเภท',5)}</span></td><td><a href="#" class="btn-edit">🔍 ดู</a></td>`);
+  tbl('mk-table-body',uMk,7,r=>`<td>${sg(r,'Makigami ID',1)}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',5)}</td><td>${sg(r,'Current Phase',6)}</td><td><span class="badge b-pass">${sg(r,'Status',9)}</span></td><td><a href="makigami.html?mkId=${encodeURIComponent(sg(r,'Makigami ID',1))}" class="btn-edit">✏️ อัปเดต</a></td>`);
 }
 
 function openDetail(type,title){
@@ -545,89 +505,28 @@ function openDetail(type,title){
   document.getElementById('detail-view').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
   document.getElementById('detail-page-title').innerHTML=`<div class="detail-icon-badge">${mkSVG(type,24)}</div>${title}`;
-  const fd=document.getElementById('global-filter-dept').value;
-  const q=fd!=='all'?`?dept=${encodeURIComponent(fd)}`:'';
-  const cta={am:`<a href="index.html${q}" class="btn-cta">ทำประเมิน 5ส</a>`,opl:`<a href="opl.html${q}" class="btn-cta">สร้าง OPL ใหม่</a>`,fi:`<a href="fitheme.html${q}" class="btn-cta">สร้างโครงการ FI</a>`,kz:`<a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="btn-cta">เปิดระบบ Kaizen</a>`,mk:`<a href="makigami.html${q}" class="btn-cta">อัปเดต Makigami</a>`};
-  document.getElementById('detail-cta-container').innerHTML=cta[type]||'';
   ['am','opl','fi','kz','mk'].forEach(t=>document.getElementById('detail-'+t).style.display='none');
   document.getElementById('detail-'+type).style.display='block';
 }
 
-function goBackToDashboard(){
-  document.getElementById('detail-view').style.display='none';
-  document.getElementById('main-dashboard-view').style.display='block';
-}
+function goBackToDashboard(){ document.getElementById('detail-view').style.display='none'; document.getElementById('main-dashboard-view').style.display='block'; }
 
-// 🤖 1. ฟังก์ชัน AI Executive Insights (วิเคราะห์ภาพรวม) - แบบ GET
 async function generateInsights() {
     const btn = document.getElementById('btn-ai-analyze');
     const resBox = document.getElementById('ai-result-box');
-    
-    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;display:inline-block;"></span> กำลังวิเคราะห์เชิงลึก...';
-    btn.disabled = true;
-    resBox.style.display = 'block';
-    resBox.innerHTML = '<div style="text-align:center; padding:10px;"><span class="spinner" style="border-top-color:var(--blue-600); width:20px; height:20px; display:inline-block; margin-bottom:10px;"></span><br><span style="color:var(--gray-600);">Gemini AI กำลังวิเคราะห์ข้อมูลเชิงลึก กรุณารอสักครู่...</span></div>';
+    btn.disabled = true; resBox.style.display = 'block'; resBox.innerHTML = 'กำลังวิเคราะห์ข้อมูล...';
 
     const fd = document.getElementById('global-filter-dept').value;
-    const deptText = fd === 'all' ? 'ภาพรวมทั้งโรงงาน (แยกตามแผนก)' : `เฉพาะแผนก ${fd}`;
-
-    let deepDataStr = "";
-    if (fd === 'all') {
-        const depts = Object.keys(areaData).sort();
-        depts.forEach(d => {
-            let d_am_t = getSysTarget('AM-OI', d);
-            let d_am_a = amHistory.filter(h => (sg(h,'Department',3)===d || Object.values(h)[3]===d) && (sg(h,'Status',23)==='อนุมัติสมบูรณ์' || Object.values(h)[23]==='อนุมัติสมบูรณ์')).length;
-            let d_opl_t = getSysTarget('OPL', d);
-            let d_opl_a = [...new Map(oplHistory.filter(r=>sg(r,'Department',4)===d).map(i=>[sg(i,'OPL ID',1),i])).values()].filter(r=>sg(r,'Status',14)&&sg(r,'Status',14).includes('สมบูรณ์')).length;
-            let d_fi_t = getSysTarget('FI', d);
-            let d_fi_a = [...new Map(fiHistory.filter(r=>sg(r,'Department',4)===d).map(i=>[sg(i,'FI ID',1),i])).values()].filter(r=>sg(r,'Status',14)&&sg(r,'Status',14).includes('สมบูรณ์')).length;
-            let d_kz_a = [...new Map(kzHistory.filter(r=>sg(r,'แผนก',3)===d).map(i=>[sg(i,'เลขที่ Kaizen',0),i])).values()].length;
-            let d_mk_a = [...new Map(mkHistory.filter(r=>sg(r,'แผนก',3)===d).map(i=>[sg(i,'Makigami ID',1),i])).values()].filter(r=>sg(r,'Status',9)==='Completed').length;
-            
-            deepDataStr += `- แผนก ${d}: 5ส(${d_am_a}/${d_am_t}), OPL(${d_opl_a}/${d_opl_t}), FI(${d_fi_a}/${d_fi_t}), Kaizen(ส่ง ${d_kz_a}), Makigami(เสร็จ ${d_mk_a})\n`;
-        });
-    } else {
-        deepDataStr = `รายละเอียดงานค้าง (WIP) ของแผนก ${fd}:\n`;
-        deepDataStr += `- 5ส (AM-OI): เป้า ${appData.am.target}, อนุมัติแล้ว ${appData.am.actual}, กำลังทำ ${appData.am.wip} พื้นที่ (รายละเอียด Step: ${appData.am.stepDist.join(', ')})\n`;
-        deepDataStr += `- OPL: เป้า ${appData.opl.target}, เสร็จ ${appData.opl.actual}, ค้างอนุมัติ/กำลังทำ ${appData.opl.wip} เรื่อง\n`;
-        deepDataStr += `- FI Theme: เป้า ${appData.fi.target}, เสร็จ ${appData.fi.actual}, กำลังทำ ${appData.fi.wip} โครงการ\n`;
-        deepDataStr += `- Kaizen: ส่งแล้ว ${appData.kz.actual} เรื่อง (เป้า ${appData.kz.target})\n`;
-        deepDataStr += `- Makigami: เป้า ${appData.mk.target}, เสร็จ ${appData.mk.actual}, กำลังทำ ${appData.mk.wip} โครงการ\n`;
-    }
-
-    const promptText = `คุณคือ "ที่ปรึกษาและนักวิเคราะห์ข้อมูลระดับผู้บริหาร"
-โปรดวิเคราะห์ Performance (KPI) ล่าสุดของ ${deptText}
-
-ข้อมูลดิบ:
-${deepDataStr}
-
-ข้อกำหนดการตอบ:
-1. [ภาพรวม] สรุปสถานการณ์ปัจจุบัน 1-2 บรรทัด
-2. [จุดเด่น] แผนก/ระบบที่ทำผลงานได้ดีเยี่ยม
-3. [จุดคอขวด] แผนก/ระบบที่ "น่าเป็นห่วง" (ระบุชื่อและตัวเลข)
-4. [คำแนะนำผู้บริหาร] Action Plan สั้นๆ 2-3 ข้อ ว่าผู้บริหารควรเข้าไปช่วยเรื่องไหนเป็นอันดับแรก
-
-จัดรูปแบบด้วย Bullet และตัวหนา`;
+    const promptText = `วิเคราะห์ Performance ของโรงงาน ${fd==='all'?'ภาพรวม':'แผนก '+fd} จากข้อมูลสรุป: AM-OI (${appData.am.pct}%), OPL (${appData.opl.pct}%), FI (${appData.fi.pct}%). ให้คำแนะนำผู้บริหาร 3 ข้อสั้นๆ`;
 
     try {
         const response = await fetch(API_URL + '?action=generateAIInsights&prompt=' + encodeURIComponent(promptText));
         const data = await response.json();
-        
-        if (data.status === 'success') {
-            let formattedText = data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
-            resBox.innerHTML = formattedText;
-        } else {
-            resBox.innerHTML = `<div style="color:var(--red-600); text-align:center;">❌ เกิดข้อผิดพลาด: ${data.message}</div>`;
-        }
-    } catch(err) {
-        resBox.innerHTML = `<div style="color:var(--red-600); text-align:center;">❌ เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย</div>`;
-    } finally {
-        btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> วิเคราะห์ข้อมูลเชิงลึกอีกครั้ง';
-        btn.disabled = false;
-    }
+        resBox.innerHTML = data.status==='success' ? data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>') : '❌ เกิดข้อผิดพลาด';
+    } catch(err) { resBox.innerHTML = '❌ เชื่อมต่อ AI ไม่สำเร็จ'; }
+    finally { btn.disabled = false; }
 }
 
-// 🤖 2. ฟังก์ชัน AI Chat Advisor - ส่งผ่าน POST Request (รองรับ Context ยาวๆ ได้สบาย)
 function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 
 async function sendMessage() {
@@ -637,71 +536,26 @@ async function sendMessage() {
     if (!text) return;
 
     appendMessage('user', text);
-    inputEl.value = '';
-    btnEl.disabled = true;
+    inputEl.value = ''; btnEl.disabled = true;
     const typingId = appendTypingIndicator();
 
-    // 💡 GOD MODE: แพ็คข้อมูลดิบ (Raw Data) ทุกอย่างในระบบส่งให้ AI อ่านในเสี้ยววินาที!
-    let dbContext = `
-[ฐานข้อมูลบุคลากรและโครงสร้างองค์กร]
-${JSON.stringify({ พนักงาน: userDataObj, หัวหน้าและผู้บริหาร: approverDataObj })}
+    // 💡 GOD MODE: แพ็ค Raw JSON ทุกอย่างในระบบส่งให้ AI
+    let dbContext = `[โครงสร้างองค์กร] ${JSON.stringify({ พนักงาน: userDataObj, หัวหน้า: approverDataObj })}
+[KPI] ${JSON.stringify(kpiMaster)} [AM-OI] ${JSON.stringify(amHistory)} [OPL] ${JSON.stringify(oplHistory)} [FI] ${JSON.stringify(fiHistory)} [Kaizen] ${JSON.stringify(kzHistory)} [Makigami] ${JSON.stringify(mkHistory)}`;
 
-[เป้าหมาย KPI ระดับโรงงาน]
-${JSON.stringify(kpiMaster)}
-
-[ข้อมูลการประเมิน 5S (AM-OI)]
-${JSON.stringify(amHistory)}
-
-[ฐานข้อมูลคลังความรู้ OPL]
-${JSON.stringify(oplHistory)}
-
-[ฐานข้อมูลโครงการ FI Theme]
-${JSON.stringify(fiHistory)}
-
-[ฐานข้อมูล Kaizen]
-${JSON.stringify(kzHistory)}
-
-[ฐานข้อมูลกระบวนการ Makigami]
-${JSON.stringify(mkHistory)}
-    `;
-
-    // 💡 สร้าง Prompt สั่งการขั้นเด็ดขาด ให้ยึดข้อมูลจาก JSON เป็นหลัก
-    const systemPrompt = `คุณคือ "AI Data Analyst & TPM Advisor" ประจำโรงงาน 
-นี่คือฐานข้อมูลจริงทั้งหมดของระบบ OI Center ในรูปแบบ JSON ที่คุณต้องใช้อ้างอิงในการตอบ:
-
-${dbContext}
-
-กฎเหล็กในการตอบคำถาม:
-1. คุณต้องอ่านและค้นหาคำตอบจากฐานข้อมูล JSON ด้านบน "เท่านั้น" ห้ามแต่งตั้งรายชื่อ ตัวเลข หรือสถานะโครงการขึ้นมาเองเด็ดขาด
-2. หากผู้ใช้ถามถึง "บุคคล" (เช่น นาย A ทำอะไรบ้าง): ให้ค้นหาชื่อของเขาในฐานข้อมูล OPL, FI, Kaizen, Makigami และ AM-OI ทั้งหมด แล้วสรุปผลงานมาให้
-3. หากผู้ใช้ถาม "เชิงวิเคราะห์" (เช่น ใครทำ OPL เยอะสุด, แผนกไหนยังไม่ทำ 5ส): ให้คำนวณและสรุปจากฐานข้อมูลดิบมาตอบ
-4. หากค้นหาข้อมูลไม่พบใน JSON ให้ตอบอย่างสุภาพว่า "ยังไม่มีข้อมูลเรื่องนี้ในระบบฐานข้อมูลครับ"
-5. ใช้ภาษาเป็นกันเอง เป็นมืออาชีพ (มีครับ/ค่ะ) และใช้ Bullet point หรือตัวหนา (Bold) เพื่อให้อ่านง่าย
-
-คำถามจากผู้บริหาร/พนักงาน: "${text}"`;
+    const systemPrompt = `คุณคือ AI Data Advisor ประจำโรงงาน นี่คือข้อมูล JSON ล่าสุด: ${dbContext}
+กฎ: 1.อ้างอิงข้อมูล JSON นี้เท่านั้น 2.ถ้าถามชื่อบุคคลให้หาในทุกตาราง 3.ตอบเป็นภาษาเป็นกันเอง สั้นกระชับ มี Bullet point 4.ถ้าไม่เจอให้บอกว่าไม่พบข้อมูล
+คำถาม: "${text}"`;
 
     try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ type: 'ai_advisor', prompt: systemPrompt })
-        });
-        
+        const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'ai_advisor', prompt: systemPrompt }) });
         const data = await response.json();
         removeElement(typingId);
-
         if (data.status === 'success') {
-            let formattedText = data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
-            appendMessage('ai', formattedText);
-        } else {
-            appendMessage('ai', `<span style="color:var(--red-600)">❌ เกิดข้อผิดพลาด: ${data.message}</span>`);
-        }
-    } catch(err) {
-        removeElement(typingId);
-        appendMessage('ai', `<span style="color:var(--red-600)">❌ เชื่อมต่อ AI ไม่สำเร็จ กรุณาลองใหม่</span>`);
-    } finally {
-        btnEl.disabled = false;
-        inputEl.focus();
-    }
+            appendMessage('ai', data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'));
+        } else { appendMessage('ai', `❌ Error: ${data.message}`); }
+    } catch(err) { removeElement(typingId); appendMessage('ai', `❌ เชื่อมต่อไม่สำเร็จ`); }
+    finally { btnEl.disabled = false; inputEl.focus(); }
 }
 
 function appendMessage(sender, text) {
@@ -710,21 +564,18 @@ function appendMessage(sender, text) {
     msgWrap.className = `msg-wrap ${sender}`;
     msgWrap.innerHTML = `<div class="msg-bubble">${text}</div>`;
     chatBody.appendChild(msgWrap);
-    scrollToBottom();
+    chatBody.scrollTop = chatBody.scrollHeight;
 }
 function appendTypingIndicator() {
     const chatBody = document.getElementById('chat-body');
-    const msgWrap = document.createElement('div');
     const id = 'typing-' + Date.now();
-    msgWrap.id = id;
-    msgWrap.className = `msg-wrap ai`;
+    const msgWrap = document.createElement('div');
+    msgWrap.id = id; msgWrap.className = `msg-wrap ai`;
     msgWrap.innerHTML = `<div class="msg-bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
-    chatBody.appendChild(msgWrap);
-    scrollToBottom();
+    chatBody.appendChild(msgWrap); chatBody.scrollTop = chatBody.scrollHeight;
     return id;
 }
 function removeElement(id) { const el = document.getElementById(id); if (el) el.remove(); }
-function scrollToBottom() { const chatBody = document.getElementById('chat-body'); chatBody.scrollTop = chatBody.scrollHeight; }
 
 loadData();
 </script>
