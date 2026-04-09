@@ -572,7 +572,7 @@ function processAndRender(){
 
   const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:30px;color:#9BA5B1;">ไม่มีข้อมูล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
   
-  // 💡 อัปเดตตาราง OPL: เพิ่มปุ่ม "✅ หัวหน้าอนุมัติ" คู่กับ "✏️ อัปเดต"
+  // 💡 อัปเดตตาราง OPL: เพิ่มปุ่ม "หัวหน้าอนุมัติ" คู่กับ "แก้ไข"
   tbl('opl-table-body',uOpl,7,r=>`
     <td>${sg(r,'วันที่ทำ OPL',2)}</td>
     <td>${sg(r,'OPL ID',1)}</td>
