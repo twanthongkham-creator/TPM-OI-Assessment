@@ -369,6 +369,7 @@ const sg=(r,k,i)=>r[k]!==undefined?r[k]:Object.values(r)[i];
 
 async function loadData(){
   try {
+    // 💡 ป้องกัน Cache ใน Dashboard
     const[kR,aR,oR,fR,kzR,mR,uR]=await Promise.all([
       fetch(API_URL+'?action=getKPIs&t='+Date.now()).then(r=>r.json()),
       fetch(API_URL+'?action=getHistory&t='+Date.now()).then(r=>r.json()),
@@ -400,6 +401,16 @@ function getSysTarget(sys,fd){
   let t=0;kpiMaster.forEach(r=>{let rs=sg(r,'System',0),rd=sg(r,'Department',2),rv=parseInt(sg(r,'Target_Value',4))||0;if(rs&&rs.trim()===sys&&(fd==='all'||(rd&&rd.trim()===fd)))t+=rv;});return t;
 }
 
+function stepLogic(recs){
+  if(!recs.length)return{class:'st-none',text:'ยังไม่เริ่ม',rank:0};
+  const l=recs[recs.length-1],tp=l['AuditorType']||Object.values(l)[7];
+  const ok=(l['PassFail']==='ผ่านเกณฑ์'||l['PassFail']==='Pass'||Object.values(l)[15]==='ผ่านเกณฑ์');
+  if(!ok)return{class:'st-fail',text:'แก้ไข',rank:1};
+  if(tp==='exec')return{class:'st-pass',text:'ผ่านสมบูรณ์',rank:4};
+  if(tp==='lead'||tp==='clead'||tp==='mgr')return{class:'st-wait-exec',text:'รอผู้บริหาร',rank:3};
+  return{class:'st-wait-lead',text:'รอหัวหน้า',rank:2};
+}
+
 function processAndRender(){
   const fd=document.getElementById('global-filter-dept').value;
   document.getElementById('loader').style.display='none';
@@ -420,35 +431,31 @@ function processAndRender(){
     
     appData.am.targetScore += tStep;
     
-    // 💡 1. ระบบคาดเดาอัจฉริยะ หา Step สูงสุดที่มีการอัปเดต
     const maxAttemptedStep = ah.length > 0 ? Math.max(...ah.map(h => parseInt(sg(h,'AuditRound',6))||0)) : 0;
     
-    let maxStep = 0; // จำนวน Step ที่ผ่านสีเขียว 100%
-    let pStep = 1;   // Step ปัจจุบันที่กำลังทำ หรือรอตรวจ
+    let maxStep = 0; 
+    let pStep = 1;   
     let currentStepRecords = [];
     
     if (maxAttemptedStep > 0) {
         const recordsOfMaxAttempt = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === maxAttemptedStep);
-        const l = recordsOfMaxAttempt[recordsOfMaxAttempt.length - 1]; // ข้อมูลล่าสุดของ Step นั้น
+        const l = recordsOfMaxAttempt[recordsOfMaxAttempt.length - 1]; 
         const pf = sg(l, 'PassFail', 15) || Object.values(l)[15];
         const stat = sg(l, 'Status', 23) || Object.values(l)[23];
         
-        // ถ้า Step สูงสุด "อนุมัติสมบูรณ์" แล้ว
         if ((pf === 'ผ่านเกณฑ์' || pf === 'Pass') && stat === 'อนุมัติสมบูรณ์') {
             maxStep = maxAttemptedStep;
             pStep = maxStep === 5 ? 'all' : maxStep + 1;
             currentStepRecords = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === pStep);
         } else {
-            // 💡 ถ้า Step สูงสุดยังไม่สมบูรณ์ (เช่นรอผบร.) แปลว่า Step ก่อนหน้าผ่านไปแล้วแน่ๆ!
             maxStep = maxAttemptedStep - 1;
             pStep = maxAttemptedStep;
             currentStepRecords = recordsOfMaxAttempt;
         }
     }
 
-    // 💡 2. เช็คสถานะปัจจุบันของ Step ที่กำลังทำอยู่
     let highestLevel = 0;
-    let pendingRank = 0; // 0=เริ่มใหม่, 1=ตก, 2=รอหัวหน้า, 3=รอผบร
+    let pendingRank = 0; 
     
     if (pStep !== 'all' && currentStepRecords.length > 0) {
         const l = currentStepRecords[currentStepRecords.length - 1]; 
@@ -456,13 +463,11 @@ function processAndRender(){
         const stat = sg(l, 'Status', 23) || Object.values(l)[23];
         
         if (pf !== 'ผ่านเกณฑ์' && pf !== 'Pass') {
-            pendingRank = 1; // ไม่ผ่าน หรือแก้ไข
+            pendingRank = 1; 
         } else {
-            // เช็คจาก Status จะแม่นยำที่สุด
             if (stat && stat.includes('รอผู้บริหาร')) { highestLevel = 0.7; pendingRank = 3; }
             else if (stat && stat.includes('รอหัวหน้า')) { highestLevel = 0.3; pendingRank = 2; }
             else {
-                // สำรองเผื่อคีย์ Status ผิด ก็มาจับจาก AuditorType แทน
                 const at = sg(l, 'AuditorType', 7) || Object.values(l)[7];
                 if (at === 'lead' || at === 'clead' || at === 'mgr') { highestLevel = 0.7; pendingRank = 3; }
                 else if (at === 'self') { highestLevel = 0.3; pendingRank = 2; }
@@ -470,7 +475,6 @@ function processAndRender(){
         }
     }
     
-    // คิดคะแนนเพื่อทำกราฟ
     let areaScore = maxStep + highestLevel;
     appData.am.actualScore += Math.min(areaScore, tStep); 
 
@@ -479,7 +483,6 @@ function processAndRender(){
     
     appData.am.stepDist[maxStep]++;
 
-    // 💡 3. วาดวงกลม Step (วงไหนเลขน้อยกว่าหรือเท่ากับ maxStep ให้เป็นสีเขียวเลย!)
     let si = {};
     for(let s=1; s<=5; s++) {
         if (s <= maxStep) {
@@ -496,7 +499,6 @@ function processAndRender(){
         }
     }
 
-    // 💡 4. กำหนดป้ายกำกับใหญ่ใน Card
     let os = {};
     if (maxStep === 5) {
          os = {text:'ผ่านครบ 5 Step', color:'#0CA47C', bg:'rgba(12,164,124,0.1)', rank:4};
@@ -569,7 +571,23 @@ function processAndRender(){
   });
 
   const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:30px;color:#9BA5B1;">ไม่มีข้อมูล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
-  tbl('opl-table-body',uOpl,7,r=>`<td>${sg(r,'วันที่ทำ OPL',2)}</td><td>${sg(r,'OPL ID',1)}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ชื่อผู้สอน',10)}</td><td><span class="badge b-pass">${sg(r,'Status',14)}</span></td><td><a href="opl.html?oplId=${encodeURIComponent(sg(r,'OPL ID',1))}" class="btn-edit">✏️ อัปเดต</a></td>`);
+  
+  // 💡 อัปเดตตาราง OPL: เพิ่มปุ่ม "✅ หัวหน้าอนุมัติ" คู่กับ "✏️ อัปเดต"
+  tbl('opl-table-body',uOpl,7,r=>`
+    <td>${sg(r,'วันที่ทำ OPL',2)}</td>
+    <td>${sg(r,'OPL ID',1)}</td>
+    <td>${sg(r,'Department',4)}</td>
+    <td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td>
+    <td>${sg(r,'ชื่อผู้สอน',10)}</td>
+    <td><span class="badge b-pass">${sg(r,'Status',14)}</span></td>
+    <td>
+      <div style="display:flex; gap:6px;">
+        <a href="opl.html?oplId=${encodeURIComponent(sg(r,'OPL ID',1))}&role=edit" class="btn-edit">✏️ อัปเดต</a>
+        <a href="opl.html?oplId=${encodeURIComponent(sg(r,'OPL ID',1))}&role=lead" class="btn-edit" style="background:rgba(12,164,124,0.1); color:var(--teal-700); border-color:rgba(12,164,124,0.3);">✅ หัวหน้าอนุมัติ</a>
+      </div>
+    </td>
+  `);
+  
   tbl('fi-table-body',uFi,7,r=>`<td>${sg(r,'FI ID',1)}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',2)}</td><td>${sg(r,'Step ปัจจุบัน',13)}</td><td><span class="badge b-pass">${sg(r,'Status',14)}</span></td><td><a href="fitheme.html?fiId=${encodeURIComponent(sg(r,'FI ID',1))}" class="btn-edit">✏️ อัปเดต</a></td>`);
   tbl('kz-table-body',uKz,7,r=>`<td>${sg(r,'วันที่ทำ Kaizen',1)}</td><td>${sg(r,'เลขที่ Kaizen',0)}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้ดำเนินการ',7)}</td><td><span class="badge b-pass">${sg(r,'ประเภท',5)}</span></td><td><a href="#" class="btn-edit">🔍 ดู</a></td>`);
   tbl('mk-table-body',uMk,7,r=>`<td>${sg(r,'Makigami ID',1)}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',5)}</td><td>${sg(r,'Current Phase',6)}</td><td><span class="badge b-pass">${sg(r,'Status',9)}</span></td><td><a href="makigami.html?mkId=${encodeURIComponent(sg(r,'Makigami ID',1))}" class="btn-edit">✏️ อัปเดต</a></td>`);
