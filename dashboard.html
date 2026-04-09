@@ -178,12 +178,17 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 
 .btn-cta{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:rgba(10,37,64,0.88);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.15);border-radius:40px;font-family:var(--font);font-size:13px;font-weight:700;color:#fff;text-decoration:none;cursor:pointer;box-shadow:0 4px 18px rgba(10,37,64,0.3),inset 0 1px 0 rgba(255,255,255,0.12);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);letter-spacing:0.2px;}
 .btn-cta:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 28px rgba(10,37,64,0.35)}
-.btn-edit { background: rgba(255,255,255,0.6); color: var(--blue-800); border: 1px solid rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-.btn-edit:hover { background: #fff; color: var(--blue-600); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-color: var(--blue-200); }
+
+/* 💡 ปรับปรุงดีไซน์ปุ่มในตารางให้ชัดเจนยิ่งขึ้น */
+.btn-edit { background: #f8fafc; color: var(--blue-800); border: 1px solid var(--gray-400); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.btn-edit:hover { background: #e2e8f0; color: var(--blue-900); transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.08); border-color: var(--gray-500); }
+
+.btn-approve { background: #f0fdf4; color: var(--teal-700); border: 1px solid var(--teal-400); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.btn-approve:hover { background: #dcfce7; color: var(--teal-800); transform: translateY(-1px); box-shadow: 0 4px 6px rgba(12,164,124,0.15); border-color: var(--teal-500); }
 
 .data-table-wrapper{background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.85);border-radius:var(--r-lg);box-shadow:0 6px 24px rgba(10,37,64,0.07);overflow:hidden}
 .tbl-scroll{overflow-x:auto}
-.data-table{width:100%;border-collapse:collapse;font-size:13px;min-width:740px}
+.data-table{width:100%;border-collapse:collapse;font-size:13px;min-width:740px; table-layout: auto;} /* ปล่อยให้โตตามข้อมูล */
 .data-table thead{background:rgba(255,255,255,0.45)}
 .data-table th{color:var(--blue-900);padding:13px 16px;text-align:left;font-weight:700;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;border-bottom:1px solid rgba(0,0,0,0.05);white-space:nowrap}
 .data-table td{padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.035);color:var(--gray-900);vertical-align:middle}
@@ -367,9 +372,39 @@ const IC={
 const mkSVG=(k,sz=22)=>`<svg width="${sz}" height="${sz}" fill="none" stroke="${IC[k].c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">${IC[k].svg}</svg>`;
 const sg=(r,k,i)=>r[k]!==undefined?r[k]:Object.values(r)[i];
 
+// 💡 1. ฟังก์ชันจัดรูปแบบวันที่ให้เป็น DD/MM/YYYY อย่างอัจฉริยะ
+function formatDateTH(dStr) {
+    if (!dStr) return '-';
+    let str = String(dStr).trim();
+    // รองรับเคสที่ส่งมาจาก Sheet เป็น 2026-02-01 หรือมี Timezone ติดมา
+    if (str.match(/^\d{4}-\d{2}-\d{2}/)) {
+        let parts = str.split('T')[0].split('-');
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    // รองรับเคสที่ส่งมาจาก Sheet เป็น 23/10/2025 หรือ 23/1/2026
+    if (str.includes('/')) {
+        let parts = str.split(' ')[0].split('/');
+        if(parts.length >= 3) {
+            let day = parts[0].padStart(2, '0');
+            let month = parts[1].padStart(2, '0');
+            let year = parts[2].substring(0, 4); // ตัดเวลาทิ้งถ้ามีต่อท้าย
+            return `${day}/${month}/${year}`;
+        }
+    }
+    return str;
+}
+
+// 💡 2. ฟังก์ชันจัดสีป้ายสถานะให้ตาราง
+function getStatusBadge(status) {
+    if (!status) return 'b-wait';
+    if (status.includes('สมบูรณ์') || status.includes('Completed') || status.includes('ผ่าน')) return 'b-pass';
+    if (status.includes('รอ')) return 'b-wait';
+    if (status.includes('ไม่อนุมัติ') || status.includes('ไม่ผ่าน') || status.includes('Delayed') || status.includes('แก้ไข')) return 'b-fail';
+    return 'b-wait';
+}
+
 async function loadData(){
   try {
-    // 💡 ป้องกัน Cache ใน Dashboard
     const[kR,aR,oR,fR,kzR,mR,uR]=await Promise.all([
       fetch(API_URL+'?action=getKPIs&t='+Date.now()).then(r=>r.json()),
       fetch(API_URL+'?action=getHistory&t='+Date.now()).then(r=>r.json()),
@@ -572,7 +607,7 @@ function processAndRender(){
 
   const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:30px;color:#9BA5B1;">ไม่มีข้อมูล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
   
-  // 💡 อัปเดต OPL Table (โชว์ปุ่มหัวหน้าอนุมัติ เฉพาะตอนสถานะรอหัวหน้า)
+  // 💡 ตาราง OPL
   tbl('opl-table-body', uOpl, 7, r => {
     const oplId = sg(r, 'OPL ID', 1);
     const status = sg(r, 'Status', 14) || '';
@@ -580,31 +615,76 @@ function processAndRender(){
     
     let btns = `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=edit" class="btn-edit">แก้ไข</a>`;
     if (isWaiting) {
-      btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-edit" style="background:rgba(12,164,124,0.1); color:var(--teal-700); border-color:rgba(12,164,124,0.3);">รอหัวหน้าอนุมัติ</a>`;
+      btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
     }
     
-    let badgeClass = 'b-pass';
-    if (status.includes('รอ')) badgeClass = 'b-wait';
-    if (status.includes('ไม่อนุมัติ') || status.includes('ไม่ผ่าน')) badgeClass = 'b-fail';
-
-    // จัดการวันที่แสดงผลให้สวยงาม
-    let dateStr = sg(r, 'วันที่ทำ OPL', 2) || '';
-    if (dateStr.includes('T')) dateStr = dateStr.split('T')[0];
-
     return `
-      <td>${dateStr}</td>
-      <td>${oplId}</td>
-      <td>${sg(r, 'Department', 4)}</td>
-      <td><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td>
-      <td>${sg(r, 'ชื่อผู้สอน', 10)}</td>
-      <td><span class="badge ${badgeClass}">${status}</span></td>
-      <td><div style="display:flex; gap:6px;">${btns}</div></td>
+      <td style="white-space:nowrap;">${formatDateTH(sg(r, 'วันที่ทำ OPL', 2))}</td>
+      <td style="white-space:nowrap;">${oplId}</td>
+      <td style="white-space:nowrap;">${sg(r, 'Department', 4)}</td>
+      <td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td>
+      <td style="white-space:nowrap; max-width:150px; overflow:hidden; text-overflow:ellipsis;">${sg(r, 'ชื่อผู้สอน', 10)}</td>
+      <td style="white-space:nowrap;"><span class="badge ${getStatusBadge(status)}">${status}</span></td>
+      <td style="white-space:nowrap;"><div style="display:flex; gap:6px;">${btns}</div></td>
     `;
   });
   
-  tbl('fi-table-body',uFi,7,r=>`<td>${sg(r,'FI ID',1)}</td><td>${sg(r,'Department',4)}</td><td><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',2)}</td><td>${sg(r,'Step ปัจจุบัน',13)}</td><td><span class="badge b-pass">${sg(r,'Status',14)}</span></td><td><a href="fitheme.html?fiId=${encodeURIComponent(sg(r,'FI ID',1))}" class="btn-edit">✏️ อัปเดต</a></td>`);
-  tbl('kz-table-body',uKz,7,r=>`<td>${sg(r,'วันที่ทำ Kaizen',1)}</td><td>${sg(r,'เลขที่ Kaizen',0)}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้ดำเนินการ',7)}</td><td><span class="badge b-pass">${sg(r,'ประเภท',5)}</span></td><td><a href="#" class="btn-edit">🔍 ดู</a></td>`);
-  tbl('mk-table-body',uMk,7,r=>`<td>${sg(r,'Makigami ID',1)}</td><td>${sg(r,'แผนก',3)}</td><td><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',5)}</td><td>${sg(r,'Current Phase',6)}</td><td><span class="badge b-pass">${sg(r,'Status',9)}</span></td><td><a href="makigami.html?mkId=${encodeURIComponent(sg(r,'Makigami ID',1))}" class="btn-edit">✏️ อัปเดต</a></td>`);
+  // 💡 ตาราง FI Theme
+  tbl('fi-table-body', uFi, 7, r => {
+    const fiId = sg(r, 'FI ID', 1);
+    const status = sg(r, 'Status', 14) || '';
+    const isWaiting = status.includes('รอหัวหน้า');
+    
+    let btns = `<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=edit" class="btn-edit">แก้ไข</a>`;
+    if (isWaiting) {
+      btns += `<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
+    }
+
+    return `
+      <td style="white-space:nowrap;">${fiId}</td>
+      <td style="white-space:nowrap;">${sg(r, 'Department', 4)}</td>
+      <td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td>
+      <td style="white-space:nowrap; max-width:150px; overflow:hidden; text-overflow:ellipsis;">${sg(r, 'ผู้รับผิดชอบ', 2)}</td>
+      <td style="white-space:nowrap; color:var(--indigo-600); font-weight:700;">${sg(r, 'Step ปัจจุบัน', 13)}</td>
+      <td style="white-space:nowrap;"><span class="badge ${getStatusBadge(status)}">${status}</span></td>
+      <td style="white-space:nowrap;"><div style="display:flex; gap:6px;">${btns}</div></td>
+    `;
+  });
+
+  // 💡 ตาราง Kaizen
+  tbl('kz-table-body', uKz, 7, r => {
+    return `
+      <td style="white-space:nowrap;">${formatDateTH(sg(r, 'วันที่ทำ Kaizen', 1))}</td>
+      <td style="white-space:nowrap;">${sg(r, 'เลขที่ Kaizen', 0)}</td>
+      <td style="white-space:nowrap;">${sg(r, 'แผนก', 3)}</td>
+      <td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 4)}</strong></td>
+      <td style="white-space:nowrap; max-width:150px; overflow:hidden; text-overflow:ellipsis;">${sg(r, 'ผู้ดำเนินการ', 7)}</td>
+      <td style="white-space:nowrap;"><span class="badge b-pass">${sg(r, 'ประเภท', 5)}</span></td>
+      <td style="white-space:nowrap;"><a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="btn-edit">เปิดดู</a></td>
+    `;
+  });
+
+  // 💡 ตาราง Makigami
+  tbl('mk-table-body', uMk, 7, r => {
+    const mkId = sg(r, 'Makigami ID', 1);
+    const status = sg(r, 'Status', 9) || '';
+    const isWaiting = status.includes('รอหัวหน้า');
+    
+    let btns = `<a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=edit" class="btn-edit">แก้ไข</a>`;
+    if (isWaiting) {
+      btns += `<a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
+    }
+
+    return `
+      <td style="white-space:nowrap;">${mkId}</td>
+      <td style="white-space:nowrap;">${sg(r, 'แผนก', 3)}</td>
+      <td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 4) || sg(r, 'ชื่อเรื่อง (Theme Name)', 4)}</strong></td>
+      <td style="white-space:nowrap; max-width:150px; overflow:hidden; text-overflow:ellipsis;">${sg(r, 'ผู้รับผิดชอบ', 5)}</td>
+      <td style="white-space:nowrap; color:var(--orange-600); font-weight:700;">${sg(r, 'Current Phase', 6)}</td>
+      <td style="white-space:nowrap;"><span class="badge ${getStatusBadge(status)}">${status}</span></td>
+      <td style="white-space:nowrap;"><div style="display:flex; gap:6px;">${btns}</div></td>
+    `;
+  });
 }
 
 function openDetail(type,title){
