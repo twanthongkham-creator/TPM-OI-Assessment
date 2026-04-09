@@ -346,7 +346,7 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 const API_URL='https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 let areaData={}, kpiMaster=[], amHistory=[], oplHistory=[], fiHistory=[], kzHistory=[], mkHistory=[];
-let userDataObj={}, approverDataObj={}; // เก็บข้อมูลรายชื่อพนักงานและหัวหน้า
+let userDataObj={}, approverDataObj={}; 
 let chartKPI=null, chartAM=null;
 
 let appData={
@@ -369,7 +369,6 @@ const sg=(r,k,i)=>r[k]!==undefined?r[k]:Object.values(r)[i];
 
 async function loadData(){
   try {
-    // 💡 ดึงข้อมูลครบทุกส่วนรวมถึงรายชื่อพนักงาน
     const[kR,aR,oR,fR,kzR,mR,uR]=await Promise.all([
       fetch(API_URL+'?action=getKPIs&t='+Date.now()).then(r=>r.json()),
       fetch(API_URL+'?action=getHistory&t='+Date.now()).then(r=>r.json()),
@@ -529,10 +528,19 @@ async function generateInsights() {
 
 function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 
+// 💡 ซ่อมฟังก์ชันแชทและอัปเกรดความเร็ว
 async function sendMessage() {
-    // ... (โค้ดส่วนบนคงเดิม)
+    const inputEl = document.getElementById('chat-input');
+    const btnEl = document.getElementById('chat-btn');
+    const text = inputEl.value.trim();
+    if (!text) return; // ป้องกันการส่งข้อความว่าง
 
-    // 💡 1. บีบอัด JSON ให้เล็กที่สุด (ลดค่าใช้จ่าย Token และเพิ่มความเร็ว)
+    appendMessage('user', text);
+    inputEl.value = ''; 
+    btnEl.disabled = true;
+    const typingId = appendTypingIndicator();
+
+    // 1. บีบอัด JSON ให้เล็กที่สุด (ลดค่าใช้จ่าย Token และเพิ่มความเร็ว)
     const dbContext = JSON.stringify({
         staff: userDataObj,
         kpi: kpiMaster,
@@ -543,7 +551,7 @@ async function sendMessage() {
         mk: mkHistory
     });
 
-    // 💡 2. ปรับ Prompt ให้ดุดันและกระชับ (เน้นผลลัพธ์ ไม่เน้นอธิบายพร่ำเพรื่อ)
+    // 2. ปรับ Prompt ให้ดุดันและกระชับ (เน้นผลลัพธ์ ไม่เน้นอธิบายพร่ำเพรื่อ)
     const systemPrompt = `Context JSON: ${dbContext}
 กฎการตอบ:
 1. คุณคือ AI Advisor ตอบเป็นภาษาไทย "เท่านั้น"
@@ -552,15 +560,27 @@ async function sendMessage() {
 4. หากถามว่าแผนกไหนน่าห่วง: ให้ดูแผนกที่มี % ต่ำสุด หรือ Status เป็น 'ไม่ผ่าน' หรือ 'Delayed'
 5. ถ้าไม่เจอข้อมูลตอบ "ไม่มีข้อมูลครับ"
 คำถาม: "${text}"`;
+
     try {
-        const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'ai_advisor', prompt: systemPrompt }) });
+        const response = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ type: 'ai_advisor', prompt: systemPrompt }) 
+        });
         const data = await response.json();
         removeElement(typingId);
+
         if (data.status === 'success') {
             appendMessage('ai', data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'));
-        } else { appendMessage('ai', `❌ Error: ${data.message}`); }
-    } catch(err) { removeElement(typingId); appendMessage('ai', `❌ เชื่อมต่อไม่สำเร็จ`); }
-    finally { btnEl.disabled = false; inputEl.focus(); }
+        } else { 
+            appendMessage('ai', `❌ Error: ${data.message}`); 
+        }
+    } catch(err) { 
+        removeElement(typingId); 
+        appendMessage('ai', `❌ เชื่อมต่อไม่สำเร็จ`); 
+    } finally { 
+        btnEl.disabled = false; 
+        inputEl.focus(); 
+    }
 }
 
 function appendMessage(sender, text) {
