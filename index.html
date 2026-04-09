@@ -462,9 +462,66 @@ async function loadMasterData() {
     document.getElementById('form-zone').style.display = 'block';
     
     nameSelect.innerHTML = '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
+    
+    // เมื่อโหลด Database เสร็จ จึงจะสั่งให้ดึงค่าจาก URL มาจำลองการคลิก
     prefillFromURL();
+
   } catch(e) {
     document.getElementById('loading-zone').innerHTML = '<div class="loader" style="color:red;">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชหน้าจอ</div>';
+  }
+}
+
+// 🟢 ระบบดักจับ URL Parameter และสั่งให้ฟอร์มทำงานตามลำดับ (Auto-fill Fix)
+function prefillFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const deptParam = urlParams.get('dept');
+  const areaParam = urlParams.get('area');
+  const roleParam = urlParams.get('role');
+  const stepParam = urlParams.get('step');
+
+  // 1. ตั้งค่าประเภทผู้ตรวจ (Role)
+  if (roleParam) {
+      const roleMap = { 'self': 'self', 'lead': 'lead', 'exec': 'exec' };
+      if (roleMap[roleParam]) {
+          document.getElementById('f-auditor').value = roleMap[roleParam];
+          togglePIN();
+      }
+  }
+
+  // 2. ตั้งค่าแผนก (Dept) และสร้าง Dropdown พื้นที่ + รายชื่อ
+  if (deptParam) {
+      document.getElementById('f-dept').value = deptParam;
+      filterAreas();   // สร้างตัวเลือกพื้นที่สำหรับแผนกนี้
+      populateUsers(); // สร้างรายชื่อพนักงานสำหรับแผนกนี้
+
+      // อัตโนมัติเลือกชื่อถ้าเป็นผู้บริหารหรือหัวหน้า (เพราะมักมีคนเดียว)
+      const nameSelect = document.getElementById('f-name');
+      if (nameSelect.options.length > 1 && (roleParam === 'lead' || roleParam === 'exec')) {
+          nameSelect.selectedIndex = 1;
+          autoFillEmail();
+      }
+
+      // 3. ตั้งค่าพื้นที่ (Area)
+      if (areaParam) {
+          document.getElementById('f-area').value = areaParam;
+
+          // 4. ตั้งค่า Step
+          if (stepParam && stepParam !== 'all') {
+              document.getElementById('f-assess-step').value = stepParam;
+              toggleStepCards();
+          }
+
+          // 5. ล็อกช่องถ้าเป็นผู้ตรวจสอบ (ป้องกันการแก้ผิดแผนก)
+          if (roleParam === 'lead' || roleParam === 'exec') {
+              document.getElementById('f-dept').disabled = true;
+              document.getElementById('f-auditor').disabled = true;
+              document.getElementById('f-area').disabled = true;
+              document.getElementById('f-assess-step').disabled = true;
+          }
+
+          // 6. ดึงประวัติและไฟล์รูป (โดยไม่ไปกวนการตั้งค่า UI ด้านบน)
+          loadHistoryForArea(deptParam, areaParam);
+      }
   }
 }
 
@@ -482,7 +539,7 @@ function filterAreas() {
 }
 
 function populateUsers() {
-  const role = document.getElementById('f-role') ? document.getElementById('f-role').value : document.getElementById('f-auditor').value;
+  const role = document.getElementById('f-auditor').value;
   const dept = document.getElementById('f-dept').value;
   const nameSelect = document.getElementById('f-name');
   const emailInput = document.getElementById('f-email');
@@ -644,6 +701,9 @@ function showToast(msg, color, ms) {
 
 function resetForm() {
   if (!confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) return;
+  // ปลดล็อกฟิลด์ทั้งหมด
+  ['f-dept', 'f-auditor', 'f-name', 'f-area', 'f-assess-step'].forEach(id => document.getElementById(id).disabled = false);
+
   document.getElementById('f-dept').value = '';
   document.getElementById('f-name').innerHTML = '<option value="">-- กรุณาเลือกแผนกก่อน --</option>';
   document.getElementById('f-email').value = '';
@@ -670,8 +730,6 @@ function resetForm() {
   document.getElementById('view-files-zone').style.display = 'none';
   document.getElementById('upload-grid').style.display = 'grid';
   document.getElementById('attachment-label').innerHTML = 'แนบหลักฐาน (รูปภาพ และ ไฟล์เอกสาร)';
-  
-  ['f-dept', 'f-auditor', 'f-name', 'f-area', 'f-assess-step'].forEach(id => document.getElementById(id).disabled = false);
 }
 
 function compressImage(file, maxWidth = 1024, quality = 0.7) {
@@ -747,7 +805,7 @@ function renderAttachedFiles(linksStr) {
   });
 }
 
-async function loadHistoryForArea(dept, area, roleParam = null, stepParam = null) {
+async function loadHistoryForArea(dept, area) {
   const histCard = document.getElementById('history-card');
   const histContent = document.getElementById('history-content');
   histCard.style.display = 'block';
@@ -778,48 +836,13 @@ async function loadHistoryForArea(dept, area, roleParam = null, stepParam = null
           });
           html += '</table>'; histContent.innerHTML = html;
           
-          // 🟢 SMART DETECT ROLE & STEP (รองรับลิงก์จาก Email ที่ไม่มี Role)
-          const latestRec = records[records.length - 1];
-          let targetRole = roleParam;
-          let targetStep = stepParam;
+          // 🟢 โชว์ไฟล์แนบเก่าเฉพาะกรณีหัวหน้าและผู้บริหารเข้ามาตรวจ
+          const currentRole = document.getElementById('f-auditor').value;
+          const currentStep = document.getElementById('f-assess-step').value;
           
-          if (!targetRole && latestRec) {
-              const lastType = latestRec['AuditorType'] || Object.values(latestRec)[7];
-              const lastStep = latestRec['AuditRound'] || Object.values(latestRec)[6];
-              
-              if (lastType === 'self') targetRole = 'lead';
-              else if (lastType === 'lead') targetRole = 'exec';
-              else targetRole = 'self';
-              
-              targetStep = lastStep;
-          }
-
-          // ถ้าเป็นหัวหน้าตรวจ ให้ปรับ UI และล็อกช่องต่างๆ ทันที
-          if (targetRole === 'lead' || targetRole === 'exec') {
-              document.getElementById('f-auditor').value = targetRole;
-              if (targetStep && targetStep !== 'all') {
-                  document.getElementById('f-assess-step').value = targetStep;
-              }
-              
-              toggleStepCards();
-              populateUsers();
-              togglePIN();
-              
-              setTimeout(() => {
-                  const nameSelect = document.getElementById('f-name');
-                  if(nameSelect.options.length > 1) { 
-                      nameSelect.selectedIndex = 1; 
-                      autoFillEmail(); 
-                  }
-                  // ล็อกช่องที่ไม่ให้แก้
-                  document.getElementById('f-dept').disabled = true;
-                  document.getElementById('f-auditor').disabled = true;
-                  document.getElementById('f-area').disabled = true;
-                  document.getElementById('f-assess-step').disabled = true;
-              }, 400);
-
-              // 🟢 ดึงรูปจากประวัติมาโชว์แทนช่องอัปโหลด
-              let fileRec = records.slice().reverse().find(r => (r['AuditRound'] || Object.values(r)[6]) == targetStep);
+          if (currentRole === 'lead' || currentRole === 'exec') {
+              const latestRec = records[records.length - 1];
+              let fileRec = records.slice().reverse().find(r => (r['AuditRound'] || Object.values(r)[6]) == currentStep);
               if (!fileRec) fileRec = latestRec;
 
               let fileStr = fileRec['fileLinks'] || fileRec['ไฟล์แนบ'] || Object.values(fileRec)[22] || '';
@@ -827,12 +850,6 @@ async function loadHistoryForArea(dept, area, roleParam = null, stepParam = null
                   fileStr = Object.values(fileRec).find(v => typeof v === 'string' && v.includes('drive.google.com')) || '';
               }
               renderAttachedFiles(fileStr);
-          } else {
-             // สำหรับพนักงาน (self)
-             if (targetStep && targetStep !== 'all') {
-                  document.getElementById('f-assess-step').value = targetStep;
-                  toggleStepCards();
-              }
           }
       }
     }
@@ -843,27 +860,6 @@ function checkAreaHistory() {
   const dept = document.getElementById('f-dept').value;
   const area = document.getElementById('f-area').value;
   if (dept && area) loadHistoryForArea(dept, area); else document.getElementById('history-card').style.display = 'none';
-}
-
-function prefillFromURL() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const deptParam = urlParams.get('dept');
-  const areaParam = urlParams.get('area');
-  const roleParam = urlParams.get('role');
-  const stepParam = urlParams.get('step');
-
-  if (deptParam) {
-    document.getElementById('f-dept').value = deptParam;
-    filterAreas();
-    
-    if (areaParam) {
-      setTimeout(() => {
-        document.getElementById('f-area').value = areaParam;
-        // ปล่อยให้ loadHistoryForArea จัดการทุกอย่างต่อ
-        loadHistoryForArea(deptParam, areaParam, roleParam, stepParam);
-      }, 200);
-    }
-  }
 }
 
 async function handleSubmit() {
