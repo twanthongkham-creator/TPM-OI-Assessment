@@ -420,45 +420,66 @@ function processAndRender(){
     
     appData.am.targetScore += tStep;
     
-    // 💡 1. คำนวณ maxStep สมบูรณ์ (เพื่อใช้อ้างอิงการระบายสีย้อนหลัง)
-    const approved = ah.filter(h => {
-        const pf = sg(h, 'PassFail', 15) || Object.values(h)[15];
-        const stat = sg(h, 'Status', 23) || Object.values(h)[23];
-        return (pf === 'ผ่านเกณฑ์' || pf === 'Pass') && stat === 'อนุมัติสมบูรณ์';
-    });
-    const maxStep = approved.length > 0 ? Math.max(...approved.map(h => parseInt(sg(h,'AuditRound',6))||0)) : 0;
+    // 💡 1. ระบบคาดเดาอัจฉริยะ หา Step สูงสุดที่มีการอัปเดต
+    const maxAttemptedStep = ah.length > 0 ? Math.max(...ah.map(h => parseInt(sg(h,'AuditRound',6))||0)) : 0;
     
-    // 💡 2. เช็คสถานะปัจจุบันของ Step ที่กำลังทำ (หรือรอแก้)
-    let pStep = maxStep === 5 ? 'all' : maxStep + 1;
-    let currentStepRecords = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === pStep);
+    let maxStep = 0; // จำนวน Step ที่ผ่านสีเขียว 100%
+    let pStep = 1;   // Step ปัจจุบันที่กำลังทำ หรือรอตรวจ
+    let currentStepRecords = [];
     
+    if (maxAttemptedStep > 0) {
+        const recordsOfMaxAttempt = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === maxAttemptedStep);
+        const l = recordsOfMaxAttempt[recordsOfMaxAttempt.length - 1]; // ข้อมูลล่าสุดของ Step นั้น
+        const pf = sg(l, 'PassFail', 15) || Object.values(l)[15];
+        const stat = sg(l, 'Status', 23) || Object.values(l)[23];
+        
+        // ถ้า Step สูงสุด "อนุมัติสมบูรณ์" แล้ว
+        if ((pf === 'ผ่านเกณฑ์' || pf === 'Pass') && stat === 'อนุมัติสมบูรณ์') {
+            maxStep = maxAttemptedStep;
+            pStep = maxStep === 5 ? 'all' : maxStep + 1;
+            currentStepRecords = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === pStep);
+        } else {
+            // 💡 ถ้า Step สูงสุดยังไม่สมบูรณ์ (เช่นรอผบร.) แปลว่า Step ก่อนหน้าผ่านไปแล้วแน่ๆ!
+            maxStep = maxAttemptedStep - 1;
+            pStep = maxAttemptedStep;
+            currentStepRecords = recordsOfMaxAttempt;
+        }
+    }
+
+    // 💡 2. เช็คสถานะปัจจุบันของ Step ที่กำลังทำอยู่
     let highestLevel = 0;
     let pendingRank = 0; // 0=เริ่มใหม่, 1=ตก, 2=รอหัวหน้า, 3=รอผบร
     
     if (pStep !== 'all' && currentStepRecords.length > 0) {
         const l = currentStepRecords[currentStepRecords.length - 1]; 
         const pf = sg(l, 'PassFail', 15) || Object.values(l)[15];
-        const at = sg(l, 'AuditorType', 7) || Object.values(l)[7];
+        const stat = sg(l, 'Status', 23) || Object.values(l)[23];
         
         if (pf !== 'ผ่านเกณฑ์' && pf !== 'Pass') {
-            pendingRank = 1; 
+            pendingRank = 1; // ไม่ผ่าน หรือแก้ไข
         } else {
-            if (at === 'self') { highestLevel = 0.3; pendingRank = 2; }
-            else if (at === 'lead' || at === 'clead' || at === 'mgr') { highestLevel = 0.7; pendingRank = 3; }
-            else if (at === 'exec') { highestLevel = 1.0; } // ดักเผื่อไว้
+            // เช็คจาก Status จะแม่นยำที่สุด
+            if (stat && stat.includes('รอผู้บริหาร')) { highestLevel = 0.7; pendingRank = 3; }
+            else if (stat && stat.includes('รอหัวหน้า')) { highestLevel = 0.3; pendingRank = 2; }
+            else {
+                // สำรองเผื่อคีย์ Status ผิด ก็มาจับจาก AuditorType แทน
+                const at = sg(l, 'AuditorType', 7) || Object.values(l)[7];
+                if (at === 'lead' || at === 'clead' || at === 'mgr') { highestLevel = 0.7; pendingRank = 3; }
+                else if (at === 'self') { highestLevel = 0.3; pendingRank = 2; }
+            }
         }
     }
     
-    // คำนวณคะแนนแบบละเอียด (รวม Step ก่อนหน้า + ความคืบหน้าปัจจุบัน)
+    // คิดคะแนนเพื่อทำกราฟ
     let areaScore = maxStep + highestLevel;
-    appData.am.actualScore += Math.min(areaScore, tStep); // ไม่ให้เกินเป้า
+    appData.am.actualScore += Math.min(areaScore, tStep); 
 
     if (maxStep >= tStep) appData.am.actual++; 
     else if (maxStep > 0 || currentStepRecords.length > 0) appData.am.wip++;
     
     appData.am.stepDist[maxStep]++;
 
-    // 💡 3. วาดวงกลม (ถ้า s <= maxStep จะเป็นสีเขียวเสมอ ถึงจะไม่มีเรคคอร์ดใน Sheet ก็ตาม!)
+    // 💡 3. วาดวงกลม Step (วงไหนเลขน้อยกว่าหรือเท่ากับ maxStep ให้เป็นสีเขียวเลย!)
     let si = {};
     for(let s=1; s<=5; s++) {
         if (s <= maxStep) {
@@ -475,7 +496,7 @@ function processAndRender(){
         }
     }
 
-    // 💡 4. กำหนดป้ายสถานะใหญ่
+    // 💡 4. กำหนดป้ายกำกับใหญ่ใน Card
     let os = {};
     if (maxStep === 5) {
          os = {text:'ผ่านครบ 5 Step', color:'#0CA47C', bg:'rgba(12,164,124,0.1)', rank:4};
@@ -490,7 +511,6 @@ function processAndRender(){
     for(let i=1;i<=5;i++){tn+=`<div class="step-node ${si[i].class}">${i}</div>`;if(i<5)tn+=`<div class="step-line ${si[i].rank===4?'line-pass':''}"></div>`;}
     tn+='</div>';
 
-    // 💡 5. สร้างปุ่มให้เหมาะสมกับคนทำงาน
     let acts = `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pStep}" class="btn-eval btn-user">ประเมิน</a>`;
     if(os.rank===2) acts += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pStep}" class="btn-eval btn-lead">หัวหน้า</a>`;
     else if(os.rank===3) acts += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pStep}" class="btn-eval btn-exec">ผู้บริหาร</a>`;
