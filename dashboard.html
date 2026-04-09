@@ -530,38 +530,28 @@ async function generateInsights() {
 function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 
 async function sendMessage() {
-    const inputEl = document.getElementById('chat-input');
-    const btnEl = document.getElementById('chat-btn');
-    const text = inputEl.value.trim();
-    if (!text) return;
+    // ... (โค้ดส่วนบนคงเดิม)
 
-    appendMessage('user', text);
-    inputEl.value = ''; btnEl.disabled = true;
-    const typingId = appendTypingIndicator();
-
-    // 💡 GOD MODE: แพ็ค Raw JSON ทุกอย่างในระบบส่งให้ AI
-    // 💡 บีบอัด JSON ให้เล็กที่สุด (ลบช่องว่าง/บรรทัดใหม่) ก่อนส่งให้ AI
-    let dbContext = JSON.stringify({
-        org: { staff: userDataObj, leads: approverDataObj },
+    // 💡 1. บีบอัด JSON ให้เล็กที่สุด (ลดค่าใช้จ่าย Token และเพิ่มความเร็ว)
+    const dbContext = JSON.stringify({
+        staff: userDataObj,
         kpi: kpiMaster,
         am: amHistory,
         opl: oplHistory,
         fi: fiHistory,
         kz: kzHistory,
         mk: mkHistory
-    }); 
-    // หมายเหตุ: JSON.stringify แบบนี้จะไม่มีช่องว่าง (Whitespace) ทำให้ประหยัด Input Token ได้ประมาณ 20-30%
+    });
 
-    // 💡 ปรับ Prompt ให้ประหยัด Token และตอบจบประโยค
-    const systemPrompt = `คุณคือ AI Data Advisor ประจำโรงงาน ข้อมูล JSON: ${dbContext}
-กฎเหล็ก:
-1. อ้างอิง JSON นี้เท่านั้น ห้ามใช้ความรู้ภายนอก
-2. ตอบแบบ "สรุปประเด็นสำคัญ" เท่านั้น (ห้ามเกิน 5-8 บรรทัด)
-3. ใช้ภาษาเป็นกันเอง สั้นกระชับ ใช้ Bullet point
-4. ห้ามทวนคำถาม ห้ามเกริ่นนำ ให้เข้าเรื่องทันที
-5. ถ้าไม่พบข้อมูลให้ตอบสั้นๆ ว่า "ไม่มีข้อมูลในระบบครับ"
+    // 💡 2. ปรับ Prompt ให้ดุดันและกระชับ (เน้นผลลัพธ์ ไม่เน้นอธิบายพร่ำเพรื่อ)
+    const systemPrompt = `Context JSON: ${dbContext}
+กฎการตอบ:
+1. คุณคือ AI Advisor ตอบเป็นภาษาไทย "เท่านั้น"
+2. วิเคราะห์จากสถานะ (Status) และความสำเร็จ (%) ใน JSON
+3. ตอบสั้นที่สุด (ไม่เกิน 5 บรรทัด) ห้ามเกริ่น ห้ามทวนคำถาม
+4. หากถามว่าแผนกไหนน่าห่วง: ให้ดูแผนกที่มี % ต่ำสุด หรือ Status เป็น 'ไม่ผ่าน' หรือ 'Delayed'
+5. ถ้าไม่เจอข้อมูลตอบ "ไม่มีข้อมูลครับ"
 คำถาม: "${text}"`;
-
     try {
         const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'ai_advisor', prompt: systemPrompt }) });
         const data = await response.json();
