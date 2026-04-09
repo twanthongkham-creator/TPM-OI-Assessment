@@ -83,9 +83,11 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
 .btn{font-family:var(--font);font-size:14px;font-weight:600;padding:12px 28px;border-radius:12px;cursor:pointer;transition:all .2s ease; border:none; box-shadow:0 4px 12px rgba(0,0,0,0.05);}
 .btn-reset{background:#fff;color:var(--gray-600); border:1px solid var(--gray-200);}
 .btn-reset:hover{background:var(--gray-50); transform:translateY(-1px);}
+.btn-reject { background: #FFF0F0; color: #D93838; border: 1px solid #FFCACA; display:none; }
+.btn-reject:hover { background: #FFE0E0; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(217,56,56,0.2); }
 .btn-pri{background:linear-gradient(135deg, var(--orange-400), var(--orange-500));color:#fff;box-shadow:0 4px 16px rgba(245,124,0,0.3);}
 .btn-pri:hover{background:linear-gradient(135deg, #FFA726, #E65100); transform:translateY(-2px); box-shadow:0 6px 20px rgba(245,124,0,0.4);}
-.btn-pri:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.btn-pri:disabled, .btn-reject:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 
 .toast{position:fixed;bottom:2rem;right:2rem;background:rgba(10,37,64,0.9);backdrop-filter:blur(10px);color:#fff;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:500;opacity:0;transform:translateY(20px);transition:all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);pointer-events:none;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
 .toast.show{opacity:1;transform:translateY(0)}
@@ -281,7 +283,8 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
 
     <div class="actions">
       <button class="btn btn-reset" onclick="resetForm()">ล้างข้อมูล</button>
-      <button class="btn btn-pri" id="btn-submit" onclick="handleSubmit()">บันทึก / อนุมัติ OPL</button>
+      <button class="btn btn-reject" id="btn-reject" onclick="handleSubmit('reject')">❌ ไม่อนุมัติ</button>
+      <button class="btn btn-pri" id="btn-submit" onclick="handleSubmit('approve')">บันทึก / อนุมัติ OPL</button>
     </div>
 
   </div>
@@ -289,7 +292,7 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
 <div class="toast" id="toast"></div>
 
 <script>
-// ⚠️ ใส่ลิงก์ Web App URL (ตัวเดียวกันกับ 5ส)
+// ⚠️ ใส่ลิงก์ Web App URL 
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 const imageStore = []; 
@@ -305,8 +308,8 @@ document.getElementById('f-teach-date').valueAsDate = new Date();
 async function initData() {
   try {
     const [uRes, oRes] = await Promise.all([
-      fetch(APPS_SCRIPT_URL + '?action=getUsers').then(r => r.json()),
-      fetch(APPS_SCRIPT_URL + '?action=getOplHistory').then(r => r.json())
+      fetch(APPS_SCRIPT_URL + '?action=getUsers&t=' + Date.now()).then(r => r.json()),
+      fetch(APPS_SCRIPT_URL + '?action=getOplHistory&t=' + Date.now()).then(r => r.json())
     ]);
     
     if(uRes.status === 'success') {
@@ -317,7 +320,6 @@ async function initData() {
        oplHistoryData = oRes.data || [];
     }
     
-    // โหลดเสร็จ ซ่อน Loading แสดง Form
     document.getElementById('loading-zone').style.display = 'none';
     document.getElementById('form-zone').style.display = 'block';
 
@@ -327,16 +329,11 @@ async function initData() {
   }
 }
 
-// 🟢 ระบบดึงข้อมูลจาก Dashboard/Magic Link
+// 🟢 ระบบดึงข้อมูลจาก Dashboard
 function prefillFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const paramOplId = urlParams.get('oplId');
   const roleParam = urlParams.get('role');
-
-  if (roleParam) {
-      document.getElementById('f-role').value = roleParam;
-      togglePIN();
-  }
 
   if (paramOplId && oplHistoryData.length > 0) {
       const record = oplHistoryData.slice().reverse().find(r => (r['OPL ID'] || r['เลขที่ OPL'] || Object.values(r)[1]) === paramOplId);
@@ -356,25 +353,29 @@ function prefillFromURL() {
           document.getElementById('f-result').value = vals[12] || '';
           
           try {
-             if(vals[2]) document.getElementById('f-date').value = new Date(vals[2]).toISOString().split('T')[0];
-             if(vals[9]) document.getElementById('f-teach-date').value = new Date(vals[9]).toISOString().split('T')[0];
+             let d1 = vals[2] || '';
+             if(d1) document.getElementById('f-date').value = d1.includes('T') ? d1.split('T')[0] : d1;
+             
+             let d2 = vals[9] || '';
+             if(d2) document.getElementById('f-teach-date').value = d2.includes('T') ? d2.split('T')[0] : d2;
           } catch(e) {}
           
-          // ล็อกฟิลด์ห้ามแก้เนื้อหา
-          ['f-factory', 'f-dept', 'f-title', 'f-category', 'f-class', 'f-details', 'f-date', 'f-teach-date', 'f-instructor', 'f-learners', 'f-result'].forEach(id => {
-             const el = document.getElementById(id);
-             if(el) el.disabled = true;
-          });
-
-          populateUsers(); 
+          // 💡 ไม่ล็อกข้อมูลอื่นๆ ปล่อยให้หัวหน้าแก้ได้หมด
 
           if (roleParam === 'lead') {
-             setTimeout(() => {
-                const nameSelect = document.getElementById('f-name');
-                if(nameSelect.options.length > 1) { nameSelect.selectedIndex = 1; autoFillEmail(); }
-             }, 300);
-             showToast('โหมดผู้อนุมัติ: กรุณาตรวจสอบและกดอนุมัติ', 'var(--orange-500)', 5000);
+             document.getElementById('f-role').value = 'lead';
+             document.getElementById('f-role').disabled = true; // ล็อกแค่บทบาท
+             togglePIN();
+             document.getElementById('btn-reject').style.display = 'inline-flex'; // เปิดปุ่มไม่อนุมัติ
+             showToast('โหมดผู้อนุมัติ: สามารถแก้ไขข้อมูลก่อนอนุมัติ หรือกดไม่อนุมัติได้', 'var(--orange-500)', 5000);
+          } else if (roleParam === 'edit') {
+             document.getElementById('f-role').value = 'self';
+             document.getElementById('f-role').disabled = true;
+             togglePIN();
+             showToast('โหมดแก้ไขข้อมูล', 'var(--blue-500)', 3000);
           }
+          
+          populateUsers(); // ดึงรายชื่อให้กดเลือกเองตามปกติ
 
           // แสดงไฟล์แนบ
           const fileStr = vals[13] || ''; 
@@ -434,7 +435,7 @@ function populateUsers() {
     if (approverData[dept] && approverData[dept].lead && approverData[dept].lead.name) {
       const u = approverData[dept].lead;
       const opt = document.createElement('option');
-      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = `(หัวหน้า) ${u.name}`;
+      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = `${u.name}`;
       nameSelect.appendChild(opt);
     }
   }
@@ -449,7 +450,7 @@ function autoFillEmail() {
 function togglePIN() {
   const role = document.getElementById('f-role').value;
   document.getElementById('pin-box').style.display = (role === 'lead') ? 'block' : 'none';
-  document.getElementById('btn-submit').textContent = (role === 'lead') ? 'ตรวจสอบและอนุมัติ OPL' : 'บันทึก OPL (รออนุมัติ)';
+  document.getElementById('btn-submit').textContent = (role === 'lead') ? 'บันทึก / อนุมัติ OPL' : 'บันทึกแบบฟอร์ม OPL';
 }
 
 function addImages(fl) {
@@ -520,10 +521,7 @@ function showToast(msg, color, ms) {
 function resetForm() {
   if (!confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) return;
   
-  ['f-factory', 'f-dept', 'f-title', 'f-category', 'f-class', 'f-details', 'f-date', 'f-teach-date', 'f-instructor', 'f-learners', 'f-result'].forEach(id => {
-      const el = document.getElementById(id);
-      if(el) { el.disabled = false; el.value = ''; }
-  });
+  document.querySelectorAll('input[type="text"], input[type="date"], select, textarea').forEach(el => el.value = '');
 
   document.getElementById('f-year').value = '2026';
   document.getElementById('f-role').value = 'self';
@@ -569,7 +567,8 @@ function fileToBase64(file) {
   });
 }
 
-async function handleSubmit() {
+// 💡 เพิ่ม Parameter actionType (ค่า Default คือ approve)
+async function handleSubmit(actionType = 'approve') {
   const role = document.getElementById('f-role').value;
   const pin = document.getElementById('f-pin').value;
   
@@ -593,7 +592,9 @@ async function handleSubmit() {
   }
 
   const btn = document.getElementById('btn-submit');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังบันทึกข้อมูล...';
+  const btnRej = document.getElementById('btn-reject');
+  btn.disabled = true; btnRej.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>กำลังบันทึก...';
 
   const filesData = [];
   if (role === 'self') {
@@ -608,6 +609,7 @@ async function handleSubmit() {
   const payload = {
     type: 'opl', 
     role: role,
+    action: actionType, // 💡 ส่ง Action แจ้ง Backend (approve หรือ reject)
     oplId: document.getElementById('f-opl-id').value,
     oplDate: date,
     factory: fac,
@@ -626,11 +628,16 @@ async function handleSubmit() {
 
   try {
     await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
-    showToast(role === 'lead' ? 'อนุมัติ OPL สำเร็จ!' : 'บันทึก OPL และส่งให้หัวหน้าแล้ว!', '#0CA47C', 4000);
+    
+    let msg = 'บันทึก OPL สำเร็จ!';
+    if (role === 'lead') msg = actionType === 'reject' ? 'บันทึกสถานะ "ไม่อนุมัติ" เรียบร้อยแล้ว' : 'อนุมัติ OPL สำเร็จ!';
+    
+    showToast(msg, actionType === 'reject' ? '#D93838' : '#0CA47C', 4000);
     setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
   } catch (err) {
     showToast('เกิดข้อผิดพลาด: ' + err.message, '#D93838', 5000);
-    btn.disabled = false; btn.textContent = role === 'lead' ? 'ตรวจสอบและอนุมัติ OPL' : 'ส่งแบบฟอร์ม OPL';
+    btn.disabled = false; btnRej.disabled = false;
+    btn.textContent = role === 'lead' ? 'บันทึก / อนุมัติ OPL' : 'ส่งแบบฟอร์ม OPL';
   }
 }
 
