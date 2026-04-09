@@ -405,28 +405,36 @@ function getStatusBadge(status) {
 
 async function loadData(){
   try {
-    const[kR,aR,oR,fR,kzR,mR,uR]=await Promise.all([
-      fetch(API_URL+'?action=getKPIs&t='+Date.now()).then(r=>r.json()),
-      fetch(API_URL+'?action=getHistory&t='+Date.now()).then(r=>r.json()),
-      fetch(API_URL+'?action=getOplHistory&t='+Date.now()).then(r=>r.json()),
-      fetch(API_URL+'?action=getFiHistory&t='+Date.now()).then(r=>r.json()),
-      fetch(API_URL+'?action=getKaizenHistory&t='+Date.now()).then(r=>r.json()),
-      fetch(API_URL+'?action=getMakigamiHistory&t='+Date.now()).then(r=>r.json()),
-      fetch(API_URL+'?action=getUsers&t='+Date.now()).then(r=>r.json())
-    ]);
+    // 💡 ยิง API แค่เส้นเดียวเพื่อดึงข้อมูลทุกหน้า ทำให้โหลดไวขึ้นมหาศาล!
+    const response = await fetch(API_URL + '?action=getAllDashboardData&t=' + Date.now());
+    const data = await response.json();
 
-    if(kR.status==='success'){kpiMaster=kR.data||[];kpiMaster.forEach(k=>{let s=sg(k,'System',0),d=sg(k,'Department',2),a=sg(k,'Area',3);if(s==='AM-OI'&&d&&a&&a!=='ALL'&&a!=='All'){if(!areaData[d])areaData[d]=[];if(!areaData[d].includes(a))areaData[d].push(a)}});}
-    if(aR.status==='success')amHistory=aR.data||[];
-    if(oR.status==='success')oplHistory=oR.data||[];
-    if(fR.status==='success')fiHistory=fR.data||[];
-    if(kzR&&kzR.status==='success')kzHistory=kzR.data||[];
-    if(mR&&mR.status==='success')mkHistory=mR.data||[];
-    if(uR&&uR.status==='success'){ userDataObj=uR.users||{}; approverDataObj=uR.approvers||{}; }
+    if(data.status === 'success'){
+      kpiMaster = data.kpi || [];
+      kpiMaster.forEach(k => {
+        let s = sg(k,'System',0), d = sg(k,'Department',2), a = sg(k,'Area',3);
+        if(s === 'AM-OI' && d && a && a !== 'ALL' && a !== 'All'){
+          if(!areaData[d]) areaData[d] = [];
+          if(!areaData[d].includes(a)) areaData[d].push(a);
+        }
+      });
+      
+      // แมปข้อมูลจากก้อน JSON ใหญ่ที่รับมา
+      amHistory = data.am || [];
+      oplHistory = data.opl || [];
+      fiHistory = data.fi || [];
+      kzHistory = data.kz || [];
+      mkHistory = data.mk || [];
+      userDataObj = data.users || {}; 
+      approverDataObj = data.approvers || {};
+    }
 
-    initFilter(); processAndRender();
-  } catch(e) { document.getElementById('loader').innerHTML='<span style="color:var(--red-600)">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชอีกครั้ง</span>'; }
+    initFilter(); 
+    processAndRender();
+  } catch(e) { 
+    document.getElementById('loader').innerHTML = '<span style="color:var(--red-600)">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชอีกครั้ง</span>'; 
+  }
 }
-
 function initFilter(){
   const s=document.getElementById('global-filter-dept');
   Object.keys(areaData).sort().forEach(d=>{const o=document.createElement('option');o.value=d;o.innerText='แผนก '+d;s.appendChild(o);});
