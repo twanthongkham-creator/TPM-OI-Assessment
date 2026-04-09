@@ -540,11 +540,26 @@ async function sendMessage() {
     const typingId = appendTypingIndicator();
 
     // 💡 GOD MODE: แพ็ค Raw JSON ทุกอย่างในระบบส่งให้ AI
-    let dbContext = `[โครงสร้างองค์กร] ${JSON.stringify({ พนักงาน: userDataObj, หัวหน้า: approverDataObj })}
-[KPI] ${JSON.stringify(kpiMaster)} [AM-OI] ${JSON.stringify(amHistory)} [OPL] ${JSON.stringify(oplHistory)} [FI] ${JSON.stringify(fiHistory)} [Kaizen] ${JSON.stringify(kzHistory)} [Makigami] ${JSON.stringify(mkHistory)}`;
+    // 💡 บีบอัด JSON ให้เล็กที่สุด (ลบช่องว่าง/บรรทัดใหม่) ก่อนส่งให้ AI
+    let dbContext = JSON.stringify({
+        org: { staff: userDataObj, leads: approverDataObj },
+        kpi: kpiMaster,
+        am: amHistory,
+        opl: oplHistory,
+        fi: fiHistory,
+        kz: kzHistory,
+        mk: mkHistory
+    }); 
+    // หมายเหตุ: JSON.stringify แบบนี้จะไม่มีช่องว่าง (Whitespace) ทำให้ประหยัด Input Token ได้ประมาณ 20-30%
 
-    const systemPrompt = `คุณคือ AI Data Advisor ประจำโรงงาน นี่คือข้อมูล JSON ล่าสุด: ${dbContext}
-กฎ: 1.อ้างอิงข้อมูล JSON นี้เท่านั้น 2.ถ้าถามชื่อบุคคลให้หาในทุกตาราง 3.ตอบเป็นภาษาเป็นกันเอง สั้นกระชับ มี Bullet point 4.ถ้าไม่เจอให้บอกว่าไม่พบข้อมูล
+    // 💡 ปรับ Prompt ให้ประหยัด Token และตอบจบประโยค
+    const systemPrompt = `คุณคือ AI Data Advisor ประจำโรงงาน ข้อมูล JSON: ${dbContext}
+กฎเหล็ก:
+1. อ้างอิง JSON นี้เท่านั้น ห้ามใช้ความรู้ภายนอก
+2. ตอบแบบ "สรุปประเด็นสำคัญ" เท่านั้น (ห้ามเกิน 5-8 บรรทัด)
+3. ใช้ภาษาเป็นกันเอง สั้นกระชับ ใช้ Bullet point
+4. ห้ามทวนคำถาม ห้ามเกริ่นนำ ให้เข้าเรื่องทันที
+5. ถ้าไม่พบข้อมูลให้ตอบสั้นๆ ว่า "ไม่มีข้อมูลในระบบครับ"
 คำถาม: "${text}"`;
 
     try {
