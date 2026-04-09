@@ -400,16 +400,6 @@ function getSysTarget(sys,fd){
   let t=0;kpiMaster.forEach(r=>{let rs=sg(r,'System',0),rd=sg(r,'Department',2),rv=parseInt(sg(r,'Target_Value',4))||0;if(rs&&rs.trim()===sys&&(fd==='all'||(rd&&rd.trim()===fd)))t+=rv;});return t;
 }
 
-function stepLogic(recs){
-  if(!recs.length)return{class:'st-none',text:'ยังไม่เริ่ม',rank:0};
-  const l=recs[recs.length-1],tp=l['AuditorType']||Object.values(l)[7];
-  const ok=(l['PassFail']==='ผ่านเกณฑ์'||l['PassFail']==='Pass'||Object.values(l)[15]==='ผ่านเกณฑ์');
-  if(!ok)return{class:'st-fail',text:'แก้ไข',rank:1};
-  if(tp==='exec')return{class:'st-pass',text:'ผ่านสมบูรณ์',rank:4};
-  if(tp==='lead'||tp==='clead'||tp==='mgr')return{class:'st-wait-exec',text:'รอผู้บริหาร',rank:3};
-  return{class:'st-wait-lead',text:'รอหัวหน้า',rank:2};
-}
-
 function processAndRender(){
   const fd=document.getElementById('global-filter-dept').value;
   document.getElementById('loader').style.display='none';
@@ -430,49 +420,86 @@ function processAndRender(){
     
     appData.am.targetScore += tStep;
     
-    let areaScore = 0;
-    if(ah.length > 0) {
-        const maxAttemptedStep = Math.max(...ah.map(h=>parseInt(sg(h,'AuditRound',6))||0));
-        const maxStepRecords = ah.filter(h=>(parseInt(sg(h,'AuditRound',6))||0)===maxAttemptedStep);
+    // 💡 1. คำนวณ maxStep สมบูรณ์ (เพื่อใช้อ้างอิงการระบายสีย้อนหลัง)
+    const approved = ah.filter(h => {
+        const pf = sg(h, 'PassFail', 15) || Object.values(h)[15];
+        const stat = sg(h, 'Status', 23) || Object.values(h)[23];
+        return (pf === 'ผ่านเกณฑ์' || pf === 'Pass') && stat === 'อนุมัติสมบูรณ์';
+    });
+    const maxStep = approved.length > 0 ? Math.max(...approved.map(h => parseInt(sg(h,'AuditRound',6))||0)) : 0;
+    
+    // 💡 2. เช็คสถานะปัจจุบันของ Step ที่กำลังทำ (หรือรอแก้)
+    let pStep = maxStep === 5 ? 'all' : maxStep + 1;
+    let currentStepRecords = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === pStep);
+    
+    let highestLevel = 0;
+    let pendingRank = 0; // 0=เริ่มใหม่, 1=ตก, 2=รอหัวหน้า, 3=รอผบร
+    
+    if (pStep !== 'all' && currentStepRecords.length > 0) {
+        const l = currentStepRecords[currentStepRecords.length - 1]; 
+        const pf = sg(l, 'PassFail', 15) || Object.values(l)[15];
+        const at = sg(l, 'AuditorType', 7) || Object.values(l)[7];
         
-        let highestLevel = 0;
-        maxStepRecords.forEach(r => {
-            const pf = sg(r, 'PassFail', 15) || Object.values(r)[15];
-            const at = sg(r, 'AuditorType', 7) || Object.values(r)[7];
-            if(pf === 'ผ่านเกณฑ์' || pf === 'Pass') {
-                if(at === 'exec') highestLevel = Math.max(highestLevel, 1.0);
-                else if(at === 'lead' || at === 'clead' || at === 'mgr') highestLevel = Math.max(highestLevel, 0.7);
-                else if(at === 'self') highestLevel = Math.max(highestLevel, 0.3);
-            }
-        });
-        areaScore = Math.max(0, (maxAttemptedStep - 1) + highestLevel);
-        appData.am.stepDist[maxAttemptedStep]++;
+        if (pf !== 'ผ่านเกณฑ์' && pf !== 'Pass') {
+            pendingRank = 1; 
+        } else {
+            if (at === 'self') { highestLevel = 0.3; pendingRank = 2; }
+            else if (at === 'lead' || at === 'clead' || at === 'mgr') { highestLevel = 0.7; pendingRank = 3; }
+            else if (at === 'exec') { highestLevel = 1.0; } // ดักเผื่อไว้
+        }
     }
     
-    appData.am.actualScore += Math.min(areaScore, tStep);
+    // คำนวณคะแนนแบบละเอียด (รวม Step ก่อนหน้า + ความคืบหน้าปัจจุบัน)
+    let areaScore = maxStep + highestLevel;
+    appData.am.actualScore += Math.min(areaScore, tStep); // ไม่ให้เกินเป้า
 
-    const approved=ah.filter(h=>(sg(h,'Status',23)||Object.values(h)[23])==='อนุมัติสมบูรณ์');
-    const maxStep=approved.length>0?Math.max(...approved.map(h=>parseInt(sg(h,'AuditRound',6))||0)):0;
-    if(maxStep>=tStep)appData.am.actual++; else if(ah.length>0)appData.am.wip++;
+    if (maxStep >= tStep) appData.am.actual++; 
+    else if (maxStep > 0 || currentStepRecords.length > 0) appData.am.wip++;
+    
+    appData.am.stepDist[maxStep]++;
 
-    let si={},pStep=1,os={text:'ยังไม่เริ่ม',color:'var(--gray-600)',bg:'rgba(0,0,0,0.05)',rank:0};
-    for(let s=1;s<=5;s++){const r=ah.filter(x=>(sg(x,'AuditRound',6)||Object.values(x)[6])==s);si[s]=stepLogic(r);}
-    if(maxStep===5){os={text:'ผ่านครบ 5 Step',color:'#0CA47C',bg:'rgba(12,164,124,0.1)',rank:4};pStep='all';}
-    else{for(let s=1;s<=5;s++){const st=si[s];if(st.rank===0){os={text:`รอตรวจ Step ${s}`,color:'var(--blue-800)',bg:'rgba(58,134,255,0.08)',rank:0};pStep=s;break;}else if(st.rank===1){os={text:`แก้ไข Step ${s}`,color:'var(--red-600)',bg:'rgba(217,56,56,0.08)',rank:1};pStep=s;break;}else if(st.rank===2){os={text:`รอ หน. Step ${s}`,color:'#fff',bg:'rgba(245,124,0,0.78)',rank:2};pStep=s;break;}else if(st.rank===3){os={text:`รอ ผบร. Step ${s}`,color:'#fff',bg:'rgba(30,96,145,0.78)',rank:3};pStep=s;break;}}}
+    // 💡 3. วาดวงกลม (ถ้า s <= maxStep จะเป็นสีเขียวเสมอ ถึงจะไม่มีเรคคอร์ดใน Sheet ก็ตาม!)
+    let si = {};
+    for(let s=1; s<=5; s++) {
+        if (s <= maxStep) {
+            si[s] = {class:'st-pass', text:'ผ่านสมบูรณ์', rank:4};
+        } else if (s === pStep) {
+            if (currentStepRecords.length === 0) si[s] = {class:'st-none', text:'ยังไม่เริ่ม', rank:0};
+            else {
+                if (pendingRank === 1) si[s] = {class:'st-fail', text:'แก้ไข', rank:1};
+                else if (pendingRank === 2) si[s] = {class:'st-wait-lead', text:'รอหัวหน้า', rank:2};
+                else if (pendingRank === 3) si[s] = {class:'st-wait-exec', text:'รอผู้บริหาร', rank:3};
+            }
+        } else {
+            si[s] = {class:'st-none', text:'ยังไม่เริ่ม', rank:0};
+        }
+    }
+
+    // 💡 4. กำหนดป้ายสถานะใหญ่
+    let os = {};
+    if (maxStep === 5) {
+         os = {text:'ผ่านครบ 5 Step', color:'#0CA47C', bg:'rgba(12,164,124,0.1)', rank:4};
+    } else {
+         if (currentStepRecords.length === 0) os = {text:`รอประเมิน Step ${pStep}`, color:'var(--blue-800)', bg:'rgba(58,134,255,0.08)', rank:0};
+         else if (pendingRank === 1) os = {text:`แก้ไข Step ${pStep}`, color:'var(--red-600)', bg:'rgba(217,56,56,0.08)', rank:1};
+         else if (pendingRank === 2) os = {text:`รอ หน. Step ${pStep}`, color:'#fff', bg:'rgba(245,124,0,0.78)', rank:2};
+         else if (pendingRank === 3) os = {text:`รอ ผบร. Step ${pStep}`, color:'#fff', bg:'rgba(30,96,145,0.78)', rank:3};
+    }
 
     let tn='<div class="step-tracker">';
     for(let i=1;i<=5;i++){tn+=`<div class="step-node ${si[i].class}">${i}</div>`;if(i<5)tn+=`<div class="step-line ${si[i].rank===4?'line-pass':''}"></div>`;}
     tn+='</div>';
 
-    let acts=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pStep}" class="btn-eval btn-user">ประเมิน</a>`;
-    if(os.rank===2)acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pStep}" class="btn-eval btn-lead">หัวหน้า</a>`;
-    else if(os.rank===3)acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pStep}" class="btn-eval btn-exec">ผู้บริหาร</a>`;
+    // 💡 5. สร้างปุ่มให้เหมาะสมกับคนทำงาน
+    let acts = `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pStep}" class="btn-eval btn-user">ประเมิน</a>`;
+    if(os.rank===2) acts += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pStep}" class="btn-eval btn-lead">หัวหน้า</a>`;
+    else if(os.rank===3) acts += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pStep}" class="btn-eval btn-exec">ผู้บริหาร</a>`;
 
     let areaPercent = Math.min(Math.round((areaScore / tStep) * 100), 100);
-    const hb=maxStep>=tStep?`<span class="kpi-badge-hit">Step ${tStep} ✓</span>`:`<span class="kpi-badge-miss">เป้า Step ${tStep} (${areaPercent}%)</span>`;
+    const hb = maxStep >= tStep ? `<span class="kpi-badge-hit">Step ${tStep} ✓</span>` : `<span class="kpi-badge-miss">เป้า Step ${tStep} (${areaPercent}%)</span>`;
     
     const card=document.createElement('div'); card.className='area-card';
-    card.innerHTML=`<div class="ac-top"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;"><span class="ac-dept">${dept}</span>${hb}</div><span class="ac-status" style="background:${os.bg};color:${os.color};border:1px solid ${os.color}22;">${os.text}</span></div><div class="ac-name">${area}</div>${tn}<div style="margin-top:auto;">${acts}</div>`;
+    card.innerHTML=`<div class="ac-top"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;"><span class="ac-dept">${dept}</span>${hb}</div><span class="ac-status" style="background:${os.bg};color:${os.color};border:1px solid ${os.color}22;">${os.text}</span></div><div class="ac-name">${area}</div>${tn}<div style="margin-top:auto;display:flex;gap:6px;flex-wrap:wrap;">${acts}</div>`;
     amC.appendChild(card);
   });
   
