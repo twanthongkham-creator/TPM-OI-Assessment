@@ -10,13 +10,13 @@
 :root {
   --blue-900:#0A2540; --blue-800:#113A5D; --blue-600:#1E6091; --blue-400:#3A86FF;
   --teal-700:#087A5C; --teal-600:#0CA47C; --teal-500:#14B8A6; --teal-400:#10D2A1;
-  --red-600:#D93838;
+  --red-600:#EF4444;
   --orange-700:#C46200; --orange-600:#E65100; --orange-500:#F57C00;
   --indigo-700:#3730A3; --indigo-600:#4F46E5;
   --gray-900:#1A1C1E; --gray-600:#505A64; --gray-400:#9BA5B1; --gray-200:#D9E2EC;
   --font:'IBM Plex Sans Thai',sans-serif;
-  --blur:blur(28px) saturate(200%);
-  --r-lg:22px;
+  --blur:blur(30px) saturate(200%);
+  --r-lg:26px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -25,23 +25,23 @@ body{
   background:linear-gradient(145deg,#c8d9ec 0%,#d4e8e2 35%,#dde0ee 65%,#e8ddd6 100%);
   background-attachment:fixed; color:var(--gray-900); padding-bottom:80px; overflow-x:hidden;
 }
-body::before,body::after{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(90px);opacity:0.45}
-body::before{width:700px;height:700px;background:radial-gradient(circle,rgba(58,134,255,0.28) 0%,transparent 70%);top:-180px;left:-160px;animation:b1 20s ease-in-out infinite alternate}
-body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,164,124,0.22) 0%,transparent 70%);bottom:-120px;right:-120px;animation:b2 25s ease-in-out infinite alternate}
+body::before,body::after{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(100px);opacity:0.5}
+body::before{width:700px;height:700px;background:radial-gradient(circle,rgba(58,134,255,0.3) 0%,transparent 70%);top:-180px;left:-160px;animation:b1 20s ease-in-out infinite alternate}
+body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,164,124,0.25) 0%,transparent 70%);bottom:-120px;right:-120px;animation:b2 25s ease-in-out infinite alternate}
 @keyframes b1{to{transform:translate(100px,80px) scale(1.15)}}
 @keyframes b2{to{transform:translate(-80px,-60px) scale(0.88)}}
 
 .wrap{max-width:1160px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
 
+/* 🍎 Liquid Glass Style (iOS Inspired) */
 .glass{
-  background:rgba(255,255,255,0.52);
+  background:rgba(255,255,255,0.65);
   backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
-  border:1px solid rgba(255,255,255,0.82);
-  border-bottom-color:rgba(255,255,255,0.28);border-right-color:rgba(255,255,255,0.28);
-  box-shadow:0 8px 32px rgba(10,37,64,0.09),inset 0 1px 0 rgba(255,255,255,0.75);
+  border:1px solid rgba(255,255,255,0.9);
+  border-bottom-color:rgba(255,255,255,0.4);border-right-color:rgba(255,255,255,0.4);
+  box-shadow:0 12px 40px rgba(10,37,64,0.08),inset 0 1px 0 rgba(255,255,255,1);
   border-radius:var(--r-lg);position:relative;overflow:hidden;
 }
-.glass::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.95) 40%,rgba(255,255,255,0.95) 60%,transparent);pointer-events:none;z-index:1}
 
 .header{position:sticky;top:12px;z-index:100;max-width:1160px;margin:12px auto 28px;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
 .h-title h2{font-size:20px;font-weight:700;color:var(--blue-900);letter-spacing:-0.4px;margin-bottom:3px}
@@ -49,22 +49,22 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 
 .pill-btn{
   display:inline-flex;align-items:center;gap:7px;padding:9px 16px;
-  background:rgba(255,255,255,0.62);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,0.88);border-bottom-color:rgba(200,210,220,0.4);
+  background:rgba(255,255,255,0.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,1);border-bottom-color:rgba(200,210,220,0.6);
   border-radius:40px;font-family:var(--font);font-size:13px;font-weight:600;
   color:var(--blue-800);text-decoration:none;cursor:pointer;
-  box-shadow:0 2px 12px rgba(10,37,64,0.07),inset 0 1px 0 rgba(255,255,255,0.9);
+  box-shadow:0 4px 14px rgba(10,37,64,0.06),inset 0 1px 0 rgba(255,255,255,1);
   transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);letter-spacing:0.1px;
 }
-.pill-btn:hover{background:rgba(255,255,255,0.88);box-shadow:0 8px 24px rgba(10,37,64,0.12),inset 0 1px 0 #fff;transform:translateY(-2px)}
+.pill-btn:hover{background:rgba(255,255,255,0.95);box-shadow:0 8px 24px rgba(10,37,64,0.12),inset 0 1px 0 #fff;transform:translateY(-2px)}
 .pill-btn svg{flex-shrink:0;opacity:0.7}
 
 .filter-section{padding:14px 20px;margin-bottom:28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .filter-section label{font-size:13px;font-weight:700;color:var(--blue-800);display:flex;align-items:center;gap:7px}
 .filter-select{
   padding:9px 36px 9px 14px;font-family:var(--font);font-size:13px;font-weight:600;
-  color:var(--blue-800);background:rgba(255,255,255,0.72);min-width:260px;outline:none;cursor:pointer;
-  border:1px solid rgba(255,255,255,0.88);border-radius:40px;
+  color:var(--blue-800);background:rgba(255,255,255,0.8);min-width:260px;outline:none;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.9);border-radius:40px;
   box-shadow:0 2px 8px rgba(0,0,0,0.04);transition:all 0.2s;appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7'%3E%3Cpath d='M1 1l4.5 5 4.5-5' fill='none' stroke='%23505A64' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 14px center;
@@ -79,29 +79,25 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
   padding:22px 20px 18px;display:flex;flex-direction:column;cursor:pointer;
   border-radius:var(--r-lg);position:relative;overflow:hidden;
   backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
-  border:1px solid rgba(255,255,255,0.75);
-  border-bottom-color:rgba(255,255,255,0.22);border-right-color:rgba(255,255,255,0.22);
-  box-shadow:0 6px 24px rgba(10,37,64,0.08),inset 0 1px 0 rgba(255,255,255,0.65);
+  border:1px solid rgba(255,255,255,0.85);
+  box-shadow:0 6px 24px rgba(10,37,64,0.08),inset 0 1px 0 rgba(255,255,255,0.8);
   transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
   opacity:0;transform:translateY(18px) scale(0.97);
 }
 .kpi-card.visible{opacity:1;transform:translateY(0) scale(1)}
-.kpi-card::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.95) 40%,rgba(255,255,255,0.95) 60%,transparent);pointer-events:none;z-index:1}
-.kpi-card::after{content:'';position:absolute;top:-50%;right:-30%;width:220px;height:220px;border-radius:50%;opacity:0.18;filter:blur(45px);pointer-events:none;transition:opacity 0.4s}
-.kpi-card:hover{transform:translateY(-8px) scale(1.025);box-shadow:0 20px 44px rgba(10,37,64,0.14),inset 0 1px 0 rgba(255,255,255,0.9)}
-.kpi-card:hover::after{opacity:0.30}
+.kpi-card:hover{transform:translateY(-8px) scale(1.025);box-shadow:0 20px 44px rgba(10,37,64,0.14),inset 0 1px 0 rgba(255,255,255,1)}
 
-.p-am{background:rgba(219,234,255,0.55)} .p-am::after{background:#3A86FF}
-.p-opl{background:rgba(255,237,210,0.52)} .p-opl::after{background:#F57C00}
-.p-fi{background:rgba(224,222,255,0.52)} .p-fi::after{background:#6366F1}
-.p-kz{background:rgba(200,248,232,0.50)} .p-kz::after{background:#0CA47C}
-.p-mk{background:rgba(255,226,194,0.50)} .p-mk::after{background:#E65100}
+.p-am{background:rgba(219,234,255,0.6)} 
+.p-opl{background:rgba(255,237,210,0.6)} 
+.p-fi{background:rgba(224,222,255,0.6)} 
+.p-kz{background:rgba(200,248,232,0.6)} 
+.p-mk{background:rgba(255,226,194,0.6)} 
 
 .kpi-icon-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
 .kpi-svg-wrap{
   width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,0.62);border:1px solid rgba(255,255,255,0.9);
-  box-shadow:0 3px 10px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.85);flex-shrink:0;
+  background:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,1);
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);flex-shrink:0;
   transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
 }
 .kpi-card:hover .kpi-svg-wrap{transform:scale(1.12) rotate(-5deg)}
@@ -113,11 +109,11 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 .kpi-val{font-size:38px;font-weight:700;color:var(--blue-900);line-height:1;letter-spacing:-2px}
 .kpi-unit{font-size:13px;font-weight:600;color:rgba(10,37,64,0.4)}
 .kpi-sub{font-size:11px;color:var(--gray-600);font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:6px}
-.wip-badge{font-size:10px;color:var(--orange-600);background:rgba(245,124,0,0.1);padding:2px 7px;border-radius:20px;font-weight:700}
+.wip-badge{font-size:10px;color:var(--orange-600);background:rgba(245,124,0,0.15);padding:2px 7px;border-radius:20px;font-weight:700}
 
-.progress-track{height:5px;background:rgba(0,0,0,0.06);border-radius:5px;overflow:hidden}
-.progress-fill{height:100%;border-radius:5px;transition:width 1.3s cubic-bezier(0.34,1.2,0.64,1);position:relative}
-.progress-fill::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.55),transparent);animation:sheen 2.8s ease-in-out infinite}
+.progress-track{height:6px;background:rgba(0,0,0,0.06);border-radius:6px;overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,0.05);}
+.progress-fill{height:100%;border-radius:6px;transition:width 1.3s cubic-bezier(0.34,1.2,0.64,1);position:relative}
+.progress-fill::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.6),transparent);animation:sheen 2.8s ease-in-out infinite}
 @keyframes sheen{0%{left:-100%}55%,100%{left:160%}}
 .p-am .progress-fill{background:linear-gradient(90deg,#93C5FD,#3A86FF)}
 .p-opl .progress-fill{background:linear-gradient(90deg,#FCD34D,#F57C00)}
@@ -125,49 +121,21 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 .p-kz .progress-fill{background:linear-gradient(90deg,#6EE7B7,#0CA47C)}
 .p-mk .progress-fill{background:linear-gradient(90deg,#FDBA74,#E65100)}
 
-/* 🤖 AI Glass Box */
-.ai-box { padding: 24px; margin-bottom: 32px; display: flex; flex-direction: column; gap: 16px; border:1px solid rgba(255,255,255,0.9); }
-.ai-btn { background:linear-gradient(135deg, #3A86FF, #4F46E5); color:#fff; border:none; padding:10px 18px; border-radius:40px; font-weight:700; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(58,134,255,0.3); transition:all 0.2s; }
-.ai-btn:hover { transform:scale(1.05); box-shadow:0 6px 16px rgba(58,134,255,0.4); }
-.ai-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
-.ai-result { display:none; background:rgba(255,255,255,0.7); padding:18px 24px; border-radius:16px; font-size:14px; line-height:1.7; color:var(--blue-900); box-shadow:inset 0 2px 6px rgba(0,0,0,0.03); }
-.ai-result b { color: var(--indigo-700); }
-
-/* 🤖 AI Chat Advisor Styles */
-.chat-container { display: flex; flex-direction: column; height: 450px; background: rgba(255,255,255,0.65); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border: 1px solid rgba(255,255,255,0.9); border-radius: 28px; box-shadow: 0 12px 40px rgba(10,37,64,0.08), inset 0 1px 0 rgba(255,255,255,1); overflow: hidden; position: relative; margin-bottom: 32px;}
-.chat-container::after { content:''; position:absolute; bottom:-10%; left:-10%; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle, rgba(12,164,124,0.15) 0%, transparent 70%); pointer-events:none; z-index:0;}
-.chat-header { padding: 16px 24px; background: rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.6); display: flex; align-items: center; gap: 12px; z-index: 1;}
-.chat-header-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--teal-400), var(--teal-600)); display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 12px rgba(12,164,124,0.3);}
-.chat-header-text h3 { font-size: 16px; font-weight: 700; color: var(--blue-900); line-height: 1.2; }
-.chat-header-text p { font-size: 11px; color: var(--gray-600); font-weight: 600; }
-.chat-body { flex: 1; padding: 20px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; z-index: 1;}
-.msg-wrap { display: flex; flex-direction: column; max-width: 85%; }
-.msg-wrap.user { align-self: flex-end; }
-.msg-wrap.ai { align-self: flex-start; }
-.msg-bubble { padding: 12px 18px; font-size: 14px; line-height: 1.6; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-.msg-wrap.user .msg-bubble { background: linear-gradient(135deg, var(--blue-600), var(--blue-800)); color: #fff; border-radius: 20px 20px 4px 20px; }
-.msg-wrap.ai .msg-bubble { background: rgba(255,255,255,0.9); color: var(--gray-900); border: 1px solid rgba(255,255,255,1); border-radius: 20px 20px 20px 4px; }
-.msg-bubble b { color: var(--blue-800); }
-.msg-wrap.user .msg-bubble b { color: #fff; }
-.chat-footer { padding: 16px 24px; background: rgba(255,255,255,0.5); border-top: 1px solid rgba(255,255,255,0.6); display: flex; gap: 12px; z-index: 1; align-items: center;}
-.chat-input { flex: 1; padding: 14px 20px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.9); background: rgba(255,255,255,0.8); font-family: var(--font); font-size: 14px; outline: none; box-shadow: inset 0 2px 6px rgba(0,0,0,0.02); transition: all 0.3s;}
-.chat-input:focus { background: #fff; border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(58,134,255,0.15); }
-.chat-send-btn { background: linear-gradient(135deg, var(--teal-500), var(--teal-700)); color: #fff; border: none; border-radius: 40px; padding: 0 24px; height: 46px; font-family: var(--font); font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 16px rgba(12,164,124,0.3); display: flex; align-items: center; gap: 6px;}
-.chat-send-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(12,164,124,0.4); }
-.chat-send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-.typing { display: flex; gap: 4px; padding: 8px 4px; }
-.typing .dot { width: 6px; height: 6px; background: var(--gray-400); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
-.typing .dot:nth-child(1) { animation-delay: -0.32s; }
-.typing .dot:nth-child(2) { animation-delay: -0.16s; }
-@keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-
-.charts-overview{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:32px}
+/* 🍎 iOS Style Chart Boxes */
+.charts-overview{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px}
 @media(max-width:800px){.charts-overview{grid-template-columns:1fr}}
-.chart-box{padding:24px;display:flex;flex-direction:column;height:380px}
-.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.chart-title-text{font-size:14px;font-weight:700;color:var(--blue-900);display:flex;align-items:center;gap:10px}
-.chart-icon-pill{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.9);box-shadow:0 2px 8px rgba(0,0,0,0.05)}
-.chart-icon-pill svg{width:16px;height:16px}
+.chart-box{
+    background:rgba(255,255,255,0.75); 
+    backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+    border:1px solid rgba(255,255,255,0.9);
+    border-radius:30px; 
+    padding:26px; display:flex; flex-direction:column; height:420px;
+    box-shadow:0 12px 36px rgba(10,37,64,0.06), inset 0 2px 0 rgba(255,255,255,0.9);
+}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.chart-title-text{font-size:15px;font-weight:700;color:var(--blue-900);display:flex;align-items:center;gap:12px}
+.chart-icon-pill{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg, #fff, #f0f4f8);border:1px solid rgba(255,255,255,1);box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+.chart-icon-pill svg{width:18px;height:18px}
 
 .detail-view{display:none;animation:slideUp 0.38s cubic-bezier(0.34,1.2,0.64,1)}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -176,58 +144,54 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 .detail-icon-badge{width:50px;height:50px;border-radius:15px;background:rgba(255,255,255,0.72);border:1px solid rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.07)}
 .detail-icon-badge svg{width:24px;height:24px}
 
-.btn-cta{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:rgba(10,37,64,0.88);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.15);border-radius:40px;font-family:var(--font);font-size:13px;font-weight:700;color:#fff;text-decoration:none;cursor:pointer;box-shadow:0 4px 18px rgba(10,37,64,0.3),inset 0 1px 0 rgba(255,255,255,0.12);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);letter-spacing:0.2px;}
-.btn-cta:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 28px rgba(10,37,64,0.35)}
-
-/* 💡 ปรับปรุงดีไซน์ปุ่มในตารางให้ชัดเจนยิ่งขึ้น */
 .btn-edit { background: #f8fafc; color: var(--blue-800); border: 1px solid var(--gray-400); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
 .btn-edit:hover { background: #e2e8f0; color: var(--blue-900); transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.08); border-color: var(--gray-500); }
-
 .btn-approve { background: #f0fdf4; color: var(--teal-700); border: 1px solid var(--teal-400); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
 .btn-approve:hover { background: #dcfce7; color: var(--teal-800); transform: translateY(-1px); box-shadow: 0 4px 6px rgba(12,164,124,0.15); border-color: var(--teal-500); }
 
-.data-table-wrapper{background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.85);border-radius:var(--r-lg);box-shadow:0 6px 24px rgba(10,37,64,0.07);overflow:hidden}
+.data-table-wrapper{background:rgba(255,255,255,0.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.9);border-radius:var(--r-lg);box-shadow:0 12px 36px rgba(10,37,64,0.06);overflow:hidden}
 .tbl-scroll{overflow-x:auto}
-.data-table{width:100%;border-collapse:collapse;font-size:13px;min-width:740px; table-layout: auto;} /* ปล่อยให้โตตามข้อมูล */
-.data-table thead{background:rgba(255,255,255,0.45)}
-.data-table th{color:var(--blue-900);padding:13px 16px;text-align:left;font-weight:700;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;border-bottom:1px solid rgba(0,0,0,0.05);white-space:nowrap}
-.data-table td{padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.035);color:var(--gray-900);vertical-align:middle}
-.data-table tbody tr{transition:background 0.18s}
-.data-table tbody tr:hover{background:rgba(255,255,255,0.55)}
+.data-table{width:100%;border-collapse:collapse;font-size:13px;min-width:740px; table-layout: auto;} 
+.data-table thead{background:rgba(255,255,255,0.5)}
+.data-table th{color:var(--blue-900);padding:14px 18px;text-align:left;font-weight:700;font-size:12px;letter-spacing:0.5px;border-bottom:1px solid rgba(0,0,0,0.05);white-space:nowrap}
+.data-table td{padding:14px 18px;border-bottom:1px solid rgba(0,0,0,0.04);color:var(--gray-900);vertical-align:middle}
+.data-table tbody tr{transition:background 0.2s}
+.data-table tbody tr:hover{background:rgba(255,255,255,0.8)}
 .data-table tbody tr:last-child td{border-bottom:none}
-.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block;letter-spacing:0.2px}
-.b-pass{background:rgba(12,164,124,0.11);color:var(--teal-700);border:1px solid rgba(12,164,124,0.18)}
-.b-wait{background:rgba(245,124,0,0.1);color:var(--orange-700);border:1px solid rgba(245,124,0,0.18)}
-.b-fail{background:rgba(217,56,56,0.1);color:var(--red-600);border:1px solid rgba(217,56,56,0.18)}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.area-card{padding:18px;display:flex;flex-direction:column;background:rgba(255,255,255,0.62);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(255,255,255,0.82);border-bottom-color:rgba(255,255,255,0.28);border-right-color:rgba(255,255,255,0.28);border-radius:20px;box-shadow:0 5px 20px rgba(10,37,64,0.07),inset 0 1px 0 rgba(255,255,255,0.7);transition:all 0.32s cubic-bezier(0.34,1.56,0.64,1);position:relative;overflow:hidden;}
-.area-card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.9) 40%,rgba(255,255,255,0.9) 60%,transparent);pointer-events:none}
-.area-card:hover{transform:translateY(-5px) scale(1.008);box-shadow:0 14px 36px rgba(10,37,64,0.11)}
+.badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block;letter-spacing:0.2px}
+.b-pass{background:rgba(12,164,124,0.12);color:var(--teal-700);border:1px solid rgba(12,164,124,0.2)}
+.b-wait{background:rgba(245,124,0,0.12);color:var(--orange-700);border:1px solid rgba(245,124,0,0.2)}
+.b-fail{background:rgba(239,68,68,0.12);color:var(--red-600);border:1px solid rgba(239,68,68,0.2)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.area-card{padding:20px;display:flex;flex-direction:column;background:rgba(255,255,255,0.7);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(255,255,255,0.9);border-radius:24px;box-shadow:0 8px 24px rgba(10,37,64,0.06),inset 0 1px 0 rgba(255,255,255,1);transition:all 0.32s cubic-bezier(0.34,1.56,0.64,1);position:relative;overflow:hidden;}
+.area-card:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 16px 40px rgba(10,37,64,0.12)}
 .ac-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:6px;flex-wrap:wrap}
-.ac-dept{font-size:10px;color:var(--blue-800);font-weight:700;background:rgba(58,134,255,0.1);padding:3px 9px;border-radius:20px;border:1px solid rgba(58,134,255,0.18)}
-.ac-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px}
-.ac-name{font-size:14px;font-weight:700;color:var(--blue-900);margin-bottom:16px;line-height:1.4}
-.step-tracker{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:0 2px}
-.step-node{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.25)}
-.step-line{flex:1;height:2px;background:rgba(10,37,64,0.07);border-radius:2px;margin:0 3px}
-.st-none{background:rgba(155,165,177,0.35);color:var(--gray-600);box-shadow:none;border:1px solid rgba(0,0,0,0.07)}
+.ac-dept{font-size:11px;color:var(--blue-800);font-weight:700;background:rgba(58,134,255,0.12);padding:4px 10px;border-radius:20px;border:1px solid rgba(58,134,255,0.2)}
+.ac-status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px}
+.ac-name{font-size:15px;font-weight:700;color:var(--blue-900);margin-bottom:18px;line-height:1.4}
+.step-tracker{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding:0 2px}
+.step-node{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,0.12),inset 0 1px 0 rgba(255,255,255,0.3)}
+.step-line{flex:1;height:3px;background:rgba(10,37,64,0.06);border-radius:3px;margin:0 4px}
+.st-none{background:rgba(155,165,177,0.3);color:var(--gray-600);box-shadow:none;border:1px solid rgba(0,0,0,0.08)}
 .st-pass{background:linear-gradient(135deg,#34D399,#0CA47C)}
 .st-wait-lead{background:linear-gradient(135deg,#FBBF24,#F57C00)}
 .st-wait-exec{background:linear-gradient(135deg,#60A5FA,#1E6091)}
-.st-fail{background:linear-gradient(135deg,#F87171,#D93838)}
+.st-fail{background:linear-gradient(135deg,#F87171,#EF4444)}
 .line-pass{background:linear-gradient(90deg,#34D399,#10D2A1)}
-.btn-eval{display:block;text-align:center;padding:9px 12px;border-radius:40px;text-decoration:none;font-size:12px;font-weight:700;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);margin-bottom:6px;border:none;cursor:pointer;}
-.btn-user{background:rgba(255,255,255,0.72);color:var(--blue-800);border:1px solid rgba(255,255,255,0.9);box-shadow:0 2px 8px rgba(0,0,0,0.04)}
-.btn-lead{background:linear-gradient(135deg,rgba(251,191,36,0.85),rgba(245,124,0,0.85));color:#fff;}
-.btn-exec{background:linear-gradient(135deg,rgba(96,165,250,0.85),rgba(30,96,145,0.85));color:#fff;}
-.kpi-badge-hit{background:rgba(12,164,124,0.12);color:var(--teal-700);border:1px solid rgba(12,164,124,0.22);font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px;vertical-align:middle}
-.kpi-badge-miss{background:rgba(0,0,0,0.05);color:var(--gray-600);border:1px solid rgba(0,0,0,0.07);font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px;vertical-align:middle}
 
-#loader{text-align:center;padding:100px 20px;color:var(--blue-800);font-size:15px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:18px}
-.spinner{width:34px;height:34px;border:2.5px solid rgba(58,134,255,0.15);border-top-color:var(--blue-600);border-radius:50%;animation:spin 0.75s linear infinite; display:inline-block;}
+.btn-eval{display:block;text-align:center;padding:10px 14px;border-radius:40px;text-decoration:none;font-size:12px;font-weight:700;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);margin-bottom:6px;border:none;cursor:pointer;}
+.btn-user{background:rgba(255,255,255,0.8);color:var(--blue-800);border:1px solid rgba(255,255,255,1);box-shadow:0 4px 12px rgba(0,0,0,0.05)}
+.btn-lead{background:linear-gradient(135deg,rgba(251,191,36,0.9),rgba(245,124,0,0.9));color:#fff;}
+.btn-exec{background:linear-gradient(135deg,rgba(96,165,250,0.9),rgba(30,96,145,0.9));color:#fff;}
+
+.kpi-badge-hit{background:rgba(12,164,124,0.15);color:var(--teal-700);border:1px solid rgba(12,164,124,0.25);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:4px;vertical-align:middle}
+.kpi-badge-miss{background:rgba(0,0,0,0.06);color:var(--gray-600);border:1px solid rgba(0,0,0,0.08);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:4px;vertical-align:middle}
+
+#loader{text-align:center;padding:120px 20px;color:var(--blue-800);font-size:16px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:20px}
+.spinner{width:38px;height:38px;border:3px solid rgba(58,134,255,0.15);border-top-color:var(--blue-600);border-radius:50%;animation:spin 0.75s linear infinite; display:inline-block;}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:600px){.kpi-grid{grid-template-columns:1fr}.kpi-val{font-size:30px}.detail-header-title{font-size:20px}}
 </style>
 </head>
 <body>
@@ -244,7 +208,7 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 </div>
 
 <div class="wrap">
-  <div id="loader"><div class="spinner"></div>กำลังประมวลผลข้อมูล...</div>
+  <div id="loader"><div class="spinner"></div>กำลังประมวลผลข้อมูลระดับสูง...</div>
 
   <div id="main-dashboard-view" style="display:none;">
 
@@ -261,69 +225,29 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
     <div class="sec-lbl">ผลลัพธ์ KPI ภาพรวม</div>
     <div class="kpi-grid" id="kpi-cards-container"></div>
 
-    <div class="sec-lbl" style="margin-top:6px;">🤖 AI Executive Insights</div>
-    <div class="glass ai-box">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-            <div>
-                <h3 style="font-size:16px; color:var(--blue-900); display:flex; align-items:center; gap:8px;">✨ ให้ Gemini AI ช่วยวิเคราะห์ภาพรวมแผนก</h3>
-                <p style="font-size:12px; color:var(--gray-600); margin-top:4px;">AI จะสรุปข้อมูลคอขวดและให้คำแนะนำในการบริหารจัดการ KPI</p>
-            </div>
-            <button class="ai-btn" id="btn-ai-analyze" onclick="generateInsights()">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-                เริ่มวิเคราะห์ข้อมูลเชิงลึก
-            </button>
-        </div>
-        <div id="ai-result-box" class="ai-result"></div>
-    </div>
-
-    <div class="sec-lbl" style="margin-top:6px;">กราฟวิเคราะห์</div>
+    <div class="sec-lbl" style="margin-top:12px;">📊 กราฟวิเคราะห์ประสิทธิภาพ (Analytics)</div>
     <div class="charts-overview">
-      <div class="chart-box glass">
+      <div class="chart-box">
         <div class="chart-header">
           <div class="chart-title-text">
             <div class="chart-icon-pill">
-              <svg width="16" height="16" fill="none" stroke="var(--blue-600)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <svg width="16" height="16" fill="none" stroke="var(--blue-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
             </div>
-            เปรียบเทียบ % ความสำเร็จ
+            เปรียบเทียบ % ความสำเร็จ (เทียบเป้าหมาย 100%)
           </div>
         </div>
         <div style="flex:1;position:relative"><canvas id="kpiBarChart"></canvas></div>
       </div>
-      <div class="chart-box glass">
+      <div class="chart-box">
         <div class="chart-header">
           <div class="chart-title-text">
             <div class="chart-icon-pill">
-              <svg width="16" height="16" fill="none" stroke="var(--blue-600)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+              <svg width="16" height="16" fill="none" stroke="var(--teal-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
             </div>
-            การกระจายตัวพื้นที่ AM-OI
+            การกระจายตัวพื้นที่ AM-OI (ราย Step)
           </div>
         </div>
         <div style="flex:1;position:relative"><canvas id="amStepChart"></canvas></div>
-      </div>
-    </div>
-
-    <div class="sec-lbl" style="margin-top: 10px;">🤖 ที่ปรึกษาส่วนตัว (AI TPM Advisor)</div>
-    <div class="chat-container">
-      <div class="chat-header">
-        <div class="chat-header-icon">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-        </div>
-        <div class="chat-header-text">
-          <h3>สอบถามผู้เชี่ยวชาญ TPM (Gemini AI)</h3>
-          <p>ถามสถานะ KPI ของแผนกต่างๆ ได้เลย (AI จะดึงข้อมูลจริงไปวิเคราะห์)</p>
-        </div>
-      </div>
-      <div class="chat-body" id="chat-body">
-        <div class="msg-wrap ai">
-          <div class="msg-bubble">สวัสดีครับ! ผมคือ <b>AI Advisor</b> ประจำหน้า Dashboard 👋<br><br>อยากให้ผมอัปเดตสถานะ KPI ของแผนกไหน หรืออยากให้ช่วยคิดไอเดียการปรับปรุงงาน พิมพ์ถามได้เลยครับ!</div>
-        </div>
-      </div>
-      <div class="chat-footer">
-        <input type="text" id="chat-input" class="chat-input" placeholder="พิมพ์คำถามของคุณที่นี่..." onkeypress="handleEnter(event)">
-        <button id="chat-btn" class="chat-send-btn" onclick="sendMessage()">
-          ส่ง
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
       </div>
     </div>
 
@@ -336,7 +260,6 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
     </button>
     <div class="detail-header-wrap">
       <div class="detail-header-title" id="detail-page-title">รายละเอียด</div>
-      <div id="detail-cta-container"></div>
     </div>
     <div id="detail-am" style="display:none;"><div class="grid" id="am-card-container"></div></div>
     <div id="detail-opl" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่</th><th>รหัส OPL</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้จัดทำ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="opl-table-body"></tbody></table></div></div>
@@ -355,7 +278,7 @@ let userDataObj={}, approverDataObj={};
 let chartKPI=null, chartAM=null;
 
 let appData={
-  am:{key:'am',title:'AM-OI Assessment',target:0,actual:0,wip:0,stepDist:[0,0,0,0,0,0], targetScore:0, actualScore:0},
+  am:{key:'am',title:'AM-OI Assessment',target:0,actual:0,wip:0,stepDist:[0,0,0,0,0], stepDetails:{1:[],2:[],3:[],4:[],5:[]}, targetScore:0, actualScore:0},
   opl:{key:'opl',title:'OPL Center',target:0,actual:0,wip:0},
   fi:{key:'fi',title:'FI Theme',target:0,actual:0,wip:0},
   kz:{key:'kz',title:'Kaizen Suggestion',target:0,actual:0,wip:0},
@@ -372,40 +295,35 @@ const IC={
 const mkSVG=(k,sz=22)=>`<svg width="${sz}" height="${sz}" fill="none" stroke="${IC[k].c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">${IC[k].svg}</svg>`;
 const sg=(r,k,i)=>r[k]!==undefined?r[k]:Object.values(r)[i];
 
-// 💡 1. ฟังก์ชันจัดรูปแบบวันที่ให้เป็น DD/MM/YYYY อย่างอัจฉริยะ
 function formatDateTH(dStr) {
     if (!dStr) return '-';
     let str = String(dStr).trim();
-    // รองรับเคสที่ส่งมาจาก Sheet เป็น 2026-02-01 หรือมี Timezone ติดมา
     if (str.match(/^\d{4}-\d{2}-\d{2}/)) {
         let parts = str.split('T')[0].split('-');
         return `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
-    // รองรับเคสที่ส่งมาจาก Sheet เป็น 23/10/2025 หรือ 23/1/2026
     if (str.includes('/')) {
         let parts = str.split(' ')[0].split('/');
         if(parts.length >= 3) {
             let day = parts[0].padStart(2, '0');
             let month = parts[1].padStart(2, '0');
-            let year = parts[2].substring(0, 4); // ตัดเวลาทิ้งถ้ามีต่อท้าย
+            let year = parts[2].substring(0, 4); 
             return `${day}/${month}/${year}`;
         }
     }
     return str;
 }
 
-// 💡 2. ฟังก์ชันจัดสีป้ายสถานะให้ตาราง
 function getStatusBadge(status) {
     if (!status) return 'b-wait';
     if (status.includes('สมบูรณ์') || status.includes('Completed') || status.includes('ผ่าน')) return 'b-pass';
     if (status.includes('รอ')) return 'b-wait';
-    if (status.includes('ไม่อนุมัติ') || status.includes('ไม่ผ่าน') || status.includes('Delayed') || status.includes('แก้ไข')) return 'b-fail';
+    if (status.includes('ไม่อนุมัติ') || status.includes('ไม่ผ่าน') || status.includes('Delayed') || status.includes('แก้ไข') || status.includes('Cancelled')) return 'b-fail';
     return 'b-wait';
 }
 
 async function loadData(){
   try {
-    // 💡 ยิง API แค่เส้นเดียวเพื่อดึงข้อมูลทุกหน้า ทำให้โหลดไวขึ้นมหาศาล!
     const response = await fetch(API_URL + '?action=getAllDashboardData&t=' + Date.now());
     const data = await response.json();
 
@@ -418,8 +336,6 @@ async function loadData(){
           if(!areaData[d].includes(a)) areaData[d].push(a);
         }
       });
-      
-      // แมปข้อมูลจากก้อน JSON ใหญ่ที่รับมา
       amHistory = data.am || [];
       oplHistory = data.opl || [];
       fiHistory = data.fi || [];
@@ -435,6 +351,7 @@ async function loadData(){
     document.getElementById('loader').innerHTML = '<span style="color:var(--red-600)">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชอีกครั้ง</span>'; 
   }
 }
+
 function initFilter(){
   const s=document.getElementById('global-filter-dept');
   Object.keys(areaData).sort().forEach(d=>{const o=document.createElement('option');o.value=d;o.innerText='แผนก '+d;s.appendChild(o);});
@@ -444,14 +361,29 @@ function getSysTarget(sys,fd){
   let t=0;kpiMaster.forEach(r=>{let rs=sg(r,'System',0),rd=sg(r,'Department',2),rv=parseInt(sg(r,'Target_Value',4))||0;if(rs&&rs.trim()===sys&&(fd==='all'||(rd&&rd.trim()===fd)))t+=rv;});return t;
 }
 
-function stepLogic(recs){
-  if(!recs.length)return{class:'st-none',text:'ยังไม่เริ่ม',rank:0};
-  const l=recs[recs.length-1],tp=l['AuditorType']||Object.values(l)[7];
-  const ok=(l['PassFail']==='ผ่านเกณฑ์'||l['PassFail']==='Pass'||Object.values(l)[15]==='ผ่านเกณฑ์');
-  if(!ok)return{class:'st-fail',text:'แก้ไข',rank:1};
-  if(tp==='exec')return{class:'st-pass',text:'ผ่านสมบูรณ์',rank:4};
-  if(tp==='lead'||tp==='clead'||tp==='mgr')return{class:'st-wait-exec',text:'รอผู้บริหาร',rank:3};
-  return{class:'st-wait-lead',text:'รอหัวหน้า',rank:2};
+// 🍎 Chart.js Custom Drop Shadow Plugin (Lux Premium Look)
+const shadowPlugin = {
+    id: 'shadowPlugin',
+    beforeDatasetsDraw: function(chart) {
+        chart.ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
+        chart.ctx.shadowBlur = 15;
+        chart.ctx.shadowOffsetX = 0;
+        chart.ctx.shadowOffsetY = 8;
+    },
+    afterDatasetsDraw: function(chart) {
+        chart.ctx.shadowColor = 'transparent';
+        chart.ctx.shadowBlur = 0;
+        chart.ctx.shadowOffsetX = 0;
+        chart.ctx.shadowOffsetY = 0;
+    }
+};
+Chart.register(shadowPlugin);
+
+function createGrad(ctx, colorStart, colorEnd, isHorizontal) {
+    let grad = isHorizontal ? ctx.createLinearGradient(0, 0, 400, 0) : ctx.createLinearGradient(0, 400, 0, 0);
+    grad.addColorStop(0, colorStart);
+    grad.addColorStop(1, colorEnd);
+    return grad;
 }
 
 function processAndRender(){
@@ -459,9 +391,11 @@ function processAndRender(){
   document.getElementById('loader').style.display='none';
   document.getElementById('main-dashboard-view').style.display='block';
 
-  appData.am.target=0; appData.am.actual=0; appData.am.wip=0; appData.am.stepDist=[0,0,0,0,0,0];
-  appData.am.targetScore = 0; 
-  appData.am.actualScore = 0; 
+  // รีเซ็ตข้อมูลกราฟ
+  appData.am.target=0; appData.am.actual=0; appData.am.wip=0; 
+  appData.am.stepDist=[0,0,0,0,0]; 
+  appData.am.stepDetails={1:[], 2:[], 3:[], 4:[], 5:[]};
+  appData.am.targetScore = 0; appData.am.actualScore = 0; 
 
   const amC=document.getElementById('am-card-container'); amC.innerHTML='';
 
@@ -475,7 +409,6 @@ function processAndRender(){
     appData.am.targetScore += tStep;
     
     const maxAttemptedStep = ah.length > 0 ? Math.max(...ah.map(h => parseInt(sg(h,'AuditRound',6))||0)) : 0;
-    
     let maxStep = 0; 
     let pStep = 1;   
     let currentStepRecords = [];
@@ -524,32 +457,32 @@ function processAndRender(){
     if (maxStep >= tStep) appData.am.actual++; 
     else if (maxStep > 0 || currentStepRecords.length > 0) appData.am.wip++;
     
-    appData.am.stepDist[maxStep]++;
-
+    // 💡 นำรายชื่อเข้าตะกร้า Step 1-5 เท่านั้น (ตัด Step 0 ทิ้ง)
+    if (maxStep >= 1 && maxStep <= 5) {
+        appData.am.stepDist[maxStep - 1]++;
+        appData.am.stepDetails[maxStep].push(`[${dept}] ${area}`);
+    }
+     // สร้างการ์ดรายละเอียด UI
     let si = {};
     for(let s=1; s<=5; s++) {
-        if (s <= maxStep) {
-            si[s] = {class:'st-pass', text:'ผ่านสมบูรณ์', rank:4};
-        } else if (s === pStep) {
+        if (s <= maxStep) { si[s] = {class:'st-pass', text:'ผ่านสมบูรณ์', rank:4}; } 
+        else if (s === pStep) {
             if (currentStepRecords.length === 0) si[s] = {class:'st-none', text:'ยังไม่เริ่ม', rank:0};
             else {
                 if (pendingRank === 1) si[s] = {class:'st-fail', text:'แก้ไข', rank:1};
                 else if (pendingRank === 2) si[s] = {class:'st-wait-lead', text:'รอหัวหน้า', rank:2};
                 else if (pendingRank === 3) si[s] = {class:'st-wait-exec', text:'รอผู้บริหาร', rank:3};
             }
-        } else {
-            si[s] = {class:'st-none', text:'ยังไม่เริ่ม', rank:0};
-        }
+        } else { si[s] = {class:'st-none', text:'ยังไม่เริ่ม', rank:0}; }
     }
 
     let os = {};
-    if (maxStep === 5) {
-         os = {text:'ผ่านครบ 5 Step', color:'#0CA47C', bg:'rgba(12,164,124,0.1)', rank:4};
-    } else {
-         if (currentStepRecords.length === 0) os = {text:`รอประเมิน Step ${pStep}`, color:'var(--blue-800)', bg:'rgba(58,134,255,0.08)', rank:0};
-         else if (pendingRank === 1) os = {text:`แก้ไข Step ${pStep}`, color:'var(--red-600)', bg:'rgba(217,56,56,0.08)', rank:1};
-         else if (pendingRank === 2) os = {text:`รอ หน. Step ${pStep}`, color:'#fff', bg:'rgba(245,124,0,0.78)', rank:2};
-         else if (pendingRank === 3) os = {text:`รอ ผบร. Step ${pStep}`, color:'#fff', bg:'rgba(30,96,145,0.78)', rank:3};
+    if (maxStep === 5) { os = {text:'ผ่านครบ 5 Step', color:'#0CA47C', bg:'rgba(12,164,124,0.12)', rank:4}; } 
+    else {
+         if (currentStepRecords.length === 0) os = {text:`รอประเมิน Step ${pStep}`, color:'var(--blue-800)', bg:'rgba(58,134,255,0.1)', rank:0};
+         else if (pendingRank === 1) os = {text:`แก้ไข Step ${pStep}`, color:'var(--red-600)', bg:'rgba(239,68,68,0.1)', rank:1};
+         else if (pendingRank === 2) os = {text:`รอ หน. Step ${pStep}`, color:'#fff', bg:'rgba(245,124,0,0.85)', rank:2};
+         else if (pendingRank === 3) os = {text:`รอ ผบร. Step ${pStep}`, color:'#fff', bg:'rgba(30,96,145,0.85)', rank:3};
     }
 
     let tn='<div class="step-tracker">';
@@ -593,29 +526,108 @@ function processAndRender(){
     const wip=d.wip>0?`<span class="wip-badge">⏳ ${d.wip}</span>`:'';
     const card=document.createElement('div'); card.className=`kpi-card p-${def.tc}`;
     card.onclick=()=>openDetail(def.did,d.title);
-    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูข้อมูล →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${appData[def.k].pct}%</span><span class="kpi-unit">(${d.actual}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${appData[def.k].pct}"></div></div>`;
+    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูรายละเอียด →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${appData[def.k].pct}%</span><span class="kpi-unit">(${d.actual}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${appData[def.k].pct}"></div></div>`;
     con.appendChild(card);
   });
 
   document.querySelectorAll('.kpi-card').forEach((c,i)=>{ setTimeout(()=>{c.classList.add('visible');const f=c.querySelector('.progress-fill');if(f)setTimeout(()=>{f.style.width=f.dataset.w+'%'},60);},i*70); });
 
-  const cf={family:'IBM Plex Sans Thai',size:12}, gc='rgba(0,0,0,0.04)';
+  // 🍎 วาดกราฟใหม่
+  const cf={family:'IBM Plex Sans Thai',size:13}, gc='rgba(0,0,0,0.03)';
+  
   if(chartKPI)chartKPI.destroy();
-  chartKPI=new Chart(document.getElementById('kpiBarChart').getContext('2d'),{
+  let ctxKpi = document.getElementById('kpiBarChart').getContext('2d');
+  chartKPI=new Chart(ctxKpi,{
     type:'bar',
-    data:{labels:['AM-OI','OPL','FI Theme','Kaizen','Makigami'],datasets:[{data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct].map(v=>Math.round(v)),backgroundColor:['#3A86FF','#F57C00','#4F46E5','#0CA47C','#E65100'],borderRadius:8}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{max:100,grid:{color:gc}},y:{grid:{display:false}}}}
+    data:{
+        labels:['AM-OI','OPL','FI Theme','Kaizen','Makigami'],
+        datasets:[
+            {
+                type: 'bar',
+                label: ' % ความสำเร็จจริง',
+                data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct].map(v=>Math.round(v)),
+                backgroundColor:[
+                    createGrad(ctxKpi, '#3A86FF', '#1E6091', true),
+                    createGrad(ctxKpi, '#F57C00', '#E65100', true),
+                    createGrad(ctxKpi, '#818CF8', '#4F46E5', true),
+                    createGrad(ctxKpi, '#10D2A1', '#0CA47C', true),
+                    createGrad(ctxKpi, '#FFB74D', '#F57C00', true)
+                ],
+                borderRadius:10, borderSkipped:false, barPercentage:0.6
+            },
+            {
+                type: 'line', // 🎯 เส้น Target Line
+                label: ' เป้าหมาย (Target 100%)',
+                data: [100, 100, 100, 100, 100],
+                borderColor: 'rgba(239, 68, 68, 0.8)',
+                backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                borderWidth: 2, borderDash: [6, 4],
+                pointBackgroundColor: '#fff', pointBorderColor: 'rgba(239, 68, 68, 1)', pointRadius: 5, pointHoverRadius: 7,
+                tension: 0
+            }
+        ]
+    },
+    options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{
+            legend:{display:true, position:'bottom', labels:{font:cf, usePointStyle:true}},
+            tooltip:{
+                backgroundColor:'rgba(255,255,255,0.95)', titleColor:'#0A2540', bodyColor:'#113A5D',
+                borderColor:'rgba(255,255,255,1)', borderWidth:1, padding:14,
+                titleFont:{family:'IBM Plex Sans Thai',size:14,weight:'bold'}, bodyFont:{family:'IBM Plex Sans Thai',size:13},
+                boxShadow:'0 10px 30px rgba(0,0,0,0.1)'
+            }
+        },
+        scales:{
+            x:{max:100, grid:{color:gc, borderDash:[5,5]}, ticks:{font:cf}},
+            y:{grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai', weight:'bold', size:12}}}
+        }
+    }
   });
+
   if(chartAM)chartAM.destroy();
-  chartAM=new Chart(document.getElementById('amStepChart').getContext('2d'),{
+  let ctxAm = document.getElementById('amStepChart').getContext('2d');
+  chartAM=new Chart(ctxAm,{
     type:'bar',
-    data:{labels:['Step 0','Step 1','Step 2','Step 3','Step 4','Step 5'],datasets:[{data:appData.am.stepDist,backgroundColor:['#9BA5B1','#3A86FF','#3A86FF','#10D2A1','#10D2A1','#0CA47C'],borderRadius:6}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:gc},ticks:{stepSize:1}},x:{grid:{display:false}}}}
+    data:{
+        labels:['Step 1','Step 2','Step 3','Step 4','Step 5'],
+        datasets:[{
+            label: ' จำนวนพื้นที่',
+            data:appData.am.stepDist,
+            backgroundColor:createGrad(ctxAm, '#34D399', '#0CA47C', false),
+            hoverBackgroundColor:createGrad(ctxAm, '#10D2A1', '#087A5C', false),
+            borderRadius:10, borderSkipped:false, barPercentage:0.55
+        }]
+    },
+    options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+            legend:{display:false},
+            tooltip:{
+                backgroundColor:'rgba(255,255,255,0.95)', titleColor:'#0A2540', bodyColor:'#1E6091',
+                borderColor:'rgba(12,164,124,0.3)', borderWidth:1, padding:16,
+                titleFont:{family:'IBM Plex Sans Thai',size:15,weight:'bold'}, bodyFont:{family:'IBM Plex Sans Thai',size:13},
+                callbacks: {
+                    title: function(context) { return context[0].label + ' (' + context[0].raw + ' พื้นที่)'; },
+                    label: function(context) {
+                        let step = context.dataIndex + 1;
+                        let areas = appData.am.stepDetails[step];
+                        if (!areas || areas.length === 0) return 'ไม่มีข้อมูลพื้นที่ใน Step นี้';
+                        return areas.map(a => '📌 ' + a); // โชว์ลิสต์รายชื่อ
+                    }
+                }
+            }
+        },
+        scales:{
+            y:{beginAtZero:true, grid:{color:gc, borderDash:[5,5]}, ticks:{stepSize:1, font:cf}},
+            x:{grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai', weight:'bold'}}}
+        }
+    }
   });
 
   const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:30px;color:#9BA5B1;">ไม่มีข้อมูล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
   
-  // 💡 ตาราง OPL
+  // OPL Table
   tbl('opl-table-body', uOpl, 7, r => {
     const oplId = sg(r, 'OPL ID', 1);
     const status = sg(r, 'Status', 14) || '';
@@ -637,7 +649,7 @@ function processAndRender(){
     `;
   });
   
-  // 💡 ตาราง FI Theme
+  // FI Theme Table
   tbl('fi-table-body', uFi, 7, r => {
     const fiId = sg(r, 'FI ID', 1);
     const status = sg(r, 'Status', 14) || '';
@@ -659,7 +671,7 @@ function processAndRender(){
     `;
   });
 
-  // 💡 ตาราง Kaizen
+  // Kaizen Table
   tbl('kz-table-body', uKz, 7, r => {
     return `
       <td style="white-space:nowrap;">${formatDateTH(sg(r, 'วันที่ทำ Kaizen', 1))}</td>
@@ -672,17 +684,11 @@ function processAndRender(){
     `;
   });
 
-  // 💡 ตาราง Makigami
+  // Makigami Table
   tbl('mk-table-body', uMk, 7, r => {
     const mkId = sg(r, 'Makigami ID', 1);
     const status = sg(r, 'Status', 9) || '';
-    const isWaiting = status.includes('รอหัวหน้า');
     
-    let btns = `<a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=edit" class="btn-edit">แก้ไข</a>`;
-    if (isWaiting) {
-      btns += `<a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
-    }
-
     return `
       <td style="white-space:nowrap;">${mkId}</td>
       <td style="white-space:nowrap;">${sg(r, 'แผนก', 3)}</td>
@@ -690,7 +696,7 @@ function processAndRender(){
       <td style="white-space:nowrap; max-width:150px; overflow:hidden; text-overflow:ellipsis;">${sg(r, 'ผู้รับผิดชอบ', 5)}</td>
       <td style="white-space:nowrap; color:var(--orange-600); font-weight:700;">${sg(r, 'Current Phase', 6)}</td>
       <td style="white-space:nowrap;"><span class="badge ${getStatusBadge(status)}">${status}</span></td>
-      <td style="white-space:nowrap;"><div style="display:flex; gap:6px;">${btns}</div></td>
+      <td style="white-space:nowrap;"><a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=edit" class="btn-edit">แก้ไข</a></td>
     `;
   });
 }
@@ -705,129 +711,6 @@ function openDetail(type,title){
 }
 
 function goBackToDashboard(){ document.getElementById('detail-view').style.display='none'; document.getElementById('main-dashboard-view').style.display='block'; }
-
-async function generateInsights() {
-    const btn = document.getElementById('btn-ai-analyze');
-    const resBox = document.getElementById('ai-result-box');
-    btn.disabled = true; 
-    resBox.style.display = 'block'; 
-    resBox.innerHTML = '<div style="text-align:center; padding:20px; color:var(--blue-600);">กำลังดึงข้อมูลทั้งระบบให้ AI ประมวลผลเชิงลึก กรุณารอสักครู่... ⏳</div>';
-
-    const fd = document.getElementById('global-filter-dept').value;
-    const deptText = fd === 'all' ? 'ภาพรวมทั้งโรงงาน (ทุกแผนก)' : `แผนก ${fd}`;
-
-    const dbContext = JSON.stringify({
-        kpi: kpiMaster,
-        am: amHistory,
-        opl: oplHistory,
-        fi: fiHistory,
-        kz: kzHistory,
-        mk: mkHistory
-    });
-
-    const promptText = `คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง
-นี่คือข้อมูลดิบของโรงงาน: ${dbContext}
-
-กรุณาวิเคราะห์ Performance ของ "${deptText}" อย่างละเอียดที่สุด
-โครงสร้างการตอบ (ให้ใช้ Bullet point):
-1. [ภาพรวม KPI]: สรุปความสำเร็จและเปอร์เซ็นต์ที่ได้
-2. [จุดเด่น]: แผนก หรือ ระบบที่ทำผลงานได้ดีเยี่ยม (ระบุชื่อ)
-3. [จุดคอขวด]: โปรเจกต์ หรือ แผนกที่ล่าช้า น่าเป็นห่วงที่สุด (ระบุตัวเลขและชื่อเรื่องให้ชัดเจน)
-4. [Action Plan]: ข้อเสนอแนะเชิงกลยุทธ์สำหรับผู้บริหาร 3 ข้อ ว่าควรเข้าไปจี้จุดไหนก่อน
-
-อธิบายให้ละเอียด เป็นมืออาชีพ (ความยาว 10-15 บรรทัด) ห้ามเกริ่นนำ ให้เข้าประเด็นทันที`;
-
-    try {
-        const response = await fetch(API_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({ type: 'ai_advisor', prompt: promptText }) 
-        });
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-            resBox.innerHTML = data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
-        } else { 
-            resBox.innerHTML = `❌ เกิดข้อผิดพลาดจาก AI: ${data.message}`; 
-        }
-    } catch(err) { 
-        resBox.innerHTML = '❌ เชื่อมต่อเครือข่าย AI ไม่สำเร็จ'; 
-    } finally { 
-        btn.disabled = false; 
-    }
-}
-
-function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
-
-async function sendMessage() {
-    const inputEl = document.getElementById('chat-input');
-    const btnEl = document.getElementById('chat-btn');
-    const text = inputEl.value.trim();
-    if (!text) return; 
-
-    appendMessage('user', text);
-    inputEl.value = ''; 
-    btnEl.disabled = true;
-    const typingId = appendTypingIndicator();
-
-    const dbContext = JSON.stringify({
-        staff: userDataObj,
-        kpi: kpiMaster,
-        am: amHistory,
-        opl: oplHistory,
-        fi: fiHistory,
-        kz: kzHistory,
-        mk: mkHistory
-    });
-
-    const systemPrompt = `Context JSON: ${dbContext}
-กฎการตอบ:
-1. คุณคือ AI Advisor ตอบเป็นภาษาไทย "เท่านั้น"
-2. วิเคราะห์จากสถานะ (Status) และความสำเร็จ (%) ใน JSON
-3. ตอบสั้นที่สุด (ไม่เกิน 5 บรรทัด) ห้ามเกริ่น ห้ามทวนคำถาม
-4. หากถามว่าแผนกไหนน่าห่วง: ให้ดูแผนกที่มี % ต่ำสุด หรือ Status เป็น 'ไม่ผ่าน' หรือ 'Delayed'
-5. ถ้าไม่เจอข้อมูลตอบ "ไม่มีข้อมูลครับ"
-คำถาม: "${text}"`;
-
-    try {
-        const response = await fetch(API_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({ type: 'ai_advisor', prompt: systemPrompt }) 
-        });
-        const data = await response.json();
-        removeElement(typingId);
-
-        if (data.status === 'success') {
-            appendMessage('ai', data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'));
-        } else { 
-            appendMessage('ai', `❌ Error: ${data.message}`); 
-        }
-    } catch(err) { 
-        removeElement(typingId); 
-        appendMessage('ai', `❌ เชื่อมต่อไม่สำเร็จ`); 
-    } finally { 
-        btnEl.disabled = false; 
-        inputEl.focus(); 
-    }
-}
-
-function appendMessage(sender, text) {
-    const chatBody = document.getElementById('chat-body');
-    const msgWrap = document.createElement('div');
-    msgWrap.className = `msg-wrap ${sender}`;
-    msgWrap.innerHTML = `<div class="msg-bubble">${text}</div>`;
-    chatBody.appendChild(msgWrap);
-    chatBody.scrollTop = chatBody.scrollHeight;
-}
-function appendTypingIndicator() {
-    const chatBody = document.getElementById('chat-body');
-    const id = 'typing-' + Date.now();
-    const msgWrap = document.createElement('div');
-    msgWrap.id = id; msgWrap.className = `msg-wrap ai`;
-    msgWrap.innerHTML = `<div class="msg-bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
-    chatBody.appendChild(msgWrap); chatBody.scrollTop = chatBody.scrollHeight;
-    return id;
-}
-function removeElement(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
 loadData();
 </script>
