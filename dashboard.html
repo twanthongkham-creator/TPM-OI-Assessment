@@ -350,7 +350,7 @@ let userDataObj={}, approverDataObj={};
 let chartKPI=null, chartAM=null;
 
 let appData={
-  am:{key:'am',title:'AM-OI Assessment',target:0,actual:0,wip:0,stepDist:[0,0,0,0,0,0]},
+  am:{key:'am',title:'AM-OI Assessment',target:0,actual:0,wip:0,stepDist:[0,0,0,0,0,0], targetScore:0, actualScore:0},
   opl:{key:'opl',title:'OPL Center',target:0,actual:0,wip:0},
   fi:{key:'fi',title:'FI Theme',target:0,actual:0,wip:0},
   kz:{key:'kz',title:'Kaizen Suggestion',target:0,actual:0,wip:0},
@@ -406,7 +406,7 @@ function stepLogic(recs){
   const ok=(l['PassFail']==='ผ่านเกณฑ์'||l['PassFail']==='Pass'||Object.values(l)[15]==='ผ่านเกณฑ์');
   if(!ok)return{class:'st-fail',text:'แก้ไข',rank:1};
   if(tp==='exec')return{class:'st-pass',text:'ผ่านสมบูรณ์',rank:4};
-  if(tp==='lead'||tp==='mgr')return{class:'st-wait-exec',text:'รอผู้บริหาร',rank:3};
+  if(tp==='lead'||tp==='clead'||tp==='mgr')return{class:'st-wait-exec',text:'รอผู้บริหาร',rank:3};
   return{class:'st-wait-lead',text:'รอหัวหน้า',rank:2};
 }
 
@@ -415,7 +415,10 @@ function processAndRender(){
   document.getElementById('loader').style.display='none';
   document.getElementById('main-dashboard-view').style.display='block';
 
-  appData.am.target=0;appData.am.actual=0;appData.am.wip=0;appData.am.stepDist=[0,0,0,0,0,0];
+  appData.am.target=0; appData.am.actual=0; appData.am.wip=0; appData.am.stepDist=[0,0,0,0,0,0];
+  appData.am.targetScore = 0; 
+  appData.am.actualScore = 0; 
+
   const amC=document.getElementById('am-card-container'); amC.innerHTML='';
 
   const amT=kpiMaster.filter(k=>sg(k,'System',0)==='AM-OI'&&(fd==='all'||sg(k,'Department',2)===fd)&&sg(k,'Area',3)!=='ALL'&&sg(k,'Area',3)!=='All');
@@ -424,10 +427,33 @@ function processAndRender(){
   amT.forEach(tr=>{
     const dept=sg(tr,'Department',2), area=sg(tr,'Area',3), tStep=parseInt(sg(tr,'Target_Value',4))||4;
     const ah=amHistory.filter(h=>(sg(h,'Department',3)===dept||Object.values(h)[3]===dept)&&(sg(h,'Area',4)===area||Object.values(h)[4]===area));
-    const approved=ah.filter(h=>sg(h,'Status',23)==='อนุมัติสมบูรณ์'||Object.values(h)[23]==='อนุมัติสมบูรณ์');
+    
+    appData.am.targetScore += tStep;
+    
+    let areaScore = 0;
+    if(ah.length > 0) {
+        const maxAttemptedStep = Math.max(...ah.map(h=>parseInt(sg(h,'AuditRound',6))||0));
+        const maxStepRecords = ah.filter(h=>(parseInt(sg(h,'AuditRound',6))||0)===maxAttemptedStep);
+        
+        let highestLevel = 0;
+        maxStepRecords.forEach(r => {
+            const pf = sg(r, 'PassFail', 15) || Object.values(r)[15];
+            const at = sg(r, 'AuditorType', 7) || Object.values(r)[7];
+            if(pf === 'ผ่านเกณฑ์' || pf === 'Pass') {
+                if(at === 'exec') highestLevel = Math.max(highestLevel, 1.0);
+                else if(at === 'lead' || at === 'clead' || at === 'mgr') highestLevel = Math.max(highestLevel, 0.7);
+                else if(at === 'self') highestLevel = Math.max(highestLevel, 0.3);
+            }
+        });
+        areaScore = Math.max(0, (maxAttemptedStep - 1) + highestLevel);
+        appData.am.stepDist[maxAttemptedStep]++;
+    }
+    
+    appData.am.actualScore += Math.min(areaScore, tStep);
+
+    const approved=ah.filter(h=>(sg(h,'Status',23)||Object.values(h)[23])==='อนุมัติสมบูรณ์');
     const maxStep=approved.length>0?Math.max(...approved.map(h=>parseInt(sg(h,'AuditRound',6))||0)):0;
     if(maxStep>=tStep)appData.am.actual++; else if(ah.length>0)appData.am.wip++;
-    appData.am.stepDist[maxStep]++;
 
     let si={},pStep=1,os={text:'ยังไม่เริ่ม',color:'var(--gray-600)',bg:'rgba(0,0,0,0.05)',rank:0};
     for(let s=1;s<=5;s++){const r=ah.filter(x=>(sg(x,'AuditRound',6)||Object.values(x)[6])==s);si[s]=stepLogic(r);}
@@ -442,12 +468,15 @@ function processAndRender(){
     if(os.rank===2)acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pStep}" class="btn-eval btn-lead">หัวหน้า</a>`;
     else if(os.rank===3)acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pStep}" class="btn-eval btn-exec">ผู้บริหาร</a>`;
 
-    const hb=maxStep>=tStep?`<span class="kpi-badge-hit">Step ${tStep} ✓</span>`:`<span class="kpi-badge-miss">เป้า Step ${tStep}</span>`;
+    let areaPercent = Math.min(Math.round((areaScore / tStep) * 100), 100);
+    const hb=maxStep>=tStep?`<span class="kpi-badge-hit">Step ${tStep} ✓</span>`:`<span class="kpi-badge-miss">เป้า Step ${tStep} (${areaPercent}%)</span>`;
+    
     const card=document.createElement('div'); card.className='area-card';
     card.innerHTML=`<div class="ac-top"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;"><span class="ac-dept">${dept}</span>${hb}</div><span class="ac-status" style="background:${os.bg};color:${os.color};border:1px solid ${os.color}22;">${os.text}</span></div><div class="ac-name">${area}</div>${tn}<div style="margin-top:auto;">${acts}</div>`;
     amC.appendChild(card);
   });
-  appData.am.pct=appData.am.target>0?Math.min(Math.round(appData.am.actual/appData.am.target*100),100):0;
+  
+  appData.am.pct = appData.am.targetScore > 0 ? Math.min(Math.round((appData.am.actualScore / appData.am.targetScore) * 100), 100) : 0;
 
   appData.opl.target=getSysTarget('OPL',fd); appData.fi.target=getSysTarget('FI',fd); appData.kz.target=getSysTarget('Kaizen',fd); appData.mk.target=getSysTarget('Makigami',fd);
   const fOpl=fd==='all'?oplHistory:oplHistory.filter(r=>sg(r,'Department',4)===fd);
@@ -472,7 +501,7 @@ function processAndRender(){
     const wip=d.wip>0?`<span class="wip-badge">⏳ ${d.wip}</span>`:'';
     const card=document.createElement('div'); card.className=`kpi-card p-${def.tc}`;
     card.onclick=()=>openDetail(def.did,d.title);
-    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูข้อมูล →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${pct}%</span><span class="kpi-unit">(${d.actual}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${pct}"></div></div>`;
+    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูข้อมูล →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${appData[def.k].pct}%</span><span class="kpi-unit">(${d.actual}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${appData[def.k].pct}"></div></div>`;
     con.appendChild(card);
   });
 
@@ -520,7 +549,6 @@ async function generateInsights() {
     const fd = document.getElementById('global-filter-dept').value;
     const deptText = fd === 'all' ? 'ภาพรวมทั้งโรงงาน (ทุกแผนก)' : `แผนก ${fd}`;
 
-    // 💡 แพ็คข้อมูลดิบทั้งหมดส่งไปให้วิเคราะห์ (เหมือนช่องแชท)
     const dbContext = JSON.stringify({
         kpi: kpiMaster,
         am: amHistory,
@@ -530,7 +558,6 @@ async function generateInsights() {
         mk: mkHistory
     });
 
-    // 💡 ออกคำสั่งใหม่ บังคับให้เขียน Report อย่างละเอียด
     const promptText = `คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง
 นี่คือข้อมูลดิบของโรงงาน: ${dbContext}
 
@@ -544,7 +571,6 @@ async function generateInsights() {
 อธิบายให้ละเอียด เป็นมืออาชีพ (ความยาว 10-15 บรรทัด) ห้ามเกริ่นนำ ให้เข้าประเด็นทันที`;
 
     try {
-        // 💡 เปลี่ยนมาใช้ API แบบ POST เพื่อรองรับการส่งข้อมูล JSON ขนาดใหญ่
         const response = await fetch(API_URL, { 
             method: 'POST', 
             body: JSON.stringify({ type: 'ai_advisor', prompt: promptText }) 
@@ -562,6 +588,61 @@ async function generateInsights() {
         btn.disabled = false; 
     }
 }
+
+function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
+
+async function sendMessage() {
+    const inputEl = document.getElementById('chat-input');
+    const btnEl = document.getElementById('chat-btn');
+    const text = inputEl.value.trim();
+    if (!text) return; 
+
+    appendMessage('user', text);
+    inputEl.value = ''; 
+    btnEl.disabled = true;
+    const typingId = appendTypingIndicator();
+
+    const dbContext = JSON.stringify({
+        staff: userDataObj,
+        kpi: kpiMaster,
+        am: amHistory,
+        opl: oplHistory,
+        fi: fiHistory,
+        kz: kzHistory,
+        mk: mkHistory
+    });
+
+    const systemPrompt = `Context JSON: ${dbContext}
+กฎการตอบ:
+1. คุณคือ AI Advisor ตอบเป็นภาษาไทย "เท่านั้น"
+2. วิเคราะห์จากสถานะ (Status) และความสำเร็จ (%) ใน JSON
+3. ตอบสั้นที่สุด (ไม่เกิน 5 บรรทัด) ห้ามเกริ่น ห้ามทวนคำถาม
+4. หากถามว่าแผนกไหนน่าห่วง: ให้ดูแผนกที่มี % ต่ำสุด หรือ Status เป็น 'ไม่ผ่าน' หรือ 'Delayed'
+5. ถ้าไม่เจอข้อมูลตอบ "ไม่มีข้อมูลครับ"
+คำถาม: "${text}"`;
+
+    try {
+        const response = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ type: 'ai_advisor', prompt: systemPrompt }) 
+        });
+        const data = await response.json();
+        removeElement(typingId);
+
+        if (data.status === 'success') {
+            appendMessage('ai', data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'));
+        } else { 
+            appendMessage('ai', `❌ Error: ${data.message}`); 
+        }
+    } catch(err) { 
+        removeElement(typingId); 
+        appendMessage('ai', `❌ เชื่อมต่อไม่สำเร็จ`); 
+    } finally { 
+        btnEl.disabled = false; 
+        inputEl.focus(); 
+    }
+}
+
 function appendMessage(sender, text) {
     const chatBody = document.getElementById('chat-body');
     const msgWrap = document.createElement('div');
