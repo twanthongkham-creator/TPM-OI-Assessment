@@ -513,36 +513,15 @@ function goBackToDashboard(){ document.getElementById('detail-view').style.displ
 async function generateInsights() {
     const btn = document.getElementById('btn-ai-analyze');
     const resBox = document.getElementById('ai-result-box');
-    btn.disabled = true; resBox.style.display = 'block'; resBox.innerHTML = 'กำลังวิเคราะห์ข้อมูล...';
+    btn.disabled = true; 
+    resBox.style.display = 'block'; 
+    resBox.innerHTML = '<div style="text-align:center; padding:20px; color:var(--blue-600);">กำลังดึงข้อมูลทั้งระบบให้ AI ประมวลผลเชิงลึก กรุณารอสักครู่... ⏳</div>';
 
     const fd = document.getElementById('global-filter-dept').value;
-    const promptText = `วิเคราะห์ Performance ของโรงงาน ${fd==='all'?'ภาพรวม':'แผนก '+fd} จากข้อมูลสรุป: AM-OI (${appData.am.pct}%), OPL (${appData.opl.pct}%), FI (${appData.fi.pct}%). ให้คำแนะนำผู้บริหาร 3 ข้อสั้นๆ`;
+    const deptText = fd === 'all' ? 'ภาพรวมทั้งโรงงาน (ทุกแผนก)' : `แผนก ${fd}`;
 
-    try {
-        const response = await fetch(API_URL + '?action=generateAIInsights&prompt=' + encodeURIComponent(promptText));
-        const data = await response.json();
-        resBox.innerHTML = data.status==='success' ? data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>') : '❌ เกิดข้อผิดพลาด';
-    } catch(err) { resBox.innerHTML = '❌ เชื่อมต่อ AI ไม่สำเร็จ'; }
-    finally { btn.disabled = false; }
-}
-
-function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
-
-// 💡 ซ่อมฟังก์ชันแชทและอัปเกรดความเร็ว
-async function sendMessage() {
-    const inputEl = document.getElementById('chat-input');
-    const btnEl = document.getElementById('chat-btn');
-    const text = inputEl.value.trim();
-    if (!text) return; // ป้องกันการส่งข้อความว่าง
-
-    appendMessage('user', text);
-    inputEl.value = ''; 
-    btnEl.disabled = true;
-    const typingId = appendTypingIndicator();
-
-    // 1. บีบอัด JSON ให้เล็กที่สุด (ลดค่าใช้จ่าย Token และเพิ่มความเร็ว)
+    // 💡 แพ็คข้อมูลดิบทั้งหมดส่งไปให้วิเคราะห์ (เหมือนช่องแชท)
     const dbContext = JSON.stringify({
-        staff: userDataObj,
         kpi: kpiMaster,
         am: amHistory,
         opl: oplHistory,
@@ -551,38 +530,38 @@ async function sendMessage() {
         mk: mkHistory
     });
 
-    // 2. ปรับ Prompt ให้ดุดันและกระชับ (เน้นผลลัพธ์ ไม่เน้นอธิบายพร่ำเพรื่อ)
-    const systemPrompt = `Context JSON: ${dbContext}
-กฎการตอบ:
-1. คุณคือ AI Advisor ตอบเป็นภาษาไทย "เท่านั้น"
-2. วิเคราะห์จากสถานะ (Status) และความสำเร็จ (%) ใน JSON
-3. ตอบสั้นที่สุด (ไม่เกิน 5 บรรทัด) ห้ามเกริ่น ห้ามทวนคำถาม
-4. หากถามว่าแผนกไหนน่าห่วง: ให้ดูแผนกที่มี % ต่ำสุด หรือ Status เป็น 'ไม่ผ่าน' หรือ 'Delayed'
-5. ถ้าไม่เจอข้อมูลตอบ "ไม่มีข้อมูลครับ"
-คำถาม: "${text}"`;
+    // 💡 ออกคำสั่งใหม่ บังคับให้เขียน Report อย่างละเอียด
+    const promptText = `คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง
+นี่คือข้อมูลดิบของโรงงาน: ${dbContext}
+
+กรุณาวิเคราะห์ Performance ของ "${deptText}" อย่างละเอียดที่สุด
+โครงสร้างการตอบ (ให้ใช้ Bullet point):
+1. [ภาพรวม KPI]: สรุปความสำเร็จและเปอร์เซ็นต์ที่ได้
+2. [จุดเด่น]: แผนก หรือ ระบบที่ทำผลงานได้ดีเยี่ยม (ระบุชื่อ)
+3. [จุดคอขวด]: โปรเจกต์ หรือ แผนกที่ล่าช้า น่าเป็นห่วงที่สุด (ระบุตัวเลขและชื่อเรื่องให้ชัดเจน)
+4. [Action Plan]: ข้อเสนอแนะเชิงกลยุทธ์สำหรับผู้บริหาร 3 ข้อ ว่าควรเข้าไปจี้จุดไหนก่อน
+
+อธิบายให้ละเอียด เป็นมืออาชีพ (ความยาว 10-15 บรรทัด) ห้ามเกริ่นนำ ให้เข้าประเด็นทันที`;
 
     try {
+        // 💡 เปลี่ยนมาใช้ API แบบ POST เพื่อรองรับการส่งข้อมูล JSON ขนาดใหญ่
         const response = await fetch(API_URL, { 
             method: 'POST', 
-            body: JSON.stringify({ type: 'ai_advisor', prompt: systemPrompt }) 
+            body: JSON.stringify({ type: 'ai_advisor', prompt: promptText }) 
         });
         const data = await response.json();
-        removeElement(typingId);
-
+        
         if (data.status === 'success') {
-            appendMessage('ai', data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'));
+            resBox.innerHTML = data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
         } else { 
-            appendMessage('ai', `❌ Error: ${data.message}`); 
+            resBox.innerHTML = `❌ เกิดข้อผิดพลาดจาก AI: ${data.message}`; 
         }
     } catch(err) { 
-        removeElement(typingId); 
-        appendMessage('ai', `❌ เชื่อมต่อไม่สำเร็จ`); 
+        resBox.innerHTML = '❌ เชื่อมต่อเครือข่าย AI ไม่สำเร็จ'; 
     } finally { 
-        btnEl.disabled = false; 
-        inputEl.focus(); 
+        btn.disabled = false; 
     }
 }
-
 function appendMessage(sender, text) {
     const chatBody = document.getElementById('chat-body');
     const msgWrap = document.createElement('div');
