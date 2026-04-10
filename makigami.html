@@ -381,7 +381,7 @@ async function handleSubmit() {
   try {
     await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
     showToast('อัปเดตสถานะ Makigami สำเร็จ!', '#0CA47C');
-    setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 3500);
   } catch (err) {
     showToast('เกิดข้อผิดพลาด: ' + err.message, '#D93838');
     btn.disabled = false; btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> บันทึกอัปเดต Makigami';
