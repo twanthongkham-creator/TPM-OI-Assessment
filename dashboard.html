@@ -231,6 +231,7 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 </style>
 </head>
 <body>
+
 <div class="header glass">
   <div class="h-title">
     <h2>TPM OI — Executive Dashboard</h2>
@@ -283,7 +284,7 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
             <div class="chart-icon-pill">
               <svg width="16" height="16" fill="none" stroke="var(--blue-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
             </div>
-            เปรียบเทียบ % ความสำเร็จ (เทียบเป้าหมาย 100%)
+            เปรียบเทียบ % ความสำเร็จ
           </div>
         </div>
         <div style="flex:1;position:relative"><canvas id="kpiBarChart"></canvas></div>
@@ -343,6 +344,7 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
     <div id="detail-mk" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>รหัส</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้รับผิดชอบ</th><th>Phase</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="mk-table-body"></tbody></table></div></div>
   </div>
 </div>
+
 <script>
 // ⚠️ เปลี่ยน URL ของ Google Apps Script ของคุณตรงนี้
 const API_URL='https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
@@ -536,7 +538,8 @@ function processAndRender(){
         appData.am.stepDist[maxStep - 1]++;
         appData.am.stepDetails[maxStep].push(`[${dept}] ${area}`);
     }
-  // สร้างการ์ดรายละเอียด UI
+
+    // สร้างการ์ดรายละเอียด UI
     let si = {};
     for(let s=1; s<=5; s++) {
         if (s <= maxStep) { si[s] = {class:'st-pass', text:'ผ่านสมบูรณ์', rank:4}; } 
@@ -575,32 +578,86 @@ function processAndRender(){
     amC.appendChild(card);
   });
   
+  // 💡 การคำนวณ % ความคืบหน้าแบบใหม่ (วัด Progressive Score)
   appData.am.pct = appData.am.targetScore > 0 ? Math.min(Math.round((appData.am.actualScore / appData.am.targetScore) * 100), 100) : 0;
 
   appData.opl.target=getSysTarget('OPL',fd); appData.fi.target=getSysTarget('FI',fd); appData.kz.target=getSysTarget('Kaizen',fd); appData.mk.target=getSysTarget('Makigami',fd);
+  
   const fOpl=fd==='all'?oplHistory:oplHistory.filter(r=>sg(r,'Department',4)===fd);
   const fFi=fd==='all'?fiHistory:fiHistory.filter(r=>sg(r,'Department',4)===fd);
   const fKz=fd==='all'?kzHistory:kzHistory.filter(r=>sg(r,'แผนก',3)===fd);
   const fMk=fd==='all'?mkHistory:mkHistory.filter(r=>sg(r,'แผนก',3)===fd);
+  
   const uOpl=[...new Map(fOpl.map(i=>[sg(i,'OPL ID',1),i])).values()];
   const uFi=[...new Map(fFi.map(i=>[sg(i,'FI ID',1),i])).values()];
   const uKz=[...new Map(fKz.map(i=>[sg(i,'เลขที่ Kaizen',0),i])).values()];
   const uMk=[...new Map(fMk.map(i=>[sg(i,'Makigami ID',1),i])).values()];
-  appData.opl.actual=uOpl.filter(r=>{const s=sg(r,'Status',14);return s&&s.includes('สมบูรณ์')}).length;
-  appData.fi.actual=uFi.filter(r=>{const s=sg(r,'Status',14);return s&&s.includes('สมบูรณ์')}).length;
-  appData.kz.actual=uKz.length; appData.mk.actual=uMk.filter(r=>sg(r,'Status',9)==='Completed').length;
-  appData.opl.wip=uOpl.length-appData.opl.actual; appData.fi.wip=uFi.length-appData.fi.actual; appData.kz.wip=0; appData.mk.wip=uMk.length-appData.mk.actual;
-  ['opl','fi','kz','mk'].forEach(k=>{appData[k].pct=appData[k].target>0?Math.round((appData[k].actual/appData[k].target)*100):0;});
+
+  // 1. OPL Progress
+  appData.opl.actual = 0;
+  uOpl.forEach(r => {
+      let st = sg(r,'Status',14) || '';
+      if (st.includes('สมบูรณ์') || st.includes('ผ่าน') || st.includes('Completed')) appData.opl.actual += 1;
+      else if (st.includes('รอหัวหน้า')) appData.opl.actual += 0.5;
+      else if (st.includes('ไม่อนุมัติ') || st.includes('ไม่ผ่าน')) appData.opl.actual += 0;
+      else appData.opl.actual += 0.2; 
+  });
+
+  // 2. FI Theme Progress (10 Steps)
+  appData.fi.actual = 0;
+  uFi.forEach(r => {
+      let st = sg(r,'Status',14) || '';
+      let step = sg(r,'Step ปัจจุบัน',13) || '';
+      if (st.includes('สมบูรณ์') || st.includes('Completed')) appData.fi.actual += 1;
+      else if (st.includes('ยกเลิก') || st.includes('Cancelled')) appData.fi.actual += 0;
+      else {
+          let m = step.match(/Step\s*(\d+)/i);
+          if (m && m[1]) appData.fi.actual += (parseInt(m[1]) / 10);
+          else appData.fi.actual += 0.1;
+      }
+  });
+
+  // 3. Kaizen
+  appData.kz.actual = uKz.length;
+
+  // 4. Makigami Progress (4 Phases)
+  appData.mk.actual = 0;
+  uMk.forEach(r => {
+      let st = sg(r,'Status',9) || '';
+      let phase = sg(r,'Current Phase',6) || '';
+      if (st.includes('สมบูรณ์') || st.includes('Completed')) appData.mk.actual += 1;
+      else if (st.includes('ยกเลิก') || st.includes('Cancelled')) appData.mk.actual += 0;
+      else {
+          if (phase.includes('Phase 4')) appData.mk.actual += 0.90;
+          else if (phase.includes('Phase 3')) appData.mk.actual += 0.75;
+          else if (phase.includes('Phase 2')) appData.mk.actual += 0.50;
+          else if (phase.includes('Phase 1')) appData.mk.actual += 0.25;
+          else appData.mk.actual += 0.1;
+      }
+  });
+
+  // Wip calculations (Total units - Completed units)
+  appData.opl.wip = uOpl.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
+  appData.fi.wip = uFi.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
+  appData.kz.wip = 0; 
+  appData.mk.wip = uMk.filter(r=>!(sg(r,'Status',9)||'').includes('Completed')).length;
+
+  // Calculate PCT
+  ['opl','fi','kz','mk'].forEach(k => {
+      appData[k].pct = appData[k].target > 0 ? Math.min(Math.round((appData[k].actual / appData[k].target) * 100), 100) : 0;
+  });
+
+  const formatActual = (val) => Number.isInteger(val) ? val : (Math.round(val * 10) / 10);
 
   const defs=[{k:'am',tc:'am',unit:'พื้นที่',did:'am'},{k:'opl',tc:'opl',unit:'เรื่อง',did:'opl'},{k:'fi',tc:'fi',unit:'โครงการ',did:'fi'},{k:'kz',tc:'kz',unit:'เรื่อง',did:'kz'},{k:'mk',tc:'mk',unit:'โครงการ',did:'mk'}];
   const con=document.getElementById('kpi-cards-container'); con.innerHTML='';
   defs.forEach(def=>{
     const d=appData[def.k];
-    const pct=d.target>0?Math.min(Math.round(d.actual/d.target*100),100):(d.actual>0?100:0);
+    const pct=d.pct;
     const wip=d.wip>0?`<span class="wip-badge">⏳ ${d.wip}</span>`:'';
     const card=document.createElement('div'); card.className=`kpi-card p-${def.tc}`;
     card.onclick=()=>openDetail(def.did,d.title);
-    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูรายละเอียด →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${appData[def.k].pct}%</span><span class="kpi-unit">(${d.actual}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${appData[def.k].pct}"></div></div>`;
+    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูรายละเอียด →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${pct}%</span><span class="kpi-unit">(${formatActual(d.actual)}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${pct}"></div></div>`;
     con.appendChild(card);
   });
 
@@ -615,36 +672,40 @@ function processAndRender(){
     type:'bar',
     data:{
         labels:['AM-OI','OPL','FI Theme','Kaizen','Makigami'],
-        datasets:[
-            {
-                type: 'bar',
-                label: ' % ความสำเร็จจริง',
-                data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct].map(v=>Math.round(v)),
-                backgroundColor:[
-                    createGrad(ctxKpi, '#3A86FF', '#1E6091', true),
-                    createGrad(ctxKpi, '#F57C00', '#E65100', true),
-                    createGrad(ctxKpi, '#818CF8', '#4F46E5', true),
-                    createGrad(ctxKpi, '#10D2A1', '#0CA47C', true),
-                    createGrad(ctxKpi, '#FFB74D', '#F57C00', true)
-                ],
-                borderRadius:10, borderSkipped:false, barPercentage:0.6
-            },
-            {
-                type: 'line', // 🎯 เส้น Target Line
-                label: ' เป้าหมาย (Target 100%)',
-                data: [100, 100, 100, 100, 100],
-                borderColor: 'rgba(239, 68, 68, 0.8)',
-                backgroundColor: 'rgba(239, 68, 68, 0.8)',
-                borderWidth: 2, borderDash: [6, 4],
-                pointBackgroundColor: '#fff', pointBorderColor: 'rgba(239, 68, 68, 1)', pointRadius: 5, pointHoverRadius: 7,
-                tension: 0
-            }
-        ]
+        datasets:[{
+            label: ' % ความสำเร็จจริง',
+            data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct],
+            backgroundColor:[
+                createGrad(ctxKpi, '#3A86FF', '#1E6091', true),
+                createGrad(ctxKpi, '#F57C00', '#E65100', true),
+                createGrad(ctxKpi, '#818CF8', '#4F46E5', true),
+                createGrad(ctxKpi, '#10D2A1', '#0CA47C', true),
+                createGrad(ctxKpi, '#FFB74D', '#F57C00', true)
+            ],
+            borderRadius:10, borderSkipped:false, barPercentage:0.6
+        }]
     },
+    plugins: [{
+        id: 'barLabels',
+        afterDatasetsDraw(chart) {
+            const { ctx, data } = chart;
+            ctx.save();
+            chart.getDatasetMeta(0).data.forEach((datapoint, index) => {
+                const value = data.datasets[0].data[index];
+                ctx.font = 'bold 14px "IBM Plex Sans Thai"';
+                ctx.fillStyle = '#113A5D';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(value + '%', datapoint.x + 8, datapoint.y + 1);
+            });
+            ctx.restore();
+        }
+    }],
     options:{
         indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        layout: { padding: { right: 45 } }, // เว้นที่ว่างด้านขวาให้ตัวเลข %
         plugins:{
-            legend:{display:true, position:'bottom', labels:{font:cf, usePointStyle:true}},
+            legend:{display:false}, // เอาแถบอธิบายด้านล่างออก
             tooltip:{
                 backgroundColor:'rgba(255,255,255,0.95)', titleColor:'#0A2540', bodyColor:'#113A5D',
                 borderColor:'rgba(255,255,255,1)', borderWidth:1, padding:14,
@@ -687,7 +748,7 @@ function processAndRender(){
                         let step = context.dataIndex + 1;
                         let areas = appData.am.stepDetails[step];
                         if (!areas || areas.length === 0) return 'ไม่มีข้อมูลพื้นที่ใน Step นี้';
-                        return areas.map(a => '📌 ' + a); // โชว์ลิสต์รายชื่อ
+                        return areas.map(a => '📌 ' + a); 
                     }
                 }
             }
@@ -804,7 +865,8 @@ async function generateInsights() {
         kz: kzHistory,
         mk: mkHistory
     });
-  const promptText = `คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง
+
+    const promptText = `คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง
 นี่คือข้อมูลดิบของโรงงาน: ${dbContext}
 
 กรุณาวิเคราะห์ Performance ของ "${deptText}" อย่างละเอียดที่สุด
