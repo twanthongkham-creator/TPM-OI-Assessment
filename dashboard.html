@@ -61,7 +61,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 /* ─── Header ─── */
 .header{position:sticky;top:16px;z-index:100;margin:16px auto 32px;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
-.h-title h2{font-size:clamp(20px,2vw,24px);font-weight:700;color:var(--blue-900);letter-spacing:-0.5px;margin-bottom:4px; line-height: 1.2;}
+.h-title h2{font-size:clamp(20px,2vw,24px);font-weight:700;color:var(--blue-900);letter-spacing:-0.4px;margin-bottom:4px; line-height: 1.2;}
 .h-title p{font-size:13px;color:var(--gray-600);font-weight:500;}
 
 .header-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -175,35 +175,55 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .p-kz .progress-fill{background:linear-gradient(90deg,#6EE7B7,#0CA47C)}
 .p-mk .progress-fill{background:linear-gradient(90deg,#FDA4AF,#F43F5E)}
 
-/* 🤖 AI Executive Tools Box */
+/* 🤖 AI Executive Tools Box - Gemini Branding */
 .ai-box { padding: 32px; margin-bottom: 40px; display: flex; flex-direction: column; gap: 20px; }
 .ai-header-wrapper { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
-.ai-branding { display:flex; align-items:center; gap: 12px; }
-.ai-logo { width:42px; height:42px; background: linear-gradient(135deg, #1E3A8A, #6366F1, #D946EF); border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; box-shadow: 0 8px 20px rgba(99,102,241,0.3); }
-.ai-logo svg { width:24px; height:24px; animation: pulse 3s infinite alternate; }
+.ai-branding { display:flex; align-items:center; gap: 16px; }
+/* 💡 Gemini Color Gradient Logo */
+.ai-logo { 
+  width:48px; height:48px; 
+  background: linear-gradient(135deg, #1A73E8 0%, #8B5CF6 50%, #EC4899 100%); 
+  border-radius:14px; display:flex; align-items:center; justify-content:center; color:#fff; 
+  box-shadow: 0 8px 24px rgba(139,92,246,0.35); 
+}
+.ai-logo svg { width:28px; height:28px; animation: pulse 3s infinite alternate; }
 @keyframes pulse { 0% { transform: scale(1); opacity:0.8; } 100% { transform: scale(1.1); opacity:1; } }
 
-.ai-box h3 { font-size:20px; color:var(--blue-900); font-weight:700; margin-bottom:4px; }
-.ai-box p { font-size:13px; color:var(--gray-600); }
-
-.ai-btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
-.ai-btn { 
-  background:linear-gradient(135deg, #6366F1, #D946EF); color:#fff; border:none; padding:12px 24px; 
-  border-radius:40px; font-weight:700; cursor:pointer; font-size:14px; font-family: var(--font);
-  display:inline-flex; align-items:center; justify-content: center; gap:8px; box-shadow:0 8px 20px rgba(99,102,241,0.3); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+/* 💡 Gemini Branding Text */
+.ai-box h3 { 
+  font-size:22px; font-weight:700; margin-bottom:4px; 
+  background: linear-gradient(135deg, #1E3A8A, #6D28D9, #BE123C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-.ai-btn:hover { transform:translateY(-2px) scale(1.05); box-shadow:0 12px 28px rgba(99,102,241,0.4); }
+.ai-box p { font-size:13px; color:var(--gray-600); font-weight:500;}
+
+/* 💡 Gemini Start Button */
+.ai-btn { 
+  background:linear-gradient(135deg, #1A73E8 0%, #8B5CF6 50%, #EC4899 100%); 
+  color:#fff; border:none; padding:14px 28px; 
+  border-radius:40px; font-weight:700; cursor:pointer; font-size:14px; font-family: var(--font);
+  display:inline-flex; align-items:center; justify-content: center; gap:8px; 
+  box-shadow:0 8px 24px rgba(139,92,246,0.3); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+.ai-btn:hover { transform:translateY(-2px) scale(1.05); box-shadow:0 12px 32px rgba(139,92,246,0.4); }
 .ai-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
 
-.ai-result { display:none; background:rgba(255,255,255,0.8); padding:24px 32px; border-radius:20px; font-size:15px; line-height:1.8; color:var(--blue-900); box-shadow:inset 0 2px 10px rgba(0,0,0,0.03); border:1px solid rgba(99,102,241,0.2); }
-.ai-result b { color: #4F46E5; }
+.ai-result { display:none; background:rgba(255,255,255,0.85); padding:24px 32px; border-radius:20px; font-size:15px; line-height:1.8; color:var(--blue-900); box-shadow:inset 0 2px 10px rgba(0,0,0,0.03); border:1px solid rgba(139,92,246,0.2); }
+.ai-result b { color: #6D28D9; }
 .ai-result ul { margin-left: 20px; margin-top: 10px; }
 .ai-result li { margin-bottom: 8px; }
 
-/* 🤖 AI Chat Advisor Styles */
+/* 🤖 AI Chat Advisor Styles - Gemini Theme */
 .chat-container { display: flex; flex-direction: column; height: 500px; background: rgba(255,255,255,0.7); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border: 1px solid rgba(255,255,255,0.9); border-radius: var(--r-lg); box-shadow: 0 16px 48px rgba(10,37,64,0.08), inset 0 1px 0 rgba(255,255,255,1); overflow: hidden; position: relative; margin-bottom: 40px;}
-.chat-container::after { content:''; position:absolute; bottom:-10%; left:-10%; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%); pointer-events:none; z-index:0;}
+.chat-container::after { content:''; position:absolute; bottom:-10%; left:-10%; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%); pointer-events:none; z-index:0;}
 .chat-header { padding: 20px 32px; background: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(255,255,255,0.7); display: flex; align-items: center; gap: 16px; z-index: 1;}
+.chat-header-icon { 
+  width: 42px; height: 42px; border-radius: 12px; 
+  background: linear-gradient(135deg, #1A73E8, #8B5CF6, #EC4899); 
+  display: flex; align-items: center; justify-content: center; color: #fff; 
+  box-shadow: 0 6px 16px rgba(139,92,246,0.3);
+}
 .chat-header-text h3 { font-size: 18px; font-weight: 700; color: var(--blue-900); line-height: 1.2; margin-bottom:4px;}
 .chat-header-text p { font-size: 13px; color: var(--gray-600); font-weight: 500; }
 .chat-body { flex: 1; padding: 24px 32px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; z-index: 1;}
@@ -213,13 +233,13 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .msg-bubble { padding: 14px 20px; font-size: 15px; line-height: 1.6; font-weight: 500; box-shadow: 0 6px 16px rgba(0,0,0,0.05); }
 .msg-wrap.user .msg-bubble { background: linear-gradient(135deg, var(--blue-600), var(--blue-800)); color: #fff; border-radius: 20px 20px 4px 20px; }
 .msg-wrap.ai .msg-bubble { background: rgba(255,255,255,0.95); color: var(--gray-900); border: 1px solid rgba(255,255,255,1); border-radius: 20px 20px 20px 4px; }
-.msg-bubble b { color: #4F46E5; }
+.msg-bubble b { color: #6D28D9; }
 .msg-wrap.user .msg-bubble b { color: #fff; }
 .chat-footer { padding: 20px 32px; background: rgba(255,255,255,0.6); border-top: 1px solid rgba(255,255,255,0.7); display: flex; gap: 12px; z-index: 1; align-items: center;}
 .chat-input { flex: 1; padding: 16px 24px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.9); background: rgba(255,255,255,0.85); font-family: var(--font); font-size: 15px; outline: none; box-shadow: inset 0 2px 6px rgba(0,0,0,0.02); transition: all 0.3s;}
-.chat-input:focus { background: #fff; border-color: #6366F1; box-shadow: 0 0 0 4px rgba(99,102,241,0.15); }
-.chat-send-btn { background: linear-gradient(135deg, #6366F1, #4F46E5); color: #fff; border: none; border-radius: 40px; padding: 0 28px; height: 50px; font-family: var(--font); font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 6px 20px rgba(99,102,241,0.3); display: flex; align-items: center; gap: 8px;}
-.chat-send-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 24px rgba(99,102,241,0.4); }
+.chat-input:focus { background: #fff; border-color: #8B5CF6; box-shadow: 0 0 0 4px rgba(139,92,246,0.15); }
+.chat-send-btn { background: linear-gradient(135deg, #8B5CF6, #EC4899); color: #fff; border: none; border-radius: 40px; padding: 0 28px; height: 50px; font-family: var(--font); font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 6px 20px rgba(139,92,246,0.3); display: flex; align-items: center; gap: 8px;}
+.chat-send-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 24px rgba(139,92,246,0.4); }
 .typing { display: flex; gap: 5px; padding: 8px 4px; }
 .typing .dot { width: 8px; height: 8px; background: var(--gray-400); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
 .typing .dot:nth-child(1) { animation-delay: -0.32s; }
@@ -478,7 +498,7 @@ function startTour() {
         position: 'bottom'
       },
       {
-        element: '#tour-kpi-grid',
+        element: '#kpi-cards-container',
         intro: '<b>2. สรุป KPI 5 เสา:</b> ดูความสำเร็จเป็นเปอร์เซ็นต์ <br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดและกด "แก้ไข" งานเก่าได้จากที่นี่ครับ',
         position: 'top'
       },
@@ -512,7 +532,6 @@ function startTour() {
   }).start();
 }
 
-// 🟢 ตัวแปรและ Logic เดิมทั้งหมด
 let areaData={}, kpiMaster=[], amHistory=[], oplHistory=[], fiHistory=[], kzHistory=[], mkHistory=[];
 let userDataObj={}, approverDataObj={}; 
 let chartKPI=null, chartAM=null;
@@ -615,7 +634,6 @@ function getSysTarget(sys,fd){
   return t;
 }
 
-// 🍎 Holographic Chart Bar Elements
 const shadowPlugin = {
     id: 'shadowPlugin',
     beforeDatasetsDraw: function(chart) {
@@ -645,7 +663,6 @@ function processAndRender(){
   document.getElementById('loader').style.display='none';
   document.getElementById('main-dashboard-view').style.display='block';
 
-  // รีเซ็ตข้อมูล
   appData.am.target=0; appData.am.actual=0; appData.am.wip=0; 
   appData.am.stepDist=[0,0,0,0,0]; 
   appData.am.stepDetails={1:[], 2:[], 3:[], 4:[], 5:[]};
@@ -835,7 +852,6 @@ function processAndRender(){
     const pct=d.pct;
     const wip=d.wip>0?`<span class="wip-badge">⏳ ${d.wip}</span>`:'';
     const card=document.createElement('div'); card.className=`kpi-card p-${def.tc}`;
-    card.id = `card-${def.k}`; // 💡 Add ID for Guided Tour
     card.onclick=()=>openDetail(def.did,d.title);
     
     let barWidth = Math.min(pct, 100); 
@@ -960,7 +976,7 @@ function processAndRender(){
                         let step = context.dataIndex + 1;
                         let areas = appData.am.stepDetails[step];
                         if (!areas || areas.length === 0) return 'ไม่มีข้อมูลพื้นที่ใน Step นี้';
-                        return areas.map(a => '' + a); 
+                        return areas.map(a => '📌 ' + a); 
                     }
                 }
             }
@@ -997,6 +1013,17 @@ function processAndRender(){
     return `<td><span style="font-weight:700; color:var(--rose-500);">${mkId}</span></td><td>${sg(r, 'แผนก', 3)}</td><td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 4) || sg(r, 'ชื่อเรื่อง (Theme Name)', 4)}</strong></td><td>${sg(r, 'ผู้รับผิดชอบ', 5)}</td><td><span style="color:var(--rose-500); font-weight:700; background:rgba(244,63,94,0.1); padding:4px 10px; border-radius:12px;">${sg(r, 'Current Phase', 6)}</span></td><td><span class="badge ${getStatusBadge(status)}">${status}</span></td><td><a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=edit" class="btn-edit">อัปเดตงาน</a></td>`;
   });
 }
+
+function openDetail(type,title){
+  document.getElementById('main-dashboard-view').style.display='none';
+  document.getElementById('detail-view').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('detail-page-title').innerHTML=`<div class="detail-icon-badge">${mkSVG(type,24)}</div>${title}`;
+  ['am','opl','fi','kz','mk'].forEach(t=>document.getElementById('detail-'+t).style.display='none');
+  document.getElementById('detail-'+type).style.display='block';
+}
+
+function goBackToDashboard(){ document.getElementById('detail-view').style.display='none'; document.getElementById('main-dashboard-view').style.display='block'; }
 
 async function generateInsights() {
     const btn = document.getElementById('btn-ai-analyze'); const resBox = document.getElementById('ai-result-box');
