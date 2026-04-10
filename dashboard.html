@@ -284,7 +284,7 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
             <div class="chart-icon-pill">
               <svg width="16" height="16" fill="none" stroke="var(--blue-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
             </div>
-            เปรียบเทียบ % ความสำเร็จ
+            เปรียบเทียบ % ความคืบหน้าโครงการ
           </div>
         </div>
         <div style="flex:1;position:relative"><canvas id="kpiBarChart"></canvas></div>
@@ -400,7 +400,7 @@ function getStatusBadge(status) {
 
 async function loadData(){
   try {
-    const response = await fetch(API_URL + '?action=getAllDashboardData&t=' + Date.now());
+    const response = await fetch(API_URL + '?action=getAllDashboardData&t=' + Date.now(), { cache: 'no-store' });
     const data = await response.json();
 
     if(data.status === 'success'){
@@ -434,7 +434,14 @@ function initFilter(){
 }
 
 function getSysTarget(sys,fd){
-  let t=0;kpiMaster.forEach(r=>{let rs=sg(r,'System',0),rd=sg(r,'Department',2),rv=parseInt(sg(r,'Target_Value',4))||0;if(rs&&rs.trim()===sys&&(fd==='all'||(rd&&rd.trim()===fd)))t+=rv;});return t;
+  let t=0;
+  kpiMaster.forEach(r=>{
+      let rs=sg(r,'System',0)||'', rd=sg(r,'Department',2)||'', rv=parseInt(sg(r,'Target_Value',4))||0;
+      if(rs.trim().toUpperCase() === sys.toUpperCase() && (fd === 'all' || rd.trim() === fd)) {
+          t += rv;
+      }
+  });
+  return t;
 }
 
 // 🍎 Chart.js Custom Drop Shadow Plugin (Lux Premium Look)
@@ -533,13 +540,11 @@ function processAndRender(){
     if (maxStep >= tStep) appData.am.actual++; 
     else if (maxStep > 0 || currentStepRecords.length > 0) appData.am.wip++;
     
-    // 💡 นำรายชื่อเข้าตะกร้า Step 1-5 เท่านั้น (ตัด Step 0 ทิ้ง)
     if (maxStep >= 1 && maxStep <= 5) {
         appData.am.stepDist[maxStep - 1]++;
         appData.am.stepDetails[maxStep].push(`[${dept}] ${area}`);
     }
 
-    // สร้างการ์ดรายละเอียด UI
     let si = {};
     for(let s=1; s<=5; s++) {
         if (s <= maxStep) { si[s] = {class:'st-pass', text:'ผ่านสมบูรณ์', rank:4}; } 
@@ -578,8 +583,8 @@ function processAndRender(){
     amC.appendChild(card);
   });
   
-  // 💡 การคำนวณ % ความคืบหน้าแบบใหม่ (วัด Progressive Score)
-  appData.am.pct = appData.am.targetScore > 0 ? Math.min(Math.round((appData.am.actualScore / appData.am.targetScore) * 100), 100) : 0;
+  // 💡 ปลดล็อกเพดาน % ให้เกิน 100% ได้
+  appData.am.pct = appData.am.targetScore > 0 ? Math.round((appData.am.actualScore / appData.am.targetScore) * 100) : 0;
 
   appData.opl.target=getSysTarget('OPL',fd); appData.fi.target=getSysTarget('FI',fd); appData.kz.target=getSysTarget('Kaizen',fd); appData.mk.target=getSysTarget('Makigami',fd);
   
@@ -636,18 +641,23 @@ function processAndRender(){
       }
   });
 
-  // Wip calculations (Total units - Completed units)
+  appData.opl.target = getSysTarget('OPL', fd) || uOpl.length || 0;
+  appData.fi.target  = getSysTarget('FI', fd)  || uFi.length  || 0;
+  appData.kz.target  = getSysTarget('Kaizen', fd) || uKz.length || 0;
+  let mkTarget = getSysTarget('Makigami', fd);
+  appData.mk.target  = mkTarget > 0 ? mkTarget : (uMk.length || 0);
+
   appData.opl.wip = uOpl.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
   appData.fi.wip = uFi.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
   appData.kz.wip = 0; 
   appData.mk.wip = uMk.filter(r=>!(sg(r,'Status',9)||'').includes('Completed')).length;
 
-  // Calculate PCT
+  // 💡 ปลดล็อกเพดาน % ขั้นสุดท้าย
   ['opl','fi','kz','mk'].forEach(k => {
-      appData[k].pct = appData[k].target > 0 ? Math.min(Math.round((appData[k].actual / appData[k].target) * 100), 100) : 0;
+      appData[k].pct = appData[k].target > 0 ? Math.round((appData[k].actual / appData[k].target) * 100) : (appData[k].actual > 0 ? 100 : 0);
   });
 
-  const formatActual = (val) => Number.isInteger(val) ? val : (Math.round(val * 10) / 10);
+  const formatActual = (val) => Number.isInteger(val) ? val : (Math.round(val * 10) / 10).toFixed(1);
 
   const defs=[{k:'am',tc:'am',unit:'พื้นที่',did:'am'},{k:'opl',tc:'opl',unit:'เรื่อง',did:'opl'},{k:'fi',tc:'fi',unit:'โครงการ',did:'fi'},{k:'kz',tc:'kz',unit:'เรื่อง',did:'kz'},{k:'mk',tc:'mk',unit:'โครงการ',did:'mk'}];
   const con=document.getElementById('kpi-cards-container'); con.innerHTML='';
@@ -657,13 +667,17 @@ function processAndRender(){
     const wip=d.wip>0?`<span class="wip-badge">⏳ ${d.wip}</span>`:'';
     const card=document.createElement('div'); card.className=`kpi-card p-${def.tc}`;
     card.onclick=()=>openDetail(def.did,d.title);
-    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูรายละเอียด →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${pct}%</span><span class="kpi-unit">(${formatActual(d.actual)}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${pct}"></div></div>`;
+    
+    // กราฟแท่งเล็กๆ ในการ์ด ถ้ายาวเกิน 100 ก็ให้ตันที่ 100% พอ
+    let barWidth = Math.min(pct, 100); 
+    
+    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูรายละเอียด →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${pct}%</span><span class="kpi-unit">(${formatActual(d.actual)}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${barWidth}"></div></div>`;
     con.appendChild(card);
   });
 
   document.querySelectorAll('.kpi-card').forEach((c,i)=>{ setTimeout(()=>{c.classList.add('visible');const f=c.querySelector('.progress-fill');if(f)setTimeout(()=>{f.style.width=f.dataset.w+'%'},60);},i*70); });
 
-  // 🍎 วาดกราฟใหม่
+  // 🍎 วาดกราฟเปรียบเทียบ %
   const cf={family:'IBM Plex Sans Thai',size:13}, gc='rgba(0,0,0,0.03)';
   
   if(chartKPI)chartKPI.destroy();
@@ -673,7 +687,7 @@ function processAndRender(){
     data:{
         labels:['AM-OI','OPL','FI Theme','Kaizen','Makigami'],
         datasets:[{
-            label: ' % ความสำเร็จจริง',
+            label: ' % ความคืบหน้า',
             data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct],
             backgroundColor:[
                 createGrad(ctxKpi, '#3A86FF', '#1E6091', true),
@@ -692,20 +706,22 @@ function processAndRender(){
             ctx.save();
             chart.getDatasetMeta(0).data.forEach((datapoint, index) => {
                 const value = data.datasets[0].data[index];
-                ctx.font = 'bold 14px "IBM Plex Sans Thai"';
-                ctx.fillStyle = '#113A5D';
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(value + '%', datapoint.x + 8, datapoint.y + 1);
+                if (value > 0) {
+                    ctx.font = 'bold 13px "IBM Plex Sans Thai"';
+                    ctx.fillStyle = '#113A5D';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(value + '%', datapoint.x + 8, datapoint.y + 1);
+                }
             });
             ctx.restore();
         }
     }],
     options:{
         indexAxis:'y', responsive:true, maintainAspectRatio:false,
-        layout: { padding: { right: 45 } }, // เว้นที่ว่างด้านขวาให้ตัวเลข %
+        layout: { padding: { right: 45 } }, 
         plugins:{
-            legend:{display:false}, // เอาแถบอธิบายด้านล่างออก
+            legend:{display:false}, 
             tooltip:{
                 backgroundColor:'rgba(255,255,255,0.95)', titleColor:'#0A2540', bodyColor:'#113A5D',
                 borderColor:'rgba(255,255,255,1)', borderWidth:1, padding:14,
@@ -714,12 +730,14 @@ function processAndRender(){
             }
         },
         scales:{
-            x:{max:100, grid:{color:gc, borderDash:[5,5]}, ticks:{font:cf}},
+            // 💡 ไม่จำกัดแกน X ที่ 100 แล้ว ปล่อยให้มันไหลตามค่าจริง
+            x:{beginAtZero:true, grid:{color:gc, borderDash:[5,5]}, ticks:{font:cf}},
             y:{grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai', weight:'bold', size:12}}}
         }
     }
   });
 
+  // 🍎 วาดกราฟการกระจายตัว (สีแยกตาม Step)
   if(chartAM)chartAM.destroy();
   let ctxAm = document.getElementById('amStepChart').getContext('2d');
   chartAM=new Chart(ctxAm,{
@@ -729,8 +747,13 @@ function processAndRender(){
         datasets:[{
             label: ' จำนวนพื้นที่',
             data:appData.am.stepDist,
-            backgroundColor:createGrad(ctxAm, '#34D399', '#0CA47C', false),
-            hoverBackgroundColor:createGrad(ctxAm, '#10D2A1', '#087A5C', false),
+            backgroundColor:[
+                createGrad(ctxAm, '#93C5FD', '#3B82F6', false), // Blue
+                createGrad(ctxAm, '#FCD34D', '#F59E0B', false), // Yellow
+                createGrad(ctxAm, '#A78BFA', '#6366F1', false), // Indigo
+                createGrad(ctxAm, '#6EE7B7', '#10B981', false), // Green
+                createGrad(ctxAm, '#FCA5A5', '#EF4444', false)  // Red
+            ],
             borderRadius:10, borderSkipped:false, barPercentage:0.55
         }]
     },
@@ -748,7 +771,7 @@ function processAndRender(){
                         let step = context.dataIndex + 1;
                         let areas = appData.am.stepDetails[step];
                         if (!areas || areas.length === 0) return 'ไม่มีข้อมูลพื้นที่ใน Step นี้';
-                        return areas.map(a => '' + a); 
+                        return areas.map(a => '📌 ' + a); 
                     }
                 }
             }
