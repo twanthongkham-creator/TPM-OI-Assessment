@@ -7,43 +7,98 @@
 <title>OI Center — Executive Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- ✅ แก้ไข: เปลี่ยนจาก unpkg → cdnjs (รองรับ CSP) และเพิ่ม JS -->
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
-
 <style>
-  .introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 16px; transition: all 0.2s; }
-  .introjs-nextbutton { background: linear-gradient(135deg, #3A86FF, #1E6091) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(58,134,255,0.3) !important; }
-  .introjs-nextbutton:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(58,134,255,0.4) !important; }
-  .introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; background: #F8FAFC !important; border: 1px solid #D9E2EC !important;}
-  .introjs-donebutton { background: linear-gradient(135deg, #2DD4BF, #0CA47C) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(12,164,124,0.3) !important; }
-  .introjs-tooltip { border-radius: 24px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.2); border: 1px solid rgba(255,255,255,0.9); font-family: 'IBM Plex Sans Thai', sans-serif; }
-  .introjs-progress { background-color: #E2E8F0; border-radius: 4px; overflow: hidden; }
-  .introjs-progressbar { background-color: #3A86FF; }
-  .introjs-showElement { z-index: 9999999 !important; }
+/* ─── Intro.js Custom Style ─── */
+.introjs-overlay { opacity: 0.6 !important; }
+.introjs-tooltip {
+  border-radius: 20px !important;
+  padding: 20px 24px !important;
+  box-shadow: 0 24px 60px rgba(10,37,64,0.25) !important;
+  border: 1px solid rgba(255,255,255,0.9) !important;
+  font-family: 'IBM Plex Sans Thai', sans-serif !important;
+  /* ✅ Fix: tooltip ต้องอยู่เหนือทุกอย่าง */
+  z-index: 10000010 !important;
+  position: fixed !important;
+}
+.introjs-tooltipReferenceLayer {
+  z-index: 10000009 !important;
+}
+.introjs-helperLayer {
+  /* ✅ Fix: ปิด backdrop-filter บน helper layer ของ intro.js เพื่อหลีกเลี่ยง stacking context */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 0 0 2000px rgba(10,37,64,0.5) !important;
+  z-index: 10000008 !important;
+}
+.introjs-button {
+  text-shadow: none !important;
+  border-radius: 12px !important;
+  font-family: 'IBM Plex Sans Thai', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 10px 18px !important;
+  transition: all 0.2s !important;
+}
+.introjs-nextbutton {
+  background: linear-gradient(135deg, #3A86FF, #1E6091) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(58,134,255,0.35) !important;
+}
+.introjs-nextbutton:hover { transform: translateY(-1px) !important; }
+.introjs-prevbutton {
+  color: #505A64 !important;
+  text-shadow: none !important;
+  background: #F8FAFC !important;
+  border: 1px solid #D9E2EC !important;
+}
+.introjs-donebutton {
+  background: linear-gradient(135deg, #2DD4BF, #0CA47C) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(12,164,124,0.35) !important;
+}
+.introjs-progress { background-color: #E2E8F0 !important; border-radius: 4px !important; }
+.introjs-progressbar { background: linear-gradient(90deg, #3A86FF, #0CA47C) !important; }
+.introjs-tooltipTitle { font-size: 16px !important; font-weight: 700 !important; color: #0A2540 !important; }
+.introjs-tooltiptext { font-size: 14px !important; line-height: 1.7 !important; color: #505A64 !important; }
+/* ✅ Fix: เมื่อ tour กำลังทำงาน ให้ชั่วคราวปิด backdrop-filter ของ element ที่ถูก highlight */
+.introjs-showElement,
+.introjs-showElement.glass,
+.introjs-showElement.kpi-card,
+.introjs-showElement.chart-box,
+.introjs-showElement.ai-box,
+.introjs-showElement.chat-container,
+.introjs-showElement.filter-section {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  z-index: 10000007 !important;
+  position: relative !important;
+}
 
 :root {
-  --blue-900:#0A2540; --blue-800:#113A5D; --blue-600:#1E6091; --blue-400:#3A86FF;
-  --teal-700:#087A5C; --teal-600:#0CA47C; --teal-500:#14B8A6; --teal-400:#10D2A1;
-  --red-600:#EF4444; --rose-500:#F43F5E;
-  --orange-700:#C46200; --orange-600:#E65100; --orange-500:#F57C00;
-  --indigo-700:#3730A3; --indigo-600:#4F46E5;
-  --gray-900:#1A1C1E; --gray-600:#505A64; --gray-400:#9BA5B1; --gray-200:#D9E2EC;
-  --font:'IBM Plex Sans Thai',sans-serif;
-  --blur:blur(32px) saturate(180%);
-  --r-lg:28px;
+–blue-900:#0A2540; –blue-800:#113A5D; –blue-600:#1E6091; –blue-400:#3A86FF;
+–teal-700:#087A5C; –teal-600:#0CA47C; –teal-500:#14B8A6; –teal-400:#10D2A1;
+–red-600:#EF4444; –rose-500:#F43F5E;
+–orange-700:#C46200; –orange-600:#E65100; –orange-500:#F57C00;
+–indigo-700:#3730A3; –indigo-600:#4F46E5;
+–gray-900:#1A1C1E; –gray-600:#505A64; –gray-400:#9BA5B1; –gray-200:#D9E2EC;
+–font:‘IBM Plex Sans Thai’,sans-serif;
+–blur:blur(32px) saturate(180%);
+–r-lg:28px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-  font-family:var(--font); min-height:100vh;
-  background:linear-gradient(145deg,#e0eaf5 0%,#e8f4f0 35%,#eaecf5 65%,#f4eae4 100%);
-  background-attachment:fixed; color:var(--gray-900); padding-bottom:80px; overflow-x:hidden;
+font-family:var(–font); min-height:100vh;
+background:linear-gradient(145deg,#e0eaf5 0%,#e8f4f0 35%,#eaecf5 65%,#f4eae4 100%);
+background-attachment:fixed; color:var(–gray-900); padding-bottom:80px; overflow-x:hidden;
 }
-
-body::before,body::after, .ambient-blob{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(120px);opacity:0.55}
+body::before,body::after,.ambient-blob{
+content:’’;position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(120px);opacity:0.55;
+}
 body::before{width:70vw;height:70vw;max-width:800px;max-height:800px;background:radial-gradient(circle,rgba(58,134,255,0.4) 0%,transparent 70%);top:-20%;left:-10%;animation:b1 18s ease-in-out infinite alternate}
 body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:radial-gradient(circle,rgba(12,164,124,0.3) 0%,transparent 70%);bottom:-15%;right:-10%;animation:b2 22s ease-in-out infinite alternate}
 .ambient-blob{width:50vw;height:50vw;max-width:600px;max-height:600px;background:radial-gradient(circle,rgba(245,124,0,0.2) 0%,transparent 70%);top:30%;left:30%;animation:b3 25s ease-in-out infinite alternate}
@@ -54,240 +109,191 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .wrap{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
 
 .glass{
-  background:rgba(255,255,255,0.65);
-  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
-  border:1px solid rgba(255,255,255,0.9);
-  border-bottom-color:rgba(255,255,255,0.4);border-right-color:rgba(255,255,255,0.4);
-  box-shadow:0 12px 40px rgba(10,37,64,0.06),inset 0 1px 0 rgba(255,255,255,0.8);
-  border-radius:var(--r-lg);position:relative;overflow:hidden;
+background:rgba(255,255,255,0.65);
+backdrop-filter:var(–blur);-webkit-backdrop-filter:var(–blur);
+border:1px solid rgba(255,255,255,0.9);
+border-bottom-color:rgba(255,255,255,0.4);border-right-color:rgba(255,255,255,0.4);
+box-shadow:0 12px 40px rgba(10,37,64,0.06),inset 0 1px 0 rgba(255,255,255,0.8);
+border-radius:var(–r-lg);position:relative;overflow:hidden;
 }
 
 .header{position:sticky;top:16px;z-index:100;margin:16px auto 32px;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
-.h-title h2{font-size:clamp(20px,2vw,24px);font-weight:700;color:var(--blue-900);letter-spacing:-0.4px;margin-bottom:4px; line-height: 1.2;}
-.h-title p{font-size:13px;color:var(--gray-600);font-weight:500;}
-
-.header-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.btn-help, .pill-btn {
-  height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 0 20px; border-radius: 40px; font-size: 13.5px; font-weight: 700; font-family: var(--font);
-  white-space: nowrap; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.btn-help {
-  background: linear-gradient(135deg, #FF9800, #E65100); color: white; border: none;
-  box-shadow: 0 4px 15px rgba(245,124,0,0.3); cursor: pointer;
-}
-.btn-help:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245,124,0,0.4); }
-.pill-btn {
-  background: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,1);
-  color: var(--blue-800); text-decoration: none; box-shadow: 0 4px 14px rgba(10,37,64,0.06);
-}
-.pill-btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,37,64,0.1); }
+.h-title h2{font-size:clamp(20px,2vw,24px);font-weight:700;color:var(–blue-900);letter-spacing:-0.4px;margin-bottom:4px;line-height:1.2;}
+.h-title p{font-size:13px;color:var(–gray-600);font-weight:500;}
+.header-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.btn-help,.pill-btn{height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border-radius:40px;font-size:13.5px;font-weight:700;font-family:var(–font);white-space:nowrap;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);}
+.btn-help{background:linear-gradient(135deg,#FF9800,#E65100);color:white;border:none;box-shadow:0 4px 15px rgba(245,124,0,0.3);cursor:pointer;}
+.btn-help:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(245,124,0,0.4);}
+.pill-btn{background:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,1);color:var(–blue-800);text-decoration:none;box-shadow:0 4px 14px rgba(10,37,64,0.06);}
+.pill-btn:hover{background:#fff;transform:translateY(-2px);box-shadow:0 8px 24px rgba(10,37,64,0.1);}
 
 .filter-section{padding:16px 24px;margin-bottom:32px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.filter-section label{font-size:14px;font-weight:700;color:var(--blue-800);display:flex;align-items:center;gap:8px}
-.filter-select{
-  padding:10px 40px 10px 16px;font-family:var(--font);font-size:14px;font-weight:600;
-  color:var(--blue-800);background:rgba(255,255,255,0.8);min-width:280px;outline:none;cursor:pointer;
-  border:1px solid rgba(255,255,255,0.9);border-radius:40px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.04);transition:all 0.2s;appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%23113A5D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 16px center;
-}
+.filter-section label{font-size:14px;font-weight:700;color:var(–blue-800);display:flex;align-items:center;gap:8px}
+.filter-select{padding:10px 40px 10px 16px;font-family:var(–font);font-size:14px;font-weight:600;color:var(–blue-800);background:rgba(255,255,255,0.8);min-width:280px;outline:none;cursor:pointer;border:1px solid rgba(255,255,255,0.9);border-radius:40px;box-shadow:0 4px 12px rgba(0,0,0,0.04);transition:all 0.2s;appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’%3E%3Cpath d=‘M1 1l5 6 5-6’ fill=‘none’ stroke=’%23113A5D’ stroke-width=‘2’ stroke-linecap=‘round’ stroke-linejoin=‘round’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 16px center;}
 .filter-select:focus{border-color:rgba(58,134,255,0.5);box-shadow:0 0 0 4px rgba(58,134,255,0.15)}
 
-.sec-lbl{font-size:14px;font-weight:700;letter-spacing:1px;color:var(--blue-800);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:12px;opacity: 0.9;}
-.sec-lbl::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,rgba(10,37,64,0.15),transparent); border-radius: 2px;}
+.sec-lbl{font-size:14px;font-weight:700;letter-spacing:1px;color:var(–blue-800);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:12px;opacity:0.9;}
+.sec-lbl::after{content:’’;flex:1;height:2px;background:linear-gradient(90deg,rgba(10,37,64,0.15),transparent);border-radius:2px;}
 
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:40px}
 .kpi-card{
-  padding: 32px 24px 28px; display:flex; flex-direction:column; cursor:pointer; text-decoration:none;
-  border-radius: var(--r-lg); position:relative; overflow:hidden;
-  backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
-  background:rgba(255,255,255,0.55);
-  border:1px solid rgba(255,255,255,0.9);
-  box-shadow:0 12px 32px rgba(10,37,64,0.05), inset 0 1px 0 rgba(255,255,255,1);
-  transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s forwards;
+padding:32px 24px 28px;display:flex;flex-direction:column;cursor:pointer;text-decoration:none;
+border-radius:var(–r-lg);position:relative;overflow:hidden;
+backdrop-filter:var(–blur);-webkit-backdrop-filter:var(–blur);
+background:rgba(255,255,255,0.55);
+border:1px solid rgba(255,255,255,0.9);
+box-shadow:0 12px 32px rgba(10,37,64,0.05),inset 0 1px 0 rgba(255,255,255,1);
+transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+opacity:0;transform:translateY(20px);animation:fadeUp 0.6s forwards;
 }
-@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-.kpi-card:nth-child(1) { animation-delay: 0.1s; }
-.kpi-card:nth-child(2) { animation-delay: 0.2s; }
-.kpi-card:nth-child(3) { animation-delay: 0.3s; }
-.kpi-card:nth-child(4) { animation-delay: 0.4s; }
-.kpi-card:nth-child(5) { animation-delay: 0.5s; }
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+.kpi-card:nth-child(1){animation-delay:0.1s}.kpi-card:nth-child(2){animation-delay:0.2s}
+.kpi-card:nth-child(3){animation-delay:0.3s}.kpi-card:nth-child(4){animation-delay:0.4s}
+.kpi-card:nth-child(5){animation-delay:0.5s}
+.kpi-card::after{content:’’;position:absolute;top:-30%;right:-30%;width:200px;height:200px;border-radius:50%;opacity:0.3;filter:blur(40px);pointer-events:none;transition:all 0.5s ease;z-index:0;}
+.kpi-card:hover{transform:translateY(-8px) scale(1.02);background:rgba(255,255,255,0.85);box-shadow:0 24px 48px rgba(10,37,64,0.1),inset 0 1px 0 rgba(255,255,255,1);}
+.kpi-card:hover::after{opacity:0.8;transform:scale(1.4);}
+.p-am{border-color:rgba(58,134,255,0.4);}.p-am::after{background:radial-gradient(circle,#3A86FF 0%,transparent 70%);}
+.p-am:hover{box-shadow:0 24px 48px rgba(58,134,255,0.15),inset 0 1px 0 #fff;}
+.p-opl{border-color:rgba(245,124,0,0.4);}.p-opl::after{background:radial-gradient(circle,#F57C00 0%,transparent 70%);}
+.p-opl:hover{box-shadow:0 24px 48px rgba(245,124,0,0.15),inset 0 1px 0 #fff;}
+.p-fi{border-color:rgba(99,102,241,0.4);}.p-fi::after{background:radial-gradient(circle,#6366F1 0%,transparent 70%);}
+.p-fi:hover{box-shadow:0 24px 48px rgba(99,102,241,0.15),inset 0 1px 0 #fff;}
+.p-kz{border-color:rgba(16,185,129,0.4);}.p-kz::after{background:radial-gradient(circle,#10B981 0%,transparent 70%);}
+.p-kz:hover{box-shadow:0 24px 48px rgba(16,185,129,0.15),inset 0 1px 0 #fff;}
+.p-mk{border-color:rgba(244,63,94,0.4);}.p-mk::after{background:radial-gradient(circle,#F43F5E 0%,transparent 70%);}
+.p-mk:hover{box-shadow:0 24px 48px rgba(244,63,94,0.15),inset 0 1px 0 #fff;}
 
-.kpi-card::after{
-  content:'';position:absolute;top:-30%;right:-30%; width:200px;height:200px;border-radius:50%;
-  opacity:0.3;filter:blur(40px);pointer-events:none;transition:all 0.5s ease; z-index:0;
-}
-.kpi-card:hover{transform:translateY(-8px) scale(1.02); background:rgba(255,255,255,0.85); box-shadow:0 24px 48px rgba(10,37,64,0.1), inset 0 1px 0 rgba(255,255,255,1);}
-.kpi-card:hover::after{opacity:0.8; transform:scale(1.4);}
-
-.p-am  {border-color:rgba(58,134,255,0.4);}   .p-am::after{background:radial-gradient(circle, #3A86FF 0%, transparent 70%);}
-.p-am:hover  { box-shadow: 0 24px 48px rgba(58,134,255,0.15), inset 0 1px 0 #fff; }
-.p-opl {border-color:rgba(245,124,0,0.4);}    .p-opl::after{background:radial-gradient(circle, #F57C00 0%, transparent 70%);}
-.p-opl:hover { box-shadow: 0 24px 48px rgba(245,124,0,0.15), inset 0 1px 0 #fff; }
-.p-fi  {border-color:rgba(99,102,241,0.4);}   .p-fi::after{background:radial-gradient(circle, #6366F1 0%, transparent 70%);}
-.p-fi:hover  { box-shadow: 0 24px 48px rgba(99,102,241,0.15), inset 0 1px 0 #fff; }
-.p-kz  {border-color:rgba(16,185,129,0.4);}   .p-kz::after{background:radial-gradient(circle, #10B981 0%, transparent 70%);}
-.p-kz:hover  { box-shadow: 0 24px 48px rgba(16,185,129,0.15), inset 0 1px 0 #fff; }
-.p-mk  {border-color:rgba(244,63,94,0.4);}    .p-mk::after{background:radial-gradient(circle, #F43F5E 0%, transparent 70%);}
-.p-mk:hover  { box-shadow: 0 24px 48px rgba(244,63,94,0.15), inset 0 1px 0 #fff; }
-
-.kpi-icon-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px; position:relative; z-index:2;}
-.kpi-svg-wrap{
-  width:72px;height:72px;border-radius:22px;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 10px 24px rgba(0,0,0,0.1); flex-shrink:0; color:#fff;
-  transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+.kpi-icon-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;position:relative;z-index:2;}
+.kpi-svg-wrap{width:72px;height:72px;border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(0,0,0,0.1);flex-shrink:0;color:#fff;transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}
 .kpi-card:hover .kpi-svg-wrap{transform:scale(1.15) rotate(-5deg)}
-.kpi-svg-wrap svg{width:36px;height:36px; stroke-width:2;}
-.p-am  .kpi-svg-wrap{background:linear-gradient(135deg, #60A5FA, #2563EB);}
-.p-opl .kpi-svg-wrap{background:linear-gradient(135deg, #FBBF24, #EA580C);}
-.p-fi  .kpi-svg-wrap{background:linear-gradient(135deg, #A78BFA, #4F46E5);}
-.p-kz  .kpi-svg-wrap{background:linear-gradient(135deg, #34D399, #059669);}
-.p-mk  .kpi-svg-wrap{background:linear-gradient(135deg, #FB7185, #E11D48);}
-
-.hint-arrow{font-size:12px;font-weight:700;color:var(--blue-600);opacity:0;transform:translateX(5px);transition:all 0.3s ease; padding-top: 5px;}
+.kpi-svg-wrap svg{width:36px;height:36px;stroke-width:2;}
+.p-am .kpi-svg-wrap{background:linear-gradient(135deg,#60A5FA,#2563EB);}
+.p-opl .kpi-svg-wrap{background:linear-gradient(135deg,#FBBF24,#EA580C);}
+.p-fi .kpi-svg-wrap{background:linear-gradient(135deg,#A78BFA,#4F46E5);}
+.p-kz .kpi-svg-wrap{background:linear-gradient(135deg,#34D399,#059669);}
+.p-mk .kpi-svg-wrap{background:linear-gradient(135deg,#FB7185,#E11D48);}
+.hint-arrow{font-size:12px;font-weight:700;color:var(–blue-600);opacity:0;transform:translateX(5px);transition:all 0.3s ease;padding-top:5px;}
 .kpi-card:hover .hint-arrow{opacity:1;transform:translateX(0)}
-
-.kpi-title{font-size:18px;font-weight:700;color:var(--blue-900);margin-bottom:12px; position:relative; z-index:2;}
-.kpi-val-row{display:flex;align-items:baseline;gap:8px;margin-bottom:8px; position:relative; z-index:2;}
-.kpi-val{font-size:48px;font-weight:700;color:var(--blue-900);line-height:1;letter-spacing:-2px}
-.kpi-unit{font-size:15px;font-weight:600;color:var(--gray-600)}
-.kpi-sub{font-size:13px;color:var(--gray-600);font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:8px; position:relative; z-index:2;}
-.wip-badge{font-size:12px;color:var(--orange-600);background:rgba(245,124,0,0.15);padding:4px 12px;border-radius:20px;font-weight:700}
-
-.progress-track{height:8px;background:rgba(0,0,0,0.05);border-radius:10px;overflow:hidden; box-shadow:inset 0 1px 3px rgba(0,0,0,0.05); position:relative; z-index:2;}
-.progress-fill{height:100%;border-radius:10px;transition:width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);position:relative}
-.progress-fill::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.6),transparent);animation:sheen 2.5s ease-in-out infinite}
+.kpi-title{font-size:18px;font-weight:700;color:var(–blue-900);margin-bottom:12px;position:relative;z-index:2;}
+.kpi-val-row{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;position:relative;z-index:2;}
+.kpi-val{font-size:48px;font-weight:700;color:var(–blue-900);line-height:1;letter-spacing:-2px}
+.kpi-unit{font-size:15px;font-weight:600;color:var(–gray-600)}
+.kpi-sub{font-size:13px;color:var(–gray-600);font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:8px;position:relative;z-index:2;}
+.wip-badge{font-size:12px;color:var(–orange-600);background:rgba(245,124,0,0.15);padding:4px 12px;border-radius:20px;font-weight:700}
+.progress-track{height:8px;background:rgba(0,0,0,0.05);border-radius:10px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);position:relative;z-index:2;}
+.progress-fill{height:100%;border-radius:10px;transition:width 1.5s cubic-bezier(0.175,0.885,0.32,1.275);position:relative}
+.progress-fill::after{content:’’;position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.6),transparent);animation:sheen 2.5s ease-in-out infinite}
 @keyframes sheen{0%{left:-100%}50%,100%{left:200%}}
-.p-am  .progress-fill{background:linear-gradient(90deg,#93C5FD,#3A86FF)}
+.p-am .progress-fill{background:linear-gradient(90deg,#93C5FD,#3A86FF)}
 .p-opl .progress-fill{background:linear-gradient(90deg,#FCD34D,#F57C00)}
-.p-fi  .progress-fill{background:linear-gradient(90deg,#A5B4FC,#4F46E5)}
-.p-kz  .progress-fill{background:linear-gradient(90deg,#6EE7B7,#0CA47C)}
-.p-mk  .progress-fill{background:linear-gradient(90deg,#FDA4AF,#F43F5E)}
+.p-fi .progress-fill{background:linear-gradient(90deg,#A5B4FC,#4F46E5)}
+.p-kz .progress-fill{background:linear-gradient(90deg,#6EE7B7,#0CA47C)}
+.p-mk .progress-fill{background:linear-gradient(90deg,#FDA4AF,#F43F5E)}
 
-.ai-box { padding: 32px; margin-bottom: 40px; display: flex; flex-direction: column; gap: 20px; border:1px solid rgba(255,255,255,0.9); }
-.ai-header-wrapper { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
-.ai-branding { display:flex; align-items:center; gap: 16px; }
-.gemini-logo-svg { width: 48px; height: 48px; filter: drop-shadow(0 4px 12px rgba(139,92,246,0.3)); animation: pulse 3s infinite alternate; }
-@keyframes pulse { 0% { transform: scale(1); opacity:0.9; } 100% { transform: scale(1.1); opacity:1; filter: drop-shadow(0 6px 16px rgba(139,92,246,0.5)); } }
-.ai-box h3 { font-size:22px; font-weight:700; margin-bottom:4px; background: linear-gradient(90deg, #1A73E8, #8B5CF6, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.ai-box p { font-size:13px; color:var(--gray-600); font-weight:500;}
-.ai-btn { background:linear-gradient(135deg, #1A73E8 0%, #8B5CF6 50%, #EC4899 100%); color:#fff; border:none; padding:14px 28px; border-radius:40px; font-weight:700; cursor:pointer; font-size:14px; font-family: var(--font); display:inline-flex; align-items:center; justify-content: center; gap:8px; box-shadow:0 8px 24px rgba(139,92,246,0.3); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-.ai-btn:hover { transform:translateY(-2px) scale(1.05); box-shadow:0 12px 32px rgba(139,92,246,0.45); }
-.ai-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
-.ai-result { display:none; background:rgba(255,255,255,0.85); padding:24px 32px; border-radius:20px; font-size:15px; line-height:1.8; color:var(--blue-900); box-shadow:inset 0 2px 10px rgba(0,0,0,0.03); border:1px solid rgba(139,92,246,0.2); }
-.ai-result b { color: #8B5CF6; }
-.ai-result ul { margin-left: 20px; margin-top: 10px; }
-.ai-result li { margin-bottom: 8px; }
+.ai-box{padding:32px;margin-bottom:40px;display:flex;flex-direction:column;gap:20px;border:1px solid rgba(255,255,255,0.9);}
+.ai-header-wrapper{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+.ai-branding{display:flex;align-items:center;gap:16px;}
+.gemini-logo-svg{width:48px;height:48px;filter:drop-shadow(0 4px 12px rgba(139,92,246,0.3));animation:pulse 3s infinite alternate;}
+@keyframes pulse{0%{transform:scale(1);opacity:0.9;}100%{transform:scale(1.1);opacity:1;filter:drop-shadow(0 6px 16px rgba(139,92,246,0.5));}}
+.ai-box h3{font-size:22px;font-weight:700;margin-bottom:4px;background:linear-gradient(90deg,#1A73E8,#8B5CF6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ai-box p{font-size:13px;color:var(–gray-600);font-weight:500;}
+.ai-btn{background:linear-gradient(135deg,#1A73E8 0%,#8B5CF6 50%,#EC4899 100%);color:#fff;border:none;padding:14px 28px;border-radius:40px;font-weight:700;cursor:pointer;font-size:14px;font-family:var(–font);display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 24px rgba(139,92,246,0.3);transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);}
+.ai-btn:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 12px 32px rgba(139,92,246,0.45);}
+.ai-btn:disabled{opacity:0.7;cursor:not-allowed;transform:none;}
+.ai-result{display:none;background:rgba(255,255,255,0.85);padding:24px 32px;border-radius:20px;font-size:15px;line-height:1.8;color:var(–blue-900);box-shadow:inset 0 2px 10px rgba(0,0,0,0.03);border:1px solid rgba(139,92,246,0.2);}
+.ai-result b{color:#8B5CF6;}
 
-.chat-container { display: flex; flex-direction: column; height: 500px; background: rgba(255,255,255,0.7); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border: 1px solid rgba(255,255,255,0.9); border-radius: var(--r-lg); box-shadow: 0 16px 48px rgba(10,37,64,0.08), inset 0 1px 0 rgba(255,255,255,1); overflow: hidden; position: relative; margin-bottom: 40px;}
-.chat-container::after { content:''; position:absolute; bottom:-10%; left:-10%; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%); pointer-events:none; z-index:0;}
-.chat-header { padding: 20px 32px; background: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(255,255,255,0.7); display: flex; align-items: center; gap: 16px; z-index: 1;}
-.chat-header-text h3 { font-size: 18px; font-weight: 700; color: var(--blue-900); line-height: 1.2; margin-bottom:4px;}
-.chat-header-text p { font-size: 13px; color: var(--gray-600); font-weight: 500; }
-.chat-body { flex: 1; padding: 24px 32px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; z-index: 1;}
-.msg-wrap { display: flex; flex-direction: column; max-width: 85%; }
-.msg-wrap.user { align-self: flex-end; }
-.msg-wrap.ai { align-self: flex-start; }
-.msg-bubble { padding: 14px 20px; font-size: 15px; line-height: 1.6; font-weight: 500; box-shadow: 0 6px 16px rgba(0,0,0,0.05); }
-.msg-wrap.user .msg-bubble { background: linear-gradient(135deg, var(--blue-600), var(--blue-800)); color: #fff; border-radius: 20px 20px 4px 20px; }
-.msg-wrap.ai .msg-bubble { background: rgba(255,255,255,0.95); color: var(--gray-900); border: 1px solid rgba(255,255,255,1); border-radius: 20px 20px 20px 4px; }
-.msg-bubble b { color: #8B5CF6; }
-.msg-wrap.user .msg-bubble b { color: #fff; }
-.chat-footer { padding: 20px 32px; background: rgba(255,255,255,0.6); border-top: 1px solid rgba(255,255,255,0.7); display: flex; gap: 12px; z-index: 1; align-items: center;}
-.chat-input { flex: 1; padding: 16px 24px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.9); background: rgba(255,255,255,0.85); font-family: var(--font); font-size: 15px; outline: none; box-shadow: inset 0 2px 6px rgba(0,0,0,0.02); transition: all 0.3s;}
-.chat-input:focus { background: #fff; border-color: #8B5CF6; box-shadow: 0 0 0 4px rgba(139,92,246,0.15); }
-.chat-send-btn { background: linear-gradient(135deg, #8B5CF6, #EC4899); color: #fff; border: none; border-radius: 40px; padding: 0 28px; height: 50px; font-family: var(--font); font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 6px 20px rgba(139,92,246,0.3); display: flex; align-items: center; gap: 8px;}
-.chat-send-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 24px rgba(139,92,246,0.4); }
-.typing { display: flex; gap: 5px; padding: 8px 4px; }
-.typing .dot { width: 8px; height: 8px; background: var(--gray-400); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
-.typing .dot:nth-child(1) { animation-delay: -0.32s; }
-.typing .dot:nth-child(2) { animation-delay: -0.16s; }
-@keyframes bounce { 0%,80%,100%{transform:scale(0)}40%{transform:scale(1)} }
+.chat-container{display:flex;flex-direction:column;height:500px;background:rgba(255,255,255,0.7);backdrop-filter:var(–blur);-webkit-backdrop-filter:var(–blur);border:1px solid rgba(255,255,255,0.9);border-radius:var(–r-lg);box-shadow:0 16px 48px rgba(10,37,64,0.08),inset 0 1px 0 rgba(255,255,255,1);overflow:hidden;position:relative;margin-bottom:40px;}
+.chat-container::after{content:’’;position:absolute;bottom:-10%;left:-10%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,0.15) 0%,transparent 70%);pointer-events:none;z-index:0;}
+.chat-header{padding:20px 32px;background:rgba(255,255,255,0.6);border-bottom:1px solid rgba(255,255,255,0.7);display:flex;align-items:center;gap:16px;z-index:1;}
+.chat-header-text h3{font-size:18px;font-weight:700;color:var(–blue-900);line-height:1.2;margin-bottom:4px;}
+.chat-header-text p{font-size:13px;color:var(–gray-600);font-weight:500;}
+.chat-body{flex:1;padding:24px 32px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;z-index:1;}
+.msg-wrap{display:flex;flex-direction:column;max-width:85%;}
+.msg-wrap.user{align-self:flex-end;}.msg-wrap.ai{align-self:flex-start;}
+.msg-bubble{padding:14px 20px;font-size:15px;line-height:1.6;font-weight:500;box-shadow:0 6px 16px rgba(0,0,0,0.05);}
+.msg-wrap.user .msg-bubble{background:linear-gradient(135deg,var(–blue-600),var(–blue-800));color:#fff;border-radius:20px 20px 4px 20px;}
+.msg-wrap.ai .msg-bubble{background:rgba(255,255,255,0.95);color:var(–gray-900);border:1px solid rgba(255,255,255,1);border-radius:20px 20px 20px 4px;}
+.msg-bubble b{color:#8B5CF6;}.msg-wrap.user .msg-bubble b{color:#fff;}
+.chat-footer{padding:20px 32px;background:rgba(255,255,255,0.6);border-top:1px solid rgba(255,255,255,0.7);display:flex;gap:12px;z-index:1;align-items:center;}
+.chat-input{flex:1;padding:16px 24px;border-radius:40px;border:1px solid rgba(255,255,255,0.9);background:rgba(255,255,255,0.85);font-family:var(–font);font-size:15px;outline:none;box-shadow:inset 0 2px 6px rgba(0,0,0,0.02);transition:all 0.3s;}
+.chat-input:focus{background:#fff;border-color:#8B5CF6;box-shadow:0 0 0 4px rgba(139,92,246,0.15);}
+.chat-send-btn{background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:40px;padding:0 28px;height:50px;font-family:var(–font);font-weight:700;font-size:15px;cursor:pointer;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 6px 20px rgba(139,92,246,0.3);display:flex;align-items:center;gap:8px;}
+.chat-send-btn:hover{transform:translateY(-2px) scale(1.05);}
+.typing{display:flex;gap:5px;padding:8px 4px;}
+.typing .dot{width:8px;height:8px;background:var(–gray-400);border-radius:50%;animation:bounce 1.4s infinite ease-in-out both;}
+.typing .dot:nth-child(1){animation-delay:-0.32s;}.typing .dot:nth-child(2){animation-delay:-0.16s;}
+@keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
 
 .charts-overview{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px}
 @media(max-width:800px){.charts-overview{grid-template-columns:1fr}}
-.chart-box{
-  background:rgba(255,255,255,0.7); backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
-  border:1px solid rgba(255,255,255,0.9); border-radius:32px; padding:32px;
-  display:flex; flex-direction:column; height:450px;
-  box-shadow:0 16px 48px rgba(10,37,64,0.06), inset 0 2px 0 rgba(255,255,255,0.9);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
-  opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s forwards 0.3s;
-}
-.chart-box:hover { transform: translateY(-8px); box-shadow: 0 24px 64px rgba(10,37,64,0.1), inset 0 2px 0 #fff; }
+.chart-box{background:rgba(255,255,255,0.7);backdrop-filter:var(–blur);-webkit-backdrop-filter:var(–blur);border:1px solid rgba(255,255,255,0.9);border-radius:32px;padding:32px;display:flex;flex-direction:column;height:450px;box-shadow:0 16px 48px rgba(10,37,64,0.06),inset 0 2px 0 rgba(255,255,255,0.9);transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275),box-shadow 0.4s ease;opacity:0;transform:translateY(20px);animation:fadeUp 0.6s forwards 0.3s;}
+.chart-box:hover{transform:translateY(-8px);box-shadow:0 24px 64px rgba(10,37,64,0.1),inset 0 2px 0 #fff;}
 .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.chart-title-text{font-size:18px;font-weight:700;color:var(--blue-900);display:flex;align-items:center;gap:12px; letter-spacing:-0.3px;}
-.chart-icon-pill{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg, #fff, #f0f4f8);border:1px solid rgba(255,255,255,1);box-shadow:0 6px 16px rgba(0,0,0,0.06); color:var(--blue-600);}
+.chart-title-text{font-size:18px;font-weight:700;color:var(–blue-900);display:flex;align-items:center;gap:12px;letter-spacing:-0.3px;}
+.chart-icon-pill{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#fff,#f0f4f8);border:1px solid rgba(255,255,255,1);box-shadow:0 6px 16px rgba(0,0,0,0.06);color:var(–blue-600);}
 .chart-icon-pill svg{width:22px;height:22px}
 
 .detail-view{display:none;animation:slideUp 0.4s cubic-bezier(0.34,1.2,0.64,1)}
 @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 .detail-header-wrap{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.5);flex-wrap:wrap;gap:16px}
-.detail-header-title{font-size:28px;font-weight:700;color:var(--blue-900);display:flex;align-items:center;gap:16px;line-height:1; letter-spacing:-0.5px;}
-.detail-icon-badge{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,0.08); color:var(--blue-600);}
+.detail-header-title{font-size:28px;font-weight:700;color:var(–blue-900);display:flex;align-items:center;gap:16px;line-height:1;letter-spacing:-0.5px;}
+.detail-icon-badge{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,0.08);color:var(–blue-600);}
 .detail-icon-badge svg{width:30px;height:30px}
 
-.data-table-wrapper{background:rgba(255,255,255,0.8);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.9);border-radius:var(--r-lg);box-shadow:0 16px 48px rgba(10,37,64,0.06);overflow:hidden; padding: 10px;}
+.data-table-wrapper{background:rgba(255,255,255,0.8);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.9);border-radius:var(–r-lg);box-shadow:0 16px 48px rgba(10,37,64,0.06);overflow:hidden;padding:10px;}
 .tbl-scroll{overflow-x:auto}
 .data-table{width:100%;border-collapse:collapse;font-size:14px;min-width:800px;}
 .data-table thead{background:rgba(248,250,252,0.8);}
-.data-table th{color:var(--blue-900);padding:16px 20px;text-align:left;font-weight:700;font-size:13px;letter-spacing:0.5px;border-bottom:2px solid rgba(0,0,0,0.05);white-space:nowrap;}
-.data-table td{padding:16px 20px;border-bottom:1px solid rgba(0,0,0,0.04);color:var(--gray-900);vertical-align:middle; font-weight:500;}
-.data-table tbody tr{transition:all 0.2s;}
-.data-table tbody tr:hover{background:#fff;}
+.data-table th{color:var(–blue-900);padding:16px 20px;text-align:left;font-weight:700;font-size:13px;letter-spacing:0.5px;border-bottom:2px solid rgba(0,0,0,0.05);white-space:nowrap;}
+.data-table td{padding:16px 20px;border-bottom:1px solid rgba(0,0,0,0.04);color:var(–gray-900);vertical-align:middle;font-weight:500;}
+.data-table tbody tr{transition:all 0.2s;}.data-table tbody tr:hover{background:#fff;}
 .data-table tbody tr:last-child td{border-bottom:none}
-
 .badge{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;display:inline-block;letter-spacing:0.2px}
-.b-pass{background:rgba(12,164,124,0.12);color:var(--teal-700);border:1px solid rgba(12,164,124,0.2)}
-.b-wait{background:rgba(245,124,0,0.12);color:var(--orange-700);border:1px solid rgba(245,124,0,0.2)}
-.b-fail{background:rgba(244,63,94,0.12);color:var(--rose-500);border:1px solid rgba(244,63,94,0.2)}
-
-.btn-edit { background: #fff; color: var(--blue-800); border: 1px solid var(--gray-200); padding: 8px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-.btn-edit:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(58,134,255,0.1); }
-.btn-approve { background: linear-gradient(135deg, #2DD4BF, #0CA47C); color: white; border: none; padding: 8px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; white-space: nowrap; box-shadow: 0 4px 10px rgba(12,164,124,0.2); }
-.btn-approve:hover { transform: translateY(-2px); }
+.b-pass{background:rgba(12,164,124,0.12);color:var(–teal-700);border:1px solid rgba(12,164,124,0.2)}
+.b-wait{background:rgba(245,124,0,0.12);color:var(–orange-700);border:1px solid rgba(245,124,0,0.2)}
+.b-fail{background:rgba(244,63,94,0.12);color:var(–rose-500);border:1px solid rgba(244,63,94,0.2)}
+.btn-edit{background:#fff;color:var(–blue-800);border:1px solid var(–gray-200);padding:8px 18px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;transition:all 0.2s;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.05);}
+.btn-edit:hover{transform:translateY(-2px);}
+.btn-approve{background:linear-gradient(135deg,#2DD4BF,#0CA47C);color:white;border:none;padding:8px 18px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;transition:all 0.2s;white-space:nowrap;box-shadow:0 4px 10px rgba(12,164,124,0.2);}
+.btn-approve:hover{transform:translateY(-2px);}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
-.area-card{padding:24px;display:flex;flex-direction:column;background:rgba(255,255,255,0.8);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(255,255,255,0.9);border-radius:28px;box-shadow:0 12px 32px rgba(10,37,64,0.06),inset 0 1px 0 rgba(255,255,255,1);transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
+.area-card{padding:24px;display:flex;flex-direction:column;background:rgba(255,255,255,0.8);backdrop-filter:var(–blur);-webkit-backdrop-filter:var(–blur);border:1px solid rgba(255,255,255,0.9);border-radius:28px;box-shadow:0 12px 32px rgba(10,37,64,0.06),inset 0 1px 0 rgba(255,255,255,1);transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}
 .area-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 24px 48px rgba(10,37,64,0.1)}
 .ac-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:8px;flex-wrap:wrap}
-.ac-dept{font-size:12px;color:var(--blue-800);font-weight:700;background:rgba(58,134,255,0.12);padding:6px 14px;border-radius:20px;border:1px solid rgba(58,134,255,0.2)}
+.ac-dept{font-size:12px;color:var(–blue-800);font-weight:700;background:rgba(58,134,255,0.12);padding:6px 14px;border-radius:20px;border:1px solid rgba(58,134,255,0.2)}
 .ac-status{font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px}
-.ac-name{font-size:18px;font-weight:700;color:var(--blue-900);margin-bottom:20px;line-height:1.4; letter-spacing:-0.3px;}
+.ac-name{font-size:18px;font-weight:700;color:var(–blue-900);margin-bottom:20px;line-height:1.4;letter-spacing:-0.3px;}
 .step-tracker{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding:0 4px}
 .step-node{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 6px 12px rgba(0,0,0,0.15);}
 .step-line{flex:1;height:4px;background:rgba(10,37,64,0.06);border-radius:4px;margin:0 -4px;}
-.st-none{background:#E2E8F0;color:var(--gray-600);box-shadow:none;border:1px solid rgba(0,0,0,0.05)}
+.st-none{background:#E2E8F0;color:var(–gray-600);box-shadow:none;border:1px solid rgba(0,0,0,0.05)}
 .st-pass{background:linear-gradient(135deg,#34D399,#0CA47C)}
 .st-wait-lead{background:linear-gradient(135deg,#FBBF24,#F57C00)}
 .st-wait-exec{background:linear-gradient(135deg,#60A5FA,#1E6091)}
 .st-fail{background:linear-gradient(135deg,#FB7185,#E11D48)}
 .line-pass{background:linear-gradient(90deg,#34D399,#10D2A1)}
-
-.btn-eval{display:block;text-align:center;padding:12px 18px;border-radius:40px;text-decoration:none;font-size:13px;font-weight:700;transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);margin-bottom:8px;border:none;cursor:pointer;}
-.btn-user{background:#fff;color:var(--blue-800);border:1px solid var(--gray-200);box-shadow:0 4px 12px rgba(0,0,0,0.05)}
-.btn-user:hover{transform:translateY(-2px);}
-.btn-lead{background:linear-gradient(135deg,#FBBF24,#EA580C);color:#fff; box-shadow: 0 4px 14px rgba(234,88,12,0.3);}
-.btn-exec{background:linear-gradient(135deg,#60A5FA,#1D4ED8);color:#fff; box-shadow: 0 4px 14px rgba(29,78,216,0.3);}
+.btn-eval{display:block;text-align:center;padding:12px 18px;border-radius:40px;text-decoration:none;font-size:13px;font-weight:700;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);margin-bottom:8px;border:none;cursor:pointer;}
+.btn-user{background:#fff;color:var(–blue-800);border:1px solid var(–gray-200);box-shadow:0 4px 12px rgba(0,0,0,0.05)}
+.btn-lead{background:linear-gradient(135deg,#FBBF24,#EA580C);color:#fff;box-shadow:0 4px 14px rgba(234,88,12,0.3);}
+.btn-exec{background:linear-gradient(135deg,#60A5FA,#1D4ED8);color:#fff;box-shadow:0 4px 14px rgba(29,78,216,0.3);}
 
 #loader{text-align:center;padding:100px;}
-.spinner{width:40px;height:40px;border:4px solid rgba(58,134,255,0.15);border-top-color:var(--blue-600);border-radius:50%;animation:spin 0.75s linear infinite;margin:0 auto;}
+.spinner{width:40px;height:40px;border:4px solid rgba(58,134,255,0.15);border-top-color:var(–blue-600);border-radius:50%;animation:spin 0.75s linear infinite;margin:0 auto;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 @media(max-width:767px){
-  .header{padding:20px; flex-direction:column; align-items:flex-start; gap:16px;}
-  .header-actions{width:100%; justify-content:space-between;}
-  .btn-help, .pill-btn { flex:1; justify-content:center; padding:0; height:44px;}
-  .filter-section{flex-direction:column; align-items:stretch;}
-  .filter-select{width:100%;}
-  .charts-overview{grid-template-columns:1fr;}
-  .ai-header-wrapper { flex-direction:column; align-items:flex-start;}
-  .ai-btn-group { width:100%; flex-direction:column;}
-  .ai-btn { width:100%; }
+.header{padding:20px;flex-direction:column;align-items:flex-start;gap:16px;}
+.header-actions{width:100%;justify-content:space-between;}
+.btn-help,.pill-btn{flex:1;justify-content:center;padding:0;height:44px;}
+.filter-section{flex-direction:column;align-items:stretch;}
+.filter-select{width:100%;}
+.charts-overview{grid-template-columns:1fr;}
+.ai-header-wrapper{flex-direction:column;align-items:flex-start;}
+.ai-btn-group{width:100%;flex-direction:column;}
+.ai-btn{width:100%;}
 }
 </style>
 
@@ -302,7 +308,6 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     <p>ระบบประเมินและบริหารจัดการเป้าหมาย (KPI Tracker)</p>
   </div>
   <div class="header-actions">
-    <!-- ✅ แก้ไข: ลบ onclick="" ออก ใช้ id เพียงอย่างเดียว -->
     <button class="btn-help" id="btn-guide">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       สอนใช้งาน
@@ -337,7 +342,8 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
   <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
   ผลลัพธ์ KPI ภาพรวม 5 เสาหลัก
 </div>
-<div class="kpi-grid" id="kpi-cards-container"></div>
+<!-- ✅ ใส่ id ที่ wrapper ของ grid เพื่อ highlight ทั้งกลุ่ม -->
+<div id="tour-kpi" class="kpi-grid" id="kpi-cards-container"></div>
 
 <div class="sec-lbl" style="margin-top:16px;">
   <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -399,14 +405,14 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
   </div>
 </div>
 
-<div class="sec-lbl" style="margin-top: 20px;">
+<div class="sec-lbl" style="margin-top:20px;">
   <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
   ที่ปรึกษาส่วนตัว (AI TPM Advisor)
 </div>
 <div class="chat-container" id="tour-advisor">
   <div class="chat-header">
     <div class="chat-header-icon">
-      <svg viewBox="0 0 24 24" class="gemini-logo-svg" style="width:28px; height:28px;">
+      <svg viewBox="0 0 24 24" class="gemini-logo-svg" style="width:28px;height:28px;">
         <path fill="url(#geminiGrad)" d="M12 0C12 6.6 6.6 12 0 12C6.6 12 12 17.4 12 24C12 17.4 17.4 12 24 12C17.4 12 12 6.6 12 0Z"/>
       </svg>
     </div>
@@ -451,69 +457,99 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 <script>
 const API_URL='https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-// ✅ แก้ไข: ฟังก์ชัน startTour ที่ตรวจสอบว่า introJs โหลดแล้วก่อนเรียกใช้
+// ─── Tour steps config ───
+const TOUR_STEPS = [
+  {
+    title: 'ยินดีต้อนรับสู่ Dashboard 👋',
+    intro: 'ศูนย์ควบคุมข้อมูล OI ที่จะช่วยให้คุณติดตามทุกโปรเจกต์ได้ในที่เดียวครับ กดปุ่ม <b>ถัดไป</b> เพื่อเริ่มเลยครับ'
+  },
+  {
+    element: '#tour-filter',
+    intro: '<b>1. ตัวกรองแผนก:</b><br>เลือกแผนกของคุณเพื่อดูข้อมูลเฉพาะส่วน กราฟและตัวเลขทั้งหมดจะเปลี่ยนตามทันทีครับ',
+    position: 'bottom'
+  },
+  {
+    element: '#tour-kpi',
+    intro: '<b>2. สรุป KPI 5 เสาหลัก:</b><br>ดูความสำเร็จเป็นเปอร์เซ็นต์ของแต่ละระบบ<br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดได้ทันทีครับ',
+    position: 'top'
+  },
+  {
+    element: '#tour-ai-insights',
+    intro: '<b>3. AI วิเคราะห์เชิงลึก:</b><br>กดปุ่มให้ Gemini AI สรุป "จุดคอขวด" และข้อเสนอแนะเชิงกลยุทธ์ให้คุณทันทีครับ',
+    position: 'top'
+  },
+  {
+    element: '#tour-charts',
+    intro: '<b>4. กราฟเปรียบเทียบ:</b><br>แสดงสถิติภาพรวม<br>✨ <b>ทริค:</b> คลิกที่แท่งกราฟเพื่อดูรายละเอียดงานของเสานั้นๆ ได้ทันที!',
+    position: 'top'
+  },
+  {
+    element: '#tour-advisor',
+    intro: '<b>5. AI Advisor:</b><br>พิมพ์ถามเป็นภาษาไทยได้เลยครับ เช่น<br>"แผนกผลิตมี OPL เรื่องอะไรบ้าง?"<br>"งานไหนน่าเป็นห่วงที่สุด?"',
+    position: 'top'
+  }
+];
+
+// ✅ Fix: ปิด backdrop-filter ก่อนเริ่ม tour และเปิดคืนเมื่อจบ
+function disableBackdropFilters() {
+  document.querySelectorAll('.glass, .kpi-card, .chart-box, .ai-box, .chat-container, .filter-section, .area-card').forEach(el => {
+    el.dataset.origBackdrop = el.style.backdropFilter || '';
+    el.dataset.origWebkitBackdrop = el.style.webkitBackdropFilter || '';
+    el.style.backdropFilter = 'none';
+    el.style.webkitBackdropFilter = 'none';
+  });
+}
+function restoreBackdropFilters() {
+  document.querySelectorAll('.glass, .kpi-card, .chart-box, .ai-box, .chat-container, .filter-section, .area-card').forEach(el => {
+    el.style.backdropFilter = el.dataset.origBackdrop || '';
+    el.style.webkitBackdropFilter = el.dataset.origWebkitBackdrop || '';
+  });
+}
+
 function startTour() {
   if (typeof introJs === 'undefined') {
-    alert('กำลังโหลดระบบสอนการใช้งาน กรุณารอสักครู่แล้วลองใหม่อีกครั้ง');
+    alert('กำลังโหลดระบบ กรุณารอสักครู่แล้วลองใหม่');
     return;
   }
   if (document.getElementById('detail-view').style.display === 'block') {
     goBackToDashboard();
   }
-  setTimeout(function() {
-    introJs().setOptions({
-      steps: [
-        {
-          title: 'ยินดีต้อนรับสู่ Dashboard 👋',
-          intro: 'ศูนย์ควบคุมข้อมูล OI ที่จะช่วยให้คุณติดตามทุกโปรเจกต์ได้ในที่เดียวครับ'
-        },
-        {
-          element: document.querySelector('#tour-filter'),
-          intro: '<b>1. ตัวกรองแผนก:</b> เลือกแผนกของคุณที่นี่เพื่อดูข้อมูลเฉพาะส่วน กราฟและตัวเลขทั้งหมดจะเปลี่ยนตามทันทีครับ',
-          position: 'bottom'
-        },
-        {
-          element: document.querySelector('#kpi-cards-container'),
-          intro: '<b>2. สรุป KPI 5 เสา:</b> ดูความสำเร็จเป็นเปอร์เซ็นต์ <br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดได้ทันทีครับ',
-          position: 'top'
-        },
-        {
-          element: document.querySelector('#tour-ai-insights'),
-          intro: '<b>3. AI วิเคราะห์เชิงลึก:</b> กดปุ่มนี้ให้ Gemini AI สรุป "จุดคอขวด" และข้อเสนอแนะให้คุณทันทีครับ',
-          position: 'bottom'
-        },
-        {
-          element: document.querySelector('#tour-charts'),
-          intro: '<b>4. กราฟเปรียบเทียบ:</b> แสดงสถิติเชิงเปรียบเทียบ <br>✨ <b>ทริค:</b> คลิกที่แท่งกราฟเพื่อดูข้อมูลรายการงานของเสานั้นๆ ได้ทันทีครับ!',
-          position: 'top'
-        },
-        {
-          element: document.querySelector('#tour-advisor'),
-          intro: '<b>5. AI Advisor:</b> สงสัยตรงไหน พิมพ์ถามเป็นภาษาไทยได้เลยครับ เช่น "แผนกผลิตมี OPL เรื่องอะไรบ้าง?"',
-          position: 'top'
-        }
-      ],
-      nextLabel: 'ถัดไป ›',
-      prevLabel: '‹ ย้อนกลับ',
-      doneLabel: 'เริ่มใช้งานเลย!',
-      showProgress: true,
-      showStepNumbers: false,
-      disableInteraction: false,
-      exitOnOverlayClick: true
-    }).start();
-  }, 300);
+
+  // ✅ ปิด backdrop-filter ทั้งหมดก่อนเริ่ม tour
+  disableBackdropFilters();
+
+  const tour = introJs();
+  tour.setOptions({
+    steps: TOUR_STEPS,
+    nextLabel: 'ถัดไป &rsaquo;',
+    prevLabel: '&lsaquo; ย้อนกลับ',
+    doneLabel: 'เริ่มใช้งานเลย!',
+    showProgress: true,
+    showStepNumbers: false,
+    disableInteraction: true,
+    scrollToElement: true,
+    exitOnOverlayClick: false,
+    // ✅ Fix: tooltip z-index
+    tooltipClass: 'customTooltip',
+    overlayOpacity: 0.55
+  });
+
+  // ✅ เปิด backdrop-filter คืนเมื่อจบหรือ exit
+  tour.oncomplete(restoreBackdropFilters);
+  tour.onexit(restoreBackdropFilters);
+
+  tour.start();
 }
 
 let areaData={}, kpiMaster=[], amHistory=[], oplHistory=[], fiHistory=[], kzHistory=[], mkHistory=[];
 let userDataObj={}, approverDataObj={};
 let chartKPI=null, chartAM=null;
-
 let appData={
-  am:{key:'am',title:'AM-OI Assessment',target:0,actual:0,wip:0,stepDist:[0,0,0,0,0], stepDetails:{1:[],2:[],3:[],4:[],5:[]}, targetScore:0, actualScore:0, pct:0},
-  opl:{key:'opl',title:'OPL Center',target:0,actual:0,wip:0, pct:0},
-  fi:{key:'fi',title:'FI Theme',target:0,actual:0,wip:0, pct:0},
-  kz:{key:'kz',title:'Kaizen Suggestion',target:0,actual:0,wip:0, pct:0},
-  mk:{key:'mk',title:'Makigami Analysis',target:0,actual:0,wip:0, pct:0}
+  am:{key:'am',title:'AM-OI Assessment',target:0,actual:0,wip:0,stepDist:[0,0,0,0,0],stepDetails:{1:[],2:[],3:[],4:[],5:[]},targetScore:0,actualScore:0,pct:0},
+  opl:{key:'opl',title:'OPL Center',target:0,actual:0,wip:0,pct:0},
+  fi:{key:'fi',title:'FI Theme',target:0,actual:0,wip:0,pct:0},
+  kz:{key:'kz',title:'Kaizen Suggestion',target:0,actual:0,wip:0,pct:0},
+  mk:{key:'mk',title:'Makigami Analysis',target:0,actual:0,wip:0,pct:0}
 };
 
 const IC={
@@ -526,43 +562,35 @@ const IC={
 const mkSVG=(k,sz=22)=>`<svg width="${sz}" height="${sz}" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">${IC[k].svg}</svg>`;
 const sg=(r,k,i)=>r[k]!==undefined?r[k]:Object.values(r)[i];
 
-function formatDateTH(dStr) {
-  if (!dStr) return '-';
-  let str = String(dStr).trim();
-  if (str.match(/^\d{4}-\d{2}-\d{2}/)) { let p=str.split('T')[0].split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
-  if (str.includes('/')) { let p=str.split(' ')[0].split('/'); if(p.length>=3)return `${p[0].padStart(2,'0')}/${p[1].padStart(2,'0')}/${p[2].substring(0,4)}`; }
+function formatDateTH(dStr){
+  if(!dStr)return '-'; let str=String(dStr).trim();
+  if(str.match(/^\d{4}-\d{2}-\d{2}/)){let p=str.split('T')[0].split('-');return`${p[2]}/${p[1]}/${p[0]}`;}
+  if(str.includes('/')){let p=str.split(' ')[0].split('/');if(p.length>=3)return`${p[0].padStart(2,'0')}/${p[1].padStart(2,'0')}/${p[2].substring(0,4)}`;}
   return str;
 }
-function getStatusBadge(status) {
-  if (!status) return 'b-wait';
-  if (status.includes('สมบูรณ์')||status.includes('Completed')||status.includes('ผ่าน')) return 'b-pass';
-  if (status.includes('รอ')) return 'b-wait';
-  if (status.includes('ไม่อนุมัติ')||status.includes('ไม่ผ่าน')||status.includes('Delayed')||status.includes('แก้ไข')||status.includes('Cancelled')) return 'b-fail';
-  return 'b-wait';
+function getStatusBadge(s){
+  if(!s)return'b-wait';
+  if(s.includes('สมบูรณ์')||s.includes('Completed')||s.includes('ผ่าน'))return'b-pass';
+  if(s.includes('รอ'))return'b-wait';
+  if(s.includes('ไม่อนุมัติ')||s.includes('ไม่ผ่าน')||s.includes('Delayed')||s.includes('แก้ไข')||s.includes('Cancelled'))return'b-fail';
+  return'b-wait';
 }
 
 async function loadData(){
-  try {
-    const res = await fetch(API_URL + '?action=getAllDashboardData&t=' + Date.now(), { cache: 'no-store' });
-    const data = await res.json();
-    if(data.status === 'success'){
-      kpiMaster = data.kpi || [];
-      kpiMaster.forEach(k => {
-        let s=sg(k,'System',0), d=sg(k,'Department',2), a=sg(k,'Area',3);
-        if(s==='AM-OI'&&d&&a&&a!=='ALL'&&a!=='All'){ if(!areaData[d])areaData[d]=[]; if(!areaData[d].includes(a))areaData[d].push(a); }
-      });
-      amHistory=data.am||[]; oplHistory=data.opl||[]; fiHistory=data.fi||[];
-      kzHistory=data.kz||[]; mkHistory=data.mk||[];
-      userDataObj=data.users||{}; approverDataObj=data.approvers||{};
+  try{
+    const res=await fetch(API_URL+'?action=getAllDashboardData&t='+Date.now(),{cache:'no-store'});
+    const data=await res.json();
+    if(data.status==='success'){
+      kpiMaster=data.kpi||[];
+      kpiMaster.forEach(k=>{let s=sg(k,'System',0),d=sg(k,'Department',2),a=sg(k,'Area',3);if(s==='AM-OI'&&d&&a&&a!=='ALL'&&a!=='All'){if(!areaData[d])areaData[d]=[];if(!areaData[d].includes(a))areaData[d].push(a);}});
+      amHistory=data.am||[];oplHistory=data.opl||[];fiHistory=data.fi||[];
+      kzHistory=data.kz||[];mkHistory=data.mk||[];
+      userDataObj=data.users||{};approverDataObj=data.approvers||{};
     }
-    initFilter();
-    processAndRender();
-    if (!localStorage.getItem('dashboard_tour_done_vFINAL')) {
-      setTimeout(startTour, 2500);
-      localStorage.setItem('dashboard_tour_done_vFINAL', 'true');
-    }
-  } catch(e) {
-    document.getElementById('loader').innerHTML = '<span style="color:#EF4444; font-weight:bold;">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชอีกครั้ง</span>';
+    initFilter(); processAndRender();
+    if(!localStorage.getItem('dashboard_tour_v3')){setTimeout(startTour,2500);localStorage.setItem('dashboard_tour_v3','done');}
+  }catch(e){
+    document.getElementById('loader').innerHTML='<span style="color:#EF4444;font-weight:bold;">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชอีกครั้ง</span>';
   }
 }
 
@@ -570,113 +598,51 @@ function initFilter(){
   const s=document.getElementById('global-filter-dept');
   Object.keys(areaData).sort().forEach(d=>{const o=document.createElement('option');o.value=d;o.innerText='แผนก '+d;s.appendChild(o);});
 }
-
 function getSysTarget(sys,fd){
   let t=0;
-  kpiMaster.forEach(r=>{
-    let rs=sg(r,'System',0)||'', rd=sg(r,'Department',2)||'', rv=parseInt(sg(r,'Target_Value',4))||0;
-    if(rs.trim().toUpperCase()===sys.toUpperCase()&&(fd==='all'||rd.trim()===fd)) t+=rv;
-  });
+  kpiMaster.forEach(r=>{let rs=sg(r,'System',0)||'',rd=sg(r,'Department',2)||'',rv=parseInt(sg(r,'Target_Value',4))||0;if(rs.trim().toUpperCase()===sys.toUpperCase()&&(fd==='all'||rd.trim()===fd))t+=rv;});
   return t;
 }
 
-const shadowPlugin = {
-  id: 'shadowPlugin',
-  beforeDatasetsDraw: function(chart) { chart.ctx.shadowColor='rgba(0,0,0,0.2)'; chart.ctx.shadowBlur=15; chart.ctx.shadowOffsetY=10; },
-  afterDatasetsDraw: function(chart) { chart.ctx.shadowColor='transparent'; chart.ctx.shadowBlur=0; chart.ctx.shadowOffsetY=0; }
-};
+const shadowPlugin={id:'shadowPlugin',beforeDatasetsDraw:function(c){c.ctx.shadowColor='rgba(0,0,0,0.2)';c.ctx.shadowBlur=15;c.ctx.shadowOffsetY=10;},afterDatasetsDraw:function(c){c.ctx.shadowColor='transparent';c.ctx.shadowBlur=0;c.ctx.shadowOffsetY=0;}};
 Chart.register(shadowPlugin);
-
-function createGrad(ctx, c1, c2, horiz) {
-  let g = horiz ? ctx.createLinearGradient(0,0,400,0) : ctx.createLinearGradient(0,400,0,0);
-  g.addColorStop(0, c1); g.addColorStop(1, c2); return g;
-}
+function createGrad(ctx,c1,c2,h){let g=h?ctx.createLinearGradient(0,0,400,0):ctx.createLinearGradient(0,400,0,0);g.addColorStop(0,c1);g.addColorStop(1,c2);return g;}
 
 function processAndRender(){
   const fd=document.getElementById('global-filter-dept').value;
   document.getElementById('loader').style.display='none';
   document.getElementById('main-dashboard-view').style.display='block';
-
-  appData.am.target=0; appData.am.actual=0; appData.am.wip=0;
-  appData.am.stepDist=[0,0,0,0,0]; appData.am.stepDetails={1:[],2:[],3:[],4:[],5:[]};
-  appData.am.targetScore=0; appData.am.actualScore=0;
-
-  const amC=document.getElementById('am-card-container'); amC.innerHTML='';
+  appData.am.target=0;appData.am.actual=0;appData.am.wip=0;appData.am.stepDist=[0,0,0,0,0];appData.am.stepDetails={1:[],2:[],3:[],4:[],5:[]};appData.am.targetScore=0;appData.am.actualScore=0;
+  const amC=document.getElementById('am-card-container');amC.innerHTML='';
   const amT=kpiMaster.filter(k=>sg(k,'System',0)==='AM-OI'&&(fd==='all'||sg(k,'Department',2)===fd)&&sg(k,'Area',3)!=='ALL'&&sg(k,'Area',3)!=='All');
   appData.am.target=amT.length;
-
   amT.forEach(tr=>{
-    const dept=sg(tr,'Department',2), area=sg(tr,'Area',3), tStep=parseInt(sg(tr,'Target_Value',4))||4;
+    const dept=sg(tr,'Department',2),area=sg(tr,'Area',3),tStep=parseInt(sg(tr,'Target_Value',4))||4;
     const ah=amHistory.filter(h=>(sg(h,'Department',3)===dept||Object.values(h)[3]===dept)&&(sg(h,'Area',4)===area||Object.values(h)[4]===area));
     appData.am.targetScore+=tStep;
-    const maxAttemptedStep=ah.length>0?Math.max(...ah.map(h=>parseInt(sg(h,'AuditRound',6))||0)):0;
-    let maxStep=0, pStep=1, currentStepRecords=[];
-    if(maxAttemptedStep>0){
-      const recs=ah.filter(h=>(parseInt(sg(h,'AuditRound',6))||0)===maxAttemptedStep);
-      const l=recs[recs.length-1];
-      const pf=sg(l,'PassFail',15)||Object.values(l)[15];
-      const stat=sg(l,'Status',23)||Object.values(l)[23];
-      if((pf==='ผ่านเกณฑ์'||pf==='Pass')&&stat==='อนุมัติสมบูรณ์'){ maxStep=maxAttemptedStep; pStep=maxStep===5?'all':maxStep+1; currentStepRecords=ah.filter(h=>(parseInt(sg(h,'AuditRound',6))||0)===pStep); }
-      else{ maxStep=maxAttemptedStep-1; pStep=maxAttemptedStep; currentStepRecords=recs; }
-    }
-    let highestLevel=0, pendingRank=0;
-    if(pStep!=='all'&&currentStepRecords.length>0){
-      const l=currentStepRecords[currentStepRecords.length-1];
-      const pf=sg(l,'PassFail',15)||Object.values(l)[15];
-      const stat=sg(l,'Status',23)||Object.values(l)[23];
-      if(pf!=='ผ่านเกณฑ์'&&pf!=='Pass'){ pendingRank=1; }
-      else{
-        if(stat&&stat.includes('รอผู้บริหาร')){ highestLevel=0.7; pendingRank=3; }
-        else if(stat&&stat.includes('รอหัวหน้า')){ highestLevel=0.3; pendingRank=2; }
-        else{ const at=sg(l,'AuditorType',7)||Object.values(l)[7]; if(at==='lead'||at==='clead'||at==='mgr'){ highestLevel=0.7; pendingRank=3; } else if(at==='self'){ highestLevel=0.3; pendingRank=2; } }
-      }
-    }
-    let areaScore=maxStep+highestLevel;
-    appData.am.actualScore+=Math.min(areaScore,tStep);
-    if(maxStep>=tStep) appData.am.actual++;
-    else if(maxStep>0||currentStepRecords.length>0) appData.am.wip++;
-    if(maxStep>=1&&maxStep<=5){ appData.am.stepDist[maxStep-1]++; appData.am.stepDetails[maxStep].push(`[${dept}] ${area}`); }
-
-    let si={};
-    for(let s=1;s<=5;s++){
-      if(s<=maxStep) si[s]={class:'st-pass',text:'ผ่านสมบูรณ์',rank:4};
-      else if(s===pStep){
-        if(currentStepRecords.length===0) si[s]={class:'st-none',text:'ยังไม่เริ่ม',rank:0};
-        else if(pendingRank===1) si[s]={class:'st-fail',text:'แก้ไข',rank:1};
-        else if(pendingRank===2) si[s]={class:'st-wait-lead',text:'รอหัวหน้า',rank:2};
-        else if(pendingRank===3) si[s]={class:'st-wait-exec',text:'รอผู้บริหาร',rank:3};
-      } else si[s]={class:'st-none',text:'ยังไม่เริ่ม',rank:0};
-    }
-
-    let os={};
-    if(maxStep===5){ os={text:'ผ่านครบ 5 Step',color:'#0CA47C',bg:'rgba(12,164,124,0.12)',rank:4}; }
-    else{
-      if(currentStepRecords.length===0) os={text:`รอประเมิน Step ${pStep}`,color:'var(--blue-800)',bg:'rgba(58,134,255,0.1)',rank:0};
-      else if(pendingRank===1) os={text:`แก้ไข Step ${pStep}`,color:'var(--red-600)',bg:'rgba(244,63,94,0.1)',rank:1};
-      else if(pendingRank===2) os={text:`รอ หน. Step ${pStep}`,color:'#fff',bg:'rgba(245,124,0,0.85)',rank:2};
-      else if(pendingRank===3) os={text:`รอ ผบร. Step ${pStep}`,color:'#fff',bg:'rgba(30,96,145,0.85)',rank:3};
-    }
-
-    let tn='<div class="step-tracker">';
-    for(let i=1;i<=5;i++){tn+=`<div class="step-node ${si[i].class}">${i}</div>`;if(i<5)tn+=`<div class="step-line ${si[i].rank===4?'line-pass':''}"></div>`;}
-    tn+='</div>';
-
+    const maxAtt=ah.length>0?Math.max(...ah.map(h=>parseInt(sg(h,'AuditRound',6))||0)):0;
+    let maxStep=0,pStep=1,curRecs=[];
+    if(maxAtt>0){const recs=ah.filter(h=>(parseInt(sg(h,'AuditRound',6))||0)===maxAtt);const l=recs[recs.length-1];const pf=sg(l,'PassFail',15)||Object.values(l)[15];const st=sg(l,'Status',23)||Object.values(l)[23];if((pf==='ผ่านเกณฑ์'||pf==='Pass')&&st==='อนุมัติสมบูรณ์'){maxStep=maxAtt;pStep=maxStep===5?'all':maxStep+1;curRecs=ah.filter(h=>(parseInt(sg(h,'AuditRound',6))||0)===pStep);}else{maxStep=maxAtt-1;pStep=maxAtt;curRecs=recs;}}
+    let hl=0,pr=0;
+    if(pStep!=='all'&&curRecs.length>0){const l=curRecs[curRecs.length-1];const pf=sg(l,'PassFail',15)||Object.values(l)[15];const st=sg(l,'Status',23)||Object.values(l)[23];if(pf!=='ผ่านเกณฑ์'&&pf!=='Pass'){pr=1;}else{if(st&&st.includes('รอผู้บริหาร')){hl=0.7;pr=3;}else if(st&&st.includes('รอหัวหน้า')){hl=0.3;pr=2;}else{const at=sg(l,'AuditorType',7)||Object.values(l)[7];if(at==='lead'||at==='clead'||at==='mgr'){hl=0.7;pr=3;}else if(at==='self'){hl=0.3;pr=2;}}}}
+    let areaScore=maxStep+hl;appData.am.actualScore+=Math.min(areaScore,tStep);
+    if(maxStep>=tStep)appData.am.actual++;else if(maxStep>0||curRecs.length>0)appData.am.wip++;
+    if(maxStep>=1&&maxStep<=5){appData.am.stepDist[maxStep-1]++;appData.am.stepDetails[maxStep].push(`[${dept}] ${area}`);}
+    let si={};for(let s=1;s<=5;s++){if(s<=maxStep)si[s]={class:'st-pass',rank:4};else if(s===pStep){if(curRecs.length===0)si[s]={class:'st-none',rank:0};else if(pr===1)si[s]={class:'st-fail',rank:1};else if(pr===2)si[s]={class:'st-wait-lead',rank:2};else if(pr===3)si[s]={class:'st-wait-exec',rank:3};}else si[s]={class:'st-none',rank:0};}
+    let os={};if(maxStep===5){os={text:'ผ่านครบ 5 Step',color:'#0CA47C',bg:'rgba(12,164,124,0.12)',rank:4};}else{if(curRecs.length===0)os={text:`รอประเมิน Step ${pStep}`,color:'var(--blue-800)',bg:'rgba(58,134,255,0.1)',rank:0};else if(pr===1)os={text:`แก้ไข Step ${pStep}`,color:'var(--red-600)',bg:'rgba(244,63,94,0.1)',rank:1};else if(pr===2)os={text:`รอ หน. Step ${pStep}`,color:'#fff',bg:'rgba(245,124,0,0.85)',rank:2};else if(pr===3)os={text:`รอ ผบร. Step ${pStep}`,color:'#fff',bg:'rgba(30,96,145,0.85)',rank:3};}
+    let tn='<div class="step-tracker">';for(let i=1;i<=5;i++){tn+=`<div class="step-node ${si[i].class}">${i}</div>`;if(i<5)tn+=`<div class="step-line ${si[i].rank===4?'line-pass':''}"></div>`;}tn+='</div>';
     let acts=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pStep}" class="btn-eval btn-user">ประเมินพื้นที่</a>`;
-    if(os.rank===2) acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pStep}" class="btn-eval btn-lead">หัวหน้าตรวจ</a>`;
-    else if(os.rank===3) acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pStep}" class="btn-eval btn-exec">ผู้บริหารตรวจ</a>`;
-
-    let areaPercent=Math.min(Math.round((areaScore/tStep)*100),100);
-    const hb=maxStep>=tStep?`<span class="kpi-badge-hit">Step ${tStep} ✓</span>`:`<span class="kpi-badge-miss">เป้า Step ${tStep} (${areaPercent}%)</span>`;
-    const card=document.createElement('div'); card.className='area-card';
+    if(os.rank===2)acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pStep}" class="btn-eval btn-lead">หัวหน้าตรวจ</a>`;
+    else if(os.rank===3)acts+=`<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pStep}" class="btn-eval btn-exec">ผู้บริหารตรวจ</a>`;
+    let ap=Math.min(Math.round((areaScore/tStep)*100),100);
+    const hb=maxStep>=tStep?`<span class="kpi-badge-hit">Step ${tStep} ✓</span>`:`<span class="kpi-badge-miss">เป้า Step ${tStep} (${ap}%)</span>`;
+    const card=document.createElement('div');card.className='area-card';
     card.innerHTML=`<div class="ac-top"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;"><span class="ac-dept">${dept}</span>${hb}</div><span class="ac-status" style="background:${os.bg};color:${os.color};border:1px solid ${os.color}22;">${os.text}</span></div><div class="ac-name">${area}</div>${tn}<div style="margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;">${acts}</div>`;
     amC.appendChild(card);
   });
-
   appData.am.pct=appData.am.targetScore>0?Math.round((appData.am.actualScore/appData.am.targetScore)*100):0;
 
-  appData.opl.target=getSysTarget('OPL',fd); appData.fi.target=getSysTarget('FI',fd);
-  appData.kz.target=getSysTarget('Kaizen',fd); appData.mk.target=getSysTarget('Makigami',fd);
-
+  appData.opl.target=getSysTarget('OPL',fd);appData.fi.target=getSysTarget('FI',fd);appData.kz.target=getSysTarget('Kaizen',fd);appData.mk.target=getSysTarget('Makigami',fd);
   const fOpl=fd==='all'?oplHistory:oplHistory.filter(r=>sg(r,'Department',4)===fd);
   const fFi=fd==='all'?fiHistory:fiHistory.filter(r=>sg(r,'Department',4)===fd);
   const fKz=fd==='all'?kzHistory:kzHistory.filter(r=>sg(r,'แผนก',3)===fd);
@@ -685,123 +651,48 @@ function processAndRender(){
   const uFi=[...new Map(fFi.map(i=>[sg(i,'FI ID',1),i])).values()];
   const uKz=[...new Map(fKz.map(i=>[sg(i,'เลขที่ Kaizen',0),i])).values()];
   const uMk=[...new Map(fMk.map(i=>[sg(i,'Makigami ID',1),i])).values()];
-
-  appData.opl.actual=0;
-  uOpl.forEach(r=>{let st=sg(r,'Status',14)||'';if(st.includes('สมบูรณ์')||st.includes('ผ่าน')||st.includes('Completed'))appData.opl.actual+=1;else if(st.includes('รอหัวหน้า'))appData.opl.actual+=0.5;else appData.opl.actual+=0.2;});
-
-  appData.fi.actual=0;
-  uFi.forEach(r=>{let st=sg(r,'Status',14)||'',step=sg(r,'Step ปัจจุบัน',13)||'';if(st.includes('สมบูรณ์')||st.includes('Completed'))appData.fi.actual+=1;else if(st.includes('ยกเลิก')||st.includes('Cancelled'))appData.fi.actual+=0;else{let m=step.match(/Step\s*(\d+)/i);if(m&&m[1])appData.fi.actual+=(parseInt(m[1])/10);else appData.fi.actual+=0.1;}});
-
+  appData.opl.actual=0;uOpl.forEach(r=>{let st=sg(r,'Status',14)||'';if(st.includes('สมบูรณ์')||st.includes('ผ่าน')||st.includes('Completed'))appData.opl.actual+=1;else if(st.includes('รอหัวหน้า'))appData.opl.actual+=0.5;else appData.opl.actual+=0.2;});
+  appData.fi.actual=0;uFi.forEach(r=>{let st=sg(r,'Status',14)||'',step=sg(r,'Step ปัจจุบัน',13)||'';if(st.includes('สมบูรณ์')||st.includes('Completed'))appData.fi.actual+=1;else if(st.includes('ยกเลิก')||st.includes('Cancelled'))appData.fi.actual+=0;else{let m=step.match(/Step\s*(\d+)/i);if(m&&m[1])appData.fi.actual+=(parseInt(m[1])/10);else appData.fi.actual+=0.1;}});
   appData.kz.actual=uKz.length;
-  appData.mk.actual=0;
-  uMk.forEach(r=>{let st=sg(r,'Status',9)||'',phase=sg(r,'Current Phase',6)||'';if(st.includes('สมบูรณ์')||st.includes('Completed'))appData.mk.actual+=1;else if(st.includes('ยกเลิก')||st.includes('Cancelled'))appData.mk.actual+=0;else{if(phase.includes('Phase 4'))appData.mk.actual+=0.90;else if(phase.includes('Phase 3'))appData.mk.actual+=0.75;else if(phase.includes('Phase 2'))appData.mk.actual+=0.50;else if(phase.includes('Phase 1'))appData.mk.actual+=0.25;else appData.mk.actual+=0.1;}});
-
-  appData.opl.target=getSysTarget('OPL',fd)||uOpl.length||0;
-  appData.fi.target=getSysTarget('FI',fd)||uFi.length||0;
+  appData.mk.actual=0;uMk.forEach(r=>{let st=sg(r,'Status',9)||'',ph=sg(r,'Current Phase',6)||'';if(st.includes('สมบูรณ์')||st.includes('Completed'))appData.mk.actual+=1;else if(st.includes('ยกเลิก')||st.includes('Cancelled'))appData.mk.actual+=0;else{if(ph.includes('Phase 4'))appData.mk.actual+=0.90;else if(ph.includes('Phase 3'))appData.mk.actual+=0.75;else if(ph.includes('Phase 2'))appData.mk.actual+=0.50;else if(ph.includes('Phase 1'))appData.mk.actual+=0.25;else appData.mk.actual+=0.1;}});
+  appData.opl.target=getSysTarget('OPL',fd)||uOpl.length||0;appData.fi.target=getSysTarget('FI',fd)||uFi.length||0;
   appData.kz.target=getSysTarget('Kaizen',fd)||uKz.length||0;
-  let mkTarget=getSysTarget('Makigami',fd); appData.mk.target=mkTarget>0?mkTarget:(uMk.length||0);
-
+  let mkT=getSysTarget('Makigami',fd);appData.mk.target=mkT>0?mkT:(uMk.length||0);
   appData.opl.wip=uOpl.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
   appData.fi.wip=uFi.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
-  appData.kz.wip=0;
-  appData.mk.wip=uMk.filter(r=>!(sg(r,'Status',9)||'').includes('Completed')).length;
+  appData.kz.wip=0;appData.mk.wip=uMk.filter(r=>!(sg(r,'Status',9)||'').includes('Completed')).length;
   ['opl','fi','kz','mk'].forEach(k=>{appData[k].pct=appData[k].target>0?Math.round((appData[k].actual/appData[k].target)*100):(appData[k].actual>0?100:0);});
 
-  const formatActual=(val)=>Number.isInteger(val)?val:(Math.round(val*10)/10).toFixed(1);
+  const fmtA=(v)=>Number.isInteger(v)?v:(Math.round(v*10)/10).toFixed(1);
   const defs=[{k:'am',tc:'am',unit:'พื้นที่',did:'am'},{k:'opl',tc:'opl',unit:'เรื่อง',did:'opl'},{k:'fi',tc:'fi',unit:'โครงการ',did:'fi'},{k:'kz',tc:'kz',unit:'เรื่อง',did:'kz'},{k:'mk',tc:'mk',unit:'โครงการ',did:'mk'}];
-  const con=document.getElementById('kpi-cards-container'); con.innerHTML='';
+  const con=document.getElementById('kpi-cards-container');con.innerHTML='';
   defs.forEach(def=>{
-    const d=appData[def.k]; const pct=d.pct; const wip=d.wip>0?`<span class="wip-badge">⏳ ${d.wip}</span>`:'';
-    const card=document.createElement('div'); card.className=`kpi-card p-${def.tc}`; card.id=`card-${def.k}`;
+    const d=appData[def.k];const pct=d.pct;const wip=d.wip>0?`<span class="wip-badge">⏳ ${d.wip}</span>`:'';
+    const card=document.createElement('div');card.className=`kpi-card p-${def.tc}`;
     card.onclick=()=>openDetail(def.did,d.title);
-    let barWidth=Math.min(pct,100);
-    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูรายละเอียด →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${pct}%</span><span class="kpi-unit">(${formatActual(d.actual)}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${barWidth}"></div></div>`;
+    let bw=Math.min(pct,100);
+    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูรายละเอียด →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${pct}%</span><span class="kpi-unit">(${fmtA(d.actual)}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${bw}"></div></div>`;
     con.appendChild(card);
   });
   document.querySelectorAll('.kpi-card').forEach((c,i)=>{setTimeout(()=>{c.classList.add('visible');const f=c.querySelector('.progress-fill');if(f)setTimeout(()=>{f.style.width=f.dataset.w+'%'},60);},i*70);});
 
-  const cf={family:'IBM Plex Sans Thai',size:13}, gc='rgba(0,0,0,0.04)';
+  const cf={family:'IBM Plex Sans Thai',size:13},gc='rgba(0,0,0,0.04)';
   if(chartKPI)chartKPI.destroy();
-  let ctxKpi=document.getElementById('kpiBarChart').getContext('2d');
-  chartKPI=new Chart(ctxKpi,{
-    type:'bar',
-    data:{
-      labels:['AM-OI','OPL','FI Theme','Kaizen','Makigami'],
-      datasets:[{
-        label:' % ความคืบหน้า',
-        data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct],
-        backgroundColor:[createGrad(ctxKpi,'#3B82F6','#1E40AF',true),createGrad(ctxKpi,'#F59E0B','#B45309',true),createGrad(ctxKpi,'#8B5CF6','#4338CA',true),createGrad(ctxKpi,'#10B981','#047857',true),createGrad(ctxKpi,'#F43F5E','#BE123C',true)],
-        hoverBackgroundColor:['#60A5FA','#FBBF24','#A78BFA','#34D399','#FB7185'],
-        hoverBorderColor:'#ffffff', hoverBorderWidth:4, borderRadius:14, borderSkipped:false, barPercentage:0.6
-      }]
-    },
-    plugins:[{id:'barLabels',afterDatasetsDraw(chart){const{ctx,data}=chart;ctx.save();chart.getDatasetMeta(0).data.forEach((dp,i)=>{const v=data.datasets[0].data[i];if(v>0){ctx.font='bold 14px "IBM Plex Sans Thai"';ctx.fillStyle='#0f172a';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(v+'%',dp.x+10,dp.y+1);}});ctx.restore();}}],
-    options:{
-      indexAxis:'y', responsive:true, maintainAspectRatio:false,
-      animation:{duration:2000,easing:'easeOutElastic'},
-      onClick:(event,elements)=>{if(elements.length>0){const idx=elements[0].index;const map=[{k:'am',t:appData.am.title},{k:'opl',t:appData.opl.title},{k:'fi',t:appData.fi.title},{k:'kz',t:appData.kz.title},{k:'mk',t:appData.mk.title}];openDetail(map[idx].k,map[idx].t);}},
-      onHover:(event,elements)=>{event.native.target.style.cursor=elements.length?'pointer':'default';},
-      layout:{padding:{right:50}},
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(255,255,255,0.95)',titleColor:'#0f172a',bodyColor:'#334155',borderColor:'rgba(255,255,255,1)',borderWidth:1,padding:16,titleFont:{family:'IBM Plex Sans Thai',size:15,weight:'bold'},bodyFont:{family:'IBM Plex Sans Thai',size:14},cornerRadius:12}},
-      scales:{x:{beginAtZero:true,grid:{color:gc,borderDash:[6,6]},ticks:{font:cf}},y:{grid:{display:false},ticks:{font:{family:'IBM Plex Sans Thai',weight:'bold',size:13}}}}
-    }
-  });
+  let ctxK=document.getElementById('kpiBarChart').getContext('2d');
+  chartKPI=new Chart(ctxK,{type:'bar',data:{labels:['AM-OI','OPL','FI Theme','Kaizen','Makigami'],datasets:[{label:' % ความคืบหน้า',data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct],backgroundColor:[createGrad(ctxK,'#3B82F6','#1E40AF',true),createGrad(ctxK,'#F59E0B','#B45309',true),createGrad(ctxK,'#8B5CF6','#4338CA',true),createGrad(ctxK,'#10B981','#047857',true),createGrad(ctxK,'#F43F5E','#BE123C',true)],hoverBackgroundColor:['#60A5FA','#FBBF24','#A78BFA','#34D399','#FB7185'],hoverBorderColor:'#ffffff',hoverBorderWidth:4,borderRadius:14,borderSkipped:false,barPercentage:0.6}]},
+  plugins:[{id:'barLabels',afterDatasetsDraw(chart){const{ctx,data}=chart;ctx.save();chart.getDatasetMeta(0).data.forEach((dp,i)=>{const v=data.datasets[0].data[i];if(v>0){ctx.font='bold 14px "IBM Plex Sans Thai"';ctx.fillStyle='#0f172a';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(v+'%',dp.x+10,dp.y+1);}});ctx.restore();}}],
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:{duration:2000,easing:'easeOutElastic'},onClick:(ev,el)=>{if(el.length>0){const idx=el[0].index;const map=[{k:'am',t:appData.am.title},{k:'opl',t:appData.opl.title},{k:'fi',t:appData.fi.title},{k:'kz',t:appData.kz.title},{k:'mk',t:appData.mk.title}];openDetail(map[idx].k,map[idx].t);}},onHover:(ev,el)=>{ev.native.target.style.cursor=el.length?'pointer':'default';},layout:{padding:{right:50}},plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(255,255,255,0.95)',titleColor:'#0f172a',bodyColor:'#334155',borderColor:'rgba(255,255,255,1)',borderWidth:1,padding:16,titleFont:{family:'IBM Plex Sans Thai',size:15,weight:'bold'},bodyFont:{family:'IBM Plex Sans Thai',size:14},cornerRadius:12}},scales:{x:{beginAtZero:true,grid:{color:gc,borderDash:[6,6]},ticks:{font:cf}},y:{grid:{display:false},ticks:{font:{family:'IBM Plex Sans Thai',weight:'bold',size:13}}}}}});
 
   if(chartAM)chartAM.destroy();
-  let ctxAm=document.getElementById('amStepChart').getContext('2d');
-  chartAM=new Chart(ctxAm,{
-    type:'bar',
-    data:{
-      labels:['Step 1','Step 2','Step 3','Step 4','Step 5'],
-      datasets:[{
-        label:' จำนวนพื้นที่',
-        data:appData.am.stepDist,
-        backgroundColor:[createGrad(ctxAm,'#93C5FD','#2563EB',false),createGrad(ctxAm,'#FCD34D','#D97706',false),createGrad(ctxAm,'#C4B5FD','#6D28D9',false),createGrad(ctxAm,'#6EE7B7','#059669',false),createGrad(ctxAm,'#FDA4AF','#E11D48',false)],
-        hoverBackgroundColor:['#BFDBFE','#FDE68A','#DDD6FE','#A7F3D0','#FECACA'],
-        hoverBorderColor:'#ffffff', hoverBorderWidth:4, borderRadius:14, borderSkipped:false, barPercentage:0.55
-      }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      animation:{duration:1800,easing:'easeOutQuart'},
-      onClick:(event,elements)=>{if(elements.length>0)openDetail('am',appData.am.title);},
-      onHover:(event,elements)=>{event.native.target.style.cursor=elements.length?'pointer':'default';},
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          backgroundColor:'rgba(255,255,255,0.95)',titleColor:'#0f172a',bodyColor:'#334155',borderColor:'rgba(12,164,124,0.3)',borderWidth:1,padding:18,
-          titleFont:{family:'IBM Plex Sans Thai',size:16,weight:'bold'},bodyFont:{family:'IBM Plex Sans Thai',size:14},cornerRadius:12,
-          callbacks:{
-            title:function(ctx){return ctx[0].label+' ('+ctx[0].raw+' พื้นที่)';},
-            label:function(ctx){let step=ctx.dataIndex+1;let areas=appData.am.stepDetails[step];if(!areas||areas.length===0)return 'ไม่มีข้อมูลพื้นที่ใน Step นี้';return areas.map(a=>'📌 '+a);}
-          }
-        }
-      },
-      scales:{y:{beginAtZero:true,grid:{color:gc,borderDash:[6,6]},ticks:{stepSize:1,font:cf}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Sans Thai',weight:'bold',size:13}}}}
-    }
-  });
+  let ctxA=document.getElementById('amStepChart').getContext('2d');
+  chartAM=new Chart(ctxA,{type:'bar',data:{labels:['Step 1','Step 2','Step 3','Step 4','Step 5'],datasets:[{label:' จำนวนพื้นที่',data:appData.am.stepDist,backgroundColor:[createGrad(ctxA,'#93C5FD','#2563EB',false),createGrad(ctxA,'#FCD34D','#D97706',false),createGrad(ctxA,'#C4B5FD','#6D28D9',false),createGrad(ctxA,'#6EE7B7','#059669',false),createGrad(ctxA,'#FDA4AF','#E11D48',false)],hoverBackgroundColor:['#BFDBFE','#FDE68A','#DDD6FE','#A7F3D0','#FECACA'],hoverBorderColor:'#ffffff',hoverBorderWidth:4,borderRadius:14,borderSkipped:false,barPercentage:0.55}]},
+  options:{responsive:true,maintainAspectRatio:false,animation:{duration:1800,easing:'easeOutQuart'},onClick:(ev,el)=>{if(el.length>0)openDetail('am',appData.am.title);},onHover:(ev,el)=>{ev.native.target.style.cursor=el.length?'pointer':'default';},plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(255,255,255,0.95)',titleColor:'#0f172a',bodyColor:'#334155',borderColor:'rgba(12,164,124,0.3)',borderWidth:1,padding:18,titleFont:{family:'IBM Plex Sans Thai',size:16,weight:'bold'},bodyFont:{family:'IBM Plex Sans Thai',size:14},cornerRadius:12,callbacks:{title:function(ctx){return ctx[0].label+' ('+ctx[0].raw+' พื้นที่)';},label:function(ctx){let step=ctx.dataIndex+1;let areas=appData.am.stepDetails[step];if(!areas||areas.length===0)return'ไม่มีข้อมูลพื้นที่ใน Step นี้';return areas.map(a=>'📌 '+a);}}}},scales:{y:{beginAtZero:true,grid:{color:gc,borderDash:[6,6]},ticks:{stepSize:1,font:cf}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Sans Thai',weight:'bold',size:13}}}}}});
 
   const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:40px;color:#9BA5B1;font-weight:600;">ไม่มีข้อมูลให้แสดงผล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
-
-  tbl('opl-table-body',uOpl,7,r=>{
-    const oplId=sg(r,'OPL ID',1); const status=sg(r,'Status',14)||''; const isWaiting=status.includes('รอหัวหน้า');
-    let btns=`<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=edit" class="btn-edit">แก้ไข/แนบไฟล์</a>`;
-    if(isWaiting) btns+=`<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
-    return `<td>${formatDateTH(sg(r,'วันที่ทำ OPL',2))}</td><td><span style="font-weight:700;color:var(--orange-600);">${oplId}</span></td><td>${sg(r,'Department',4)}</td><td style="width:100%;min-width:200px;"><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ชื่อผู้สอน',10)}</td><td><span class="badge ${getStatusBadge(status)}">${status}</span></td><td><div style="display:flex;gap:8px;">${btns}</div></td>`;
-  });
-  tbl('fi-table-body',uFi,7,r=>{
-    const fiId=sg(r,'FI ID',1); const status=sg(r,'Status',14)||''; const isWaiting=status.includes('รอหัวหน้า');
-    let btns=`<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=edit" class="btn-edit">อัปเดตงาน</a>`;
-    if(isWaiting) btns+=`<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
-    return `<td><span style="font-weight:700;color:var(--indigo-600);">${fiId}</span></td><td>${sg(r,'Department',4)}</td><td style="width:100%;min-width:200px;"><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',2)}</td><td><span style="color:var(--indigo-600);font-weight:700;background:rgba(99,102,241,0.1);padding:4px 10px;border-radius:12px;">${sg(r,'Step ปัจจุบัน',13)}</span></td><td><span class="badge ${getStatusBadge(status)}">${status}</span></td><td><div style="display:flex;gap:8px;">${btns}</div></td>`;
-  });
-  tbl('kz-table-body',uKz,7,r=>{
-    return `<td>${formatDateTH(sg(r,'วันที่ทำ Kaizen',1))}</td><td><span style="font-weight:700;color:var(--teal-600);">${sg(r,'เลขที่ Kaizen',0)}</span></td><td>${sg(r,'แผนก',3)}</td><td style="width:100%;min-width:200px;"><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้ดำเนินการ',7)}</td><td><span class="badge b-pass">${sg(r,'ประเภท',5)}</span></td><td><a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="btn-edit">เปิดระบบ</a></td>`;
-  });
-  tbl('mk-table-body',uMk,7,r=>{
-    const mkId=sg(r,'Makigami ID',1); const status=sg(r,'Status',9)||'';
-    return `<td><span style="font-weight:700;color:var(--rose-500);">${mkId}</span></td><td>${sg(r,'แผนก',3)}</td><td style="width:100%;min-width:200px;"><strong>${sg(r,'ชื่อเรื่อง',4)||sg(r,'ชื่อเรื่อง (Theme Name)',4)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',5)}</td><td><span style="color:var(--rose-500);font-weight:700;background:rgba(244,63,94,0.1);padding:4px 10px;border-radius:12px;">${sg(r,'Current Phase',6)}</span></td><td><span class="badge ${getStatusBadge(status)}">${status}</span></td><td><a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=edit" class="btn-edit">อัปเดตงาน</a></td>`;
-  });
+  tbl('opl-table-body',uOpl,7,r=>{const id=sg(r,'OPL ID',1);const st=sg(r,'Status',14)||'';const iw=st.includes('รอหัวหน้า');let btns=`<a href="opl.html?oplId=${encodeURIComponent(id)}&role=edit" class="btn-edit">แก้ไข/แนบไฟล์</a>`;if(iw)btns+=`<a href="opl.html?oplId=${encodeURIComponent(id)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;return`<td>${formatDateTH(sg(r,'วันที่ทำ OPL',2))}</td><td><span style="font-weight:700;color:var(--orange-600);">${id}</span></td><td>${sg(r,'Department',4)}</td><td style="width:100%;min-width:200px;"><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ชื่อผู้สอน',10)}</td><td><span class="badge ${getStatusBadge(st)}">${st}</span></td><td><div style="display:flex;gap:8px;">${btns}</div></td>`;});
+  tbl('fi-table-body',uFi,7,r=>{const id=sg(r,'FI ID',1);const st=sg(r,'Status',14)||'';const iw=st.includes('รอหัวหน้า');let btns=`<a href="fitheme.html?fiId=${encodeURIComponent(id)}&role=edit" class="btn-edit">อัปเดตงาน</a>`;if(iw)btns+=`<a href="fitheme.html?fiId=${encodeURIComponent(id)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;return`<td><span style="font-weight:700;color:var(--indigo-600);">${id}</span></td><td>${sg(r,'Department',4)}</td><td style="width:100%;min-width:200px;"><strong>${sg(r,'ชื่อเรื่อง',5)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',2)}</td><td><span style="color:var(--indigo-600);font-weight:700;background:rgba(99,102,241,0.1);padding:4px 10px;border-radius:12px;">${sg(r,'Step ปัจจุบัน',13)}</span></td><td><span class="badge ${getStatusBadge(st)}">${st}</span></td><td><div style="display:flex;gap:8px;">${btns}</div></td>`;});
+  tbl('kz-table-body',uKz,7,r=>{return`<td>${formatDateTH(sg(r,'วันที่ทำ Kaizen',1))}</td><td><span style="font-weight:700;color:var(--teal-600);">${sg(r,'เลขที่ Kaizen',0)}</span></td><td>${sg(r,'แผนก',3)}</td><td style="width:100%;min-width:200px;"><strong>${sg(r,'ชื่อเรื่อง',4)}</strong></td><td>${sg(r,'ผู้ดำเนินการ',7)}</td><td><span class="badge b-pass">${sg(r,'ประเภท',5)}</span></td><td><a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="btn-edit">เปิดระบบ</a></td>`;});
+  tbl('mk-table-body',uMk,7,r=>{const id=sg(r,'Makigami ID',1);const st=sg(r,'Status',9)||'';return`<td><span style="font-weight:700;color:var(--rose-500);">${id}</span></td><td>${sg(r,'แผนก',3)}</td><td style="width:100%;min-width:200px;"><strong>${sg(r,'ชื่อเรื่อง',4)||sg(r,'ชื่อเรื่อง (Theme Name)',4)}</strong></td><td>${sg(r,'ผู้รับผิดชอบ',5)}</td><td><span style="color:var(--rose-500);font-weight:700;background:rgba(244,63,94,0.1);padding:4px 10px;border-radius:12px;">${sg(r,'Current Phase',6)}</span></td><td><span class="badge ${getStatusBadge(st)}">${st}</span></td><td><a href="makigami.html?mkId=${encodeURIComponent(id)}&role=edit" class="btn-edit">อัปเดตงาน</a></td>`;});
 }
 
 function openDetail(type,title){
@@ -812,42 +703,32 @@ function openDetail(type,title){
   ['am','opl','fi','kz','mk'].forEach(t=>document.getElementById('detail-'+t).style.display='none');
   document.getElementById('detail-'+type).style.display='block';
 }
-function goBackToDashboard(){ document.getElementById('detail-view').style.display='none'; document.getElementById('main-dashboard-view').style.display='block'; }
+function goBackToDashboard(){document.getElementById('detail-view').style.display='none';document.getElementById('main-dashboard-view').style.display='block';}
 
-async function generateInsights() {
-  const btn=document.getElementById('btn-ai-analyze'); const resBox=document.getElementById('ai-result-box');
-  btn.disabled=true; resBox.style.display='block'; resBox.innerHTML='<div style="text-align:center;padding:30px;color:var(--indigo-600);font-weight:bold;">กำลังดึงข้อมูลทั้งระบบให้ AI ประมวลผลเชิงลึก กรุณารอสักครู่... ⏳</div>';
-  const fd=document.getElementById('global-filter-dept').value; const deptText=fd==='all'?'ภาพรวมทั้งโรงงาน (ทุกแผนก)':`แผนก ${fd}`;
-  const dbContext=JSON.stringify({kpi:kpiMaster,am:amHistory,opl:oplHistory,fi:fiHistory,kz:kzHistory,mk:mkHistory});
-  const promptText=`คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง\nนี่คือข้อมูลดิบของโรงงาน: ${dbContext}\n\nกรุณาวิเคราะห์ Performance ของ "${deptText}" อย่างละเอียดที่สุด\nโครงสร้างการตอบ (ให้ใช้ Bullet point):\n1. [ภาพรวม KPI]: สรุปความสำเร็จและเปอร์เซ็นต์ที่ได้\n2. [จุดเด่น]: แผนก หรือ ระบบที่ทำผลงานได้ดีเยี่ยม (ระบุชื่อ)\n3. [จุดคอขวด]: โปรเจกต์ หรือ แผนกที่ล่าช้า น่าเป็นห่วงที่สุด (ระบุตัวเลขและชื่อเรื่องให้ชัดเจน)\n4. [Action Plan]: ข้อเสนอแนะเชิงกลยุทธ์สำหรับผู้บริหาร 3 ข้อ ว่าควรเข้าไปจี้จุดไหนก่อน\n\nอธิบายให้ละเอียด เป็นมืออาชีพ (ความยาว 10-15 บรรทัด) ห้ามเกริ่นนำ ให้เข้าประเด็นทันที`;
-  try {
-    const response=await fetch(API_URL,{method:'POST',body:JSON.stringify({type:'ai_advisor',prompt:promptText})});
-    const data=await response.json();
-    if(data.status==='success'){resBox.innerHTML=data.text.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');}
-    else{resBox.innerHTML=`❌ เกิดข้อผิดพลาดจาก AI: ${data.message}`;}
-  } catch(err){resBox.innerHTML='❌ เชื่อมต่อเครือข่าย AI ไม่สำเร็จ';} finally{btn.disabled=false;}
+async function generateInsights(){
+  const btn=document.getElementById('btn-ai-analyze');const resBox=document.getElementById('ai-result-box');
+  btn.disabled=true;resBox.style.display='block';resBox.innerHTML='<div style="text-align:center;padding:30px;color:var(--indigo-600);font-weight:bold;">กำลังดึงข้อมูลทั้งระบบให้ AI ประมวลผลเชิงลึก กรุณารอสักครู่... ⏳</div>';
+  const fd=document.getElementById('global-filter-dept').value;const dt=fd==='all'?'ภาพรวมทั้งโรงงาน':`แผนก ${fd}`;
+  const ctx=JSON.stringify({kpi:kpiMaster,am:amHistory,opl:oplHistory,fi:fiHistory,kz:kzHistory,mk:mkHistory});
+  const pt=`คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง\nนี่คือข้อมูลดิบของโรงงาน: ${ctx}\n\nกรุณาวิเคราะห์ Performance ของ "${dt}" อย่างละเอียดที่สุด\nโครงสร้างการตอบ (ให้ใช้ Bullet point):\n1. [ภาพรวม KPI]: สรุปความสำเร็จและเปอร์เซ็นต์ที่ได้\n2. [จุดเด่น]: แผนก หรือ ระบบที่ทำผลงานได้ดีเยี่ยม (ระบุชื่อ)\n3. [จุดคอขวด]: โปรเจกต์ หรือ แผนกที่ล่าช้า น่าเป็นห่วงที่สุด (ระบุตัวเลขและชื่อเรื่องให้ชัดเจน)\n4. [Action Plan]: ข้อเสนอแนะเชิงกลยุทธ์สำหรับผู้บริหาร 3 ข้อ ว่าควรเข้าไปจี้จุดไหนก่อน\n\nอธิบายให้ละเอียด เป็นมืออาชีพ (ความยาว 10-15 บรรทัด) ห้ามเกริ่นนำ ให้เข้าประเด็นทันที`;
+  try{const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({type:'ai_advisor',prompt:pt})});const d=await r.json();if(d.status==='success'){resBox.innerHTML=d.text.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');}else{resBox.innerHTML=`❌ เกิดข้อผิดพลาดจาก AI: ${d.message}`;}}
+  catch(err){resBox.innerHTML='❌ เชื่อมต่อเครือข่าย AI ไม่สำเร็จ';}finally{btn.disabled=false;}
 }
 
-async function sendMessage() {
-  const inputEl=document.getElementById('chat-input'); const btnEl=document.getElementById('chat-btn'); const text=inputEl.value.trim();
-  if(!text) return; appendMessage('user',text); inputEl.value=''; btnEl.disabled=true; const typingId=appendTypingIndicator();
-  const dbContext=JSON.stringify({staff:userDataObj,kpi:kpiMaster,am:amHistory,opl:oplHistory,fi:fiHistory,kz:kzHistory,mk:mkHistory});
-  const systemPrompt=`Context JSON: ${dbContext}\nกฎการตอบ:\n1. คุณคือ AI Advisor ตอบเป็นภาษาไทย "เท่านั้น"\n2. วิเคราะห์จากสถานะ (Status) และความสำเร็จ (%) ใน JSON\n3. ตอบสั้นที่สุด (ไม่เกิน 5 บรรทัด) ห้ามเกริ่น ห้ามทวนคำถาม\n4. หากถามว่าแผนกไหนน่าห่วง: ให้ดูแผนกที่มี % ต่ำสุด หรือ Status เป็น 'ไม่ผ่าน' หรือ 'Delayed'\n5. ถ้าไม่เจอข้อมูลตอบ "ไม่มีข้อมูลครับ"\nคำถาม: "${text}"`;
-  try {
-    const response=await fetch(API_URL,{method:'POST',body:JSON.stringify({type:'ai_advisor',prompt:systemPrompt})});
-    const data=await response.json();
-    removeElement(typingId);
-    if(data.status==='success'){appendMessage('ai',data.text.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>'));}
-    else{appendMessage('ai',`❌ Error: ${data.message}`);}
-  } catch(err){removeElement(typingId);appendMessage('ai','❌ เชื่อมต่อไม่สำเร็จ');} finally{btnEl.disabled=false;inputEl.focus();}
+async function sendMessage(){
+  const inp=document.getElementById('chat-input');const btn=document.getElementById('chat-btn');const text=inp.value.trim();
+  if(!text)return;appendMessage('user',text);inp.value='';btn.disabled=true;const tid=appendTypingIndicator();
+  const ctx=JSON.stringify({staff:userDataObj,kpi:kpiMaster,am:amHistory,opl:oplHistory,fi:fiHistory,kz:kzHistory,mk:mkHistory});
+  const sp=`Context JSON: ${ctx}\nกฎการตอบ:\n1. คุณคือ AI Advisor ตอบเป็นภาษาไทย "เท่านั้น"\n2. วิเคราะห์จากสถานะ (Status) และความสำเร็จ (%) ใน JSON\n3. ตอบสั้นที่สุด (ไม่เกิน 5 บรรทัด) ห้ามเกริ่น ห้ามทวนคำถาม\n4. หากถามว่าแผนกไหนน่าห่วง: ให้ดูแผนกที่มี % ต่ำสุด หรือ Status เป็น 'ไม่ผ่าน' หรือ 'Delayed'\n5. ถ้าไม่เจอข้อมูลตอบ "ไม่มีข้อมูลครับ"\nคำถาม: "${text}"`;
+  try{const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({type:'ai_advisor',prompt:sp})});const d=await r.json();removeElement(tid);if(d.status==='success'){appendMessage('ai',d.text.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>'));}else{appendMessage('ai',`❌ Error: ${d.message}`);}}
+  catch(err){removeElement(tid);appendMessage('ai','❌ เชื่อมต่อไม่สำเร็จ');}finally{btn.disabled=false;inp.focus();}
 }
-
-function appendMessage(sender,text){const cb=document.getElementById('chat-body');const w=document.createElement('div');w.className=`msg-wrap ${sender}`;w.innerHTML=`<div class="msg-bubble">${text}</div>`;cb.appendChild(w);cb.scrollTop=cb.scrollHeight;}
+function appendMessage(s,t){const cb=document.getElementById('chat-body');const w=document.createElement('div');w.className=`msg-wrap ${s}`;w.innerHTML=`<div class="msg-bubble">${t}</div>`;cb.appendChild(w);cb.scrollTop=cb.scrollHeight;}
 function appendTypingIndicator(){const cb=document.getElementById('chat-body');const id='typing-'+Date.now();const w=document.createElement('div');w.id=id;w.className='msg-wrap ai';w.innerHTML=`<div class="msg-bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;cb.appendChild(w);cb.scrollTop=cb.scrollHeight;return id;}
 function removeElement(id){const el=document.getElementById(id);if(el)el.remove();}
 
-// ✅ แก้ไข: addEventListener เพียงตัวเดียว ไม่มี preventDefault
-document.addEventListener('DOMContentLoaded', function() {
+// ✅ Event listener เดียว ไม่มี preventDefault ไม่ซ้ำซ้อน
+document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('btn-guide').addEventListener('click', startTour);
   loadData();
 });
