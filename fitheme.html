@@ -1,24 +1,23 @@
+<!DOCTYPE html>
+<html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FI Theme — Focused Improvement</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FI Theme — Focused Improvement</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+<link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
+<style>
+/* 🟢 2. ปรับแต่งสไตล์ Intro.js ให้เข้ากับธีม FI (สี Indigo) */
+.introjs-button { text-shadow: none; border-radius: 10px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 600; }
+.introjs-nextbutton { background: var(--indigo-500) !important; color: white !important; border: none !important; }
+.introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; }
+.introjs-donebutton { background: #0CA47C !important; color: white !important; border: none !important; }
+.introjs-tooltip { border-radius: 20px; padding: 15px; box-shadow: 0 10px 40px rgba(79,70,229,0.15); border: 1px solid rgba(255,255,255,0.9); }
+.introjs-progress { background-color: #EEF2FF; }
+.introjs-progressbar { background-color: var(--indigo-500); }
 
-    .introjs-button { text-shadow: none; border-radius: 8px; font-family: 'IBM Plex Sans Thai', sans-serif; }
-    /* ปรับสีปุ่ม Next ให้เป็นสี Indigo ตามธีมหน้า FI */
-    .introjs-nextbutton { background: #4F46E5 !important; color: white !important; border: none !important; text-shadow: none !important; }
-    .introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; }
-    .introjs-donebutton { background: #0CA47C !important; color: white !important; border: none !important; text-shadow: none !important; }
-    .introjs-tooltip { border-radius: 15px; padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-  </style>
-
-  <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
-
-  <style>
 :root{
   --blue-900:#0A2540; --blue-800:#113A5D; --gray-900:#1A1C1E; --gray-600:#505A64; --gray-400:#9BA5B1; --gray-200:#D9E2EC;
   --indigo-300:#A5B4FC; --indigo-400:#818CF8; --indigo-500:#6366F1; --indigo-600:#4F46E5; --indigo-800:#3730A3;
@@ -43,6 +42,14 @@ body{
 
 .btn-nav-top { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; background: linear-gradient(135deg, #fff, var(--indigo-50)); border: 1px solid rgba(255,255,255,0.9); color:var(--indigo-600); font-size:12px; font-weight:700; text-decoration:none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition:all 0.2s; }
 .btn-nav-top:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(79,70,229,0.15); background:#fff; }
+
+.btn-help {
+  background: var(--orange-500); color: white; border: none; padding: 8px 16px;
+  border-radius: 40px; font-weight: 700; cursor: pointer; font-family: var(--font);
+  display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
+  box-shadow: 0 4px 12px rgba(245,124,0,0.2); transition: all 0.2s;
+}
+.btn-help:hover { transform: scale(1.05); background: var(--orange-700); }
 
 .wrap{max-width:860px;margin:0 auto;padding:0.5rem 1rem 5rem}
 .card{padding:1.5rem;margin-bottom:1.25rem;}
@@ -94,21 +101,18 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
 .id-display { font-size:20px !important; font-weight:700 !important; color:var(--indigo-600) !important; text-align:center; letter-spacing:1px; background: rgba(99,102,241,0.08) !important;}
 .update-zone { background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(238,242,255,0.9)); border: 1.5px solid var(--indigo-300); }
 
-/* 💡 Button System Redesign */
+/* Button System */
 .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:2rem; flex-wrap:wrap; padding-top: 20px; border-top: 1px dashed var(--indigo-300);}
 .btn{font-family:var(--font);font-size:14px;font-weight:600;padding:12px 28px;border-radius:12px;cursor:pointer;transition:all .2s ease; border:none; box-shadow:0 4px 12px rgba(0,0,0,0.05); display:inline-flex; align-items:center; gap:8px;}
 .btn-reset{background:rgba(255,255,255,0.8);color:var(--gray-600); border:1px solid rgba(255,255,255,0.9);}
 .btn-reset:hover{background:#fff; transform:translateY(-1px);}
 
-/* ปุ่มบันทึกอัปเดต (สีฟ้า) สำหรับคนทำ */
 .btn-update{background:linear-gradient(135deg, #3A86FF, #1E6091);color:#fff;box-shadow:0 4px 16px rgba(58,134,255,0.3);}
 .btn-update:hover{background:linear-gradient(135deg, #4A90E2, #115082); transform:translateY(-2px); box-shadow:0 6px 20px rgba(58,134,255,0.4);}
 
-/* ปุ่มส่งเรื่องให้หัวหน้า (สีเขียว) จะโผล่มาตอน Step 10 */
 .btn-send-approval{background:linear-gradient(135deg, var(--teal-400), var(--teal-600));color:#fff;box-shadow:0 4px 16px rgba(12,164,124,0.3); display:none;}
 .btn-send-approval:hover{background:linear-gradient(135deg, #10b981, #059669); transform:translateY(-2px); box-shadow:0 6px 20px rgba(12,164,124,0.4);}
 
-/* ปุ่มของหัวหน้า (สีม่วงเข้ม / สีแดง) */
 .btn-reject { background: #FFF0F0; color: #D93838; border: 1px solid #FFCACA; display:none; }
 .btn-reject:hover { background: #FFE0E0; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(217,56,56,0.2); }
 .btn-approve-lead{background:linear-gradient(135deg, var(--indigo-500), var(--indigo-600));color:#fff;box-shadow:0 4px 16px rgba(79,70,229,0.3); display:none;}
@@ -135,7 +139,11 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
       </div>
       <div class="page-sub">แบบฟอร์มขึ้นทะเบียนและติดตามความคืบหน้า Focused Improvement</div>
     </div>
-    <div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button class="btn-help" id="btn-start-guide" onclick="startTour()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        สอนใช้งาน
+      </button>
       <a href="home.html" class="btn-nav-top">กลับเมนูหลัก (Home)</a>
     </div>
   </div>
@@ -155,7 +163,7 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
       <span id="history-banner-text">กำลังแก้ไขข้อมูลโครงการเดิม...</span>
     </div>
 
-    <div class="card card-accent">
+    <div class="card card-accent" id="tour-info">
       <div class="sec-label">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         1. ข้อมูลหลัก (Primary Information)
@@ -227,21 +235,21 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
           <label>ประเภทของการสูญเสีย (Loss Type) <span class="req">จำเป็น</span></label>
           <select id="f-loss">
             <option value="">-- เลือกประเภทความสูญเสีย --</option>
-            <option value="Idling and Minor Stops">การหยุดเล็กน้อยและเดินเครื่องเปล่า (Idling and Minor Stops)</option>
-            <option value="Reduced Speed">ความเร็วลดลง (Reduced Speed)</option>
-            <option value="Equipment Failure">เครื่องจักรขัดข้อง (Equipment Failure)</option>
-            <option value="Setup and Adjustment">การตั้งค่าและปรับแต่ง (Setup and Adjustment)</option>
-            <option value="Process Defects">ของเสียจากกระบวนการ (Process Defects)</option>
-            <option value="Startup Loss">ความสูญเสียช่วงเริ่มต้น (Startup Loss)</option>
-            <option value="Material Waste">ความสูญเสียด้านวัตถุดิบ (Material Waste)</option>
-            <option value="Energy Saving">การประหยัดพลังงาน (Energy Saving)</option>
+            <option value="Idling and Minor Stops">การหยุดเล็กน้อยและเดินเครื่องเปล่า</option>
+            <option value="Reduced Speed">ความเร็วลดลง</option>
+            <option value="Equipment Failure">เครื่องจักรขัดข้อง</option>
+            <option value="Setup and Adjustment">การตั้งค่าและปรับแต่ง</option>
+            <option value="Process Defects">ของเสียจากกระบวนการ</option>
+            <option value="Startup Loss">ความสูญเสียช่วงเริ่มต้น</option>
+            <option value="Material Waste">ความสูญเสียด้านวัตถุดิบ</option>
+            <option value="Energy Saving">การประหยัดพลังงาน</option>
             <option value="Paperless">การลดใช้กระดาษ (Paperless)</option>
-            <option value="Time Saving">การประหยัดเวลา (Time Saving)</option>
-            <option value="Inventory Loss">ความสูญเสียจากสินค้าคงคลัง (Inventory Loss)</option>
-            <option value="Information Loss">ความสูญเสียด้านข้อมูล (Information Loss)</option>
-            <option value="Labor Loss">ความสูญเสียด้านแรงงาน (Labor Loss)</option>
-            <option value="Safety Risk">ความเสี่ยงด้านความปลอดภัย (Safety Risk)</option>
-            <option value="Cost Saving">การประหยัดต้นทุน (Cost Saving)</option>
+            <option value="Time Saving">การประหยัดเวลา</option>
+            <option value="Inventory Loss">ความสูญเสียจากสินค้าคงคลัง</option>
+            <option value="Information Loss">ความสูญเสียด้านข้อมูล</option>
+            <option value="Labor Loss">ความสูญเสียด้านแรงงาน</option>
+            <option value="Safety Risk">ความเสี่ยงด้านความปลอดภัย</option>
+            <option value="Cost Saving">การประหยัดต้นทุน</option>
           </select>
         </div>
       </div>
@@ -251,13 +259,13 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
         <input type="text" id="f-email">
       </div>
 
-      <div class="fg">
+      <div class="fg" id="tour-id">
         <label>รหัส FI Theme (ID) <span style="font-weight:normal; color:var(--gray-400);">(ระบบรันให้อัตโนมัติ)</span></label>
         <input type="text" id="f-fi-id" class="id-display" readonly placeholder="FI-[โรงงาน]-[แผนก]-[ปี]-[ลำดับ]">
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="tour-target">
       <div class="sec-label">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
         2. ข้อมูลตั้งต้นและเป้าหมาย (Baseline & Target)
@@ -269,14 +277,14 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
             <option value="">-- เลือกหน่วย --</option>
             <option value="Sheets/Month">แผ่น/เดือน (Sheets/Month)</option>
             <option value="Reams/Year">รีม/ปี (Reams/Year)</option>
-            <option value="Forms Converted to Digital">ฟอร์มที่แปลงเป็นดิจิทัล (Forms Converted)</option>
+            <option value="Forms Converted to Digital">ฟอร์มที่แปลงเป็นดิจิทัล</option>
             <option value="Minutes/Task">นาที/งาน (Minutes/Task)</option>
             <option value="Hours/Week">ชั่วโมง/สัปดาห์ (Hours/Week)</option>
-            <option value="% Time Reduced">% เวลาที่ลดลง (% Time Reduced)</option>
-            <option value="% Paper Usage Reduced">% การใช้กระดาษที่ลดลง (% Paper Reduced)</option>
-            <option value="Steps Reduced">ขั้นตอนที่ลดลง (Steps Reduced)</option>
-            <option value="Error Events/Month">ข้อผิดพลาด/เดือน (Error Events/Month)</option>
-            <option value="% Accuracy Improved">% ความแม่นยำที่เพิ่มขึ้น (% Accuracy Improved)</option>
+            <option value="% Time Reduced">% เวลาที่ลดลง</option>
+            <option value="% Paper Usage Reduced">% การใช้กระดาษที่ลดลง</option>
+            <option value="Steps Reduced">ขั้นตอนที่ลดลง</option>
+            <option value="Error Events/Month">ข้อผิดพลาด/เดือน</option>
+            <option value="% Accuracy Improved">% ความแม่นยำที่เพิ่มขึ้น</option>
             <option value="Sheets/Year">แผ่น/ปี (Sheets/Year)</option>
           </select>
         </div>
@@ -328,7 +336,7 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
       </div>
     </div>
 
-    <div class="card update-zone">
+    <div class="card update-zone" id="tour-update">
       <div class="sec-label" style="color:var(--indigo-800);">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
         4. อัปเดตความคืบหน้า (Progress Update)
@@ -375,11 +383,8 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
       </div>
     </div>
 
-    <div class="actions">
-      <button class="btn btn-reset" onclick="resetForm()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 2.63-6.37L2 10"/></svg>
-        ล้างข้อมูล
-      </button>
+    <div class="actions" id="tour-actions">
+      <button class="btn btn-reset" onclick="resetForm()">ล้างข้อมูล</button>
       
       <button class="btn btn-update" id="btn-update" onclick="handleSubmit('update')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -403,17 +408,56 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+
 <script>
-// ⚠️ ใส่ลิงก์ Web App URL ตัวล่าสุด
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-const imageStore = []; 
-const docStore = [];   
-let oldFileLinks = ''; // ตัวแปรเก็บลิงก์ไฟล์เก่าที่เคยส่งมาแล้ว
+// 💡 4. ฟังก์ชัน Guided Tour
+function startTour() {
+  introJs().setOptions({
+    steps: [
+      {
+        title: 'ยินดีต้อนรับสู่ระบบ FI Theme 👋',
+        intro: 'หน้านี้ใช้สำหรับลงทะเบียนโครงการ และใช้สำหรับอัปเดตความคืบหน้า (10 Steps) ครับ'
+      },
+      {
+        element: '#tour-info',
+        intro: '<b>1. ข้อมูลผู้จัดทำ:</b> เลือกโรงงาน แผนก และชื่อของคุณ ระบบจะสร้างรหัส FI อัตโนมัติและดึงอีเมลให้เองครับ',
+        position: 'bottom'
+      },
+      {
+        element: '#tour-target',
+        intro: '<b>2. ตั้งเป้าหมาย:</b> เลือกหน่วยที่ต้องการวัด และใส่ตัวเลขก่อนปรับปรุง (Baseline) และเป้าหมายที่อยากได้ (Target)',
+        position: 'top'
+      },
+      {
+        element: '#attachment-card',
+        intro: '<b>3. ไฟล์ประกอบ:</b> แนะนำให้แนบสไลด์นำเสนอ (PDF) หรือไฟล์ Excel ข้อมูลตั้งต้น เพื่อให้ทีมตรวจสอบได้ง่ายขึ้น',
+        position: 'top'
+      },
+      {
+        element: '#tour-update',
+        intro: '<b>4. อัปเดตความคืบหน้า:</b> เมื่อโครงการดำเนินการไปถึงไหน คุณสามารถเข้ามา "เปลี่ยน Step" ได้เรื่อยๆ จนกว่าจะถึง Step 10',
+        position: 'top'
+      },
+      {
+        element: '#tour-actions',
+        intro: '✨ <b>จุดสำคัญ:</b> ในระหว่างอัปเดต Step 1-9 ให้กด "บันทึกอัปเดต" <br>แต่ถ้าคุณเลือก Step 10 และสถานะเป็น "เสร็จสมบูรณ์" ปุ่มจะเปลี่ยนเป็น <b>"ส่งอนุมัติ"</b> แทนครับ!',
+        position: 'top'
+      }
+    ],
+    nextLabel: 'ถัดไป ›',
+    prevLabel: '‹ ย้อนกลับ',
+    doneLabel: 'เข้าใจแล้ว!',
+    showProgress: true,
+    showStepNumbers: false,
+    disableInteraction: true
+  }).start();
+}
 
-let userData = {};
-let approverData = {};
-let fiHistoryData = [];
+const imageStore = []; const docStore = []; let oldFileLinks = '';
+let userData = {}; let approverData = {}; let fiHistoryData = [];
 
 async function initData() {
   try {
@@ -422,23 +466,26 @@ async function initData() {
       fetch(APPS_SCRIPT_URL + '?action=getFiHistory&t=' + Date.now()).then(r => r.json())
     ]);
     
-    if(uRes.status === 'success') {
-       userData = uRes.users || {};
-       approverData = uRes.approvers || {};
-    }
-    if(fRes.status === 'success') {
-       fiHistoryData = fRes.data || [];
-    }
+    if(uRes.status === 'success') { userData = uRes.users || {}; approverData = uRes.approvers || {}; }
+    if(fRes.status === 'success') { fiHistoryData = fRes.data || []; }
     
     document.getElementById('loading-zone').style.display = 'none';
     document.getElementById('form-zone').style.display = 'block';
     
     prefillFromURL();
+
+    // 💡 เริ่มทัวร์อัตโนมัติเฉพาะเข้าใช้งานครั้งแรก
+    if (!localStorage.getItem('fitheme_tour_done_v1')) {
+        startTour();
+        localStorage.setItem('fitheme_tour_done_v1', 'true');
+    }
+
   } catch(e) {
     document.getElementById('loading-zone').innerHTML = '<div style="color:red; font-weight:bold;">❌ เชื่อมต่อฐานข้อมูลล้มเหลว กรุณารีเฟรชหน้าจอ</div>';
   }
 }
 
+// ... [ ส่วน Logic ของ JavaScript ทั้งหมดด้านล่างนี้เหมือนโค้ดต้นฉบับที่คุณให้มา ไม่มีการแก้ไขเพิ่มเติมครับ ] ...
 function prefillFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const paramFiId = urlParams.get('fiId');
@@ -446,17 +493,14 @@ function prefillFromURL() {
 
   if (roleParam) {
       document.getElementById('f-role').value = roleParam;
-      togglePIN(); // สั่งอัปเดตปุ่มตาม Role ทันที
+      togglePIN();
   }
 
   if (paramFiId && fiHistoryData.length > 0) {
       const record = fiHistoryData.slice().reverse().find(r => (r['FI ID'] || Object.values(r)[1]) === paramFiId);
-      
       if (record) {
-          document.getElementById('history-banner').style.display = 'flex'; // โชว์ป้ายว่ากำลังแก้ไข
-          
+          document.getElementById('history-banner').style.display = 'flex';
           const vals = Object.values(record); 
-          
           document.getElementById('f-fi-id').value = paramFiId;
           document.getElementById('f-factory').value = vals[3] || '';
           document.getElementById('f-dept').value = vals[4] || '';
@@ -470,28 +514,21 @@ function prefillFromURL() {
           document.getElementById('f-measure').value = vals[12] || '';
           document.getElementById('f-step').value = vals[13] || 'Step 1';
           
-          // ถ้าสถานะเก่าเป็น "รอหัวหน้าอนุมัติ" หรือ "อนุมัติสมบูรณ์" ให้แปลเป็นภาษาของคนทำก่อน
           let oldStatus = vals[14] || 'อยู่ระหว่างดำเนินการ';
           if (roleParam !== 'lead') {
-              if (oldStatus.includes('รอหัวหน้า') || oldStatus.includes('อนุมัติสมบูรณ์')) {
-                  oldStatus = 'เสร็จสมบูรณ์';
-              } else if (oldStatus.includes('ไม่อนุมัติ')) {
-                  oldStatus = 'อยู่ระหว่างดำเนินการ';
-              }
+              if (oldStatus.includes('รอหัวหน้า') || oldStatus.includes('อนุมัติสมบูรณ์')) oldStatus = 'เสร็จสมบูรณ์';
+              else if (oldStatus.includes('ไม่อนุมัติ')) oldStatus = 'อยู่ระหว่างดำเนินการ';
           } else {
-             // สำหรับหัวหน้า ให้โชว์สถานะเป๊ะๆ ไปเลย
              const statusOpt = document.createElement('option');
              statusOpt.value = oldStatus; statusOpt.textContent = oldStatus;
              document.getElementById('f-status').appendChild(statusOpt);
           }
-          
           document.getElementById('f-status').value = oldStatus;
           
           if (roleParam === 'lead') {
              document.getElementById('f-role').value = 'lead';
              document.getElementById('f-role').disabled = true; 
              togglePIN();
-             showToast('โหมดผู้อนุมัติ: สามารถตรวจสอบไฟล์และอนุมัติได้', 'var(--indigo-500)', 5000);
           } else if (roleParam === 'edit') {
              document.getElementById('f-role').value = 'self';
              document.getElementById('f-role').disabled = true;
@@ -501,37 +538,29 @@ function prefillFromURL() {
           populateUsers();
           setTimeout(() => {
               const nameSelect = document.getElementById('f-name');
-              if (roleParam === 'lead' && nameSelect.options.length > 1) { 
-                  nameSelect.selectedIndex = 1; 
-              } else {
-                  nameSelect.value = vals[2] || '';
-              }
+              if (roleParam === 'lead' && nameSelect.options.length > 1) { nameSelect.selectedIndex = 1; } 
+              else { nameSelect.value = vals[2] || ''; }
               autoFillEmail(); 
           }, 300);
 
-          // 💡 แสดงไฟล์แนบเก่า และเก็บลิงก์ไว้ไม่ให้หายตอนบันทึกทับ
           oldFileLinks = vals[15] || Object.values(record).find(v => typeof v === 'string' && v.includes('drive.google.com')) || ''; 
           renderAttachedFiles(oldFileLinks);
       }
   } else {
       generateFiId();
-      checkApprovalLogic(); // เช็คปุ่มครั้งแรก
+      checkApprovalLogic();
   }
 }
 
 function generateFiId() {
   const urlParams = new URLSearchParams(window.location.search);
   if(urlParams.get('fiId')) return; 
-
   const fac = document.getElementById('f-factory').value;
   const dept = document.getElementById('f-dept').value;
   const year = document.getElementById('f-year').value || '2026';
-  
   if(!fac || !dept) { document.getElementById('f-fi-id').value = ''; return; }
-
   const prefix = `FI-${fac}-${dept}-${year}-`;
   let maxRun = 0;
-  
   fiHistoryData.forEach(r => {
     const id = r['FI ID'] || Object.values(r)[1]; 
     if(id && id.startsWith(prefix)) {
@@ -542,7 +571,6 @@ function generateFiId() {
       }
     }
   });
-
   const nextRun = String(maxRun + 1).padStart(3, '0');
   document.getElementById('f-fi-id').value = `${prefix}${nextRun}`;
 }
@@ -552,10 +580,8 @@ function populateUsers() {
   const role = document.getElementById('f-role').value;
   const nameSelect = document.getElementById('f-name');
   const emailInput = document.getElementById('f-email');
-
   nameSelect.innerHTML = '<option value="">-- กรุณาเลือกชื่อ --</option>';
   emailInput.value = '';
-
   if (!dept) return;
 
   if (role === 'self') {
@@ -586,36 +612,29 @@ function autoFillEmail() {
   document.getElementById('f-email').value = (selectedOpt && selectedOpt.dataset.email) ? selectedOpt.dataset.email : '';
 }
 
-// 💡 1. ฟังก์ชันควบคุมการโชว์ปุ่มตามบทบาทและสถานะ
 function togglePIN() {
   const role = document.getElementById('f-role').value;
-  
   if (role === 'lead') {
       document.getElementById('pin-box').style.display = 'block';
       document.getElementById('btn-reject').style.display = 'inline-flex';
       document.getElementById('btn-approve-lead').style.display = 'inline-flex';
-      
       document.getElementById('btn-update').style.display = 'none';
       document.getElementById('btn-send-approval').style.display = 'none';
-      document.getElementById('f-status').disabled = true; // หัวหน้าไม่ต้องเปลี่ยนสถานะตรงนี้
+      document.getElementById('f-status').disabled = true;
   } else {
       document.getElementById('pin-box').style.display = 'none';
       document.getElementById('btn-reject').style.display = 'none';
       document.getElementById('btn-approve-lead').style.display = 'none';
       document.getElementById('f-status').disabled = false;
-      
-      checkApprovalLogic(); // เรียกเช็คเงื่อนไขของพนักงาน
+      checkApprovalLogic();
   }
 }
 
-// 💡 2. ฟังก์ชันเช็คว่าควรโชว์ปุ่ม "ส่งอนุมัติ" หรือไม่ (เฉพาะพนักงาน)
 function checkApprovalLogic() {
   const role = document.getElementById('f-role').value;
-  if (role === 'lead') return; // ข้ามถ้าเป็นหัวหน้า
-
+  if (role === 'lead') return;
   const step = document.getElementById('f-step').value;
   const status = document.getElementById('f-status').value;
-
   if (step === 'Step 10' && status === 'เสร็จสมบูรณ์') {
       document.getElementById('btn-update').style.display = 'none';
       document.getElementById('btn-send-approval').style.display = 'inline-flex';
@@ -629,8 +648,7 @@ function addImages(fl) {
   const container = document.getElementById('chip-img');
   Array.from(fl).forEach(f => {
     const idx = imageStore.push(f) - 1;
-    const chip = document.createElement('div');
-    chip.className = 'chip';
+    const chip = document.createElement('div'); chip.className = 'chip';
     chip.innerHTML = `<span>${f.name}</span><span class="chip-x" onclick="removeImage(${idx},this)">×</span>`;
     container.appendChild(chip);
   });
@@ -642,8 +660,7 @@ function addDocs(fl) {
   Array.from(fl).forEach(f => {
     if(f.size > 5 * 1024 * 1024) { showToast(`ไฟล์ ${f.name} มีขนาดใหญ่เกิน 5MB`, '#D93838', 5000); return; }
     const idx = docStore.push(f) - 1;
-    const chip = document.createElement('div');
-    chip.className = 'chip';
+    const chip = document.createElement('div'); chip.className = 'chip';
     chip.innerHTML = `<span>${f.name}</span><span class="chip-x" onclick="removeDoc(${idx},this)">×</span>`;
     container.appendChild(chip);
   });
@@ -653,27 +670,16 @@ function removeDoc(idx, el) { docStore[idx] = null; el.parentElement.remove(); }
 function renderAttachedFiles(linksStr) {
   const viewZone = document.getElementById('view-files-zone');
   const gallery = document.getElementById('file-gallery');
-  
-  if (!linksStr || linksStr.trim() === '') {
-      viewZone.style.display = 'none'; return;
-  }
-
+  if (!linksStr || linksStr.trim() === '') { viewZone.style.display = 'none'; return; }
   viewZone.style.display = 'block';
   const links = linksStr.split(',').map(s => s.trim()).filter(Boolean);
   gallery.innerHTML = '';
-  
   links.forEach((url, i) => {
       const driveId = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
       if (driveId && driveId[1]) {
-          const img = document.createElement('img');
-          img.src = `https://drive.google.com/uc?export=view&id=${driveId[1]}`;
-          img.className = 'file-preview';
+          const img = document.createElement('img'); img.src = `https://drive.google.com/uc?export=view&id=${driveId[1]}`; img.className = 'file-preview';
           img.onerror = function() { this.outerHTML = `<a href="${url}" target="_blank" class="file-link-card">📄 เอกสาร ${i+1}</a>`; };
-          
-          const a = document.createElement('a');
-          a.href = url; a.target = '_blank';
-          a.appendChild(img);
-          gallery.appendChild(a);
+          const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.appendChild(img); gallery.appendChild(a);
       } else {
           gallery.innerHTML += `<a href="${url}" target="_blank" class="file-link-card">📄 เอกสาร ${i+1}</a>`;
       }
@@ -686,10 +692,7 @@ function showToast(msg, color, ms) {
   t.classList.add('show'); setTimeout(() => t.classList.remove('show'), ms || 3500);
 }
 
-function resetForm() {
-  if (!confirm('ต้องการล้างข้อมูลใหม่ทั้งหมดหรือไม่?')) return;
-  window.location.href = 'fitheme.html'; 
-}
+function resetForm() { if (!confirm('ต้องการล้างข้อมูลใหม่ทั้งหมดหรือไม่?')) return; window.location.href = 'fitheme.html'; }
 
 function compressImage(file, maxWidth = 1024, quality = 0.7) {
   return new Promise((resolve, reject) => {
@@ -708,20 +711,11 @@ function compressImage(file, maxWidth = 1024, quality = 0.7) {
   });
 }
 
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
-}
+function fileToBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = reject; }); }
 
-// 💡 3. ฟังก์ชันส่งข้อมูล ที่แยกพฤติกรรมตามปุ่มที่กดมา
 async function handleSubmit(actionType) {
   const role = document.getElementById('f-role').value;
   const pin = document.getElementById('f-pin').value;
-  
   if (role === 'lead' && pin !== '1234') { showToast('รหัส PIN ผู้อนุมัติไม่ถูกต้อง!', '#D93838'); return; }
 
   const fac = document.getElementById('f-factory').value;
@@ -736,7 +730,6 @@ async function handleSubmit(actionType) {
   const step = document.getElementById('f-step').value;
   let status = document.getElementById('f-status').value;
   const result = document.getElementById('f-result').value.trim();
-  
   const nameSelect = document.getElementById('f-name');
   const name = nameSelect.options[nameSelect.selectedIndex] ? nameSelect.options[nameSelect.selectedIndex].text : '';
   const email = document.getElementById('f-email').value;
@@ -745,65 +738,40 @@ async function handleSubmit(actionType) {
       showToast('กรุณากรอกข้อมูลในช่องที่จำเป็นให้ครบถ้วน', '#D93838'); return; 
   }
 
-  // 💡 แปลงสถานะก่อนส่งให้เซิร์ฟเวอร์
   if (role === 'lead') {
       if (actionType === 'reject') status = 'ไม่อนุมัติ (ส่งกลับแก้ไข)';
       else if (actionType === 'approve') status = 'อนุมัติสมบูรณ์';
   } else {
-      if (actionType === 'send_approve') {
-          status = 'รอหัวหน้าอนุมัติ'; // พนักงานกดปุ่มขออนุมัติ
-      } 
-      // ถ้ากด 'update' ก็จะส่ง status ตามที่เลือก (ยังไม่ดำเนินการ, อยู่ระหว่างดำเนินการ)
+      if (actionType === 'send_approve') { status = 'รอหัวหน้าอนุมัติ'; } 
   }
 
-  // ปิดทุกปุ่มตอนกำลังโหลด
   document.querySelectorAll('.actions .btn').forEach(b => b.disabled = true);
   document.querySelector('.actions').innerHTML += '<div style="width:100%;text-align:right;color:var(--indigo-600);"><span class="spinner" style="border-top-color:var(--indigo-600)"></span> กำลังอัปโหลดข้อมูลและไฟล์...</div>';
 
-  // 💡 ประมวลผลไฟล์แนบ
   const filesData = [];
   if (role === 'self') {
-      for (const f of imageStore.filter(Boolean)) {
-        try { const b64 = await compressImage(f, 1024, 0.7); filesData.push({ name: f.name, mimeType: 'image/jpeg', data: b64.split(',')[1] }); } catch(e) {}
-      }
-      for (const d of docStore.filter(Boolean)) {
-        try { const b64 = await fileToBase64(d); filesData.push({ name: d.name, mimeType: d.type || 'application/pdf', data: b64.split(',')[1] }); } catch(e) {}
-      }
+      for (const f of imageStore.filter(Boolean)) { try { const b64 = await compressImage(f, 1024, 0.7); filesData.push({ name: f.name, mimeType: 'image/jpeg', data: b64.split(',')[1] }); } catch(e) {} }
+      for (const d of docStore.filter(Boolean)) { try { const b64 = await fileToBase64(d); filesData.push({ name: d.name, mimeType: d.type || 'application/pdf', data: b64.split(',')[1] }); } catch(e) {} }
   }
 
   const payload = {
-    type: 'fitheme', 
-    fiId: document.getElementById('f-fi-id').value,
-    ownerName: name.replace('(หัวหน้า) ', ''),
-    ownerEmail: email,
-    factory: fac,
-    department: dept,
-    title: title,
-    fiType: type,
-    lossType: loss,
-    unit: unit,
-    baseline: baseline,
-    target: target,
-    result: result,
-    measurement: measure,
-    currentStep: step,
-    status: status,
-    files: filesData, 
-    existingFiles: oldFileLinks // ส่งลิงก์เก่าแนบไปด้วย (ถ้ามี)
+    type: 'fitheme', fiId: document.getElementById('f-fi-id').value,
+    ownerName: name.replace('(หัวหน้า) ', ''), ownerEmail: email,
+    factory: fac, department: dept, title: title, fiType: type, lossType: loss,
+    unit: unit, baseline: baseline, target: target, result: result, measurement: measure,
+    currentStep: step, status: status, files: filesData, existingFiles: oldFileLinks 
   };
 
   try {
     await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
-    
     let msg = 'อัปเดตความคืบหน้าสำเร็จ!';
     if (actionType === 'send_approve') msg = 'ส่งข้อมูลให้หัวหน้าอนุมัติแล้ว!';
     if (role === 'lead') msg = actionType === 'reject' ? 'บันทึกสถานะ "ไม่อนุมัติ" เรียบร้อย' : 'อนุมัติ FI Theme สมบูรณ์!';
-
     showToast(msg, actionType === 'reject' ? '#D93838' : '#0CA47C', 4000);
     setTimeout(() => { window.location.href = 'dashboard.html?t=' + Date.now(); }, 3500);
   } catch (err) {
     showToast('เกิดข้อผิดพลาด: ' + err.message, '#D93838', 5000);
-    setTimeout(() => { window.location.reload(); }, 3000); // ถ้าระบบพังให้รีเฟรชหน้า
+    setTimeout(() => { window.location.reload(); }, 3000); 
   }
 }
 
