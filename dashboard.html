@@ -157,7 +157,7 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 .typing .dot:nth-child(2) { animation-delay: -0.16s; }
 @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-/* 🍎 iOS Style Chart Boxes */
+/* 🍎 iOS Style Chart Boxes & Interactive Effects */
 .charts-overview{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px}
 @media(max-width:800px){.charts-overview{grid-template-columns:1fr}}
 .chart-box{
@@ -167,6 +167,12 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
     border-radius:30px; 
     padding:26px; display:flex; flex-direction:column; height:420px;
     box-shadow:0 12px 36px rgba(10,37,64,0.06), inset 0 2px 0 rgba(255,255,255,0.9);
+    /* 💡 เพิ่มลูกเล่นตอนเอาเมาส์วางทั้งกล่องกราฟจะลอยขึ้นมานิดนึง */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+}
+.chart-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 18px 48px rgba(10,37,64,0.1), inset 0 2px 0 #fff;
 }
 .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .chart-title-text{font-size:15px;font-weight:700;color:var(--blue-900);display:flex;align-items:center;gap:12px}
@@ -692,7 +698,13 @@ function processAndRender(){
                 createGrad(ctxKpi, '#10D2A1', '#0CA47C', true),
                 createGrad(ctxKpi, '#FFB74D', '#F57C00', true)
             ],
-            borderRadius:10, borderSkipped:false, barPercentage:0.6
+            // 💡 เพิ่มเอฟเฟกต์สี Hover ให้สว่างขึ้น
+            hoverBackgroundColor: [
+                '#60A5FA', '#FFB74D', '#A5B4FC', '#34D399', '#FCA5A5'
+            ],
+            hoverBorderColor: '#ffffff',
+            hoverBorderWidth: 3,
+            borderRadius:12, borderSkipped:false, barPercentage:0.6
         }]
     },
     plugins: [{
@@ -715,6 +727,29 @@ function processAndRender(){
     }],
     options:{
         indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        // 💡 เพิ่ม Animation เด้งดึ๋ง
+        animation: {
+            duration: 1800,
+            easing: 'easeOutElastic'
+        },
+        // 💡 เพิ่ม Event กดคลิกที่แท่งกราฟเพื่อเปิดหน้าต่าง Detail
+        onClick: (event, elements) => {
+            if (elements.length > 0) {
+                const idx = elements[0].index;
+                const map = [
+                    {k: 'am', t: appData.am.title},
+                    {k: 'opl', t: appData.opl.title},
+                    {k: 'fi', t: appData.fi.title},
+                    {k: 'kz', t: appData.kz.title},
+                    {k: 'mk', t: appData.mk.title}
+                ];
+                openDetail(map[idx].k, map[idx].t);
+            }
+        },
+        // 💡 ชี้แล้วเปลี่ยนเคอร์เซอร์
+        onHover: (event, elements) => {
+            event.native.target.style.cursor = elements.length ? 'pointer' : 'default';
+        },
         layout: { padding: { right: 45 } }, 
         plugins:{
             legend:{display:false}, 
@@ -742,17 +777,37 @@ function processAndRender(){
             label: ' จำนวนพื้นที่',
             data:appData.am.stepDist,
             backgroundColor:[
-                createGrad(ctxAm, '#93C5FD', '#3B82F6', false), // Blue
-                createGrad(ctxAm, '#FCD34D', '#F59E0B', false), // Yellow
-                createGrad(ctxAm, '#A78BFA', '#6366F1', false), // Indigo
-                createGrad(ctxAm, '#6EE7B7', '#10B981', false), // Green
-                createGrad(ctxAm, '#FCA5A5', '#EF4444', false)  // Red
+                createGrad(ctxAm, '#93C5FD', '#3B82F6', false), 
+                createGrad(ctxAm, '#FCD34D', '#F59E0B', false), 
+                createGrad(ctxAm, '#A78BFA', '#6366F1', false), 
+                createGrad(ctxAm, '#6EE7B7', '#10B981', false), 
+                createGrad(ctxAm, '#FCA5A5', '#EF4444', false)  
             ],
-            borderRadius:10, borderSkipped:false, barPercentage:0.55
+            // 💡 เพิ่มเอฟเฟกต์สี Hover
+            hoverBackgroundColor: [
+                '#BFDBFE', '#FDE68A', '#DDD6FE', '#A7F3D0', '#FECACA'
+            ],
+            hoverBorderColor: '#ffffff',
+            hoverBorderWidth: 3,
+            borderRadius:12, borderSkipped:false, barPercentage:0.55
         }]
     },
     options:{
         responsive:true, maintainAspectRatio:false,
+        // 💡 เพิ่ม Animation 
+        animation: {
+            duration: 1500,
+            easing: 'easeOutQuart'
+        },
+        // 💡 ชี้แล้วเปลี่ยนเคอร์เซอร์ & เลื่อนลงไปดูตาราง AM ด้านล่างอัตโนมัติเมื่อกด
+        onClick: (event, elements) => {
+            if (elements.length > 0) {
+                openDetail('am', appData.am.title);
+            }
+        },
+        onHover: (event, elements) => {
+            event.native.target.style.cursor = elements.length ? 'pointer' : 'default';
+        },
         plugins:{
             legend:{display:false},
             tooltip:{
