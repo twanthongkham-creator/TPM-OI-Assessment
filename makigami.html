@@ -4,8 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Makigami Analysis — Progress Tracker</title>
+
+<link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
+/* 🟢 2. ปรับแต่งสไตล์ Intro.js ให้เข้ากับธีมสีส้มของ Makigami */
+.introjs-button { text-shadow: none; border-radius: 10px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 600; }
+.introjs-nextbutton { background: var(--orange-500) !important; color: white !important; border: none !important; }
+.introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; }
+.introjs-donebutton { background: #0CA47C !important; color: white !important; border: none !important; }
+.introjs-tooltip { border-radius: 20px; padding: 15px; box-shadow: 0 10px 40px rgba(245,124,0,0.15); border: 1px solid rgba(255,255,255,0.9); }
+.introjs-progress { background-color: #FFF3E0; }
+.introjs-progressbar { background-color: var(--orange-500); }
+
 :root{
   --blue-900:#0A2540; --blue-800:#113A5D; --gray-900:#1A1C1E; --gray-600:#505A64; --gray-400:#9BA5B1; --gray-200:#D9E2EC;
   --orange-400:#FF9800; --orange-500:#F57C00; --orange-600:#E65100; --orange-50:#FFF3E0;
@@ -27,8 +39,16 @@ body{
 .page-title{font-size:18px;font-weight:700;color:var(--orange-600); letter-spacing: -0.3px; display:flex; align-items:center; gap:8px;}
 .page-sub{font-size:12px;color:var(--gray-600);margin-top:2px; font-weight: 500;}
 
-.btn-nav-top { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; background: linear-gradient(135deg, #fff, var(--orange-50)); border: 1px solid rgba(255,255,255,0.9); color:var(--orange-600); font-size:12px; font-weight:700; text-decoration:none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition:all 0.2s; }
-.btn-nav-top:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(245,124,0,0.15); background:#fff; }
+.btn-nav-top { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; background: rgba(255,255,255,0.8); border: 1px solid var(--gray-200); color:var(--orange-600); font-size:12px; font-weight:700; text-decoration:none; transition:all 0.2s; }
+.btn-nav-top:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(245,124,0,0.15); background:#fff; }
+
+.btn-help {
+  background: var(--orange-500); color: white; border: none; padding: 8px 16px;
+  border-radius: 40px; font-weight: 700; cursor: pointer; font-family: var(--font);
+  display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
+  box-shadow: 0 4px 12px rgba(245,124,0,0.2); transition: all 0.2s;
+}
+.btn-help:hover { transform: scale(1.05); background: var(--orange-700); }
 
 .wrap{max-width:860px;margin:0 auto;padding:0.5rem 1rem 5rem}
 .card{padding:1.5rem;margin-bottom:1.25rem;}
@@ -88,10 +108,16 @@ input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--o
       </div>
       <div class="page-sub">ระบบขึ้นทะเบียนและติดตามความคืบหน้าการวิเคราะห์กระบวนการ (4 Phases)</div>
     </div>
-    <a href="home.html" class="btn-nav-top">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      กลับเมนูหลัก
-    </a>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button class="btn-help" id="btn-start-guide" onclick="startTour()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        สอนใช้งาน
+      </button>
+      <a href="home.html" class="btn-nav-top">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        กลับเมนูหลัก
+      </a>
+    </div>
   </div>
 </div>
 
@@ -109,7 +135,7 @@ input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--o
       <span id="history-banner-text">กำลังแก้ไขข้อมูลโครงการเดิม...</span>
     </div>
 
-    <div class="card card-accent">
+    <div class="card card-accent" id="tour-info">
       <div class="sec-label">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         1. ข้อมูลโครงการ (Project Information)
@@ -153,18 +179,14 @@ input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--o
           </select>
         </div>
         <div class="fg">
-          <label>รหัส Makigami (ID) <span style="font-weight:normal; color:var(--gray-400);">(สร้างอัตโนมัติ)</span></label>
+          <label>รหัส Makigami (ID)</label>
           <input type="text" id="m-id" class="id-display" readonly placeholder="MK-[โรงงาน]-[แผนก]-[ปี]-[ลำดับ]">
         </div>
       </div>
 
-      <div class="fg" style="margin-bottom:16px;">
+      <div class="fg" style="margin-bottom:16px;" id="tour-title">
         <label>ชื่อเรื่องกระบวนการที่วิเคราะห์ (Theme Name) <span class="req">จำเป็น</span></label>
         <input type="text" id="m-title" placeholder="เช่น กระบวนการเบิกจ่ายอะไหล่, กระบวนการรับวัตถุดิบเข้าคลัง..." style="font-weight:bold; color:var(--orange-600);">
-      </div>
-      
-      <div style="display:none;">
-        <input type="text" id="m-year" value="2026">
       </div>
     </div>
 
@@ -173,7 +195,7 @@ input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--o
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
         2. อัปเดตสถานะปัจจุบัน (Progress Update)
       </div>
-      <p style="font-size:12px; color:var(--gray-600); margin-bottom:16px;">ส่วนนี้สามารถกลับมาอัปเดตความคืบหน้าได้ภายหลังจนกว่าจะเสร็จสิ้นโครงการ (Completed)</p>
+      <p style="font-size:12px; color:var(--gray-600); margin-bottom:16px;">อัปเดตสเต็ปปัจจุบัน หรือเปลี่ยนสถานะเมื่อโครงการมีความคืบหน้า</p>
       
       <div class="grid2" style="margin-bottom:16px;">
         <div class="fg">
@@ -223,8 +245,9 @@ input[readonly], select:disabled{background:rgba(255,243,224,0.6); color:var(--o
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+
 <script>
-// ⚠️ ใส่ลิงก์ Web App URL ตัวล่าสุด
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 let userData = {};
@@ -235,6 +258,44 @@ const safeGet = (row, keyStr, fallbackIndex) => {
   return Object.values(row)[fallbackIndex];
 };
 
+// 💡 4. ฟังก์ชัน Guided Tour
+function startTour() {
+  introJs().setOptions({
+    steps: [
+      {
+        title: 'ระบบติดตาม Makigami 👋',
+        intro: 'หน้านี้ใช้สำหรับขึ้นทะเบียนโครงการใหม่ หรืออัปเดตความคืบหน้าของกระบวนการที่กำลังวิเคราะห์ครับ'
+      },
+      {
+        element: '#tour-info',
+        intro: '<b>1. ข้อมูลโครงการ:</b> เริ่มต้นด้วยการเลือกโรงงาน แผนก และผู้รับผิดชอบ ระบบจะรันรหัส ID ให้คุณอัตโนมัติ',
+        position: 'bottom'
+      },
+      {
+        element: '#tour-title',
+        intro: '<b>2. ชื่อเรื่อง:</b> พิมพ์ชื่อกระบวนการที่คุณกำลังวิเคราะห์ให้ชัดเจน (เช่น ขั้นตอนการรับอะไหล่)',
+        position: 'top'
+      },
+      {
+        element: '#update-section',
+        intro: '<b>3. อัปเดตสถานะ:</b> เลือก Phase ปัจจุบัน (1-4) และสถานะโครงการ หากโครงการเสร็จแล้วให้เลือกเป็น Completed ครับ',
+        position: 'top'
+      },
+      {
+        element: '#btn-submit',
+        intro: '<b>4. บันทึก:</b> เมื่อกรอกครบแล้ว กดปุ่มนี้เพื่อจัดเก็บข้อมูลเข้าสู่ระบบส่วนกลางทันทีครับ',
+        position: 'left'
+      }
+    ],
+    nextLabel: 'ถัดไป ›',
+    prevLabel: '‹ ย้อนกลับ',
+    doneLabel: 'เริ่มใช้งานเลย!',
+    showProgress: true,
+    showStepNumbers: false,
+    disableInteraction: true
+  }).start();
+}
+
 async function initData() {
   try {
     const [uRes, mRes] = await Promise.all([
@@ -242,46 +303,38 @@ async function initData() {
       fetch(APPS_SCRIPT_URL + '?action=getMakigamiHistory&t=' + Date.now()).then(r => r.json())
     ]);
     
-    if(uRes.status === 'success') {
-       userData = uRes.users || {};
-    }
-    if(mRes.status === 'success') {
-       rawHistory = mRes.data || [];
-    }
+    if(uRes.status === 'success') { userData = uRes.users || {}; }
+    if(mRes.status === 'success') { rawHistory = mRes.data || []; }
     
     document.getElementById('loading-zone').style.display = 'none';
     document.getElementById('form-zone').style.display = 'block';
 
     prefillFromURL();
 
+    // 💡 เริ่มทัวร์อัตโนมัติครั้งแรก
+    if (!localStorage.getItem('mk_tour_done')) {
+      startTour();
+      localStorage.setItem('mk_tour_done', 'true');
+    }
+
   } catch(e) {
     document.getElementById('loading-zone').innerHTML = '<div style="color:red; font-weight:bold;">❌ การเชื่อมต่อฐานข้อมูลล้มเหลว กรุณารีเฟรชหน้าจอ</div>';
   }
 }
 
-// 🟢 ระบบดึงข้อมูลจาก Dashboard
 function prefillFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const paramMkId = urlParams.get('mkId');
-
   if (paramMkId && rawHistory.length > 0) {
-      // ค้นหาข้อมูลล่าสุดของโปรเจกต์นี้
       const project = rawHistory.slice().reverse().find(r => safeGet(r, 'Makigami ID', 1) === paramMkId);
-      
       if (project) {
           document.getElementById('history-banner').style.display = 'flex';
-          
           document.getElementById('m-id').value = paramMkId;
           document.getElementById('m-factory').value = safeGet(project, 'โรงงาน', 2) || '';
-          
           const projDept = safeGet(project, 'แผนก', 3);
           document.getElementById('m-dept').value = projDept;
-          
           document.getElementById('m-title').value = safeGet(project, 'ชื่อเรื่อง (Theme Name)', 4) || safeGet(project, 'ชื่อเรื่อง', 4) || '';
-          
-          // โหลดสถานะล่าสุด
           document.getElementById('m-phase').value = safeGet(project, 'Current Phase', 6) || 'Phase 1: Current State';
-          
           let rawStatus = safeGet(project, 'Status', 9) || 'On Track';
           let status = 'On Track';
           if (rawStatus.includes('Delayed') || rawStatus.includes('ไม่อนุมัติ') || rawStatus.includes('รอ')) status = 'Delayed';
@@ -289,7 +342,6 @@ function prefillFromURL() {
           if (rawStatus.includes('Cancelled')) status = 'Cancelled';
           document.getElementById('m-status').value = status;
 
-          // Formatting Dates
           const formatDateToInput = (dateStr) => {
              if (!dateStr) return '';
              try {
@@ -301,11 +353,9 @@ function prefillFromURL() {
              } catch (e) {}
              return String(dateStr).split('T')[0]; 
           };
-
           document.getElementById('m-target-date').value = formatDateToInput(safeGet(project, 'Target Date', 7));
           document.getElementById('m-actual-date').value = formatDateToInput(safeGet(project, 'Actual Finish Date', 8));
 
-          // โหลดรายชื่อผู้รับผิดชอบ
           populateUsers();
           setTimeout(() => {
               document.getElementById('m-owner').value = safeGet(project, 'ผู้รับผิดชอบ', 5) || '';
@@ -319,16 +369,11 @@ function prefillFromURL() {
 function generateMkId() {
   const urlParams = new URLSearchParams(window.location.search);
   if(urlParams.get('mkId')) return; 
-
   const fac = document.getElementById('m-factory').value;
   const dept = document.getElementById('m-dept').value;
-  const year = document.getElementById('m-year').value || '2026';
-  
   if(!fac || !dept) { document.getElementById('m-id').value = ''; return; }
-
-  const prefix = `MK-${fac}-${dept}-${year}-`;
+  const prefix = `MK-${fac}-${dept}-2026-`;
   let maxRun = 0;
-  
   rawHistory.forEach(r => {
     const id = safeGet(r, 'Makigami ID', 1);
     if(id && id.startsWith(prefix)) {
@@ -339,7 +384,6 @@ function generateMkId() {
       }
     }
   });
-
   const nextRun = String(maxRun + 1).padStart(3, '0');
   document.getElementById('m-id').value = `${prefix}${nextRun}`;
 }
@@ -347,19 +391,14 @@ function generateMkId() {
 function populateUsers() {
   const dept = document.getElementById('m-dept').value;
   const ownerSelect = document.getElementById('m-owner');
-
-  ownerSelect.innerHTML = '<option value="">-- กรุณาเลือกชื่อผู้รับผิดชอบ --</option>';
-
+  ownerSelect.innerHTML = '<option value="">-- เลือกชื่อผู้รับผิดชอบ --</option>';
   if (!dept) return;
-
   if (userData[dept] && userData[dept].length > 0) {
     userData[dept].forEach(u => {
       const opt = document.createElement('option');
       opt.value = u.name; opt.textContent = u.name;
       ownerSelect.appendChild(opt);
     });
-  } else {
-      ownerSelect.innerHTML = '<option value="">(ไม่พบรายชื่อพนักงานในแผนกนี้)</option>';
   }
 }
 
@@ -380,16 +419,11 @@ async function handleSubmit() {
   const dept = document.getElementById('m-dept').value;
   const title = document.getElementById('m-title').value.trim();
   const owner = document.getElementById('m-owner').value;
-  const phase = document.getElementById('m-phase').value;
-  const status = document.getElementById('m-status').value;
-
   if (!id || !fac || !dept || !title || !owner || owner.includes('--')) {
       showToast('กรุณากรอกข้อมูลในช่องที่จำเป็นให้ครบถ้วน', '#D93838'); return; 
   }
-
   const btn = document.getElementById('btn-submit');
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังบันทึกข้อมูล...';
-
   const payload = {
     type: 'makigami',
     mkId: id,
@@ -397,20 +431,18 @@ async function handleSubmit() {
     department: dept,
     title: title,
     ownerName: owner,
-    currentPhase: phase,
+    currentPhase: document.getElementById('m-phase').value,
     targetDate: document.getElementById('m-target-date').value,
     actualDate: document.getElementById('m-actual-date').value,
-    status: status
+    status: document.getElementById('m-status').value
   };
-
   try {
-    await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
+    await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
     showToast('บันทึกข้อมูล Makigami สำเร็จ!', '#0CA47C');
-    
     setTimeout(() => { window.location.href = 'dashboard.html?t=' + Date.now(); }, 3500);
   } catch (err) {
     showToast('เกิดข้อผิดพลาด: ' + err.message, '#D93838');
-    btn.disabled = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> บันทึกข้อมูล Makigami';
+    btn.disabled = false; btn.innerHTML = 'บันทึกข้อมูล Makigami';
   }
 }
 
