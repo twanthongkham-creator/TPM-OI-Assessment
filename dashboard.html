@@ -121,7 +121,7 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 .p-kz .progress-fill{background:linear-gradient(90deg,#6EE7B7,#0CA47C)}
 .p-mk .progress-fill{background:linear-gradient(90deg,#FDBA74,#E65100)}
 
-/* 🤖 AI Glass Box */
+/* 🤖 AI Glass Box & Admin Tools */
 .ai-box { padding: 24px; margin-bottom: 32px; display: flex; flex-direction: column; gap: 16px; border:1px solid rgba(255,255,255,0.9); }
 .ai-btn { background:linear-gradient(135deg, #3A86FF, #4F46E5); color:#fff; border:none; padding:10px 18px; border-radius:40px; font-weight:700; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(58,134,255,0.3); transition:all 0.2s; }
 .ai-btn:hover { transform:scale(1.05); box-shadow:0 6px 16px rgba(58,134,255,0.4); }
@@ -261,17 +261,23 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
     <div class="sec-lbl">ผลลัพธ์ KPI ภาพรวม</div>
     <div class="kpi-grid" id="kpi-cards-container"></div>
 
-    <div class="sec-lbl" style="margin-top:6px;">🤖 AI Executive Insights</div>
+    <div class="sec-lbl" style="margin-top:6px;">🤖 Executive Tools</div>
     <div class="glass ai-box">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
             <div>
-                <h3 style="font-size:16px; color:var(--blue-900); display:flex; align-items:center; gap:8px;">✨ ให้ Gemini AI ช่วยวิเคราะห์ภาพรวมแผนก</h3>
-                <p style="font-size:12px; color:var(--gray-600); margin-top:4px;">AI จะสรุปข้อมูลคอขวดและให้คำแนะนำในการบริหารจัดการ KPI</p>
+                <h3 style="font-size:16px; color:var(--blue-900); display:flex; align-items:center; gap:8px;">✨ เครื่องมือสำหรับผู้บริหาร (Admin Tools)</h3>
+                <p style="font-size:12px; color:var(--gray-600); margin-top:4px;">วิเคราะห์ข้อมูลเชิงลึกด้วย AI หรือ ส่งอีเมลกระตุ้นยอด KPI ไปยังหัวหน้าแผนกทั้งหมด</p>
             </div>
-            <button class="ai-btn" id="btn-ai-analyze" onclick="generateInsights()">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-                เริ่มวิเคราะห์ข้อมูลเชิงลึก
-            </button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="ai-btn" id="btn-ai-analyze" onclick="generateInsights()" style="background:linear-gradient(135deg, #3A86FF, #4F46E5);">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                    AI วิเคราะห์คอขวด
+                </button>
+                <button class="ai-btn" id="btn-broadcast" onclick="broadcastLeaderboard()" style="background:linear-gradient(135deg, #F57C00, #E65100);">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    ส่งอีเมลจัดอันดับ KPI ให้หัวหน้า
+                </button>
+            </div>
         </div>
         <div id="ai-result-box" class="ai-result"></div>
     </div>
@@ -583,7 +589,6 @@ function processAndRender(){
     amC.appendChild(card);
   });
   
-  // 💡 ปลดล็อกเพดาน % ให้เกิน 100% ได้
   appData.am.pct = appData.am.targetScore > 0 ? Math.round((appData.am.actualScore / appData.am.targetScore) * 100) : 0;
 
   appData.opl.target=getSysTarget('OPL',fd); appData.fi.target=getSysTarget('FI',fd); appData.kz.target=getSysTarget('Kaizen',fd); appData.mk.target=getSysTarget('Makigami',fd);
@@ -652,7 +657,6 @@ function processAndRender(){
   appData.kz.wip = 0; 
   appData.mk.wip = uMk.filter(r=>!(sg(r,'Status',9)||'').includes('Completed')).length;
 
-  // 💡 ปลดล็อกเพดาน % ขั้นสุดท้าย
   ['opl','fi','kz','mk'].forEach(k => {
       appData[k].pct = appData[k].target > 0 ? Math.round((appData[k].actual / appData[k].target) * 100) : (appData[k].actual > 0 ? 100 : 0);
   });
@@ -668,7 +672,6 @@ function processAndRender(){
     const card=document.createElement('div'); card.className=`kpi-card p-${def.tc}`;
     card.onclick=()=>openDetail(def.did,d.title);
     
-    // กราฟแท่งเล็กๆ ในการ์ด ถ้ายาวเกิน 100 ก็ให้ตันที่ 100% พอ
     let barWidth = Math.min(pct, 100); 
     
     card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูรายละเอียด →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${pct}%</span><span class="kpi-unit">(${formatActual(d.actual)}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${barWidth}"></div></div>`;
@@ -677,7 +680,6 @@ function processAndRender(){
 
   document.querySelectorAll('.kpi-card').forEach((c,i)=>{ setTimeout(()=>{c.classList.add('visible');const f=c.querySelector('.progress-fill');if(f)setTimeout(()=>{f.style.width=f.dataset.w+'%'},60);},i*70); });
 
-  // 🍎 วาดกราฟเปรียบเทียบ %
   const cf={family:'IBM Plex Sans Thai',size:13}, gc='rgba(0,0,0,0.03)';
   
   if(chartKPI)chartKPI.destroy();
@@ -730,14 +732,12 @@ function processAndRender(){
             }
         },
         scales:{
-            // 💡 ไม่จำกัดแกน X ที่ 100 แล้ว ปล่อยให้มันไหลตามค่าจริง
             x:{beginAtZero:true, grid:{color:gc, borderDash:[5,5]}, ticks:{font:cf}},
             y:{grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai', weight:'bold', size:12}}}
         }
     }
   });
 
-  // 🍎 วาดกราฟการกระจายตัว (สีแยกตาม Step)
   if(chartAM)chartAM.destroy();
   let ctxAm = document.getElementById('amStepChart').getContext('2d');
   chartAM=new Chart(ctxAm,{
@@ -917,6 +917,50 @@ async function generateInsights() {
         resBox.innerHTML = '❌ เชื่อมต่อเครือข่าย AI ไม่สำเร็จ'; 
     } finally { 
         btn.disabled = false; 
+    }
+}
+
+// 💡 ฟังก์ชันคำนวณ Leaderboard และส่งคำสั่งอีเมล
+async function broadcastLeaderboard() {
+    if (!confirm('ยืนยันการส่งอีเมลสรุป KPI (Leaderboard) ไปยังหัวหน้าแผนกทั้งหมดหรือไม่?')) return;
+
+    const btn = document.getElementById('btn-broadcast');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> กำลังส่งอีเมล...';
+
+    const depts = Object.keys(areaData);
+    let leaderboard = [];
+
+    depts.forEach(d => {
+        let targetAM = kpiMaster.filter(k => (sg(k,'System',0)==='AM-OI' && sg(k,'Department',2)===d && sg(k,'Area',3)!=='ALL')).length;
+        let targetOPL = getSysTarget('OPL', d);
+        let targetFI = getSysTarget('FI', d);
+
+        let actualOPL = [...new Map(oplHistory.filter(r=>sg(r,'Department',4)===d).map(i=>[sg(i,'OPL ID',1),i])).values()].filter(r=>sg(r,'Status',14).includes('สมบูรณ์')).length;
+        let actualFI = [...new Map(fiHistory.filter(r=>sg(r,'Department',4)===d).map(i=>[sg(i,'FI ID',1),i])).values()].filter(r=>sg(r,'Status',14).includes('สมบูรณ์')).length;
+
+        let pctOPL = targetOPL > 0 ? (actualOPL / targetOPL) * 100 : 0;
+        let pctFI = targetFI > 0 ? (actualFI / targetFI) * 100 : 0;
+        
+        let totalPct = Math.min(Math.round((pctOPL + pctFI) / 2), 100); 
+        
+        leaderboard.push({ dept: d, score: totalPct });
+    });
+
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    try {
+        const payload = {
+            type: 'broadcast_kpi',
+            leaderboard: leaderboard
+        };
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
+        alert('✅ ส่งอีเมลแจ้งเตือนหัวหน้าแผนกทั้งหมดสำเร็จ!');
+    } catch (err) {
+        alert('❌ เกิดข้อผิดพลาด: ' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> ส่งอีเมลจัดอันดับ KPI ให้หัวหน้า';
     }
 }
 
