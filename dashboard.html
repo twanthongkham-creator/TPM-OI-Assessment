@@ -920,7 +920,7 @@ async function generateInsights() {
     }
 }
 
-// 💡 ฟังก์ชันคำนวณ Leaderboard และส่งคำสั่งอีเมล
+// 💡 ฟังก์ชันคำนวณ Leaderboard และส่งคำสั่งอีเมล (อัปเดตเพื่อส่งค่าแบบละเอียด 5 กิจกรรม)
 async function broadcastLeaderboard() {
     if (!confirm('ยืนยันการส่งอีเมลสรุป KPI (Leaderboard) ไปยังหัวหน้าแผนกทั้งหมดหรือไม่?')) return;
 
@@ -932,19 +932,44 @@ async function broadcastLeaderboard() {
     let leaderboard = [];
 
     depts.forEach(d => {
-        let targetAM = kpiMaster.filter(k => (sg(k,'System',0)==='AM-OI' && sg(k,'Department',2)===d && sg(k,'Area',3)!=='ALL')).length;
+        // --- AM-OI ---
+        let amTarget = kpiMaster.filter(k => (sg(k,'System',0)==='AM-OI' && sg(k,'Department',2)===d && sg(k,'Area',3)!=='ALL')).length;
+        let amWip = amHistory.filter(h => (sg(h,'Department',3)===d || Object.values(h)[3]===d));
+        let amActual = [...new Map(amWip.map(i=>[sg(i,'Area',4)||Object.values(i)[4], i])).values()].filter(r => (sg(r,'PassFail',15)||Object.values(r)[15]).includes('ผ่าน') && (sg(r,'Status',23)||Object.values(r)[23]).includes('สมบูรณ์')).length;
+        let pctAM = amTarget > 0 ? Math.round((amActual / amTarget) * 100) : 0;
+
+        // --- OPL ---
         let targetOPL = getSysTarget('OPL', d);
+        let oplWip = oplHistory.filter(r=>sg(r,'Department',4)===d);
+        let actualOPL = [...new Map(oplWip.map(i=>[sg(i,'OPL ID',1),i])).values()].filter(r=>(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
+        let pctOPL = targetOPL > 0 ? Math.round((actualOPL / targetOPL) * 100) : 0;
+
+        // --- FI Theme ---
         let targetFI = getSysTarget('FI', d);
+        let fiWip = fiHistory.filter(r=>sg(r,'Department',4)===d);
+        let actualFI = [...new Map(fiWip.map(i=>[sg(i,'FI ID',1),i])).values()].filter(r=>(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
+        let pctFI = targetFI > 0 ? Math.round((actualFI / targetFI) * 100) : 0;
 
-        let actualOPL = [...new Map(oplHistory.filter(r=>sg(r,'Department',4)===d).map(i=>[sg(i,'OPL ID',1),i])).values()].filter(r=>sg(r,'Status',14).includes('สมบูรณ์')).length;
-        let actualFI = [...new Map(fiHistory.filter(r=>sg(r,'Department',4)===d).map(i=>[sg(i,'FI ID',1),i])).values()].filter(r=>sg(r,'Status',14).includes('สมบูรณ์')).length;
+        // --- Kaizen ---
+        let targetKZ = getSysTarget('Kaizen', d);
+        let actualKZ = [...new Map(kzHistory.filter(r=>sg(r,'แผนก',3)===d).map(i=>[sg(i,'เลขที่ Kaizen',0),i])).values()].length;
+        let pctKZ = targetKZ > 0 ? Math.round((actualKZ / targetKZ) * 100) : 0;
 
-        let pctOPL = targetOPL > 0 ? (actualOPL / targetOPL) * 100 : 0;
-        let pctFI = targetFI > 0 ? (actualFI / targetFI) * 100 : 0;
+        // --- Makigami ---
+        let targetMK = getSysTarget('Makigami', d);
+        let mkWip = mkHistory.filter(r=>sg(r,'แผนก',3)===d);
+        let actualMK = [...new Map(mkWip.map(i=>[sg(i,'Makigami ID',1),i])).values()].filter(r=>(sg(r,'Status',9)||'').includes('Completed')).length;
+        let pctMK = targetMK > 0 ? Math.round((actualMK / targetMK) * 100) : 0;
         
-        let totalPct = Math.min(Math.round((pctOPL + pctFI) / 2), 100); 
+        // 💡 คำนวณภาพรวม (เฉลี่ยจาก 5 กิจกรรม)
+        let totalPct = Math.round((pctAM + pctOPL + pctFI + pctKZ + pctMK) / 5); 
         
-        leaderboard.push({ dept: d, score: totalPct });
+        // 📌 แพ็คข้อมูลลง Array (ส่ง detail ย่อยไปด้วย)
+        leaderboard.push({ 
+            dept: d, 
+            score: totalPct,
+            details: { am: pctAM, opl: pctOPL, fi: pctFI, kz: pctKZ, mk: pctMK }
+        });
     });
 
     leaderboard.sort((a, b) => b.score - a.score);
