@@ -4,8 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OPL Center — One Point Lesson</title>
+
+<link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
+/* 🟢 2. ปรับแต่งสไตล์ Intro.js ให้เข้ากับธีมสีส้ม OPL */
+.introjs-button { text-shadow: none; border-radius: 10px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 600; }
+.introjs-nextbutton { background: var(--orange-500) !important; color: white !important; border: none !important; }
+.introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; }
+.introjs-donebutton { background: #0CA47C !important; color: white !important; border: none !important; }
+.introjs-tooltip { border-radius: 20px; padding: 15px; box-shadow: 0 10px 40px rgba(245,124,0,0.15); border: 1px solid rgba(255,255,255,0.9); }
+.introjs-progress { background-color: #FFF3E0; }
+.introjs-progressbar { background-color: var(--orange-500); }
+
 :root{
   --blue-900:#0A2540;--blue-800:#113A5D;--blue-600:#1E6091;--blue-400:#3A86FF;
   --teal-600:#0CA47C;--teal-400:#10D2A1;
@@ -30,8 +42,16 @@ body{
 .page-title{font-size:18px;font-weight:700;color:var(--orange-500); letter-spacing: -0.3px; display:flex; align-items:center; gap:8px;}
 .page-sub{font-size:12px;color:var(--gray-600);margin-top:2px; font-weight: 500;}
 
-.btn-nav-top { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; background: linear-gradient(135deg, #fff, #FFF3E0); border: 1px solid rgba(255,255,255,0.9); color:var(--orange-500); font-size:12px; font-weight:700; text-decoration:none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition:all 0.2s; }
-.btn-nav-top:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(245,124,0,0.15); background:#fff; }
+.btn-nav-top { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; background: rgba(255,255,255,0.8); border: 1px solid var(--gray-200); color:var(--orange-500); font-size:12px; font-weight:700; text-decoration:none; transition:all 0.2s; }
+.btn-nav-top:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); background:#fff; }
+
+.btn-help {
+  background: var(--orange-500); color: white; border: none; padding: 8px 16px;
+  border-radius: 40px; font-weight: 700; cursor: pointer; font-family: var(--font);
+  display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
+  box-shadow: 0 4px 12px rgba(245,124,0,0.2); transition: all 0.2s;
+}
+.btn-help:hover { transform: scale(1.05); background: var(--orange-700); }
 
 .wrap{max-width:860px;margin:0 auto;padding:0.5rem 1rem 5rem}
 .card{padding:1.5rem;margin-bottom:1.25rem;}
@@ -46,11 +66,11 @@ body{
 .fg label{font-size:12px;font-weight:600;color:var(--gray-900); padding-left: 4px;}
 .req{background:var(--red-400);color:#fff;font-size:9px;font-weight:600;padding:2px 6px;border-radius:6px;margin-left:4px; box-shadow:0 2px 4px rgba(217,56,56,0.2);}
 
-/* 💡 Input Styling - Added Orange Borders */
+/* 💡 Input Styling */
 input[type=text],input[type=password],input[type=date],select,textarea{ 
     width:100%;font-family:var(--font);font-size:14px;color:var(--blue-900); 
     background: rgba(255, 255, 255, 0.8); 
-    border: 1.5px solid rgba(245, 124, 0, 0.35); /* สีส้มอ่อนๆ ให้เห็นขอบชัดเจน */
+    border: 1.5px solid rgba(245, 124, 0, 0.35);
     border-radius: 12px;padding:10px 14px;outline:none; 
     box-shadow: inset 0 2px 4px rgba(245,124,0,0.02); transition:all .2s ease; font-weight: 500; 
 }
@@ -128,9 +148,13 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:r
       </div>
       <div class="page-sub">แบบฟอร์มสร้างบทเรียนจุดเดียว สำหรับขยายผลความรู้ในองค์กร</div>
     </div>
-    <div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button class="btn-help" id="btn-start-guide" onclick="startTour()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        สอนใช้งาน
+      </button>
       <a href="home.html" class="btn-nav-top">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         กลับเมนูหลัก
       </a>
     </div>
@@ -146,7 +170,7 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:r
 
   <div id="form-zone" style="display:none;">
 
-    <div class="card card-accent">
+    <div class="card card-accent" id="tour-info">
       <div class="sec-label">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         1. ข้อมูลผู้จัดทำและรหัสเอกสาร (Primary Info)
@@ -198,30 +222,26 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:r
         </div>
       </div>
 
-      <div class="fg" style="margin-bottom:16px;">
-        <label>วันที่บันทึก OPL <span class="req">จำเป็น</span></label>
-        <input type="date" id="f-date">
-      </div>
-
-      <div class="grid2" style="margin-bottom:16px; display:none;">
-        <input type="text" id="f-year" value="2026" maxlength="4">
-        <input type="text" id="f-email">
-      </div>
-
       <div class="fg">
-        <label>รหัสเอกสาร (OPL ID) <span style="font-weight:normal; color:var(--gray-400);">(สร้างอัตโนมัติ)</span></label>
+        <label>รหัสเอกสาร (OPL ID) <span style="font-weight:normal; color:var(--gray-400);">(รันอัตโนมัติ)</span></label>
         <input type="text" id="f-opl-id" class="opl-id-display" readonly placeholder="OPL-[โรงงาน]-[แผนก]-[ปี]-[ลำดับ]">
+      </div>
+
+      <div style="display:none;">
+        <input type="date" id="f-date">
+        <input type="text" id="f-year" value="2026">
+        <input type="text" id="f-email">
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="tour-content">
       <div class="sec-label">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         2. เนื้อหา OPL (Content)
       </div>
       <div class="fg" style="margin-bottom:16px;">
         <label>ชื่อเรื่อง (Title) <span class="req">จำเป็น</span></label>
-        <input type="text" id="f-title" placeholder="ตั้งชื่อเรื่องให้กระชับ เข้าใจง่าย">
+        <input type="text" id="f-title" placeholder="เช่น วิธีการตรวจสอบโซ่ขับเคลื่อน, มาตรฐานการจัดเก็บถังน้ำยา...">
       </div>
 
       <div class="grid2" style="margin-bottom:16px;">
@@ -242,7 +262,6 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:r
             <option value="Basic">ความรู้พื้นฐาน (Basic Knowledge)</option>
             <option value="Improvement">การปรับปรุง (Improvement Cases)</option>
             <option value="Trouble">ปัญหาที่เกิดขึ้น (Trouble Cases)</option>
-            <option value="CostReduction">ลดต้นทุน (Cost Reduction)</option>
           </select>
         </div>
       </div>
@@ -269,7 +288,6 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:r
           <div class="upload-zone" onclick="document.getElementById('fu-img').click()">
             <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
             <div class="upload-text">คลิกแนบรูปภาพเพิ่มเติม</div>
-            <div class="upload-hint">รองรับ JPG, PNG (แคปจอหรือถ่ายรูปได้)</div>
           </div>
           <input type="file" id="fu-img" multiple accept="image/*" style="display:none" onchange="addImages(this.files)">
           <div class="chips" id="chip-img"></div>
@@ -277,8 +295,7 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:r
         <div>
           <div class="upload-zone" onclick="document.getElementById('fu-doc').click()">
             <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
-            <div class="upload-text">คลิกแนบเอกสารเพิ่มเติม</div>
-            <div class="upload-hint">คู่มือ, สเปคงาน (ไม่เกิน 5MB)</div>
+            <div class="upload-text">คลิกแนบเอกสาร (PDF/Excel)</div>
           </div>
           <input type="file" id="fu-doc" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="addDocs(this.files)">
           <div class="chips" id="chip-doc"></div>
@@ -286,7 +303,7 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:r
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="tour-training">
       <div class="sec-label">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         4. การสอนและประเมินผล (Training & Result)
@@ -305,13 +322,10 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:r
 
       <div class="fg" style="margin-top: 24px;">
         <label>รายชื่อผู้เรียน และ ผลการประเมินรายบุคคล <span class="req">จำเป็น</span></label>
-        
-        <div id="learners-container" style="display: flex; flex-direction: column; gap: 8px;">
-           </div>
-
+        <div id="learners-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
         <div>
-          <button type="button" class="btn-add-learner" onclick="addLearnerRow()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <button type="button" class="btn-add-learner" id="btn-add-row" onclick="addLearnerRow()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             เพิ่มผู้เรียน
           </button>
         </div>
@@ -319,51 +333,80 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:r
     </div>
 
     <div class="card" id="pin-box" style="display:none; background:var(--orange-50); border: 1px solid var(--orange-400);">
-      <div class="sec-label" style="color:var(--orange-600); border-bottom:none; margin-bottom:5px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        ยืนยันตัวตนผู้อนุมัติ OPL
-      </div>
-      <div class="fg">
-        <input type="password" id="f-pin" placeholder="กรอกรหัส PIN 4 หลักเพื่อเซ็นอนุมัติ" style="border-color:var(--orange-400); max-width:300px; background:#fff;">
-      </div>
+      <div class="sec-label" style="color:var(--orange-600); border-bottom:none; margin-bottom:5px;">🔑 ยืนยันตัวตนผู้อนุมัติ OPL</div>
+      <input type="password" id="f-pin" placeholder="กรอกรหัส PIN 4 หลักเพื่อเซ็นอนุมัติ" style="max-width:300px; background:#fff;">
     </div>
 
     <div class="actions">
-      <button class="btn btn-reset" onclick="resetForm()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 2.63-6.37L2 10"/></svg>
-        ล้างข้อมูล
-      </button>
-      <button class="btn btn-reject" id="btn-reject" onclick="handleSubmit('reject')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        ไม่อนุมัติ (ส่งกลับแก้ไข)
-      </button>
+      <button class="btn btn-reset" onclick="resetForm()">ล้างข้อมูล</button>
+      <button class="btn btn-reject" id="btn-reject" onclick="handleSubmit('reject')">ไม่อนุมัติ</button>
       <button class="btn btn-pri" id="btn-submit" onclick="handleSubmit('approve')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        บันทึก / อนุมัติ OPL
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        บันทึกข้อมูล OPL
       </button>
     </div>
 
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
 
+<script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+
 <script>
-// ⚠️ ใส่ลิงก์ Web App URL ตัวใหม่ล่าสุดของคุณที่เชื่อม Code.gs ไว้
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-const imageStore = []; 
-const docStore = [];   
-let oldFileLinksArray = []; // 💡 ตัวแปรเก็บไฟล์แนบเก่าสำหรับใช้โชว์/ลบ
-
-let userData = {};
-let approverData = {};
-let oplHistoryData = []; 
-
-const urlP = new URLSearchParams(window.location.search);
-if (!urlP.get('oplId')) {
-    document.getElementById('f-date').valueAsDate = new Date();
-    document.getElementById('f-teach-date').valueAsDate = new Date();
+// 💡 4. ฟังก์ชัน Guided Tour
+function startTour() {
+  introJs().setOptions({
+    steps: [
+      {
+        title: 'ยินดีต้อนรับสู่ OPL Center 👋',
+        intro: 'หน้านี้ใช้สำหรับสร้างบทเรียนจุดเดียว (One Point Lesson) เพื่อแชร์ความรู้ให้คนในแผนกครับ'
+      },
+      {
+        element: '#tour-info',
+        intro: '<b>1. ข้อมูลพื้นฐาน:</b> เลือกโรงงานและแผนกของคุณให้ถูกต้อง ระบบจะรันรหัส ID ให้เองอัตโนมัติครับ',
+        position: 'bottom'
+      },
+      {
+        element: '#tour-content',
+        intro: '<b>2. เนื้อหา:</b> พิมพ์ชื่อเรื่อง เลือกประเภท OPL และอธิบายขั้นตอนการทำงานให้ละเอียดครับ',
+        position: 'top'
+      },
+      {
+        element: '#attachment-card',
+        intro: '<b>3. ภาพประกอบ:</b> แนบรูปภาพ Before/After หรือคู่มือ PDF เพื่อให้บทเรียนเข้าใจง่ายขึ้น',
+        position: 'top'
+      },
+      {
+        element: '#tour-training',
+        intro: '<b>4. ผลการสอน:</b> พิมพ์ชื่อเพื่อนพนักงานที่มาเรียน และกดปุ่มสลับ "ผ่าน/ไม่ผ่าน" เพื่อสรุปคะแนนรายบุคคล',
+        position: 'top'
+      },
+      {
+        element: '#btn-add-row',
+        intro: 'หากมีผู้เรียนหลายคน กดปุ่มนี้เพื่อเพิ่มรายชื่อได้เรื่อยๆ ครับ',
+        position: 'top'
+      },
+      {
+        element: '#btn-submit',
+        intro: 'สุดท้าย ตรวจสอบข้อมูลแล้วกดบันทึกเพื่อส่งอนุมัติได้เลยครับ!',
+        position: 'left'
+      }
+    ],
+    nextLabel: 'ถัดไป ›',
+    prevLabel: '‹ ย้อนกลับ',
+    doneLabel: 'เริ่มใช้งานเลย!',
+    showProgress: true,
+    showStepNumbers: false,
+    disableInteraction: true
+  }).start();
 }
+
+// 🟢 ตัวแปรและ Logic เดิม
+const imageStore = []; const docStore = []; let oldFileLinksArray = [];
+let userData = {}; let approverData = {}; let oplHistoryData = [];
 
 async function initData() {
   try {
@@ -371,39 +414,33 @@ async function initData() {
       fetch(APPS_SCRIPT_URL + '?action=getUsers&t=' + Date.now()).then(r => r.json()),
       fetch(APPS_SCRIPT_URL + '?action=getOplHistory&t=' + Date.now()).then(r => r.json())
     ]);
-    
-    if(uRes.status === 'success') {
-       userData = uRes.users || {};
-       approverData = uRes.approvers || {};
-    }
-    if(oRes.status === 'success') {
-       oplHistoryData = oRes.data || [];
-    }
-    
+    if(uRes.status === 'success') { userData = uRes.users || {}; approverData = uRes.approvers || {}; }
+    if(oRes.status === 'success') { oplHistoryData = oRes.data || []; }
     document.getElementById('loading-zone').style.display = 'none';
     document.getElementById('form-zone').style.display = 'block';
-
     prefillFromURL();
-  } catch(e) {
-    document.getElementById('loading-zone').innerHTML = '<div style="color:red; font-weight:bold;">❌ เชื่อมต่อฐานข้อมูลล้มเหลว กรุณารีเฟรชหน้าจอ</div>';
-  }
+
+    // 💡 เริ่มทัวร์อัตโนมัติครั้งแรก
+    if (!localStorage.getItem('opl_tour_done_v1')) {
+      startTour();
+      localStorage.setItem('opl_tour_done_v1', 'true');
+    }
+  } catch(e) { document.getElementById('loading-zone').innerHTML = '<div style="color:red;">❌ เชื่อมต่อฐานข้อมูลล้มเหลว</div>'; }
 }
 
-// ฟังก์ชันสร้างช่องกรอกผู้เรียนแบบ Dynamic พร้อมสวิตช์เปิด/ปิด
+// ฟังก์ชันเพิ่มแถวรายชื่อผู้เรียน
 function addLearnerRow(name = '', resultStr = 'ผ่าน') {
     const container = document.getElementById('learners-container');
     const row = document.createElement('div');
     row.className = 'learner-row';
-    
     const isPass = resultStr.includes('ผ่าน') && !resultStr.includes('ไม่ผ่าน');
-
     row.innerHTML = `
         <input type="text" class="learner-input" placeholder="ชื่อ-นามสกุล ผู้เรียน" value="${name}">
         <div class="toggle-group">
             <button type="button" class="toggle-btn pass ${isPass ? 'active' : ''}" onclick="setToggle(this, 'pass')">ผ่าน</button>
             <button type="button" class="toggle-btn fail ${!isPass ? 'active' : ''}" onclick="setToggle(this, 'fail')">ไม่ผ่าน</button>
         </div>
-        <button type="button" class="btn-remove-learner" onclick="this.parentElement.remove()" title="ลบรายชื่อนี้">✖</button>
+        <button type="button" class="btn-remove-learner" onclick="this.parentElement.remove()">✖</button>
     `;
     container.appendChild(row);
 }
@@ -418,18 +455,11 @@ function prefillFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const paramOplId = urlParams.get('oplId');
   const roleParam = urlParams.get('role');
-
-  if (roleParam) {
-      document.getElementById('f-role').value = roleParam;
-      togglePIN();
-  }
-
+  if (roleParam) { document.getElementById('f-role').value = roleParam; togglePIN(); }
   if (paramOplId && oplHistoryData.length > 0) {
-      const record = oplHistoryData.slice().reverse().find(r => (r['OPL ID'] || r['เลขที่ OPL'] || Object.values(r)[1]) === paramOplId);
-      
+      const record = oplHistoryData.slice().reverse().find(r => (r['OPL ID'] || Object.values(r)[1]) === paramOplId);
       if (record) {
-          const vals = Object.values(record); 
-          
+          const vals = Object.values(record);
           document.getElementById('f-opl-id').value = paramOplId;
           document.getElementById('f-factory').value = vals[3] || '';
           document.getElementById('f-dept').value = vals[4] || '';
@@ -438,115 +468,57 @@ function prefillFromURL() {
           document.getElementById('f-class').value = vals[7] || '';
           document.getElementById('f-details').value = vals[8] || '';
           document.getElementById('f-instructor').value = vals[10] || '';
-          
-          document.getElementById('learners-container').innerHTML = ''; 
+          document.getElementById('learners-container').innerHTML = '';
           const names = (vals[11] || '').split(',').map(s => s.trim());
           const results = (vals[12] || '').split(',').map(s => s.trim());
-          
           if (names.length > 0 && names[0] !== '') {
-              names.forEach((n, idx) => {
-                  const res = results[idx] || results[0] || 'ผ่าน'; 
-                  addLearnerRow(n, res);
-              });
-          } else {
-              addLearnerRow(); 
-          }
+              names.forEach((n, idx) => addLearnerRow(n, results[idx] || 'ผ่าน'));
+          } else { addLearnerRow(); }
           
-          const formatDateToInput = (dateStr) => {
-              if (!dateStr) return '';
-              try {
-                  const d = new Date(dateStr);
-                  if (!isNaN(d.getTime())) {
-                      const offset = d.getTimezoneOffset() * 60000;
-                      const localDate = new Date(d.getTime() - offset);
-                      return localDate.toISOString().split('T')[0];
-                  }
-              } catch (e) {}
-              return String(dateStr).split('T')[0]; 
-          };
-
-          document.getElementById('f-date').value = formatDateToInput(vals[2]);
-          document.getElementById('f-teach-date').value = formatDateToInput(vals[9]);
-          
-          if (roleParam === 'lead') {
-             document.getElementById('f-role').value = 'lead';
-             document.getElementById('f-role').disabled = true; 
-             togglePIN();
-             document.getElementById('btn-reject').style.display = 'inline-flex'; 
-             showToast('โหมดผู้อนุมัติ: สามารถตรวจสอบและไม่อนุมัติได้', 'var(--orange-500)', 5000);
-          } else if (roleParam === 'edit') {
-             document.getElementById('f-role').value = 'self';
-             document.getElementById('f-role').disabled = true;
-             togglePIN();
-             showToast('โหมดแก้ไขข้อมูลและอัปเดตไฟล์แนบ', 'var(--blue-500)', 3000);
-          }
-          
-          populateUsers(); 
-
-          // 💡 เรียกโชว์ไฟล์แนบเก่า (จะสร้างปุ่มลบไฟล์อัตโนมัติ)
-          const fileStr = vals[13] || ''; 
+          const fileStr = vals[13] || '';
           renderAttachedFiles(fileStr);
+          populateUsers();
+          if(roleParam==='lead') document.getElementById('btn-reject').style.display='inline-flex';
       }
-  } else {
-      addLearnerRow();
-  }
+  } else { addLearnerRow(); generateOplId(); }
 }
 
 function generateOplId() {
-  const urlParams = new URLSearchParams(window.location.search);
-  if(urlParams.get('oplId')) return; 
-
   const fac = document.getElementById('f-factory').value;
   const dept = document.getElementById('f-dept').value;
-  const year = document.getElementById('f-year').value || '2026';
-  
-  if(!fac || !dept) { document.getElementById('f-opl-id').value = ''; return; }
-
-  const prefix = `OPL-${fac}-${dept}-${year}-`;
+  if(!fac || !dept) return;
+  const prefix = `OPL-${fac}-${dept}-2026-`;
   let maxRun = 0;
-  
   oplHistoryData.forEach(r => {
-    const id = r['OPL ID'] || r['เลขที่ OPL'] || Object.values(r)[1]; 
+    const id = r['OPL ID'] || Object.values(r)[1];
     if(id && id.startsWith(prefix)) {
-      const numPart = id.split('-')[4]; 
-      if(numPart) {
-         const num = parseInt(numPart, 10);
-         if(num > maxRun) maxRun = num;
-      }
+      const num = parseInt(id.split('-')[4], 10);
+      if(num > maxRun) maxRun = num;
     }
   });
-
-  const nextRun = String(maxRun + 1).padStart(3, '0');
-  document.getElementById('f-opl-id').value = `${prefix}${nextRun}`;
+  document.getElementById('f-opl-id').value = `${prefix}${String(maxRun + 1).padStart(3, '0')}`;
 }
 
 function populateUsers() {
   const dept = document.getElementById('f-dept').value;
   const role = document.getElementById('f-role').value;
   const nameSelect = document.getElementById('f-name');
-  const emailInput = document.getElementById('f-email');
-
-  nameSelect.innerHTML = '<option value="">-- กรุณาเลือกชื่อ --</option>';
-  emailInput.value = '';
-
+  nameSelect.innerHTML = '<option value="">-- เลือกชื่อ --</option>';
   if (!dept) return;
-
-  if (role === 'self') {
-    if (userData[dept] && userData[dept].length > 0) {
-      userData[dept].forEach(u => {
-        const opt = document.createElement('option');
-        opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
-        nameSelect.appendChild(opt);
-      });
-    }
-  } else if (role === 'lead') {
-    if (approverData[dept] && approverData[dept].lead && approverData[dept].lead.name) {
-      const u = approverData[dept].lead;
-      const opt = document.createElement('option');
-      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = `${u.name}`;
+  if (role === 'self' && userData[dept]) {
+    userData[dept].forEach(u => {
+      const opt = document.createElement('option'); opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
       nameSelect.appendChild(opt);
-    }
+    });
+  } else if (role === 'lead' && approverData[dept]) {
+    const u = approverData[dept].lead;
+    if(u) { const opt = document.createElement('option'); opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name; nameSelect.appendChild(opt); }
   }
+}
+
+function togglePIN() {
+  const role = document.getElementById('f-role').value;
+  document.getElementById('pin-box').style.display = (role === 'lead') ? 'block' : 'none';
 }
 
 function autoFillEmail() {
@@ -555,236 +527,86 @@ function autoFillEmail() {
   document.getElementById('f-email').value = (selectedOpt && selectedOpt.dataset.email) ? selectedOpt.dataset.email : '';
 }
 
-function togglePIN() {
-  const role = document.getElementById('f-role').value;
-  document.getElementById('pin-box').style.display = (role === 'lead') ? 'block' : 'none';
-  document.getElementById('btn-submit').innerHTML = (role === 'lead') ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> บันทึก / อนุมัติ OPL' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> บันทึกอัปเดตข้อมูล';
-}
-
 function addImages(fl) {
-  const container = document.getElementById('chip-img');
   Array.from(fl).forEach(f => {
     const idx = imageStore.push(f) - 1;
-    const chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.innerHTML = `<span>${f.name}</span><span class="chip-x" onclick="removeImage(${idx},this)">×</span>`;
-    container.appendChild(chip);
+    const chip = document.createElement('div'); chip.className = 'chip';
+    chip.innerHTML = `<span>${f.name}</span><span class="chip-x" onclick="imageStore[${idx}]=null; this.parentElement.remove()">×</span>`;
+    document.getElementById('chip-img').appendChild(chip);
   });
 }
-function removeImage(idx, el) { imageStore[idx] = null; el.parentElement.remove(); }
 
 function addDocs(fl) {
-  const container = document.getElementById('chip-doc');
   Array.from(fl).forEach(f => {
-    if(f.size > 5 * 1024 * 1024) { showToast(`ไฟล์ ${f.name} มีขนาดใหญ่เกิน 5MB`, '#D93838', 5000); return; }
     const idx = docStore.push(f) - 1;
-    const chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.innerHTML = `<span>${f.name}</span><span class="chip-x" onclick="removeDoc(${idx},this)">×</span>`;
-    container.appendChild(chip);
+    const chip = document.createElement('div'); chip.className = 'chip';
+    chip.innerHTML = `<span>${f.name}</span><span class="chip-x" onclick="docStore[${idx}]=null; this.parentElement.remove()">×</span>`;
+    document.getElementById('chip-doc').appendChild(chip);
   });
 }
-function removeDoc(idx, el) { docStore[idx] = null; el.parentElement.remove(); }
 
-// 💡 3. ฟังก์ชันโชว์และลบไฟล์แนบเก่า (Super Gallery)
 function renderAttachedFiles(linksStr) {
   const viewZone = document.getElementById('view-files-zone');
-  
-  if (!linksStr || linksStr.trim() === '') {
-      viewZone.style.display = 'none';
-      oldFileLinksArray = []; 
-      return;
-  }
-
+  const gallery = document.getElementById('file-gallery');
+  if (!linksStr || linksStr.trim() === '') return;
   viewZone.style.display = 'block';
   oldFileLinksArray = linksStr.split(',').map(s => s.trim()).filter(Boolean);
-  renderOldFilesGallery();
-}
-
-function renderOldFilesGallery() {
-  const gallery = document.getElementById('file-gallery');
   gallery.innerHTML = '';
-  
-  if (oldFileLinksArray.length === 0) {
-      document.getElementById('view-files-zone').style.display = 'none';
-      return;
-  }
-
   oldFileLinksArray.forEach((url, i) => {
-      const driveId = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-      const wrapper = document.createElement('div');
-      wrapper.className = 'file-gallery-item';
-      
-      let innerHTML = '';
-      if (driveId && driveId[1]) {
-          const imgUrl = `https://drive.google.com/uc?export=view&id=${driveId[1]}`;
-          innerHTML = `<a href="${url}" target="_blank"><img src="${imgUrl}" class="file-preview" onerror="this.outerHTML='<div class=\\'file-link-card\\'>📄 เปิดไฟล์แนบ ${i+1}</div>'"></a>`;
-      } else {
-          innerHTML = `<a href="${url}" target="_blank" class="file-link-card">📄 เปิดไฟล์แนบ ${i+1}</a>`;
-      }
-      
-      // ปุ่มลบกากบาทสีแดง
-      innerHTML += `<button type="button" class="btn-remove-old-file" onclick="removeOldFile(${i})" title="ลบไฟล์นี้">✕</button>`;
-      
-      wrapper.innerHTML = innerHTML;
+      const wrapper = document.createElement('div'); wrapper.className = 'file-gallery-item';
+      wrapper.innerHTML = `<a href="${url}" target="_blank" class="file-link-card">📄 ไฟล์แนบ ${i+1}</a><button type="button" class="btn-remove-old-file" onclick="oldFileLinksArray.splice(${i},1); this.parentElement.remove()">✕</button>`;
       gallery.appendChild(wrapper);
-  });
-}
-
-// เมื่อกดลบไฟล์เก่า จะเอาออกจาก Array
-function removeOldFile(index) {
-  if(confirm('คุณต้องการลบไฟล์แนบเดิมนี้ออกจากระบบใช่หรือไม่? (ลบแล้วจะกู้คืนไม่ได้)')) {
-      oldFileLinksArray.splice(index, 1);
-      renderOldFilesGallery();
-  }
-}
-
-function showToast(msg, color, ms) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.style.background = color || 'var(--orange-500)';
-  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), ms || 3500);
-}
-
-function resetForm() {
-  if (!confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) return;
-  
-  document.querySelectorAll('input[type="text"], input[type="date"], select, textarea').forEach(el => el.value = '');
-
-  document.getElementById('f-year').value = '2026';
-  document.getElementById('f-role').value = 'self';
-  togglePIN();
-  
-  imageStore.length = 0; docStore.length = 0;
-  oldFileLinksArray = []; 
-  document.getElementById('chip-img').innerHTML = '';
-  document.getElementById('chip-doc').innerHTML = '';
-  document.getElementById('f-date').valueAsDate = new Date();
-  document.getElementById('f-teach-date').valueAsDate = new Date();
-  
-  document.getElementById('view-files-zone').style.display = 'none';
-  document.getElementById('learners-container').innerHTML = '';
-  addLearnerRow();
-
-  generateOplId();
-  showToast('ล้างข้อมูลแล้ว'); 
-}
-
-function compressImage(file, maxWidth = 1024, quality = 0.7) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader(); reader.readAsDataURL(file);
-    reader.onload = (e) => {
-      const img = new Image(); img.src = e.target.result;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let w = img.width, h = img.height;
-        if (w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      }; img.onerror = reject;
-    }; reader.onerror = reject;
-  });
-}
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
   });
 }
 
 async function handleSubmit(actionType = 'approve') {
   const role = document.getElementById('f-role').value;
-  const pin = document.getElementById('f-pin').value;
+  if (role === 'lead' && document.getElementById('f-pin').value !== '1234') { alert('PIN ไม่ถูกต้อง!'); return; }
   
-  if (role === 'lead' && pin !== '1234') { showToast('รหัส PIN ผู้อนุมัติไม่ถูกต้อง!', '#D93838'); return; }
-
-  const fac = document.getElementById('f-factory').value;
-  const dept = document.getElementById('f-dept').value;
-  const date = document.getElementById('f-date').value;
-  const title = document.getElementById('f-title').value.trim();
-  const category = document.getElementById('f-category').value;
-  const classification = document.getElementById('f-class').value;
-  const details = document.getElementById('f-details').value.trim();
-  const teachDate = document.getElementById('f-teach-date').value;
-  
-  const nameSelect = document.getElementById('f-name');
-  const name = nameSelect.options[nameSelect.selectedIndex] ? nameSelect.options[nameSelect.selectedIndex].text : '';
-
-  const learnerRows = document.querySelectorAll('.learner-row');
-  const learnerNames = [];
-  const learnerResults = [];
-  
-  learnerRows.forEach(row => {
+  const learnerNames = []; const learnerResults = [];
+  document.querySelectorAll('.learner-row').forEach(row => {
       const lName = row.querySelector('.learner-input').value.trim();
       if (lName) {
-          const isPass = row.querySelector('.toggle-btn.pass').classList.contains('active');
           learnerNames.push(lName);
-          learnerResults.push(isPass ? 'ผ่าน' : 'ไม่ผ่าน');
+          learnerResults.push(row.querySelector('.toggle-btn.pass').classList.contains('active') ? 'ผ่าน' : 'ไม่ผ่าน');
       }
   });
 
-  if (!fac || !dept || !title || !category || !classification || !details || name === '' || name.includes('--')) { 
-      showToast('กรุณากรอกข้อมูลในช่องที่จำเป็นให้ครบถ้วน', '#D93838'); return; 
-  }
-  if (learnerNames.length === 0) {
-      showToast('กรุณาระบุชื่อผู้เรียนอย่างน้อย 1 คน', '#D93838'); return;
-  }
-
   const btn = document.getElementById('btn-submit');
-  const btnRej = document.getElementById('btn-reject');
-  btn.disabled = true; btnRej.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>กำลังบันทึกและจัดการไฟล์...';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังบันทึก...';
 
   const filesData = [];
-  if (role === 'self') {
-      for (const f of imageStore.filter(Boolean)) {
-        try { const b64 = await compressImage(f, 1024, 0.7); filesData.push({ name: f.name, mimeType: 'image/jpeg', data: b64.split(',')[1] }); } catch(e) {}
-      }
-      for (const d of docStore.filter(Boolean)) {
-        try { const b64 = await fileToBase64(d); filesData.push({ name: d.name, mimeType: d.type || 'application/pdf', data: b64.split(',')[1] }); } catch(e) {}
-      }
+  for (const f of imageStore.filter(Boolean)) {
+    const b64 = await fileToBase64(f);
+    filesData.push({ name: f.name, mimeType: f.type, data: b64.split(',')[1] });
   }
 
   const payload = {
-    type: 'opl', 
-    role: role,
-    action: actionType, 
+    type: 'opl', role: role, action: actionType === 'reject' ? 'reject' : 'send_approve',
     oplId: document.getElementById('f-opl-id').value,
-    oplDate: date,
-    factory: fac,
-    department: dept,
-    title: title,
-    category: category,
-    classification: classification,
-    details: details,
-    teachDate: teachDate,
-    instructor: document.getElementById('f-instructor').value.trim(),
-    learners: learnerNames.join(', '), 
-    result: learnerResults.join(', '), 
-    assessorName: name.replace('(หัวหน้า) ', ''),
-    files: filesData,
-    existingFiles: oldFileLinksArray.join(', ') // 💡 ส่งลิงก์ไฟล์เก่าที่เหลืออยู่กลับไปให้ระบบเซฟทับด้วย!
+    factory: document.getElementById('f-factory').value,
+    department: document.getElementById('f-dept').value,
+    title: document.getElementById('f-title').value,
+    category: document.getElementById('f-category').value,
+    classification: document.getElementById('f-class').value,
+    details: document.getElementById('f-details').value,
+    teachDate: document.getElementById('f-teach-date').value,
+    instructor: document.getElementById('f-instructor').value,
+    learners: learnerNames.join(', '), result: learnerResults.join(', '),
+    assessorName: document.getElementById('f-name').value,
+    files: filesData, existingFiles: oldFileLinksArray.join(', ')
   };
 
   try {
-    await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
-    
-    let msg = 'บันทึกอัปเดต OPL สำเร็จ!';
-    if (role === 'lead') msg = actionType === 'reject' ? 'บันทึกสถานะ "ไม่อนุมัติ" เรียบร้อยแล้ว' : 'อนุมัติ OPL สำเร็จ!';
-    
-    showToast(msg, actionType === 'reject' ? '#D93838' : '#0CA47C', 4000);
-    setTimeout(() => { window.location.href = 'dashboard.html?t=' + Date.now(); }, 3500);
-  } catch (err) {
-    showToast('เกิดข้อผิดพลาด: ' + err.message, '#D93838', 5000);
-    btn.disabled = false; btnRej.disabled = false;
-    btn.innerHTML = role === 'lead' ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> บันทึก / อนุมัติ OPL' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> บันทึกอัปเดตข้อมูล';
-  }
+    await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+    alert('บันทึก OPL สำเร็จ!'); window.location.href = 'dashboard.html';
+  } catch(e) { alert('ผิดพลาด: ' + e.message); btn.disabled = false; btn.innerHTML = 'บันทึกข้อมูล OPL'; }
 }
 
-initData(); 
+function fileToBase64(file) { return new Promise(res => { const r = new FileReader(); r.readAsDataURL(file); r.onload = () => res(r.result); }); }
+function resetForm() { if(confirm('ล้างข้อมูล?')) window.location.reload(); }
+
+initData();
 </script>
 </body>
 </html>
