@@ -12,9 +12,9 @@
   /* ปรับแต่งสีปุ่มใน Tour ให้เข้ากับธีม OI Center ของเรา */
   .introjs-button { text-shadow: none; border-radius: 8px; font-family: 'IBM Plex Sans Thai'; }
   .introjs-nextbutton { background: var(--blue-600) !important; color: white !important; border: none !important; }
-  .introjs-prevbutton { color: var(--gray-600) !important; }
-  .introjs-donebutton { background: var(--teal-600) !important; color: white !important; border: none !important; }
-  .introjs-tooltip { border-radius: 15px; padding: 15px; }
+  .introjs-prevbutton { color: var(--gray-600) !important; text-shadow: none !important; }
+  .introjs-donebutton { background: var(--teal-600) !important; color: white !important; border: none !important; text-shadow: none !important; }
+  .introjs-tooltip { border-radius: 15px; padding: 15px; box-shadow: 0 10px 40px rgba(10,37,64,0.15); border: 1px solid rgba(255,255,255,0.9); }
   .introjs-progress { background-color: #E2E8F0; }
   .introjs-progressbar { background-color: var(--blue-600); }
 </style>
@@ -71,6 +71,15 @@ body::after{width:580px;height:580px;background:radial-gradient(circle,rgba(12,1
 }
 .pill-btn:hover{background:rgba(255,255,255,0.95);box-shadow:0 8px 24px rgba(10,37,64,0.12),inset 0 1px 0 #fff;transform:translateY(-2px)}
 .pill-btn svg{flex-shrink:0;opacity:0.7}
+
+/* 💡 สไตล์ปุ่มสอนใช้งานที่หายไป เติมกลับมาให้แล้วครับ */
+.btn-help {
+  background: var(--orange-500); color: white; border: none; padding: 9px 16px;
+  border-radius: 40px; font-weight: 700; cursor: pointer; font-family: var(--font);
+  display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+  box-shadow: 0 4px 15px rgba(245,124,0,0.25); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn-help:hover { transform: translateY(-2px); background: var(--orange-600); box-shadow: 0 6px 20px rgba(245,124,0,0.4); }
 
 .filter-section{padding:14px 20px;margin-bottom:28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .filter-section label{font-size:13px;font-weight:700;color:var(--blue-800);display:flex;align-items:center;gap:7px}
