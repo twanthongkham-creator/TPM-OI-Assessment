@@ -9,44 +9,50 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* 🟢 2. ปรับแต่งสไตล์ Intro.js ให้เข้ากับดีไซน์หน้าเว็บ */
-.introjs-button { text-shadow: none; border-radius: 10px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 600; }
-.introjs-nextbutton { background: #3A86FF !important; color: white !important; border: none !important; }
-.introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; }
-.introjs-donebutton { background: #0CA47C !important; color: white !important; border: none !important; }
-.introjs-tooltip { border-radius: 20px; padding: 15px; box-shadow: 0 10px 40px rgba(10,37,64,0.15); border: 1px solid rgba(255,255,255,0.9); }
-.introjs-progress { background-color: #E2E8F0; }
+/* 🟢 1. Intro.js Custom Premium Style */
+.introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 16px; transition: all 0.2s; }
+.introjs-nextbutton { background: linear-gradient(135deg, #3A86FF, #1E6091) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(58,134,255,0.3) !important; }
+.introjs-nextbutton:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(58,134,255,0.4) !important; }
+.introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; background: #F8FAFC !important; }
+.introjs-donebutton { background: linear-gradient(135deg, #2DD4BF, #0CA47C) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(12,164,124,0.3) !important; }
+.introjs-tooltip { border-radius: 24px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.2); border: 1px solid rgba(255,255,255,0.9); font-family: 'IBM Plex Sans Thai', sans-serif; }
+.introjs-progress { background-color: #E2E8F0; border-radius: 4px; overflow: hidden; }
 .introjs-progressbar { background-color: #3A86FF; }
 
 :root{
   --blue-900:#0A2540;--blue-800:#113A5D;--blue-600:#1E6091;--blue-400:#3A86FF;
   --teal-700:#087A5C;--teal-500:#14B8A6;
   --orange-700:#C46200;--orange-500:#F57C00;--indigo-600:#4F46E5;
+  --rose-500:#F43F5E;
   --gray-900:#1A1C1E;--gray-600:#505A64;--gray-400:#9BA5B1;
   --font:'IBM Plex Sans Thai',sans-serif;
-  --blur:blur(32px) saturate(180%);--r:24px;
+  --blur:blur(32px) saturate(180%);
+  --r:28px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 
 html,body{
   font-family:var(--font);width:100%; min-height: 100vh;
-  background:linear-gradient(145deg,#e0eaf5 0%,#e8f4f0 35%,#eaecf5 65%,#f4eae4 100%);
+  background:linear-gradient(145deg,#E0EAF5 0%,#E8F4F0 35%,#EAECF5 65%,#F4EAE4 100%);
   background-attachment:fixed;
   color:var(--gray-900); overflow-x: hidden;
 }
 
-/* Premium Ambient Blobs */
-body::before,body::after{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(100px);opacity:0.5}
-body::before{width:700px;height:700px;background:radial-gradient(circle,rgba(58,134,255,0.3) 0%,transparent 70%);top:-200px;left:-150px;animation:b1 15s ease-in-out infinite alternate}
-body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,164,124,0.25) 0%,transparent 70%);bottom:-150px;right:-150px;animation:b2 18s ease-in-out infinite alternate}
-@keyframes b1{to{transform:translate(100px,80px) scale(1.15)}}
-@keyframes b2{to{transform:translate(-80px,-60px) scale(0.95)}}
+/* 🍎 Ultra Premium Ambient Blobs */
+body::before,body::after, .ambient-blob{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(120px);opacity:0.55}
+body::before{width:70vw;height:70vw;max-width:800px;max-height:800px;background:radial-gradient(circle,rgba(58,134,255,0.4) 0%,transparent 70%);top:-20%;left:-10%;animation:b1 18s ease-in-out infinite alternate}
+body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:radial-gradient(circle,rgba(12,164,124,0.3) 0%,transparent 70%);bottom:-15%;right:-10%;animation:b2 22s ease-in-out infinite alternate}
+.ambient-blob{width:50vw;height:50vw;max-width:600px;max-height:600px;background:radial-gradient(circle,rgba(245,124,0,0.2) 0%,transparent 70%);top:30%;left:30%;animation:b3 25s ease-in-out infinite alternate}
+@keyframes b1{to{transform:translate(80px,60px) scale(1.1)}}
+@keyframes b2{to{transform:translate(-80px,-60px) scale(0.9)}}
+@keyframes b3{to{transform:translate(50px,-50px) scale(1.2)}}
 
-/* Glass base */
+/* Glass Base */
 .glass{
-  background:rgba(255,255,255,0.65);
+  background:rgba(255,255,255,0.7);
   backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
   border:1px solid rgba(255,255,255,0.9);
+  border-bottom-color:rgba(255,255,255,0.4);border-right-color:rgba(255,255,255,0.4);
   box-shadow:0 12px 40px rgba(10,37,64,0.06),inset 0 1px 0 rgba(255,255,255,0.8);
   border-radius:var(--r);position:relative;overflow:hidden;
 }
@@ -54,189 +60,250 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
 .shell{
   position:relative;z-index:1;
   display:flex;flex-direction:column;
-  padding:clamp(16px,2vh,24px) clamp(24px,3vw,40px);
-  gap:clamp(12px,1.8vh,20px);
-  max-width:1400px;margin:0 auto; padding-bottom: 60px;
+  padding:clamp(16px,2vh,32px) clamp(20px,3vw,40px);
+  gap:clamp(16px,2vh,24px);
+  max-width:1400px;margin:0 auto; padding-bottom: 80px;
 }
 
-.header{flex-shrink:0;padding:clamp(16px,2vh,24px) clamp(24px,2.5vw,32px)}
-.cards-row{
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
-  gap:clamp(12px,1.5vw,20px);
-}
-.dash-card{flex-shrink:0;padding:clamp(20px,2.5vh,32px) clamp(24px,3vw,40px)}
-
-@media(max-width:767px){
-  .shell{padding:16px 20px 30px;gap:16px;}
-  .header{padding:20px}
-  .cards-row{display:flex;flex-direction:column;gap:16px;}
-  .menu-card{flex-direction:row!important;align-items:center;padding:20px!important;gap:20px;}
-  .mc-icon-wrap{margin-bottom:0!important;flex-shrink:0}
-  .mc-body{flex:1;min-width:0}
-  .mc-title{font-size:16px!important;margin-bottom:4px!important}
-  .mc-desc{font-size:13px!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .mc-arrow{margin-top:0!important;flex-shrink:0;opacity:1!important;transform:none!important}
-}
-
-/* Header */
+/* ─── Header & Buttons ─── */
 .header{
   display:flex;align-items:center;justify-content:space-between;
-  gap:16px;flex-wrap:wrap; border-radius: 28px;
+  gap:20px;flex-wrap:wrap; border-radius: var(--r); padding: 24px 32px;
 }
-.h-title h1{font-size:clamp(20px,2vw,26px);font-weight:700;color:var(--blue-900);letter-spacing:-0.5px;margin-bottom:4px}
-.h-title p{font-size:clamp(12px,1.2vw,14px);color:var(--gray-600);font-weight:500}
+.h-title h1{font-size:clamp(22px,2.5vw,28px);font-weight:700;color:var(--blue-900);letter-spacing:-0.5px;margin-bottom:4px; line-height: 1.2;}
+.h-title p{font-size:clamp(13px,1.2vw,15px);color:var(--gray-600);font-weight:500;}
 
-/* Button Group */
-.header-actions { display: flex; align-items: center; gap: 12px; }
-
-.datetime-badge{
-  display:flex;align-items:center;gap:8px;
-  padding:10px 20px;border-radius:40px;
-  background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,1);
-  font-size:13px;font-weight:700;color:var(--blue-800);
-  box-shadow:0 4px 16px rgba(10,37,64,0.06);
-  white-space:nowrap;
+/* 💡 แก้ปัญหาปุ่มมือถือ (Balanced Height & Wrap) */
+.header-actions { 
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; 
 }
-.datetime-badge svg{flex-shrink:0;opacity:0.8;color:var(--blue-600)}
-
+.btn-help, .datetime-badge {
+  height: 44px; /* ล็อกความสูงให้เท่ากันเป๊ะ */
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 20px; border-radius: 40px; 
+  font-size: 13.5px; font-weight: 700; font-family: var(--font);
+  white-space: nowrap; /* 💡 ป้องกันข้อความตกเป็น 2 บรรทัด */
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 .btn-help {
-  background: var(--orange-500); color: white; border: none; padding: 10px 18px;
-  border-radius: 40px; font-weight: 700; cursor: pointer; font-family: var(--font);
-  display: inline-flex; align-items: center; gap: 8px; font-size: 13px;
-  box-shadow: 0 4px 15px rgba(245,124,0,0.25); transition: all 0.3s;
+  background: linear-gradient(135deg, #FF9800, #E65100); color: white; border: none;
+  box-shadow: 0 4px 15px rgba(245,124,0,0.3); cursor: pointer;
+  animation: pulse-glow 2.5s infinite; /* ลูกเล่นให้ปุ่มน่ากด */
 }
-.btn-help:hover { transform: translateY(-2px); background: var(--orange-700); }
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(245,124,0,0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(245,124,0,0); }
+  100% { box-shadow: 0 0 0 0 rgba(245,124,0,0); }
+}
+.btn-help:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245,124,0,0.4); }
 
-/* Section label */
+.datetime-badge {
+  background: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,1);
+  color: var(--blue-800); box-shadow: 0 4px 16px rgba(10,37,64,0.05);
+}
+.datetime-badge svg { color: var(--blue-600); }
+
+/* ─── Section Labels ─── */
 .sec-lbl{
   font-size:14px;font-weight:700;letter-spacing:1.5px;
   color:var(--blue-800);text-transform:uppercase;
   display:flex;align-items:center;gap:12px;
-  padding:0 8px; opacity: 0.8; margin-top: 8px;
+  padding:0 12px; opacity: 0.85; margin-top: 10px;
 }
-.sec-lbl::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,rgba(10,37,64,0.1),transparent)}
+.sec-lbl::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,rgba(10,37,64,0.1),transparent); border-radius: 2px;}
 
-/* Menu Card */
+/* ─── Menu Cards (Ultra Liquid Glass) ─── */
+.cards-row{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:20px;
+}
 .menu-card{
-  padding:clamp(20px,2.5vh,32px) clamp(20px,2vw,28px);
-  text-decoration:none;display:flex;flex-direction:column;
-  border-radius:28px;position:relative;overflow:hidden;
-  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
-  background:rgba(255,255,255,0.5); 
-  border:1px solid rgba(255,255,255,0.9);
-  box-shadow:0 8px 32px rgba(10,37,64,0.06),inset 0 1px 0 rgba(255,255,255,1);
+  padding: 32px 28px; text-decoration:none; display:flex; flex-direction:column;
+  border-radius: var(--r); position:relative; overflow:hidden;
+  backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+  background:rgba(255,255,255,0.55); 
+  border:1px solid rgba(255,255,255,0.9); border-bottom-color:rgba(255,255,255,0.5); border-right-color:rgba(255,255,255,0.5);
+  box-shadow:0 12px 32px rgba(10,37,64,0.05), inset 0 1px 0 rgba(255,255,255,1);
   transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* Staggered Animation */
+  opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s forwards;
 }
-.menu-card::after{
-  content:'';position:absolute;top:-20%;right:-20%;
-  width:220px;height:220px;border-radius:50%;
-  opacity:0.4;filter:blur(45px);pointer-events:none;transition:all 0.4s ease; z-index:0;
-}
-.menu-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 24px 48px rgba(10,37,64,0.12); background:rgba(255,255,255,0.75);}
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.menu-card:nth-child(1) { animation-delay: 0.1s; }
+.menu-card:nth-child(2) { animation-delay: 0.2s; }
+.menu-card:nth-child(3) { animation-delay: 0.3s; }
+.menu-card:nth-child(4) { animation-delay: 0.4s; }
+.menu-card:nth-child(5) { animation-delay: 0.5s; }
 
+/* Shine Effect */
+.menu-card::before {
+  content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+  transform: skewX(-25deg); transition: 0s; z-index: 1;
+}
+.menu-card:hover::before { left: 200%; transition: 0.8s ease-in-out; }
+
+.menu-card::after{
+  content:'';position:absolute;top:-20%;right:-20%; width:200px;height:200px;border-radius:50%;
+  opacity:0.3;filter:blur(40px);pointer-events:none;transition:all 0.4s ease; z-index:0;
+}
+.menu-card:hover{transform:translateY(-10px) scale(1.02); background:rgba(255,255,255,0.85); box-shadow:0 24px 48px rgba(10,37,64,0.1), inset 0 1px 0 rgba(255,255,255,1);}
+.menu-card:hover::after{opacity:0.8; transform:scale(1.3);}
+
+/* Colors */
 .c-am  {border-color:rgba(58,134,255,0.4);} .c-am::after{background:radial-gradient(circle, #3A86FF 0%, transparent 70%);}
+.c-am:hover { box-shadow: 0 24px 48px rgba(58,134,255,0.15), inset 0 1px 0 #fff; }
+
 .c-opl {border-color:rgba(245,124,0,0.4);}  .c-opl::after{background:radial-gradient(circle, #F57C00 0%, transparent 70%);}
+.c-opl:hover { box-shadow: 0 24px 48px rgba(245,124,0,0.15), inset 0 1px 0 #fff; }
+
 .c-fi  {border-color:rgba(99,102,241,0.4);} .c-fi::after{background:radial-gradient(circle, #6366F1 0%, transparent 70%);}
-.c-kz  {border-color:rgba(12,164,124,0.4);} .c-kz::after{background:radial-gradient(circle, #0CA47C 0%, transparent 70%);}
-.c-mk  {border-color:rgba(230,81,0,0.4);}   .c-mk::after{background:radial-gradient(circle, #E65100 0%, transparent 70%);}
+.c-fi:hover { box-shadow: 0 24px 48px rgba(99,102,241,0.15), inset 0 1px 0 #fff; }
+
+.c-kz  {border-color:rgba(16,185,129,0.4);} .c-kz::after{background:radial-gradient(circle, #10B981 0%, transparent 70%);}
+.c-kz:hover { box-shadow: 0 24px 48px rgba(16,185,129,0.15), inset 0 1px 0 #fff; }
+
+.c-mk  {border-color:rgba(244,63,94,0.4);}   .c-mk::after{background:radial-gradient(circle, #F43F5E 0%, transparent 70%);}
+.c-mk:hover { box-shadow: 0 24px 48px rgba(244,63,94,0.15), inset 0 1px 0 #fff; }
 
 .mc-icon-wrap{
-  width:64px; height:64px; border-radius:18px;
+  width:68px; height:68px; border-radius:20px;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  background:rgba(255,255,255,0.9);border:1px solid #fff;
-  box-shadow:0 8px 24px rgba(0,0,0,0.08);
-  margin-bottom:20px;position:relative;z-index:2;
+  box-shadow:0 10px 24px rgba(0,0,0,0.1); color: #fff;
+  margin-bottom:24px;position:relative;z-index:2;
+  transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+.menu-card:hover .mc-icon-wrap{transform:scale(1.1) rotate(-5deg)}
 .mc-icon-wrap svg{width:32px; height:32px;}
 
-.c-am .mc-icon-wrap{color:#1E6091;}
-.c-opl .mc-icon-wrap{color:#C46200;}
-.c-fi .mc-icon-wrap{color:#4F46E5;}
-.c-kz .mc-icon-wrap{color:#087A5C;}
-.c-mk .mc-icon-wrap{color:#C46200;}
+.c-am .mc-icon-wrap{background:linear-gradient(135deg, #60A5FA, #2563EB);}
+.c-opl .mc-icon-wrap{background:linear-gradient(135deg, #FBBF24, #EA580C);}
+.c-fi .mc-icon-wrap{background:linear-gradient(135deg, #A78BFA, #4F46E5);}
+.c-kz .mc-icon-wrap{background:linear-gradient(135deg, #34D399, #059669);}
+.c-mk .mc-icon-wrap{background:linear-gradient(135deg, #FB7185, #E11D48);}
 
-.mc-title{
-  font-size:18px;font-weight:700;color:var(--blue-900);
-  margin-bottom:8px;position:relative;z-index:2;
-}
-.mc-desc{font-size:13px;color:var(--gray-600);line-height:1.6;font-weight:500;position:relative;z-index:2;flex:1;}
+.mc-body{display:contents}
+.mc-title{font-size:20px;font-weight:700;color:var(--blue-900); margin-bottom:8px;position:relative;z-index:2; letter-spacing: -0.3px;}
+.mc-desc{font-size:14px;color:var(--gray-600);line-height:1.6;font-weight:500;position:relative;z-index:2;flex:1;}
 
 .mc-arrow{
-  align-self:flex-end;margin-top:16px;
+  align-self:flex-end;margin-top:20px;
   display:flex;align-items:center;gap:6px;
-  font-size:12px;font-weight:700;color:var(--blue-600);
-  opacity:0.3;transform:translateX(4px);
+  font-size:13px;font-weight:700;color:var(--blue-600);
+  opacity:0.4;transform:translateX(4px);
   transition:all 0.3s ease;position:relative;z-index:2;
 }
-.menu-card:hover .mc-arrow{opacity:1;transform:translateX(0)}
+.menu-card:hover .mc-arrow{opacity:1;transform:translateX(0); color:var(--blue-900);}
 
-/* Lux Dashboard Banner */
+/* ─── Lux Dashboard Banner ─── */
 .dash-card{
   text-decoration:none;display:flex;align-items:center;justify-content:space-between;
-  gap:20px;flex-wrap:wrap;
-  border-radius:32px;position:relative;overflow:hidden;
-  background:linear-gradient(135deg, #0A2540 0%, #113A5D 100%);
-  border:1px solid rgba(255,255,255,0.15); 
-  box-shadow:0 16px 48px rgba(10,37,64,0.4);
+  gap:20px;flex-wrap:wrap; padding: 32px 40px; margin-top: 10px;
+  border-radius:36px;position:relative;overflow:hidden;
+  background:rgba(10,37,64,0.85); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+  border:1px solid rgba(255,255,255,0.15); border-top-color:rgba(255,255,255,0.3);
+  box-shadow:0 20px 50px rgba(10,37,64,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
   transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s forwards 0.6s;
 }
-.dash-card:hover{transform:translateY(-6px);box-shadow:0 24px 64px rgba(10,37,64,0.5);}
+.dash-card::after{
+  content:'';position:absolute;top:-50%;left:-10%;width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(58,134,255,0.3) 0%,transparent 60%);
+  pointer-events:none;z-index:0;animation:dg 6s ease-in-out infinite alternate
+}
+@keyframes dg{to{opacity:0.6;transform:scale(1.2) translate(30px,20px)}}
+.dash-card:hover{
+  transform:translateY(-8px);
+  box-shadow:0 30px 60px rgba(10,37,64,0.5), 0 0 40px rgba(58,134,255,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
+}
 
-.dash-left{display:flex;align-items:center;gap:20px;position:relative;z-index:2;flex:1;min-width:0}
+.dash-left{display:flex;align-items:center;gap:24px;position:relative;z-index:2;flex:1;min-width:0}
 .dash-icon{
-  width:72px;height:72px;border-radius:20px;flex-shrink:0;
-  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+  width:76px;height:76px;border-radius:24px;flex-shrink:0;
+  background:linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.2);
   display:flex;align-items:center;justify-content:center; color:#fff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.dash-icon svg{width:34px;height:34px}
-.dash-title{font-size:22px;font-weight:700;color:#fff;margin-bottom:6px;}
+.dash-card:hover .dash-icon { transform: scale(1.1) rotate(5deg); background:rgba(255,255,255,0.15); }
+.dash-icon svg{width:36px;height:36px}
+
+.dash-title{font-size:clamp(18px,2vw,24px);font-weight:700;color:#fff;margin-bottom:6px; letter-spacing:-0.5px;}
 .dash-desc{font-size:14px;color:rgba(255,255,255,0.7);font-weight:500;line-height:1.5}
-.dash-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.dash-pill{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;background:rgba(58,134,255,0.2);color:#fff;border:1px solid rgba(58,134,255,0.4)}
+.dash-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.dash-pill{font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;background:rgba(58,134,255,0.2);color:#fff;border:1px solid rgba(58,134,255,0.4); backdrop-filter: blur(10px);}
 
 .dash-cta{
-  display:inline-flex;align-items:center;gap:10px;
-  padding:16px 32px; border-radius:40px;
-  background:#fff; color:var(--blue-900);
-  font-size:15px;font-weight:700;
-  text-decoration:none;
-  box-shadow:0 8px 24px rgba(0,0,0,0.3);
+  display:inline-flex;align-items:center;justify-content:center; gap:10px;
+  padding:16px 36px; border-radius:40px;
+  background:linear-gradient(135deg, #fff, #f8fafc); color:var(--blue-900);
+  font-size:15px;font-weight:700; text-decoration:none;
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
   position:relative;z-index:2;white-space:nowrap;
+  transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.dash-card:hover .dash-cta { transform: scale(1.05); box-shadow:0 15px 35px rgba(0,0,0,0.5); color: var(--blue-600); }
+.dash-cta svg { transition: transform 0.3s; }
+.dash-card:hover .dash-cta svg { transform: translateX(5px); }
+
+/* 📱 Mobile Adjustments */
+@media(max-width:767px){
+  .shell{padding:16px 20px 30px; gap:16px;}
+  .header{padding:24px 20px; flex-direction: column; align-items: flex-start; gap: 16px;}
+  .header-actions { width: 100%; justify-content: flex-start; }
+  .btn-help, .datetime-badge { flex: 1; padding: 0; font-size: 13px; justify-content: center; } /* ปุ่มยืดเต็มและสูงเท่ากัน */
+  
+  .cards-row{display:flex;flex-direction:column;}
+  .menu-card{flex-direction:row!important;align-items:center;padding:24px 20px!important;gap:16px;}
+  .mc-icon-wrap{margin-bottom:0!important;flex-shrink:0; width:56px; height:56px; border-radius:16px;}
+  .mc-icon-wrap svg{width:26px; height:26px;}
+  .mc-body{flex:1;min-width:0}
+  .mc-title{font-size:17px!important;margin-bottom:4px!important}
+  .mc-desc{font-size:13px!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .mc-arrow{display:none;} /* ซ่อนลูกศรบนมือถือประหยัดพื้นที่ */
+
+  .dash-card{padding:28px 24px;flex-direction:column;gap:24px; border-radius:28px;}
+  .dash-left{flex-direction:column;align-items:center;text-align:center;gap:16px}
+  .dash-pills{justify-content:center;}
+  .dash-cta{width:100%;}
 }
 </style>
 </head>
 <body>
+
+<div class="ambient-blob"></div>
 
 <div class="shell">
 
   <div class="header glass" id="tour-header">
     <div class="h-title">
       <h1>Office Improvement (OI) Center</h1>
-      <p>ศูนย์รวมแอปพลิเคชันระบบงานเสา OI (AM-OI, OPL, FI Theme, Kaizen, Makigami)</p>
+      <p>ศูนย์รวมแอปพลิเคชันระบบงานเสา OI ครบวงจร</p>
     </div>
     <div class="header-actions">
-        <button class="btn-help" id="btn-guide" onclick="startTour()">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <button class="btn-help" id="btn-guide" onclick="startHomeTour()">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             สอนใช้งาน
         </button>
         <div class="datetime-badge" id="live-time">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          กำลังโหลด...
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>กำลังโหลด...</span>
         </div>
     </div>
   </div>
 
-  <div class="sec-lbl">ระบบประเมินและบริหารจัดการ</div>
+  <div class="sec-lbl">ระบบสร้างงาน / ประเมินผล (Action)</div>
 
   <div class="cards-row" id="tour-apps">
-
+    
     <a href="index.html" class="menu-card c-am" id="step-am">
       <div class="mc-icon-wrap">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       </div>
-      <div class="mc-title">AM-OI Assessment</div>
-      <p class="mc-desc">ระบบประเมิน 5ส. ออฟฟิศและพื้นที่โรงงาน (Step 1–5)</p>
+      <div class="mc-body">
+        <div class="mc-title">AM-OI Assessment</div>
+        <p class="mc-desc">ระบบประเมิน 5ส. ออฟฟิศและพื้นที่โรงงาน (Step 1–5)</p>
+      </div>
       <div class="mc-arrow">เข้าประเมิน <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
@@ -244,8 +311,10 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
       <div class="mc-icon-wrap">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-4 12.74V17a1 1 0 001 1h6a1 1 0 001-1v-2.26A7 7 0 0012 2z"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
       </div>
-      <div class="mc-title">OPL Center</div>
-      <p class="mc-desc">ระบบขึ้นทะเบียนและคลังความรู้ One Point Lesson</p>
+      <div class="mc-body">
+        <div class="mc-title">OPL Center</div>
+        <p class="mc-desc">ระบบขึ้นทะเบียนและคลังความรู้ One Point Lesson</p>
+      </div>
       <div class="mc-arrow">สร้าง OPL <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
@@ -253,23 +322,38 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
       <div class="mc-icon-wrap">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
       </div>
-      <div class="mc-title">FI Theme Center</div>
-      <p class="mc-desc">ระบบติดตามโครงการ Focused Improvement (10 Steps)</p>
+      <div class="mc-body">
+        <div class="mc-title">FI Theme Center</div>
+        <p class="mc-desc">ระบบติดตามโครงการ Focused Improvement (10 Steps)</p>
+      </div>
       <div class="mc-arrow">จัดการโครงการ <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+    </a>
+
+    <a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="menu-card c-kz" id="step-kz">
+      <div class="mc-icon-wrap">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <div class="mc-body">
+        <div class="mc-title">Kaizen Suggestion</div>
+        <p class="mc-desc">ระบบเสนอแนะแนวทางการปรับปรุงงาน (ส่วนกลาง)</p>
+      </div>
+      <div class="mc-arrow">เปิดระบบ <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
     <a href="makigami.html" class="menu-card c-mk" id="step-mk">
       <div class="mc-icon-wrap">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/><path d="M15 13l-3 3-2-2"/></svg>
       </div>
-      <div class="mc-title">Makigami Analysis</div>
-      <p class="mc-desc">ระบบจัดทำ Flow Chart และวิเคราะห์กระบวนการ</p>
+      <div class="mc-body">
+        <div class="mc-title">Makigami Analysis</div>
+        <p class="mc-desc">ระบบจัดทำ Flow Chart และวิเคราะห์กระบวนการ</p>
+      </div>
       <div class="mc-arrow">อัปเดตสถานะ <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
   </div>
 
-  <div class="sec-lbl" style="margin-top: 10px;">สรุปผลการดำเนินงานระดับบริหาร</div>
+  <div class="sec-lbl" style="margin-top: 20px;">ศูนย์ปฏิบัติการผู้บริหาร (Executive Center)</div>
 
   <a href="dashboard.html" class="dash-card" id="tour-dash">
     <div class="dash-left">
@@ -278,7 +362,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
       </div>
       <div>
         <div class="dash-title">Smart Action & KPI Dashboard</div>
-        <div class="dash-desc">ศูนย์บัญชาการ แจ้งเตือนงานด่วนและตรวจสอบความสำเร็จเทียบกับเป้าหมายองค์กร</div>
+        <div class="dash-desc">แจ้งเตือนงานด่วน วิเคราะห์ภาพรวมด้วย AI และจัดการสถานะโครงการ</div>
         <div class="dash-pills">
           <span class="dash-pill">ติดตามผลงานภาพรวม</span>
           <span class="dash-pill">ปุ่มอนุมัติสำหรับหัวหน้า</span>
@@ -300,43 +384,43 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,rgba(12,1
 function updateTime(){
   const now=new Date();
   const str=now.toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).replace(' น.','');
-  document.getElementById('live-time').lastChild.textContent = ' ' + str;
+  document.querySelector('#live-time span').textContent = ' ' + str;
 }
 setInterval(updateTime,1000);
 updateTime();
 
 // 💡 4. ฟังก์ชันกำหนดขั้นตอนการสอน (Guided Tour)
-function startTour() {
+function startHomeTour() {
   introJs().setOptions({
     steps: [
       {
         title: 'ยินดีต้อนรับสู่ OI Center 👋',
-        intro: 'ระบบนี้ออกแบบมาเพื่อช่วยให้งานเสา OI ของเราง่ายและรวดเร็วขึ้นครับ'
+        intro: 'ระบบนี้จะช่วยให้การทำกิจกรรม TPM Office Improvement ของคุณง่ายและเป็นดิจิทัลมากขึ้นครับ'
       },
       {
-        element: '#tour-apps',
-        intro: 'ส่วนนี้คือ <b>"เมนูสร้างงาน"</b> <br>คุณสามารถเลือกทำ 5ส, OPL หรือ FI ได้จากตรงนี้ครับ',
+        element: document.querySelector('#step-am'),
+        intro: '<b>1. ประเมิน 5ส:</b> หากคุณต้องการประเมินพื้นที่ประจำเดือน ให้กดเข้าที่เมนูนี้ครับ',
         position: 'bottom'
       },
       {
-        element: '#step-am',
-        intro: '<b>AM-OI:</b> ใช้สำหรับประเมิน 5ส. พื้นที่ของคุณรายเดือนครับ',
+        element: document.querySelector('#step-opl'),
+        intro: '<b>2. สร้าง OPL:</b> เมื่อมีการปรับปรุงเล็กๆ หรืออยากแชร์ความรู้ให้เพื่อนร่วมงาน ใช้ปุ่มนี้สร้าง OPL ได้เลย',
+        position: 'bottom'
+      },
+      {
+        element: document.querySelector('#step-fi'),
+        intro: '<b>3. ทำโครงการ FI:</b> สำหรับโครงการลด Loss ขนาดใหญ่ ให้มาขึ้นทะเบียนและอัปเดต Step ที่นี่ครับ',
+        position: 'bottom'
+      },
+      {
+        element: document.querySelector('#tour-dash'),
+        intro: '<b>4. สรุปผล & แก้ไขงาน:</b> <br>✨ จุดสำคัญที่สุด! <br>ถ้าต้องการดูว่าแผนกเราได้กี่ %, ต้องการ <b>แก้ไขงานเดิม</b> หรือหัวหน้าจะเข้ามา <b>กดอนุมัติ</b> ให้เข้าที่เมนู Dashboard นี้ครับ',
         position: 'top'
       },
       {
-        element: '#step-opl',
-        intro: '<b>OPL Center:</b> เมื่อปรับปรุงงานเล็กๆ หรืออยากสอนเพื่อน ให้มาลงทะเบียนที่นี่',
-        position: 'top'
-      },
-      {
-        element: '#tour-dash',
-        intro: '✨ <b>จุดสำคัญที่สุด (Must Know!):</b> <br>หากต้องการ <b>"แก้ไขงานเก่า"</b> หรือ <b>"หัวหน้าจะกดอนุมัติงาน"</b> ให้เข้าผ่านเมนู Dashboard นี้เท่านั้นครับ!',
-        position: 'top'
-      },
-      {
-        element: '#btn-guide',
-        intro: 'หากลืมวิธีใช้งาน กดปุ่มสีส้มนี้เพื่อให้ผมช่วยสอนใหม่ได้ตลอดเวลานะครับ',
-        position: 'left'
+        element: document.querySelector('#btn-guide'),
+        intro: 'หากลืมวิธีใช้งานเมื่อไหร่ กดปุ่มนี้เพื่อเรียกผมมาสอนใหม่ได้ตลอดเวลานะครับ!',
+        position: 'bottom'
       }
     ],
     nextLabel: 'ถัดไป ›',
@@ -344,18 +428,18 @@ function startTour() {
     doneLabel: 'เข้าใจแล้ว เริ่มเลย!',
     showProgress: true,
     showStepNumbers: false,
-    disableInteraction: true
+    disableInteraction: true // ป้องกัน User กดมั่วระหว่างทัวร์
   }).start();
 }
 
-// 💡 เริ่มทัวร์อัตโนมัติเฉพาะการเข้าใช้งานครั้งแรก
+// 💡 สั่งให้เริ่มทัวร์อัตโนมัติเฉพาะการเข้าใช้งานครั้งแรก
 window.onload = function() {
-  updateTime();
-  if (!localStorage.getItem('oi_home_tour_v1')) {
-    startTour();
-    localStorage.setItem('oi_home_tour_v1', 'true');
+  if (!localStorage.getItem('home_tour_done_v2')) {
+    setTimeout(() => { startHomeTour(); }, 500); // หน่วงเวลาให้ CSS โหลดเสร็จก่อน
+    localStorage.setItem('home_tour_done_v2', 'true');
   }
 };
 </script>
+
 </body>
 </html>
