@@ -9,7 +9,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css">
 <style>
-  /* 🟢 ปรับแต่งสไตล์ Intro.js ให้เข้ากับธีม OI Center */
+  /* 🟢 Intro.js Custom Premium Style */
   .introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 16px; transition: all 0.2s; }
   .introjs-nextbutton { background: linear-gradient(135deg, #3A86FF, #1E6091) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(58,134,255,0.3) !important; }
   .introjs-nextbutton:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(58,134,255,0.4) !important; }
@@ -116,6 +116,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .kpi-card:nth-child(4) { animation-delay: 0.4s; }
 .kpi-card:nth-child(5) { animation-delay: 0.5s; }
 
+/* Neon Glow Behind Cards */
 .kpi-card::after{
   content:'';position:absolute;top:-30%;right:-30%; width:200px;height:200px;border-radius:50%;
   opacity:0.3;filter:blur(40px);pointer-events:none;transition:all 0.5s ease; z-index:0;
@@ -125,12 +126,16 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 .p-am  {border-color:rgba(58,134,255,0.4);} .p-am::after{background:radial-gradient(circle, #3A86FF 0%, transparent 70%);}
 .p-am:hover { box-shadow: 0 24px 48px rgba(58,134,255,0.15), inset 0 1px 0 #fff; }
+
 .p-opl {border-color:rgba(245,124,0,0.4);}  .p-opl::after{background:radial-gradient(circle, #F57C00 0%, transparent 70%);}
 .p-opl:hover { box-shadow: 0 24px 48px rgba(245,124,0,0.15), inset 0 1px 0 #fff; }
+
 .p-fi  {border-color:rgba(99,102,241,0.4);} .p-fi::after{background:radial-gradient(circle, #6366F1 0%, transparent 70%);}
 .p-fi:hover { box-shadow: 0 24px 48px rgba(99,102,241,0.15), inset 0 1px 0 #fff; }
+
 .p-kz  {border-color:rgba(16,185,129,0.4);} .p-kz::after{background:radial-gradient(circle, #10B981 0%, transparent 70%);}
 .p-kz:hover { box-shadow: 0 24px 48px rgba(16,185,129,0.15), inset 0 1px 0 #fff; }
+
 .p-mk  {border-color:rgba(244,63,94,0.4);}   .p-mk::after{background:radial-gradient(circle, #F43F5E 0%, transparent 70%);}
 .p-mk:hover { box-shadow: 0 24px 48px rgba(244,63,94,0.15), inset 0 1px 0 #fff; }
 
@@ -159,6 +164,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .kpi-sub{font-size:12px;color:var(--gray-600);font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px; position:relative; z-index:2;}
 .wip-badge{font-size:11px;color:var(--orange-600);background:rgba(245,124,0,0.15);padding:3px 10px;border-radius:20px;font-weight:700}
 
+/* Liquid Progress Bar */
 .progress-track{height:8px;background:rgba(0,0,0,0.05);border-radius:10px;overflow:hidden; box-shadow:inset 0 1px 3px rgba(0,0,0,0.05); position:relative; z-index:2;}
 .progress-fill{height:100%;border-radius:10px;transition:width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);position:relative}
 .progress-fill::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.6),transparent);animation:sheen 2.5s ease-in-out infinite}
@@ -174,18 +180,18 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .ai-header-wrapper { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
 .ai-branding { display:flex; align-items:center; gap: 16px; }
 
-/* 💡 Gemini Real Logo Style */
+/* 💡 Gemini Real SVG Logo Style */
 .ai-logo { 
-  width: 54px; height: 54px; 
+  width: 50px; height: 50px; 
   background: transparent; 
   display:flex; align-items:center; justify-content:center; 
-}
-.ai-logo img {
-  width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
-  box-shadow: 0 8px 24px rgba(66, 133, 244, 0.25);
   animation: pulse 3s infinite alternate;
 }
-@keyframes pulse { 0% { transform: scale(1); opacity:0.9; } 100% { transform: scale(1.1); opacity:1; box-shadow: 0 12px 30px rgba(66, 133, 244, 0.4); } }
+.ai-logo img {
+  width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(66, 133, 244, 0.3));
+}
+@keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.1); filter: brightness(1.1); } }
 
 /* 💡 Gemini Text Gradient */
 .ai-box h3 { 
@@ -216,11 +222,12 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .chat-container { display: flex; flex-direction: column; height: 500px; background: rgba(255,255,255,0.7); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border: 1px solid rgba(255,255,255,0.9); border-radius: var(--r-lg); box-shadow: 0 16px 48px rgba(10,37,64,0.08), inset 0 1px 0 rgba(255,255,255,1); overflow: hidden; position: relative; margin-bottom: 40px;}
 .chat-container::after { content:''; position:absolute; bottom:-10%; left:-10%; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle, rgba(66, 133, 244, 0.15) 0%, transparent 70%); pointer-events:none; z-index:0;}
 .chat-header { padding: 20px 32px; background: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(255,255,255,0.7); display: flex; align-items: center; gap: 16px; z-index: 1;}
+
 .chat-header-icon { 
-  width: 42px; height: 42px; border-radius: 50%; 
-  background: transparent; display: flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px; background: transparent; 
+  display: flex; align-items: center; justify-content: center;
 }
-.chat-header-icon img { width:100%; height:100%; border-radius:50%; object-fit:cover; box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3); }
+.chat-header-icon img { width:100%; height:100%; object-fit:contain; filter: drop-shadow(0 4px 8px rgba(66, 133, 244, 0.3)); }
 
 .chat-header-text h3 { font-size: 18px; font-weight: 700; color: var(--blue-900); line-height: 1.2; margin-bottom:4px;}
 .chat-header-text p { font-size: 13px; color: var(--gray-600); font-weight: 500; }
@@ -335,7 +342,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
   .ai-btn { width:100%; }
 }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
+
 </head>
 <body>
 
@@ -387,7 +394,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
         <div class="ai-header-wrapper">
             <div class="ai-branding">
                 <div class="ai-logo">
-                    <img src="https://www.gstatic.com/lamda/images/gemini_aurora_thumbnail_4g_e74822ff0ca4259beb718.png" alt="Gemini Logo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo_2025.svg" alt="Gemini Logo">
                 </div>
                 <div>
                     <h3>Gemini Executive Insights ✨</h3>
@@ -440,7 +447,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     <div class="chat-container" id="tour-advisor">
       <div class="chat-header">
         <div class="chat-header-icon">
-          <img src="https://www.gstatic.com/lamda/images/gemini_aurora_thumbnail_4g_e74822ff0ca4259beb718.png" alt="Gemini Logo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo_2025.svg" alt="Gemini Logo" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
         <div class="chat-header-text">
           <h3>สอบถามผู้เชี่ยวชาญ TPM (Gemini AI)</h3>
@@ -482,62 +489,6 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 <script>
 // ⚠️ เปลี่ยน URL ของ Google Apps Script ของคุณตรงนี้
 const API_URL='https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
-
-// 💡 4. ฟังก์ชัน Guided Tour (เพิ่มการดักจับ Detail View)
-function startTour() {
-  // ให้แน่ใจว่ากลับมาหน้าหลักก่อนสอน
-  if(document.getElementById('detail-view').style.display === 'block') {
-     goBackToDashboard(); 
-  }
-
-  setTimeout(() => {
-    introJs().setOptions({
-      steps: [
-        {
-          title: 'ยินดีต้อนรับสู่ Dashboard 👋',
-          intro: 'ศูนย์ควบคุมข้อมูล OI ที่จะช่วยให้คุณติดตามทุกโปรเจกต์ได้ในที่เดียวครับ'
-        },
-        {
-          element: '#tour-filter',
-          intro: '<b>1. ตัวกรองแผนก:</b> เลือกแผนกของคุณที่นี่เพื่อดูข้อมูลเฉพาะส่วน กราฟและตัวเลขทั้งหมดจะเปลี่ยนตามทันทีครับ',
-          position: 'bottom'
-        },
-        {
-          element: '#kpi-cards-container',
-          intro: '<b>2. สรุป KPI 5 เสา:</b> ดูความสำเร็จเป็นเปอร์เซ็นต์ <br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดและกด "แก้ไข" งานเก่าได้จากที่นี่ครับ',
-          position: 'top'
-        },
-        {
-          element: '#tour-ai-insights',
-          intro: '<b>3. AI วิเคราะห์เชิงลึก:</b> หากข้อมูลเยอะเกินไป กดปุ่มนี้ให้ Gemini AI สรุป "จุดคอขวด" และข้อเสนอแนะให้คุณทันทีครับ',
-          position: 'bottom'
-        },
-        {
-          element: '#tour-charts',
-          intro: '<b>4. กราฟเปรียบเทียบ:</b> แสดงสถิติเชิงเปรียบเทียบ <br>✨ <b>ทริค:</b> ลองคลิกที่แท่งกราฟเพื่อขยายดูข้อมูลรายการงานของเสานั้นๆ ได้ทันทีครับ!',
-          position: 'top'
-        },
-        {
-          element: '#tour-advisor',
-          intro: '<b>5. AI Advisor:</b> สงสัยตรงไหน พิมพ์ถามเป็นภาษาไทยได้เลยครับ เช่น "แผนกผลิตมี OPL เรื่องอะไรบ้าง?"',
-          position: 'top'
-        },
-        {
-          element: '#btn-guide',
-          intro: 'หากลืมวิธีใช้งาน กดปุ่มสีส้มนี้เพื่อเรียกผมมาสอนใหม่ได้ตลอดเวลานะครับ!',
-          position: 'left'
-        }
-      ],
-      nextLabel: 'ถัดไป ›',
-      prevLabel: '‹ ย้อนกลับ',
-      doneLabel: 'เริ่มใช้งานเลย!',
-      showProgress: true,
-      showStepNumbers: false,
-      disableInteraction: false,
-      exitOnOverlayClick: true
-    }).start();
-  }, 200); 
-}
 
 let areaData={}, kpiMaster=[], amHistory=[], oplHistory=[], fiHistory=[], kzHistory=[], mkHistory=[];
 let userDataObj={}, approverDataObj={}; 
@@ -614,10 +565,10 @@ async function loadData(){
     initFilter(); 
     processAndRender();
 
-    // 💡 เริ่มทัวร์อัตโนมัติครั้งแรก
-    if (!localStorage.getItem('dashboard_tour_done_final')) {
-        setTimeout(() => { startTour(); }, 1500);
-        localStorage.setItem('dashboard_tour_done_final', 'true');
+    // 💡 ระบบเริ่มทัวร์อัตโนมัติ (จะตรวจสอบว่าเคยเข้าหรือยัง)
+    if (!localStorage.getItem('dashboard_tour_done_v9')) {
+        startTour();
+        localStorage.setItem('dashboard_tour_done_v9', 'true');
     }
 
   } catch(e) { 
@@ -1098,7 +1049,18 @@ function appendTypingIndicator() {
 }
 function removeElement(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
+// 💡 โหลดข้อมูล
 window.onload = loadData;
+
+// 💡 5. เพิ่มฟังก์ชันดักจับปุ่มเพื่อให้ Tour ทำงานเมื่อโหลดหน้าเสร็จเท่านั้น
+document.getElementById('btn-guide').addEventListener('click', function(e) {
+    e.preventDefault();
+    if(document.getElementById('main-dashboard-view').style.display === 'none') {
+        alert('กรุณารอให้ระบบโหลดข้อมูลเสร็จสิ้นก่อนเริ่มใช้งานครับ');
+        return;
+    }
+    startTour();
+});
 </script>
 </body>
 </html>
