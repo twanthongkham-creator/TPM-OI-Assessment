@@ -12,16 +12,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
 
 <style>
-  /* 🟢 ปรับแต่งสไตล์ Intro.js ให้สมบูรณ์แบบ แก้บั๊กซ้อนทับ */
-  .introjs-button { text-shadow: none; border-radius: 10px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 18px; transition: all 0.2s; cursor: pointer; }
+  /* 🟢 ปรับแต่งสไตล์ Intro.js ให้เข้ากับธีม OI Center */
+  .introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 16px; transition: all 0.2s; }
   .introjs-nextbutton { background: linear-gradient(135deg, #3A86FF, #1E6091) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(58,134,255,0.3) !important; }
   .introjs-nextbutton:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(58,134,255,0.4) !important; }
   .introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; background: #F8FAFC !important; border: 1px solid #D9E2EC !important; }
   .introjs-donebutton { background: linear-gradient(135deg, #2DD4BF, #0CA47C) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(12,164,124,0.3) !important; }
-  .introjs-tooltip { border-radius: 20px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.25); border: 1px solid rgba(255,255,255,1); font-family: 'IBM Plex Sans Thai', sans-serif; z-index: 9999999 !important; }
-  .introjs-progress { background-color: #E2E8F0; border-radius: 6px; overflow: hidden; }
+  .introjs-tooltip { border-radius: 24px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.2); border: 1px solid rgba(255,255,255,0.9); font-family: 'IBM Plex Sans Thai', sans-serif; }
+  .introjs-progress { background-color: #E2E8F0; border-radius: 4px; overflow: hidden; }
   .introjs-progressbar { background-color: #3A86FF; }
-  .introjs-showElement { z-index: 9999998 !important; position: relative; }
+  /* แก้ปัญหาจอค้างทับซ้อน */
+  .introjs-showElement { z-index: 9999999 !important; position: relative !important; }
 
 :root {
   --blue-900:#0A2540; --blue-800:#113A5D; --blue-600:#1E6091; --blue-400:#3A86FF;
@@ -64,24 +65,26 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 }
 
 /* ─── Header ─── */
-.header{position:sticky;top:16px;z-index:100;margin:16px auto 32px;padding:16px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
-.h-title h2{font-size:clamp(18px,2vw,22px);font-weight:700;color:var(--blue-900);letter-spacing:-0.4px;margin-bottom:4px; line-height: 1.2;}
-.h-title p{font-size:12px;color:var(--gray-600);font-weight:500;}
+.header{position:sticky;top:16px;z-index:100;margin:16px auto 32px;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.h-title h2{font-size:clamp(20px,2vw,24px);font-weight:700;color:var(--blue-900);letter-spacing:-0.4px;margin-bottom:4px; line-height: 1.2;}
+.h-title p{font-size:13px;color:var(--gray-600);font-weight:500;}
 
-.header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-
-/* 💡 ปุ่ม Pill เหมือนตัวอย่างรูปภาพเป๊ะ */
-.pill-btn {
-  height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 0 18px; border-radius: 40px; font-size: 13px; font-weight: 700; font-family: var(--font);
+.header-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.btn-help, .pill-btn {
+  height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 20px; border-radius: 40px; font-size: 13.5px; font-weight: 700; font-family: var(--font);
   white-space: nowrap; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  background: rgba(255,255,255,0.7); backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,1); border-bottom-color: rgba(200,210,220,0.6);
-  color: var(--blue-800); text-decoration: none; box-shadow: 0 4px 12px rgba(10,37,64,0.05);
-  cursor: pointer;
 }
-.pill-btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(10,37,64,0.1); }
-.pill-btn svg { color: var(--blue-600); }
+.btn-help {
+  background: linear-gradient(135deg, #FF9800, #E65100); color: white; border: none;
+  box-shadow: 0 4px 15px rgba(245,124,0,0.3); cursor: pointer;
+}
+.btn-help:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245,124,0,0.4); }
+.pill-btn {
+  background: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,1);
+  color: var(--blue-800); text-decoration: none; box-shadow: 0 4px 14px rgba(10,37,64,0.06);
+}
+.pill-btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,37,64,0.1); }
 
 /* ─── Filter Section ─── */
 .filter-section{padding:16px 24px;margin-bottom:32px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
@@ -102,7 +105,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 /* ─── Ultra Liquid Glass KPI Cards ─── */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:40px}
 .kpi-card{
-  padding: 28px 24px 28px; display:flex; flex-direction:column; cursor:pointer; text-decoration:none;
+  padding: 28px 24px; display:flex; flex-direction:column; cursor:pointer; text-decoration:none;
   border-radius: var(--r-lg); position:relative; overflow:hidden;
   backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
   background:rgba(255,255,255,0.55); 
@@ -182,13 +185,18 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .ai-header-wrapper { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
 .ai-branding { display:flex; align-items:center; gap: 16px; }
 
-/* 💡 Gemini Real SVG Logo วาดโค้งมน 100% ตามของแท้ */
-.gemini-logo-svg {
-  width: 48px; height: 48px;
-  filter: drop-shadow(0 4px 12px rgba(139,92,246,0.3));
+/* 💡 Gemini Real SVG Logo */
+.ai-logo { 
+  width: 50px; height: 50px; 
+  background: transparent; 
+  display:flex; align-items:center; justify-content:center; 
   animation: pulse 3s infinite alternate;
 }
-@keyframes pulse { 0% { transform: scale(1); opacity:0.9; } 100% { transform: scale(1.1); opacity:1; filter: drop-shadow(0 6px 16px rgba(139,92,246,0.5)); } }
+.ai-logo img {
+  width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(66, 133, 244, 0.3));
+}
+@keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.1); filter: drop-shadow(0 6px 16px rgba(139,92,246,0.5)); } }
 
 /* 💡 Gemini Text Gradient */
 .ai-box h3 { 
@@ -217,13 +225,14 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 /* 🤖 AI Chat Advisor Styles - Gemini Theme */
 .chat-container { display: flex; flex-direction: column; height: 500px; background: rgba(255,255,255,0.7); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border: 1px solid rgba(255,255,255,0.9); border-radius: var(--r-lg); box-shadow: 0 16px 48px rgba(10,37,64,0.08), inset 0 1px 0 rgba(255,255,255,1); overflow: hidden; position: relative; margin-bottom: 40px;}
-.chat-container::after { content:''; position:absolute; bottom:-10%; left:-10%; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%); pointer-events:none; z-index:0;}
+.chat-container::after { content:''; position:absolute; bottom:-10%; left:-10%; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle, rgba(66, 133, 244, 0.15) 0%, transparent 70%); pointer-events:none; z-index:0;}
 .chat-header { padding: 20px 32px; background: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(255,255,255,0.7); display: flex; align-items: center; gap: 16px; z-index: 1;}
 
 .chat-header-icon { 
   width: 42px; height: 42px; background: transparent; 
   display: flex; align-items: center; justify-content: center;
 }
+.chat-header-icon img { width:100%; height:100%; object-fit:contain; filter: drop-shadow(0 4px 8px rgba(66, 133, 244, 0.3)); }
 
 .chat-header-text h3 { font-size: 18px; font-weight: 700; color: var(--blue-900); line-height: 1.2; margin-bottom:4px;}
 .chat-header-text p { font-size: 13px; color: var(--gray-600); font-weight: 500; }
@@ -234,13 +243,13 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .msg-bubble { padding: 14px 20px; font-size: 15px; line-height: 1.6; font-weight: 500; box-shadow: 0 6px 16px rgba(0,0,0,0.05); }
 .msg-wrap.user .msg-bubble { background: linear-gradient(135deg, var(--blue-600), var(--blue-800)); color: #fff; border-radius: 20px 20px 4px 20px; }
 .msg-wrap.ai .msg-bubble { background: rgba(255,255,255,0.95); color: var(--gray-900); border: 1px solid rgba(255,255,255,1); border-radius: 20px 20px 20px 4px; }
-.msg-bubble b { color: #8B5CF6; }
+.msg-bubble b { color: #4285F4; }
 .msg-wrap.user .msg-bubble b { color: #fff; }
 .chat-footer { padding: 20px 32px; background: rgba(255,255,255,0.6); border-top: 1px solid rgba(255,255,255,0.7); display: flex; gap: 12px; z-index: 1; align-items: center;}
 .chat-input { flex: 1; padding: 16px 24px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.9); background: rgba(255,255,255,0.85); font-family: var(--font); font-size: 15px; outline: none; box-shadow: inset 0 2px 6px rgba(0,0,0,0.02); transition: all 0.3s;}
-.chat-input:focus { background: #fff; border-color: #8B5CF6; box-shadow: 0 0 0 4px rgba(139,92,246,0.15); }
-.chat-send-btn { background: linear-gradient(135deg, #8B5CF6, #EC4899); color: #fff; border: none; border-radius: 40px; padding: 0 28px; height: 50px; font-family: var(--font); font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 6px 20px rgba(139,92,246,0.3); display: flex; align-items: center; gap: 8px;}
-.chat-send-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 24px rgba(139,92,246,0.4); }
+.chat-input:focus { background: #fff; border-color: #4285F4; box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.15); }
+.chat-send-btn { background: linear-gradient(135deg, #4285F4, #9b72cb); color: #fff; border: none; border-radius: 40px; padding: 0 28px; height: 50px; font-family: var(--font); font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 6px 20px rgba(66, 133, 244, 0.3); display: flex; align-items: center; gap: 8px;}
+.chat-send-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 24px rgba(66, 133, 244, 0.4); }
 .typing { display: flex; gap: 5px; padding: 8px 4px; }
 .typing .dot { width: 8px; height: 8px; background: var(--gray-400); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
 .typing .dot:nth-child(1) { animation-delay: -0.32s; }
@@ -257,6 +266,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     padding:32px; display:flex; flex-direction:column; height:450px;
     box-shadow:0 16px 48px rgba(10,37,64,0.06), inset 0 2px 0 rgba(255,255,255,0.9);
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s forwards 0.3s;
 }
 .chart-box:hover {
     transform: translateY(-8px);
@@ -345,7 +355,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     <p>ระบบประเมินและบริหารจัดการเป้าหมาย (KPI Tracker)</p>
   </div>
   <div class="header-actions">
-    <button class="pill-btn" id="btn-start-tour" style="color:var(--orange-600); border-color:var(--orange-200);">
+    <button class="btn-help" id="btn-guide" onclick="startTour()">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         สอนใช้งาน
     </button>
@@ -371,7 +381,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
       </select>
     </div>
 
-    <div class="sec-lbl" id="tour-kpi">
+    <div class="sec-lbl">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
       ผลลัพธ์ KPI ภาพรวม 5 เสาหลัก
     </div>
@@ -381,21 +391,11 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       เครื่องมือระดับบริหาร (Executive Tools)
     </div>
-    
     <div class="glass ai-box" id="tour-ai-insights">
         <div class="ai-header-wrapper">
             <div class="ai-branding">
                 <div class="ai-logo">
-                    <svg viewBox="0 0 24 24" class="gemini-logo-svg">
-                      <defs>
-                        <linearGradient id="geminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stop-color="#E84A5F"/>
-                          <stop offset="50%" stop-color="#4285F4"/>
-                          <stop offset="100%" stop-color="#34A853"/>
-                        </linearGradient>
-                      </defs>
-                      <path fill="url(#geminiGrad)" d="M12 0C12 6.62742 6.62742 12 0 12C6.62742 12 12 17.3726 12 24C12 17.3726 17.3726 12 24 12C17.3726 12 12 6.62742 12 0Z"/>
-                    </svg>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo_2025.svg" alt="Gemini Logo">
                 </div>
                 <div>
                     <h3>Gemini Executive Insights ✨</h3>
@@ -448,9 +448,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     <div class="chat-container" id="tour-advisor">
       <div class="chat-header">
         <div class="chat-header-icon">
-          <svg viewBox="0 0 24 24" class="gemini-logo-svg" style="width:28px; height:28px;">
-            <path fill="url(#geminiGrad)" d="M12 0C12 6.62742 6.62742 12 0 12C6.62742 12 12 17.3726 12 24C12 17.3726 17.3726 12 24 12C17.3726 12 12 6.62742 12 0Z"/>
-          </svg>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo_2025.svg" alt="Gemini Logo" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
         <div class="chat-header-text">
           <h3>สอบถามผู้เชี่ยวชาญ TPM (Gemini AI)</h3>
@@ -493,8 +491,13 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 // ⚠️ เปลี่ยน URL ของ Google Apps Script ของคุณตรงนี้
 const API_URL='https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-// 💡 4. ฟังก์ชัน Guided Tour (ใช้ String Selector เพื่อแก้บั๊กค้าง 100%)
+// 💡 4. ฟังก์ชัน Guided Tour (ดักจับการโหลดก่อนเสมอ)
 function startTour() {
+  if (document.getElementById('main-dashboard-view').style.display === 'none' && document.getElementById('detail-view').style.display === 'none') {
+      alert('กรุณารอให้ระบบโหลดข้อมูลเสร็จสิ้นก่อนเริ่มใช้งานครับ');
+      return;
+  }
+
   if(document.getElementById('detail-view').style.display === 'block') {
      goBackToDashboard(); 
   }
@@ -507,27 +510,27 @@ function startTour() {
           intro: 'ศูนย์ควบคุมข้อมูล OI ที่จะช่วยให้คุณติดตามทุกโปรเจกต์ได้ในที่เดียวครับ'
         },
         {
-          element: '#tour-filter',
+          element: document.querySelector('#tour-filter'),
           intro: '<b>1. ตัวกรองแผนก:</b> เลือกแผนกของคุณที่นี่เพื่อดูข้อมูลเฉพาะส่วน กราฟและตัวเลขทั้งหมดจะเปลี่ยนตามทันทีครับ',
           position: 'bottom'
         },
         {
-          element: '#tour-kpi',
+          element: document.querySelector('#kpi-cards-container'),
           intro: '<b>2. สรุป KPI 5 เสา:</b> ดูความสำเร็จเป็นเปอร์เซ็นต์ <br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดและกด "แก้ไข" งานเก่าได้จากที่นี่ครับ',
           position: 'top'
         },
         {
-          element: '#tour-ai-insights',
+          element: document.querySelector('#tour-ai-insights'),
           intro: '<b>3. AI วิเคราะห์เชิงลึก:</b> หากข้อมูลเยอะเกินไป กดปุ่มนี้ให้ Gemini AI สรุป "จุดคอขวด" และข้อเสนอแนะให้คุณทันทีครับ',
           position: 'bottom'
         },
         {
-          element: '#tour-charts',
+          element: document.querySelector('#tour-charts'),
           intro: '<b>4. กราฟเปรียบเทียบ:</b> แสดงสถิติเชิงเปรียบเทียบ <br>✨ <b>ทริค:</b> ลองคลิกที่แท่งกราฟเพื่อขยายดูข้อมูลรายการงานของเสานั้นๆ ได้ทันทีครับ!',
           position: 'top'
         },
         {
-          element: '#tour-advisor',
+          element: document.querySelector('#tour-advisor'),
           intro: '<b>5. AI Advisor:</b> สงสัยตรงไหน พิมพ์ถามเป็นภาษาไทยได้เลยครับ เช่น "แผนกผลิตมี OPL เรื่องอะไรบ้าง?"',
           position: 'top'
         }
@@ -619,9 +622,9 @@ async function loadData(){
     processAndRender();
 
     // 💡 เริ่มทัวร์อัตโนมัติครั้งแรก
-    if (!localStorage.getItem('dashboard_tour_done_vFINAL4')) {
+    if (!localStorage.getItem('dashboard_tour_done_vFINAL2')) {
         setTimeout(() => { startTour(); }, 2000); 
-        localStorage.setItem('dashboard_tour_done_vFINAL4', 'true');
+        localStorage.setItem('dashboard_tour_done_vFINAL2', 'true');
     }
 
   } catch(e) { 
