@@ -24,7 +24,7 @@ body{
   background-attachment: fixed; color:var(--gray-900); font-size:14px; line-height:1.6; min-height:100vh;
 }
 
-.card, .page-header { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 8px 32px rgba(245, 124, 0, 0.05); border-radius: 20px; }
+.card, .page-header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 8px 32px rgba(245, 124, 0, 0.05); border-radius: 20px; }
 
 .page-header{ position:sticky; top:10px; z-index:100; margin: 10px auto; max-width: 860px; padding: 16px 24px; border-bottom: none; display: flex; align-items: center; justify-content: space-between; flex-wrap:wrap; gap:16px; }
 .page-title{font-size:18px;font-weight:700;color:var(--orange-500); letter-spacing: -0.3px; display:flex; align-items:center; gap:8px;}
@@ -36,7 +36,7 @@ body{
 .wrap{max-width:860px;margin:0 auto;padding:0.5rem 1rem 5rem}
 .card{padding:1.5rem;margin-bottom:1.25rem;}
 .card-accent{border-left:4px solid var(--orange-400); border-radius: 10px 20px 20px 10px;}
-.sec-label{font-size:12px;font-weight:700;color:var(--orange-500);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.sec-label{font-size:13px;font-weight:700;color:var(--orange-600);letter-spacing:0.5px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 .sec-label::after{content:'';flex:1;height:1.5px;background:linear-gradient(to right, rgba(245,124,0,0.2), transparent);}
 
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -49,9 +49,9 @@ body{
 /* Input Styling */
 input[type=text],input[type=password],input[type=date],select,textarea{ 
     width:100%;font-family:var(--font);font-size:14px;color:var(--blue-900); 
-    background: #fff; border: 1.5px solid var(--gray-200); 
+    background: rgba(255, 255, 255, 0.7); border: 1.5px solid rgba(255, 255, 255, 0.9); 
     border-radius: 12px;padding:10px 14px;outline:none; 
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition:all .2s ease; font-weight: 500; 
+    box-shadow: inset 0 2px 4px rgba(245,124,0,0.02); transition:all .2s ease; font-weight: 500; 
 }
 input:focus,select:focus,textarea:focus{ 
     background: #fff; border-color:var(--orange-400); 
@@ -59,11 +59,11 @@ input:focus,select:focus,textarea:focus{
 }
 select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%23505A64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
 textarea{resize:vertical;min-height:100px;line-height:1.6;}
-input[readonly], input:disabled, select:disabled, textarea:disabled{background:var(--gray-50); color:var(--gray-600); cursor:not-allowed; border-color:var(--gray-200); opacity:1;}
+input[readonly], input:disabled, select:disabled, textarea:disabled{background:rgba(255,243,224,0.6); color:var(--orange-600); cursor:not-allowed; border-color:rgba(245,124,0,0.3); opacity:1;}
 
 /* Upload & Gallery */
-.upload-zone{background:#fff; border:2px dashed var(--gray-400);border-radius:16px;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:all .2s ease; height: 100%; display: flex; flex-direction: column; justify-content: center;}
-.upload-zone:hover{background:var(--orange-50);border-color:var(--orange-400);box-shadow:0 4px 16px rgba(245,124,0,0.1);}
+.upload-zone{background:rgba(255,255,255,0.4); border:1.5px dashed var(--orange-300);border-radius:16px;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:all .2s ease; height: 100%; display: flex; flex-direction: column; justify-content: center;}
+.upload-zone:hover{background:#fff;border-color:var(--orange-500);box-shadow:0 4px 16px rgba(245,124,0,0.1);}
 .upload-icon{width:48px;height:48px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center; background:var(--orange-50); border-radius:50%; box-shadow:0 2px 8px rgba(0,0,0,0.05); color:var(--orange-500);}
 .upload-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .upload-text{font-size:14px;font-weight:600;color:var(--blue-900)}
@@ -79,13 +79,25 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
 .file-link-card { display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--orange-50); border: 1px solid rgba(245,124,0,0.2); border-radius: 12px; color: var(--orange-700); font-weight: 700; font-size: 13px; transition: all 0.2s; text-decoration: none;}
 .file-link-card:hover { background: #fff; box-shadow: 0 4px 12px rgba(245,124,0,0.1); transform: translateY(-2px); }
 
+/* Dynamic Learner Rows & Toggle Switches */
+.learner-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; background: rgba(255,255,255,0.6); padding: 8px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.9); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
+.learner-input { flex: 1; min-width: 150px; background: #fff !important;}
+.toggle-group { display: flex; background: var(--gray-200); border-radius: 30px; padding: 4px; gap: 4px; }
+.toggle-btn { padding: 8px 18px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; background: transparent; color: var(--gray-600); border-radius: 20px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-family: var(--font);}
+.toggle-btn.pass.active { background: var(--teal-600); color: #fff; box-shadow: 0 2px 8px rgba(12,164,124,0.3); }
+.toggle-btn.fail.active { background: var(--red-600); color: #fff; box-shadow: 0 2px 8px rgba(217,56,56,0.3); }
+.btn-remove-learner { background: #fee2e2; color: #ef4444; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 16px; font-weight: bold;}
+.btn-remove-learner:hover { background: #fca5a5; color: #b91c1c; transform: scale(1.05); }
+.btn-add-learner { background: var(--orange-50); color: var(--orange-600); border: 1px dashed var(--orange-400); padding: 10px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: var(--font); margin-top: 4px; transition: 0.2s;}
+.btn-add-learner:hover { background: var(--orange-100); transform: translateY(-1px); }
+
 .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:2rem; flex-wrap:wrap;}
 .btn{font-family:var(--font);font-size:14px;font-weight:600;padding:12px 28px;border-radius:12px;cursor:pointer;transition:all .2s ease; border:none; box-shadow:0 4px 12px rgba(0,0,0,0.05);}
-.btn-reset{background:#fff;color:var(--gray-600); border:1px solid var(--gray-200);}
-.btn-reset:hover{background:var(--gray-50); transform:translateY(-1px);}
+.btn-reset{background:rgba(255,255,255,0.8);color:var(--gray-600); border:1px solid rgba(255,255,255,0.9);}
+.btn-reset:hover{background:#fff; transform:translateY(-1px);}
 .btn-reject { background: #FFF0F0; color: #D93838; border: 1px solid #FFCACA; display:none; }
 .btn-reject:hover { background: #FFE0E0; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(217,56,56,0.2); }
-.btn-pri{background:linear-gradient(135deg, var(--orange-400), var(--orange-500));color:#fff;box-shadow:0 4px 16px rgba(245,124,0,0.3);}
+.btn-pri{background:linear-gradient(135deg, var(--orange-400), var(--orange-600));color:#fff;box-shadow:0 4px 16px rgba(245,124,0,0.3);}
 .btn-pri:hover{background:linear-gradient(135deg, #FFA726, #E65100); transform:translateY(-2px); box-shadow:0 6px 20px rgba(245,124,0,0.4);}
 .btn-pri:disabled, .btn-reject:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 
@@ -94,7 +106,7 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
 
-.opl-id-display { font-size:22px !important; font-weight:700 !important; color:var(--orange-500) !important; text-align:center; letter-spacing:1px; background: rgba(255,152,0,0.08) !important;}
+.opl-id-display { font-size:22px !important; font-weight:700 !important; color:var(--orange-600) !important; text-align:center; letter-spacing:1px; background: rgba(255,152,0,0.08) !important;}
 </style>
 </head>
 <body>
@@ -102,7 +114,10 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
 <div class="page-header card">
   <div class="page-header-inner">
     <div>
-      <div class="page-title">OPL Center — One Point Lesson</div>
+      <div class="page-title">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 00-4 12.74V17a1 1 0 001 1h6a1 1 0 001-1v-2.26A7 7 0 0012 2z"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+        OPL Center — One Point Lesson
+      </div>
       <div class="page-sub">แบบฟอร์มสร้างบทเรียนจุดเดียว สำหรับขยายผลความรู้ในองค์กร</div>
     </div>
     <div><a href="home.html" class="btn-nav-top">กลับเมนูหลัก (Home)</a></div>
@@ -119,27 +134,18 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
   <div id="form-zone" style="display:none;">
 
     <div class="card card-accent">
-      <div class="sec-label">ข้อมูลผู้จัดทำและรหัสเอกสาร (Primary Info)</div>
+      <div class="sec-label">📌 1. ข้อมูลผู้จัดทำและรหัสเอกสาร (Primary Info)</div>
       
       <div class="grid2" style="margin-bottom:16px;">
         <div class="fg">
-          <label>บทบาท / ผู้ดำเนินการ <span class="req">จำเป็น</span></label>
+          <label>1. บทบาท / ผู้ดำเนินการ <span class="req">จำเป็น</span></label>
           <select id="f-role" onchange="togglePIN(); populateUsers();">
             <option value="self">พนักงาน (ผู้สร้าง/ผู้จัดทำ)</option>
             <option value="lead">หัวหน้าแผนก (ผู้อนุมัติ)</option>
           </select>
         </div>
         <div class="fg">
-          <label>ชื่อ-นามสกุล <span class="req">จำเป็น</span></label>
-          <select id="f-name" onchange="autoFillEmail()">
-            <option value="">-- กรุณาเลือกแผนกก่อน --</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="grid3" style="margin-bottom:16px;">
-        <div class="fg">
-          <label>โรงงาน (Factory) <span class="req">จำเป็น</span></label>
+          <label>2. โรงงาน (Factory) <span class="req">จำเป็น</span></label>
           <select id="f-factory" onchange="generateOplId()">
             <option value="">-- เลือกโรงงาน --</option>
             <option value="PT">ปทุมธานี (PT)</option>
@@ -150,8 +156,11 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
             <option value="SR">สุราษฎร์ธานี (SR)</option>
           </select>
         </div>
+      </div>
+
+      <div class="grid2" style="margin-bottom:16px;">
         <div class="fg">
-          <label>แผนก / กลุ่ม (Dept) <span class="req">จำเป็น</span></label>
+          <label>3. แผนก / กลุ่ม (Dept) <span class="req">จำเป็น</span></label>
           <select id="f-dept" onchange="generateOplId(); populateUsers();">
             <option value="">-- เลือกแผนก --</option>
             <option value="MT">MT (วิศวกรรม/ซ่อมบำรุง)</option>
@@ -166,9 +175,16 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
           </select>
         </div>
         <div class="fg">
-          <label>วันที่บันทึก OPL <span class="req">จำเป็น</span></label>
-          <input type="date" id="f-date">
+          <label>4. ชื่อ-นามสกุล <span class="req">จำเป็น</span></label>
+          <select id="f-name" onchange="autoFillEmail()">
+            <option value="">-- กรุณาเลือกแผนกก่อน --</option>
+          </select>
         </div>
+      </div>
+
+      <div class="fg" style="margin-bottom:16px;">
+        <label>วันที่บันทึก OPL <span class="req">จำเป็น</span></label>
+        <input type="date" id="f-date">
       </div>
 
       <div class="grid2" style="margin-bottom:16px; display:none;">
@@ -183,7 +199,7 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
     </div>
 
     <div class="card">
-      <div class="sec-label">เนื้อหา OPL (Content)</div>
+      <div class="sec-label">📝 2. เนื้อหา OPL (Content)</div>
       <div class="fg" style="margin-bottom:16px;">
         <label>ชื่อเรื่อง (Title) <span class="req">จำเป็น</span></label>
         <input type="text" id="f-title" placeholder="ตั้งชื่อเรื่องให้กระชับ เข้าใจง่าย">
@@ -219,7 +235,7 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
     </div>
 
     <div class="card" id="attachment-card">
-      <div class="sec-label" id="attachment-label">ภาพประกอบ & เอกสาร (Attachments)</div>
+      <div class="sec-label" id="attachment-label">📸 3. ภาพประกอบ & เอกสาร (Attachments)</div>
       <div class="grid2" id="upload-grid">
         <div>
           <div class="upload-zone" onclick="document.getElementById('fu-img').click()">
@@ -246,30 +262,30 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
     </div>
 
     <div class="card">
-      <div class="sec-label">การสอนและประเมินผล (Training & Result)</div>
+      <div class="sec-label">🎓 4. การสอนและประเมินผล (Training & Result)</div>
+      
       <div class="grid2" style="margin-bottom:16px;">
         <div class="fg">
           <label>วันที่สอน <span class="req">จำเป็น</span></label>
           <input type="date" id="f-teach-date">
         </div>
         <div class="fg">
-          <label>ผลการ OPL <span class="req">จำเป็น</span></label>
-          <select id="f-result" style="font-weight:bold; color:var(--blue-800);">
-            <option value="">-- เลือกผลประเมิน --</option>
-            <option value="ผ่าน">ผ่าน (Pass)</option>
-            <option value="ไม่ผ่าน">ไม่ผ่าน (Fail)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="grid2">
-        <div class="fg">
           <label>ชื่อผู้สอน (Instructor)</label>
           <input type="text" id="f-instructor" placeholder="ชื่อผู้สอน / ผู้ถ่ายทอด">
         </div>
-        <div class="fg">
-          <label>ชื่อผู้เรียน (Learners)</label>
-          <textarea id="f-learners" placeholder="ระบุชื่อผู้รับการสอน (หากมีหลายคนให้ใช้ลูกน้ำ , คั่น)" style="min-height:44px;"></textarea>
+      </div>
+
+      <div class="fg" style="margin-top: 24px;">
+        <label>รายชื่อผู้เรียน และ ผลการประเมินรายบุคคล <span class="req">จำเป็น</span></label>
+        
+        <div id="learners-container" style="display: flex; flex-direction: column; gap: 8px;">
+           </div>
+
+        <div>
+          <button type="button" class="btn-add-learner" onclick="addLearnerRow()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            เพิ่มผู้เรียน
+          </button>
         </div>
       </div>
     </div>
@@ -292,7 +308,7 @@ input[readonly], input:disabled, select:disabled, textarea:disabled{background:v
 <div class="toast" id="toast"></div>
 
 <script>
-// ⚠️ ใส่ลิงก์ Web App URL 
+// ⚠️ ใส่ลิงก์ Web App URL ตัวใหม่ล่าสุดของคุณที่เชื่อม Code.gs ไว้
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 const imageStore = []; 
@@ -302,7 +318,6 @@ let userData = {};
 let approverData = {};
 let oplHistoryData = []; 
 
-// 💡 สร้างฟังก์ชันเช็ค URL Parameter ก่อน ว่าเราไม่ได้กำลังดึงของเก่ามา
 const urlP = new URLSearchParams(window.location.search);
 if (!urlP.get('oplId')) {
     document.getElementById('f-date').valueAsDate = new Date();
@@ -333,7 +348,32 @@ async function initData() {
   }
 }
 
-// 🟢 ระบบดึงข้อมูลจาก Dashboard 
+// 💡 1. ฟังก์ชันสร้างช่องกรอกผู้เรียนแบบ Dynamic พร้อมสวิตช์เปิด/ปิด
+function addLearnerRow(name = '', resultStr = 'ผ่าน') {
+    const container = document.getElementById('learners-container');
+    const row = document.createElement('div');
+    row.className = 'learner-row';
+    
+    const isPass = resultStr.includes('ผ่าน') && !resultStr.includes('ไม่ผ่าน');
+
+    row.innerHTML = `
+        <input type="text" class="learner-input" placeholder="ชื่อ-นามสกุล ผู้เรียน" value="${name}">
+        <div class="toggle-group">
+            <button type="button" class="toggle-btn pass ${isPass ? 'active' : ''}" onclick="setToggle(this, 'pass')">ผ่าน</button>
+            <button type="button" class="toggle-btn fail ${!isPass ? 'active' : ''}" onclick="setToggle(this, 'fail')">ไม่ผ่าน</button>
+        </div>
+        <button type="button" class="btn-remove-learner" onclick="this.parentElement.remove()" title="ลบรายชื่อนี้">✖</button>
+    `;
+    container.appendChild(row);
+}
+
+// 💡 2. ฟังก์ชันควบคุมการกดสวิตช์ ผ่าน/ไม่ผ่าน
+function setToggle(btn, type) {
+    const group = btn.parentElement;
+    group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
 function prefillFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const paramOplId = urlParams.get('oplId');
@@ -358,10 +398,21 @@ function prefillFromURL() {
           document.getElementById('f-class').value = vals[7] || '';
           document.getElementById('f-details').value = vals[8] || '';
           document.getElementById('f-instructor').value = vals[10] || '';
-          document.getElementById('f-learners').value = vals[11] || '';
-          document.getElementById('f-result').value = vals[12] || '';
           
-          // 💡 แปลงวันที่ให้อยู่ในรูปแบบ YYYY-MM-DD เพื่อเข้าสู่ Input Date ได้ชัวร์ 100%
+          // 💡 แปลงรายชื่อและผลประเมินเดิม ให้ออกมาเป็นแถว Dynamic 
+          document.getElementById('learners-container').innerHTML = ''; // เคลียร์ของเก่า
+          const names = (vals[11] || '').split(',').map(s => s.trim());
+          const results = (vals[12] || '').split(',').map(s => s.trim());
+          
+          if (names.length > 0 && names[0] !== '') {
+              names.forEach((n, idx) => {
+                  const res = results[idx] || results[0] || 'ผ่าน'; // ถ้าไม่มีผลแยกรายคน ให้ยึดผลอันแรกสุด
+                  addLearnerRow(n, res);
+              });
+          } else {
+              addLearnerRow(); // ถ้าไม่มีชื่อเลยให้แสดงช่องว่าง 1 แถว
+          }
+          
           const formatDateToInput = (dateStr) => {
               if (!dateStr) return '';
               try {
@@ -380,9 +431,9 @@ function prefillFromURL() {
           
           if (roleParam === 'lead') {
              document.getElementById('f-role').value = 'lead';
-             document.getElementById('f-role').disabled = true; // ล็อกแค่บทบาท
+             document.getElementById('f-role').disabled = true; 
              togglePIN();
-             document.getElementById('btn-reject').style.display = 'inline-flex'; // เปิดปุ่มไม่อนุมัติ
+             document.getElementById('btn-reject').style.display = 'inline-flex'; 
              showToast('โหมดผู้อนุมัติ: สามารถแก้ไขข้อมูลก่อนอนุมัติ หรือกดไม่อนุมัติได้', 'var(--orange-500)', 5000);
           } else if (roleParam === 'edit') {
              document.getElementById('f-role').value = 'self';
@@ -397,6 +448,9 @@ function prefillFromURL() {
           const fileStr = vals[13] || ''; 
           renderAttachedFiles(fileStr);
       }
+  } else {
+      // ถ้าไม่ได้ดึงข้อมูลเก่า ก็สร้างแถวว่างๆ ไว้รอให้กรอก 1 คน
+      addLearnerRow();
   }
 }
 
@@ -553,6 +607,10 @@ function resetForm() {
   document.getElementById('upload-grid').style.display = 'grid';
   document.getElementById('attachment-label').innerHTML = 'ภาพประกอบ & เอกสาร (Attachments)';
   
+  // เคลียร์รายชื่อผู้เรียนให้เหลือบรรทัดเดียว
+  document.getElementById('learners-container').innerHTML = '';
+  addLearnerRow();
+
   generateOplId();
   showToast('ล้างข้อมูลแล้ว'); 
 }
@@ -597,13 +655,33 @@ async function handleSubmit(actionType = 'approve') {
   const classification = document.getElementById('f-class').value;
   const details = document.getElementById('f-details').value.trim();
   const teachDate = document.getElementById('f-teach-date').value;
-  const result = document.getElementById('f-result').value;
   
   const nameSelect = document.getElementById('f-name');
   const name = nameSelect.options[nameSelect.selectedIndex] ? nameSelect.options[nameSelect.selectedIndex].text : '';
 
-  if (!fac || !dept || !title || !category || !classification || !details || !result || name === '' || name.includes('--')) { 
+  // 💡 3. รวบรวมข้อมูลรายชื่อผู้เรียนและผลประเมินแยกรายบุคคล
+  const learnerRows = document.querySelectorAll('.learner-row');
+  const learnerNames = [];
+  const learnerResults = [];
+  let hasEmptyLearner = false;
+
+  learnerRows.forEach(row => {
+      const lName = row.querySelector('.learner-input').value.trim();
+      if (lName) {
+          const isPass = row.querySelector('.toggle-btn.pass').classList.contains('active');
+          learnerNames.push(lName);
+          learnerResults.push(isPass ? 'ผ่าน' : 'ไม่ผ่าน');
+      } else {
+          hasEmptyLearner = true;
+      }
+  });
+
+  if (!fac || !dept || !title || !category || !classification || !details || name === '' || name.includes('--')) { 
       showToast('กรุณากรอกข้อมูลในช่องที่จำเป็นให้ครบถ้วน', '#D93838'); return; 
+  }
+  
+  if (learnerNames.length === 0) {
+      showToast('กรุณาระบุชื่อผู้เรียนอย่างน้อย 1 คน', '#D93838'); return;
   }
 
   const btn = document.getElementById('btn-submit');
@@ -635,8 +713,8 @@ async function handleSubmit(actionType = 'approve') {
     details: details,
     teachDate: teachDate,
     instructor: document.getElementById('f-instructor').value.trim(),
-    learners: document.getElementById('f-learners').value.trim(),
-    result: result,
+    learners: learnerNames.join(', '), // นำชื่อมาต่อกันด้วยลูกน้ำ
+    result: learnerResults.join(', '), // นำผลมาต่อกันด้วยลูกน้ำตามลำดับ
     assessorName: name.replace('(หัวหน้า) ', ''),
     files: filesData
   };
@@ -648,7 +726,9 @@ async function handleSubmit(actionType = 'approve') {
     if (role === 'lead') msg = actionType === 'reject' ? 'บันทึกสถานะ "ไม่อนุมัติ" เรียบร้อยแล้ว' : 'อนุมัติ OPL สำเร็จ!';
     
     showToast(msg, actionType === 'reject' ? '#D93838' : '#0CA47C', 4000);
-    setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
+    
+    // 💡 ปรับหน่วงเวลาเพื่อแก้ปัญหาการดึงข้อมูล Dashboard ไม่ทัน
+    setTimeout(() => { window.location.href = 'dashboard.html?t=' + Date.now(); }, 3500);
   } catch (err) {
     showToast('เกิดข้อผิดพลาด: ' + err.message, '#D93838', 5000);
     btn.disabled = false; btnRej.disabled = false;
