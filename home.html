@@ -413,8 +413,18 @@ function startHomeTour() {
         position: 'bottom'
       },
       {
+        element: document.querySelector('#step-kz'),
+        intro: '<b>4. Kaizen Suggestion:</b> หากมีไอเดียปรับปรุงงานย่อยๆ สามารถเข้าไปกรอกข้อเสนอแนะในระบบกลางได้ที่นี่',
+        position: 'bottom'
+      },
+      {
+        element: document.querySelector('#step-mk'),
+        intro: '<b>5. Makigami:</b> ระบบสำหรับเขียน Flow Chart วิเคราะห์และลดความสูญเปล่าในขั้นตอนการทำงาน',
+        position: 'bottom'
+      },
+      {
         element: document.querySelector('#tour-dash'),
-        intro: '<b>4. สรุปผล & แก้ไขงาน:</b> <br>✨ จุดสำคัญที่สุด! <br>ถ้าต้องการดูว่าแผนกเราได้กี่ %, ต้องการ <b>แก้ไขงานเดิม</b> หรือหัวหน้าจะเข้ามา <b>กดอนุมัติ</b> ให้เข้าที่เมนู Dashboard นี้ครับ',
+        intro: '<b>6. สรุปผล & แก้ไขงาน:</b> <br>✨ จุดสำคัญที่สุด! <br>ถ้าต้องการดูว่าแผนกเราได้กี่ %, ต้องการ <b>แก้ไขงานเดิม</b> หรือหัวหน้าจะเข้ามา <b>กดอนุมัติ</b> ให้เข้าที่เมนู Dashboard นี้ครับ',
         position: 'top'
       },
       {
@@ -434,9 +444,9 @@ function startHomeTour() {
 
 // 💡 สั่งให้เริ่มทัวร์อัตโนมัติเฉพาะการเข้าใช้งานครั้งแรก
 window.onload = function() {
-  if (!localStorage.getItem('home_tour_done_v2')) {
+  if (!localStorage.getItem('home_tour_done_v3')) {
     setTimeout(() => { startHomeTour(); }, 500); // หน่วงเวลาให้ CSS โหลดเสร็จก่อน
-    localStorage.setItem('home_tour_done_v2', 'true');
+    localStorage.setItem('home_tour_done_v3', 'true');
   }
 };
 </script>
