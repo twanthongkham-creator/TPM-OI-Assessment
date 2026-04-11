@@ -507,6 +507,7 @@ input[readonly] { background: rgba(230,241,255,0.6); color: var(--blue-600); cur
 
 <div class="toast" id="toast"></div>
 
+<script src="dept-helper.js"></script>
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
@@ -545,7 +546,13 @@ async function loadMasterData() {
       fetch(APPS_SCRIPT_URL + '?action=getUsers').then(r => r.json()),
       fetch(APPS_SCRIPT_URL + '?action=getKPIs').then(r => r.json())
     ]);
-    if (uRes.status === 'success') { userData = uRes.users || {}; approverData = uRes.approvers || {}; }
+    if (uRes.status === 'success') {
+      userData = uRes.users || {};
+      approverData = uRes.approvers || {};
+      // โหลด dept list จาก API (ถ้า getUsers ส่ง depts มาด้วยใช้เลย)
+      if (uRes.depts) DeptHelper.loadDeptsFromArray(uRes.depts);
+      else await DeptHelper.loadDepts(APPS_SCRIPT_URL);
+    }
     if (kRes.status === 'success') {
       (kRes.data || []).forEach(k => {
         let sys = sg(k,'System',0), dept = sg(k,'Department',2), area = sg(k,'Area',3);
@@ -555,12 +562,8 @@ async function loadMasterData() {
         }
       });
     }
-    const deptSelect = document.getElementById('f-dept');
-    deptSelect.innerHTML = '<option value="">-- เลือกแผนก --</option>';
-    Object.keys(areaData).sort().forEach(dept => {
-      const opt = document.createElement('option'); opt.value = dept; opt.textContent = dept;
-      deptSelect.appendChild(opt);
-    });
+    // ใช้ DeptHelper populate dept select (แสดงชื่อเต็มจาก Sheet)
+    DeptHelper.populateDeptSelect('f-dept');
     document.getElementById('loading-zone').style.display = 'none';
     document.getElementById('form-zone').style.display = 'block';
     prefillFromURL();
