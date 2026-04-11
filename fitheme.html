@@ -12,7 +12,7 @@
 <style>
   /* 🟢 Intro.js Custom Premium Style (FI Indigo Theme) */
   .introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 16px; transition: all 0.2s; cursor: pointer; }
-  .introjs-nextbutton { background: linear-gradient(135deg, #8B5CF6, #4F46E5) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(99,102,241,0.3) !important; }
+  .introjs-nextbutton { background: linear-gradient(135deg, #6366F1, #4F46E5) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(99,102,241,0.3) !important; }
   .introjs-nextbutton:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99,102,241,0.4) !important; }
   .introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; background: #F8FAFC !important; border: 1px solid #D9E2EC !important; }
   .introjs-donebutton { background: linear-gradient(135deg, #2DD4BF, #0CA47C) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(12,164,124,0.3) !important; }
@@ -39,12 +39,10 @@
 
 :root {
   --blue-900:#0A2540; --blue-800:#113A5D; --blue-600:#1E6091; --blue-400:#3A86FF;
-  --teal-700:#087A5C; --teal-600:#0CA47C; --teal-500:#14B8A6; --teal-400:#10D2A1;
-  --red-600:#EF4444; --rose-500:#F43F5E;
-  --orange-700:#C46200; --orange-600:#E65100; --orange-500:#F57C00;
-  /* FI Theme Colors (Indigo/Purple) */
-  --indigo-50:#EEF2FF; --indigo-200:#C7D2FE; --indigo-300:#A5B4FC; --indigo-400:#818CF8; 
-  --indigo-500:#6366F1; --indigo-600:#4F46E5; --indigo-700:#4338CA; --indigo-800:#3730A3;
+  --teal-700:#087A5C; --teal-600:#0CA47C; 
+  --orange-700:#C46200; --orange-600:#E65100; --orange-500:#F57C00; --orange-400:#FF9800; --orange-50:#FFF3E0;
+  --rose-500:#F43F5E; --rose-600:#E11D48;
+  --red-500:#F44336; 
   --gray-900:#1A1C1E; --gray-600:#505A64; --gray-400:#9BA5B1; --gray-200:#D9E2EC;
   --font:'IBM Plex Sans Thai',sans-serif;
   --blur:blur(32px) saturate(180%);
@@ -54,16 +52,16 @@
 html{scroll-behavior:smooth}
 body{
   font-family:var(--font); min-height:100vh;
-  /* พื้นหลังโทน Indigo สว่าง */
+  /* พื้นหลังโทน Indigo สว่างสไตล์ Liquid Glass */
   background:linear-gradient(145deg,#eef2ff 0%,#e0eaf5 35%,#e8eaf6 65%,#f3e8ff 100%);
   background-attachment:fixed; color:var(--gray-900); padding-bottom:80px; overflow-x:hidden;
 }
 
-/* 🍎 Ultra Premium Ambient Blobs (FI Theme - Indigo/Purple) */
-body::before,body::after, .ambient-blob{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(120px);opacity:0.55}
-body::before{width:70vw;height:70vw;max-width:800px;max-height:800px;background:radial-gradient(circle,rgba(167,139,250,0.3) 0%,transparent 70%);top:-20%;left:-10%;animation:b1 18s ease-in-out infinite alternate}
-body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:radial-gradient(circle,rgba(79,70,229,0.25) 0%,transparent 70%);bottom:-15%;right:-10%;animation:b2 22s ease-in-out infinite alternate}
-.ambient-blob{width:50vw;height:50vw;max-width:600px;max-height:600px;background:radial-gradient(circle,rgba(99,102,241,0.2) 0%,transparent 70%);top:30%;left:30%;animation:b3 25s ease-in-out infinite alternate}
+/* 🍎 Ultra Premium Ambient Blobs */
+body::before,body::after, .ambient-blob{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(120px);opacity:0.5}
+body::before{width:70vw;height:70vw;max-width:800px;max-height:800px;background:radial-gradient(circle,rgba(99,102,241,0.25) 0%,transparent 70%);top:-20%;left:-10%;animation:b1 18s ease-in-out infinite alternate}
+body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:radial-gradient(circle,rgba(58,134,255,0.2) 0%,transparent 70%);bottom:-15%;right:-10%;animation:b2 22s ease-in-out infinite alternate}
+.ambient-blob{width:50vw;height:50vw;max-width:600px;max-height:600px;background:radial-gradient(circle,rgba(236,72,153,0.15) 0%,transparent 70%);top:30%;left:30%;animation:b3 25s ease-in-out infinite alternate}
 @keyframes b1{to{transform:translate(80px,60px) scale(1.1)}}
 @keyframes b2{to{transform:translate(-80px,-60px) scale(0.9)}}
 @keyframes b3{to{transform:translate(50px,-50px) scale(1.2)}}
@@ -129,9 +127,22 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 .fg{display:flex;flex-direction:column;gap:8px; min-width:0;}
 .fg label{font-size:13px;font-weight:700;color:var(--blue-900); padding-left: 4px; display:flex; align-items:center;}
-.req{background:var(--red-500);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:8px; box-shadow:0 2px 6px rgba(244,67,54,0.3);}
 
-/* 💡 Premium Inputs (FI Theme) */
+/* 💡 แก้ไขป้าย "จำเป็น" ให้เห็นชัดเจน โดดเด่น */
+.req {
+    background: linear-gradient(135deg, #F43F5E, #E11D48);
+    color: #ffffff !important;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-left: 8px;
+    box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3);
+    display: inline-block;
+    border: none;
+}
+
+/* 💡 Premium Inputs */
 input[type=text],input[type=number],input[type=date],input[type=password],select,textarea{ 
     width:100%;font-family:var(--font);font-size:14px;color:var(--blue-900); 
     background: rgba(255, 255, 255, 0.85); 
@@ -158,7 +169,7 @@ input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--i
 .upload-hint{font-size:11px;font-weight:500;color:var(--gray-400);margin-top:4px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .chip{background:#fff;border:1px solid rgba(0,0,0,0.05);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:500;color:var(--indigo-600);display:flex;align-items:center;gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.03);}
-.chip-x{cursor:pointer;color:var(--red-500);font-size:16px;line-height:1; font-weight:bold; transition:all .2s;}
+.chip-x{cursor:pointer;color:var(--red-400);font-size:16px;line-height:1; font-weight:bold; transition:all .2s;}
 .chip-x:hover{color:var(--red-600);transform:scale(1.1);}
 
 .file-gallery { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
@@ -504,7 +515,7 @@ input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--i
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-// 💡 4. ฟังก์ชัน Guided Tour (เพิ่มการซ่อน UI กวนใจตอนเริ่มทัวร์)
+// 💡 4. ฟังก์ชัน Guided Tour (เพิ่มการปิด UI กวนใจตอนสอน)
 function startTour() {
   document.body.classList.add('tour-active');
   
@@ -561,7 +572,7 @@ function startTour() {
     tour.oncomplete(function() { document.body.classList.remove('tour-active'); });
     
     tour.start();
-  }, 400); 
+  }, 300); 
 }
 
 const imageStore = []; const docStore = []; let oldFileLinks = '';
@@ -583,9 +594,9 @@ async function initData() {
     prefillFromURL();
 
     // 💡 เริ่มทัวร์อัตโนมัติเฉพาะเข้าใช้งานครั้งแรก
-    if (!localStorage.getItem('fitheme_tour_done_v5')) {
-      setTimeout(() => { startTour(); }, 1500); // ดีเลย์ให้ CSS ทำงานเสร็จ
-      localStorage.setItem('fitheme_tour_done_v5', 'true');
+    if (!localStorage.getItem('fitheme_tour_done_v7')) {
+      setTimeout(() => { startTour(); }, 1500); 
+      localStorage.setItem('fitheme_tour_done_v7', 'true');
     }
 
   } catch(e) {
