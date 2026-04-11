@@ -13,17 +13,18 @@
 
 <style>
   /* 🟢 Intro.js Custom Premium Style */
-  .introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 18px; transition: all 0.2s; cursor: pointer; }
+  .introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 16px; transition: all 0.2s; cursor: pointer; }
   .introjs-nextbutton { background: linear-gradient(135deg, #3A86FF, #1E6091) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(58,134,255,0.3) !important; }
   .introjs-nextbutton:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(58,134,255,0.4) !important; }
   .introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; background: #F8FAFC !important; border: 1px solid #D9E2EC !important; }
   .introjs-donebutton { background: linear-gradient(135deg, #2DD4BF, #0CA47C) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(12,164,124,0.3) !important; }
-  .introjs-tooltip { border-radius: 20px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.25); border: 1px solid rgba(255,255,255,1); font-family: 'IBM Plex Sans Thai', sans-serif; z-index: 9999999 !important; }
-  .introjs-progress { background-color: #E2E8F0; border-radius: 6px; overflow: hidden; }
+  .introjs-tooltip { border-radius: 24px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.3); border: 1px solid rgba(255,255,255,0.9); font-family: 'IBM Plex Sans Thai', sans-serif; }
+  .introjs-progress { background-color: #E2E8F0; border-radius: 4px; overflow: hidden; }
   .introjs-progressbar { background-color: #3A86FF; }
-  .introjs-showElement { z-index: 9999998 !important; position: relative; }
 
-  /* 💡 แก้บั๊กจอมืด: ปิด Effect กระจกและล็อกเป้าหมายให้อยู่นิ่ง */
+  /* แก้บั๊กจอมืด: ปิด Effect กระจกและล็อกเป้าหมายให้อยู่นิ่ง */
+  .introjs-showElement { z-index: 9999998 !important; position: relative; }
+  .tour-wrapper { position: relative; width: 100%; border-radius: var(--r-lg); }
   body.tour-active .introjs-showElement,
   body.tour-active .glass,
   body.tour-active .kpi-card,
@@ -117,7 +118,6 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 .sec-lbl{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--blue-800);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:12px;opacity: 0.9;}
 .sec-lbl::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,rgba(10,37,64,0.15),transparent); border-radius: 2px;}
-.tour-wrapper { position: relative; width: 100%; border-radius: var(--r-lg); }
 
 /* ─── Ultra Liquid Glass KPI Cards ─── */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:40px}
@@ -148,12 +148,16 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 .p-am  {border-color:rgba(58,134,255,0.4);} .p-am::after{background:radial-gradient(circle, #3A86FF 0%, transparent 70%);}
 .p-am:hover { box-shadow: 0 24px 48px rgba(58,134,255,0.15), inset 0 1px 0 #fff; }
+
 .p-opl {border-color:rgba(245,124,0,0.4);}  .p-opl::after{background:radial-gradient(circle, #F57C00 0%, transparent 70%);}
 .p-opl:hover { box-shadow: 0 24px 48px rgba(245,124,0,0.15), inset 0 1px 0 #fff; }
+
 .p-fi  {border-color:rgba(99,102,241,0.4);} .p-fi::after{background:radial-gradient(circle, #6366F1 0%, transparent 70%);}
 .p-fi:hover { box-shadow: 0 24px 48px rgba(99,102,241,0.15), inset 0 1px 0 #fff; }
+
 .p-kz  {border-color:rgba(16,185,129,0.4);} .p-kz::after{background:radial-gradient(circle, #10B981 0%, transparent 70%);}
 .p-kz:hover { box-shadow: 0 24px 48px rgba(16,185,129,0.15), inset 0 1px 0 #fff; }
+
 .p-mk  {border-color:rgba(244,63,94,0.4);}   .p-mk::after{background:radial-gradient(circle, #F43F5E 0%, transparent 70%);}
 .p-mk:hover { box-shadow: 0 24px 48px rgba(244,63,94,0.15), inset 0 1px 0 #fff; }
 
@@ -198,7 +202,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .ai-header-wrapper { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
 .ai-branding { display:flex; align-items:center; gap: 16px; }
 
-/* 💡 Gemini Real SVG Shape & Gradient (วาดด้วยโค้ดเนียนๆ) */
+/* 💡 Gemini Real SVG Shape & Gradient */
 .gemini-logo-svg {
   width: 48px; height: 48px;
   filter: drop-shadow(0 4px 12px rgba(139,92,246,0.3));
@@ -238,6 +242,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
   width: 42px; height: 42px; background: transparent; 
   display: flex; align-items: center; justify-content: center;
 }
+
 .chat-header-text h3 { font-size: 18px; font-weight: 700; color: var(--blue-900); line-height: 1.2; margin-bottom:4px;}
 .chat-header-text p { font-size: 13px; color: var(--gray-600); font-weight: 500; }
 .chat-body { flex: 1; padding: 24px 32px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; z-index: 1;}
@@ -247,7 +252,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .msg-bubble { padding: 14px 20px; font-size: 15px; line-height: 1.6; font-weight: 500; box-shadow: 0 6px 16px rgba(0,0,0,0.05); }
 .msg-wrap.user .msg-bubble { background: linear-gradient(135deg, var(--blue-600), var(--blue-800)); color: #fff; border-radius: 20px 20px 4px 20px; }
 .msg-wrap.ai .msg-bubble { background: rgba(255,255,255,0.95); color: var(--gray-900); border: 1px solid rgba(255,255,255,1); border-radius: 20px 20px 20px 4px; }
-.msg-bubble b { color: #8B5CF6; }
+.msg-bubble b { color: #4285F4; }
 .msg-wrap.user .msg-bubble b { color: #fff; }
 .chat-footer { padding: 20px 32px; background: rgba(255,255,255,0.6); border-top: 1px solid rgba(255,255,255,0.7); display: flex; gap: 12px; z-index: 1; align-items: center;}
 .chat-input { flex: 1; padding: 16px 24px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.9); background: rgba(255,255,255,0.85); font-family: var(--font); font-size: 15px; outline: none; box-shadow: inset 0 2px 6px rgba(0,0,0,0.02); transition: all 0.3s;}
@@ -270,7 +275,6 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     padding:32px; display:flex; flex-direction:column; height:450px;
     box-shadow:0 16px 48px rgba(10,37,64,0.06), inset 0 2px 0 rgba(255,255,255,0.9);
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
-    opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s forwards 0.3s;
 }
 .chart-box:hover {
     transform: translateY(-8px);
@@ -281,7 +285,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .chart-icon-pill{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg, #fff, #f0f4f8);border:1px solid rgba(255,255,255,1);box-shadow:0 6px 16px rgba(0,0,0,0.06); color:var(--blue-600);}
 .chart-icon-pill svg{width:22px;height:22px}
 
-/* Detail View */
+/* 🍎 Detail View (Drill-down) */
 .detail-view{display:none;animation:slideUp 0.4s cubic-bezier(0.34,1.2,0.64,1)}
 @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 .detail-header-wrap{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.5);flex-wrap:wrap;gap:16px}
@@ -289,34 +293,22 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .detail-icon-badge{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,0.08); color:var(--blue-600);}
 .detail-icon-badge svg{width:30px;height:30px}
 
-/* 💡 แก้ไข Table ให้อ่านง่าย ข้อความไม่ตกบรรทัด */
+/* 💡 Responsive Tables Refactoring (แก้ปัญหาตกบรรทัด/เลื่อนจอ) */
 .data-table-wrapper{
-  background:rgba(255,255,255,0.8);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border:1px solid rgba(255,255,255,0.9);border-radius:var(--r-lg);
-  box-shadow:0 16px 48px rgba(10,37,64,0.06);overflow:hidden; padding: 10px;
+    background:rgba(255,255,255,0.8);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+    border:1px solid rgba(255,255,255,0.9);border-radius:var(--r-lg);
+    box-shadow:0 16px 48px rgba(10,37,64,0.06);overflow:hidden; padding: 10px;
 }
 .tbl-scroll{overflow-x:auto}
-.data-table{width:100%;border-collapse:collapse;font-size:14px;min-width:1000px;} 
+.data-table{width:100%;border-collapse:collapse;font-size:14px;min-width:700px; table-layout: auto;} 
 .data-table thead{background:rgba(248,250,252,0.8); border-radius: 16px;}
-.data-table th{color:var(--blue-900);padding:16px 20px;text-align:left;font-weight:700;font-size:13px;letter-spacing:0.5px;border-bottom:2px solid rgba(0,0,0,0.05);white-space:nowrap;}
-.data-table td{padding:16px 20px;border-bottom:1px solid rgba(0,0,0,0.04);color:var(--gray-900);vertical-align:middle; font-weight:500;}
+.data-table th{color:var(--blue-900);padding:16px 12px;text-align:left;font-weight:700;font-size:13px;letter-spacing:0.5px;border-bottom:2px solid rgba(0,0,0,0.05);white-space:nowrap;}
+.data-table td{padding:14px 12px;border-bottom:1px solid rgba(0,0,0,0.04);color:var(--gray-900);vertical-align:middle; font-weight:500;}
 
-/* บังคับคอลัมน์สำคัญไม่ให้ขึ้นบรรทัดใหม่ */
-.data-table td:nth-child(1),
-.data-table td:nth-child(2),
-.data-table td:nth-child(3),
-.data-table td:nth-child(5),
-.data-table td:nth-child(6),
-.data-table td:nth-child(7) {
-    white-space: nowrap;
-}
-
-/* คอลัมน์ "ชื่อเรื่อง" ให้มีความกว้างเยอะๆ และยอมให้ขึ้นบรรทัดใหม่ได้แบบเป็นระเบียบ */
-.data-table td:nth-child(4) {
-    width: 45%;
-    min-width: 300px;
-    line-height: 1.5;
-}
+/* กำหนดคลาสให้ความกว้างยืดหยุ่นตามเนื้อหา */
+.col-fit { white-space: nowrap; width: 1%; padding-right: 20px; }
+.col-title { min-width: 250px; white-space: normal; line-height: 1.5; color: var(--blue-900); }
+.col-owner { min-width: 140px; white-space: normal; line-height: 1.4; color: var(--gray-600); }
 
 .data-table tbody tr{transition:all 0.2s;}
 .data-table tbody tr:hover{background:#fff; transform:scale(1.005); box-shadow:0 4px 12px rgba(0,0,0,0.05); border-radius:12px;}
@@ -527,10 +519,83 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
       <div class="detail-header-title" id="detail-page-title">รายละเอียด</div>
     </div>
     <div id="detail-am" style="display:none;"><div class="grid" id="am-card-container"></div></div>
-    <div id="detail-opl" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่</th><th>รหัส OPL</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้จัดทำ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="opl-table-body"></tbody></table></div></div>
-    <div id="detail-fi" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>รหัส FI</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้รับผิดชอบ</th><th>ความคืบหน้า</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="fi-table-body"></tbody></table></div></div>
-    <div id="detail-kz" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่</th><th>เลขที่</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้ดำเนินการ</th><th>ประเภท</th><th>จัดการ</th></tr></thead><tbody id="kz-table-body"></tbody></table></div></div>
-    <div id="detail-mk" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>รหัส</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้รับผิดชอบ</th><th>Phase</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="mk-table-body"></tbody></table></div></div>
+    
+    <div id="detail-opl" style="display:none;" class="data-table-wrapper">
+      <div class="tbl-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="col-fit">วันที่</th>
+              <th class="col-fit">รหัส OPL</th>
+              <th class="col-fit">แผนก</th>
+              <th class="col-title">ชื่อเรื่อง</th>
+              <th class="col-owner">ผู้จัดทำ</th>
+              <th class="col-fit">สถานะ</th>
+              <th class="col-fit">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="opl-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="detail-fi" style="display:none;" class="data-table-wrapper">
+      <div class="tbl-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="col-fit">รหัส FI</th>
+              <th class="col-fit">แผนก</th>
+              <th class="col-title">ชื่อเรื่อง</th>
+              <th class="col-owner">ผู้รับผิดชอบ</th>
+              <th class="col-fit">ความคืบหน้า</th>
+              <th class="col-fit">สถานะ</th>
+              <th class="col-fit">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="fi-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="detail-kz" style="display:none;" class="data-table-wrapper">
+      <div class="tbl-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="col-fit">วันที่</th>
+              <th class="col-fit">เลขที่</th>
+              <th class="col-fit">แผนก</th>
+              <th class="col-title">ชื่อเรื่อง</th>
+              <th class="col-owner">ผู้ดำเนินการ</th>
+              <th class="col-fit">ประเภท</th>
+              <th class="col-fit">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="kz-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="detail-mk" style="display:none;" class="data-table-wrapper">
+      <div class="tbl-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="col-fit">รหัส</th>
+              <th class="col-fit">แผนก</th>
+              <th class="col-title">ชื่อเรื่อง</th>
+              <th class="col-owner">ผู้รับผิดชอบ</th>
+              <th class="col-fit">Phase</th>
+              <th class="col-fit">สถานะ</th>
+              <th class="col-fit">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="mk-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -538,7 +603,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 // ⚠️ เปลี่ยน URL ของ Google Apps Script ของคุณตรงนี้
 const API_URL='https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-// 💡 4. ฟังก์ชัน Guided Tour (ใช้ Wrapper ID ทำให้ทัวร์ไม่หลุดหาย 100%)
+// 💡 4. ฟังก์ชัน Guided Tour 
 function startTour() {
   if(document.getElementById('detail-view').style.display === 'block') {
      goBackToDashboard(); 
@@ -590,10 +655,8 @@ function startTour() {
       exitOnOverlayClick: true
     });
 
-    // เมื่อจบหรือกดข้ามทัวร์ ให้เอา class ออก เพื่อคืนความสวยงามของเอฟเฟกต์กระจก
     tour.onexit(function() { document.body.classList.remove('tour-active'); });
     tour.oncomplete(function() { document.body.classList.remove('tour-active'); });
-
     tour.start();
   }, 400); 
 }
@@ -674,9 +737,9 @@ async function loadData(){
     processAndRender();
 
     // 💡 เริ่มทัวร์อัตโนมัติครั้งแรก
-    if (!localStorage.getItem('dashboard_tour_done_vFINAL13')) {
+    if (!localStorage.getItem('dashboard_tour_done_vFINAL14')) {
         setTimeout(() => { startTour(); }, 2000); 
-        localStorage.setItem('dashboard_tour_done_vFINAL13', 'true');
+        localStorage.setItem('dashboard_tour_done_vFINAL14', 'true');
     }
 
   } catch(e) { 
@@ -700,7 +763,6 @@ function getSysTarget(sys,fd){
   return t;
 }
 
-// 🍎 Holographic Chart Bar Edge Reflection Effect
 const shadowPlugin = {
     id: 'shadowPlugin',
     beforeDatasetsDraw: function(chart) {
@@ -1058,27 +1120,52 @@ function processAndRender(){
 
   const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:40px;color:#9BA5B1;font-weight:600;">ไม่มีข้อมูลให้แสดงผล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
   
+  // 💡 แมปคลาสลงตารางให้ตรงกับที่ทำใน CSS
   tbl('opl-table-body', uOpl, 7, r => {
     const oplId = sg(r, 'OPL ID', 1); const status = sg(r, 'Status', 14) || ''; const isWaiting = status.includes('รอหัวหน้า');
     let btns = `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=edit" class="btn-edit">แก้ไข/แนบไฟล์</a>`;
     if (isWaiting) btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
-    return `<td>${formatDateTH(sg(r, 'วันที่ทำ OPL', 2))}</td><td><span style="font-weight:700; color:var(--orange-600);">${oplId}</span></td><td>${sg(r, 'Department', 4)}</td><td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td><td>${sg(r, 'ชื่อผู้สอน', 10)}</td><td><span class="badge ${getStatusBadge(status)}">${status}</span></td><td><div style="display:flex; gap:8px;">${btns}</div></td>`;
+    return `<td class="col-fit">${formatDateTH(sg(r, 'วันที่ทำ OPL', 2))}</td>
+            <td class="col-fit"><span style="font-weight:700; color:var(--orange-600);">${oplId}</span></td>
+            <td class="col-fit">${sg(r, 'Department', 4)}</td>
+            <td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td>
+            <td class="col-owner">${sg(r, 'ชื่อผู้สอน', 10)}</td>
+            <td class="col-fit"><span class="badge ${getStatusBadge(status)}">${status}</span></td>
+            <td class="col-fit"><div style="display:flex; gap:8px;">${btns}</div></td>`;
   });
   
   tbl('fi-table-body', uFi, 7, r => {
     const fiId = sg(r, 'FI ID', 1); const status = sg(r, 'Status', 14) || ''; const isWaiting = status.includes('รอหัวหน้า');
     let btns = `<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=edit" class="btn-edit">อัปเดตงาน</a>`;
     if (isWaiting) btns += `<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
-    return `<td><span style="font-weight:700; color:var(--indigo-600);">${fiId}</span></td><td>${sg(r, 'Department', 4)}</td><td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td><td>${sg(r, 'ผู้รับผิดชอบ', 2)}</td><td><span style="color:var(--indigo-600); font-weight:700; background:var(--indigo-50); padding:4px 10px; border-radius:12px;">${sg(r, 'Step ปัจจุบัน', 13)}</span></td><td><span class="badge ${getStatusBadge(status)}">${status}</span></td><td><div style="display:flex; gap:8px;">${btns}</div></td>`;
+    return `<td class="col-fit"><span style="font-weight:700; color:var(--indigo-600);">${fiId}</span></td>
+            <td class="col-fit">${sg(r, 'Department', 4)}</td>
+            <td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td>
+            <td class="col-owner">${sg(r, 'ผู้รับผิดชอบ', 2)}</td>
+            <td class="col-fit"><span style="color:var(--indigo-600); font-weight:700; background:var(--indigo-50); padding:4px 10px; border-radius:12px;">${sg(r, 'Step ปัจจุบัน', 13)}</span></td>
+            <td class="col-fit"><span class="badge ${getStatusBadge(status)}">${status}</span></td>
+            <td class="col-fit"><div style="display:flex; gap:8px;">${btns}</div></td>`;
   });
 
   tbl('kz-table-body', uKz, 7, r => {
-    return `<td>${formatDateTH(sg(r, 'วันที่ทำ Kaizen', 1))}</td><td><span style="font-weight:700; color:var(--teal-600);">${sg(r, 'เลขที่ Kaizen', 0)}</span></td><td>${sg(r, 'แผนก', 3)}</td><td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 4)}</strong></td><td>${sg(r, 'ผู้ดำเนินการ', 7)}</td><td><span class="badge b-pass">${sg(r, 'ประเภท', 5)}</span></td><td><a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="btn-edit">เปิดระบบ</a></td>`;
+    return `<td class="col-fit">${formatDateTH(sg(r, 'วันที่ทำ Kaizen', 1))}</td>
+            <td class="col-fit"><span style="font-weight:700; color:var(--teal-600);">${sg(r, 'เลขที่ Kaizen', 0)}</span></td>
+            <td class="col-fit">${sg(r, 'แผนก', 3)}</td>
+            <td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 4)}</strong></td>
+            <td class="col-owner">${sg(r, 'ผู้ดำเนินการ', 7)}</td>
+            <td class="col-fit"><span class="badge b-pass">${sg(r, 'ประเภท', 5)}</span></td>
+            <td class="col-fit"><a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="btn-edit">เปิดระบบ</a></td>`;
   });
 
   tbl('mk-table-body', uMk, 7, r => {
     const mkId = sg(r, 'Makigami ID', 1); const status = sg(r, 'Status', 9) || '';
-    return `<td><span style="font-weight:700; color:var(--rose-500);">${mkId}</span></td><td>${sg(r, 'แผนก', 3)}</td><td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 4) || sg(r, 'ชื่อเรื่อง (Theme Name)', 4)}</strong></td><td>${sg(r, 'ผู้รับผิดชอบ', 5)}</td><td><span style="color:var(--rose-500); font-weight:700; background:rgba(244,63,94,0.1); padding:4px 10px; border-radius:12px;">${sg(r, 'Current Phase', 6)}</span></td><td><span class="badge ${getStatusBadge(status)}">${status}</span></td><td><a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=edit" class="btn-edit">อัปเดตงาน</a></td>`;
+    return `<td class="col-fit"><span style="font-weight:700; color:var(--rose-500);">${mkId}</span></td>
+            <td class="col-fit">${sg(r, 'แผนก', 3)}</td>
+            <td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 4) || sg(r, 'ชื่อเรื่อง (Theme Name)', 4)}</strong></td>
+            <td class="col-owner">${sg(r, 'ผู้รับผิดชอบ', 5)}</td>
+            <td class="col-fit"><span style="color:var(--rose-500); font-weight:700; background:rgba(244,63,94,0.1); padding:4px 10px; border-radius:12px;">${sg(r, 'Current Phase', 6)}</span></td>
+            <td class="col-fit"><span class="badge ${getStatusBadge(status)}">${status}</span></td>
+            <td class="col-fit"><a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=edit" class="btn-edit">อัปเดตงาน</a></td>`;
   });
 }
 
@@ -1154,13 +1241,14 @@ function appendTypingIndicator() {
 }
 function removeElement(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
-// 💡 ผูก Event ไว้ที่ปุ่มสอนใช้งาน ให้ระบบรู้ว่าถูกกดจากปุ่ม
+// 💡 โหลดข้อมูล
+window.onload = loadData;
+
+// ปุ่มสอนใช้งาน
 document.getElementById('btn-guide').addEventListener('click', function(e) {
     e.preventDefault();
     startTour();
 });
-
-window.onload = loadData;
 </script>
 </body>
 </html>
