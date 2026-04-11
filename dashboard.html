@@ -411,7 +411,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     <div id="tour-2" class="tour-wrapper" style="margin-bottom: 40px;">
       <div class="sec-lbl">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-        ผลลัพธ์ KPI ภาพรวม 5 งานหลัก
+        ผลลัพธ์ KPI ภาพรวม 5 เสาหลัก
       </div>
       <div class="kpi-grid" id="kpi-cards-container" style="margin-bottom: 0;"></div>
     </div>
@@ -534,6 +534,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
   </div>
 </div>
 
+<script src="dept-helper.js"></script>
 <script>
 // ⚠️ เปลี่ยน URL ของ Google Apps Script ของคุณตรงนี้
 const API_URL='https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
@@ -561,7 +562,7 @@ function startTour() {
         },
         {
           element: '#tour-2',
-          intro: '<b>2. สรุป KPI 5 งาน:</b> ดูความสำเร็จเป็นเปอร์เซ็นต์ <br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดและกด "แก้ไข" งานเก่าได้จากที่นี่ครับ',
+          intro: '<b>2. สรุป KPI 5 เสา:</b> ดูความสำเร็จเป็นเปอร์เซ็นต์ <br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดและกด "แก้ไข" งานเก่าได้จากที่นี่ครับ',
           position: 'top'
         },
         {
@@ -571,7 +572,7 @@ function startTour() {
         },
         {
           element: '#tour-4',
-          intro: '<b>4. กราฟเปรียบเทียบ:</b> แสดงสถิติเชิงเปรียบเทียบ <br>✨ <b>ทริค:</b> ลองคลิกที่แท่งกราฟเพื่อขยายดูข้อมูลรายการงานของงานนั้นๆ ได้ทันทีครับ!',
+          intro: '<b>4. กราฟเปรียบเทียบ:</b> แสดงสถิติเชิงเปรียบเทียบ <br>✨ <b>ทริค:</b> ลองคลิกที่แท่งกราฟเพื่อขยายดูข้อมูลรายการงานของเสานั้นๆ ได้ทันทีครับ!',
           position: 'top'
         },
         {
@@ -680,6 +681,10 @@ async function loadData() {
       userDataObj = data.users || {}; 
       approverDataObj = data.approvers || {};
 
+      // โหลด dept list — getAllDashboardData ส่ง depts มาด้วยแล้ว
+      if (data.depts) DeptHelper.loadDeptsFromArray(data.depts);
+      else await DeptHelper.loadDepts(API_URL);
+
       initFilter(); 
       processAndRender();
 
@@ -722,9 +727,20 @@ async function loadData() {
 }
 
 function initFilter(){
-  const s=document.getElementById('global-filter-dept');
-  if(!s) return;
-  Object.keys(areaData).sort().forEach(d=>{const o=document.createElement('option');o.value=d;o.innerText='แผนก '+d;s.appendChild(o);});
+  const s = document.getElementById('global-filter-dept');
+  if (!s) return;
+  // ใช้ DeptHelper เพื่อแสดงชื่อเต็มแทน code เปล่า
+  // กรอง เฉพาะ dept ที่มีข้อมูลใน areaData (มีพื้นที่ AM) เท่านั้น
+  const depts = DeptHelper.getDepts();
+  const activeCodes = Object.keys(areaData).sort();
+  activeCodes.forEach(code => {
+    const o = document.createElement('option');
+    o.value = code;
+    // หาชื่อเต็มจาก DeptHelper ถ้าไม่พบให้แสดง code เดิม
+    const found = depts.find(d => d.code === code);
+    o.innerText = found ? `${code} — ${found.name}` : `แผนก ${code}`;
+    s.appendChild(o);
+  });
 }
 
 function getSysTarget(sys,fd){
