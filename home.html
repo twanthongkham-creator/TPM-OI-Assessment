@@ -5,267 +5,417 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OI Center — Office Improvement Portal</title>
 
-<link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* 🟢 1. Intro.js Custom Premium Style */
-.introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 16px; transition: all 0.2s; }
+/* ══════════════════════════════════════════════
+   Intro.js Custom Style
+══════════════════════════════════════════════ */
+.introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 16px; transition: all 0.2s; cursor: pointer; }
 .introjs-nextbutton { background: linear-gradient(135deg, #3A86FF, #1E6091) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(58,134,255,0.3) !important; }
-.introjs-nextbutton:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(58,134,255,0.4) !important; }
-.introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; background: #F8FAFC !important; }
+.introjs-nextbutton:hover { transform: translateY(-2px); }
+.introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; background: #F8FAFC !important; border: 1px solid #D9E2EC !important; }
 .introjs-donebutton { background: linear-gradient(135deg, #2DD4BF, #0CA47C) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(12,164,124,0.3) !important; }
-.introjs-tooltip { border-radius: 24px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.2); border: 1px solid rgba(255,255,255,0.9); font-family: 'IBM Plex Sans Thai', sans-serif; }
-.introjs-progress { background-color: #E2E8F0; border-radius: 4px; overflow: hidden; }
+.introjs-tooltip { border-radius: 20px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.2); border: 1px solid rgba(255,255,255,0.9); font-family: 'IBM Plex Sans Thai', sans-serif; z-index: 9999999 !important; }
+.introjs-progress { background-color: #E2E8F0; border-radius: 6px; overflow: hidden; }
 .introjs-progressbar { background-color: #3A86FF; }
+.introjs-showElement { z-index: 9999998 !important; }
 
-:root{
-  --blue-900:#0A2540;--blue-800:#113A5D;--blue-600:#1E6091;--blue-400:#3A86FF;
-  --teal-700:#087A5C;--teal-500:#14B8A6;
-  --orange-700:#C46200;--orange-500:#F57C00;--indigo-600:#4F46E5;
-  --rose-500:#F43F5E;
-  --gray-900:#1A1C1E;--gray-600:#505A64;--gray-400:#9BA5B1;
-  --font:'IBM Plex Sans Thai',sans-serif;
-  --blur:blur(32px) saturate(180%);
-  --r:28px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-
-html,body{
-  font-family:var(--font);width:100%; min-height: 100vh;
-  background:linear-gradient(145deg,#E0EAF5 0%,#E8F4F0 35%,#EAECF5 65%,#F4EAE4 100%);
-  background-attachment:fixed;
-  color:var(--gray-900); overflow-x: hidden;
+/* ══════════════════════════════════════════════
+   Root Variables
+══════════════════════════════════════════════ */
+:root {
+  --blue-900: #0A2540; --blue-800: #113A5D; --blue-600: #1E6091; --blue-400: #3A86FF;
+  --teal-600: #0CA47C; --teal-400: #10D2A1;
+  --orange-600: #E65100; --orange-500: #F57C00;
+  --indigo-600: #4F46E5; --rose-500: #F43F5E;
+  --gray-900: #1A1C1E; --gray-600: #505A64; --gray-400: #9BA5B1; --gray-200: #D9E2EC;
+  --font: 'IBM Plex Sans Thai', sans-serif;
+  --blur: blur(32px) saturate(180%);
+  --r: 28px;
 }
 
-/* 🍎 Ultra Premium Ambient Blobs */
-body::before,body::after, .ambient-blob{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(120px);opacity:0.55}
-body::before{width:70vw;height:70vw;max-width:800px;max-height:800px;background:radial-gradient(circle,rgba(58,134,255,0.4) 0%,transparent 70%);top:-20%;left:-10%;animation:b1 18s ease-in-out infinite alternate}
-body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:radial-gradient(circle,rgba(12,164,124,0.3) 0%,transparent 70%);bottom:-15%;right:-10%;animation:b2 22s ease-in-out infinite alternate}
-.ambient-blob{width:50vw;height:50vw;max-width:600px;max-height:600px;background:radial-gradient(circle,rgba(245,124,0,0.2) 0%,transparent 70%);top:30%;left:30%;animation:b3 25s ease-in-out infinite alternate}
-@keyframes b1{to{transform:translate(80px,60px) scale(1.1)}}
-@keyframes b2{to{transform:translate(-80px,-60px) scale(0.9)}}
-@keyframes b3{to{transform:translate(50px,-50px) scale(1.2)}}
-
-/* Glass Base */
-.glass{
-  background:rgba(255,255,255,0.7);
-  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
-  border:1px solid rgba(255,255,255,0.9);
-  border-bottom-color:rgba(255,255,255,0.4);border-right-color:rgba(255,255,255,0.4);
-  box-shadow:0 12px 40px rgba(10,37,64,0.06),inset 0 1px 0 rgba(255,255,255,0.8);
-  border-radius:var(--r);position:relative;overflow:hidden;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: var(--font); min-height: 100vh;
+  background: linear-gradient(145deg, #E0EAF5 0%, #E8F4F0 35%, #EAECF5 65%, #F4EAE4 100%);
+  background-attachment: fixed;
+  color: var(--gray-900); overflow-x: hidden;
 }
 
-.shell{
-  position:relative;z-index:1;
-  display:flex;flex-direction:column;
-  padding:clamp(16px,2vh,32px) clamp(20px,3vw,40px);
-  gap:clamp(16px,2vh,24px);
-  max-width:1400px;margin:0 auto; padding-bottom: 80px;
+/* ══════════════════════════════════════════════
+   Ambient Blobs
+══════════════════════════════════════════════ */
+body::before, body::after, .ambient-blob { content: ''; position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(120px); opacity: 0.55; }
+body::before { width: 70vw; height: 70vw; max-width: 800px; max-height: 800px; background: radial-gradient(circle, rgba(58,134,255,0.4) 0%, transparent 70%); top: -20%; left: -10%; animation: b1 18s ease-in-out infinite alternate; }
+body::after { width: 60vw; height: 60vw; max-width: 700px; max-height: 700px; background: radial-gradient(circle, rgba(12,164,124,0.3) 0%, transparent 70%); bottom: -15%; right: -10%; animation: b2 22s ease-in-out infinite alternate; }
+.ambient-blob { width: 50vw; height: 50vw; max-width: 600px; max-height: 600px; background: radial-gradient(circle, rgba(245,124,0,0.2) 0%, transparent 70%); top: 30%; left: 30%; animation: b3 25s ease-in-out infinite alternate; }
+@keyframes b1 { to { transform: translate(80px, 60px) scale(1.1); } }
+@keyframes b2 { to { transform: translate(-80px, -60px) scale(0.9); } }
+@keyframes b3 { to { transform: translate(50px, -50px) scale(1.2); } }
+
+/* ══════════════════════════════════════════════
+   Layout Shell
+══════════════════════════════════════════════ */
+.shell {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  padding: clamp(16px, 2vh, 24px) clamp(20px, 3vw, 40px) 80px;
+  gap: clamp(16px, 2vh, 24px);
+  max-width: 1400px; margin: 0 auto;
 }
 
-/* ─── Header & Buttons ─── */
-.header{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:20px;flex-wrap:wrap; border-radius: var(--r); padding: 24px 32px;
+/* ══════════════════════════════════════════════
+   Glass Base
+══════════════════════════════════════════════ */
+.glass {
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-bottom-color: rgba(255,255,255,0.4); border-right-color: rgba(255,255,255,0.4);
+  box-shadow: 0 12px 40px rgba(10,37,64,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
+  border-radius: var(--r); position: relative; overflow: hidden;
 }
-.h-title h1{font-size:clamp(22px,2.5vw,28px);font-weight:700;color:var(--blue-900);letter-spacing:-0.5px;margin-bottom:4px; line-height: 1.2;}
-.h-title p{font-size:clamp(13px,1.2vw,15px);color:var(--gray-600);font-weight:500;}
 
-/* 💡 แก้ปัญหาปุ่มมือถือ (Balanced Height & Wrap) */
-.header-actions { 
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; 
+/* ══════════════════════════════════════════════
+   Header
+══════════════════════════════════════════════ */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+  padding: 20px 32px;
+  position: sticky; top: 12px; z-index: 100;
+  margin-bottom: 4px;
 }
-.btn-help, .datetime-badge {
-  height: 44px; /* ล็อกความสูงให้เท่ากันเป๊ะ */
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 0 20px; border-radius: 40px; 
-  font-size: 13.5px; font-weight: 700; font-family: var(--font);
-  white-space: nowrap; /* 💡 ป้องกันข้อความตกเป็น 2 บรรทัด */
+.h-title h1 { font-size: clamp(20px, 2.2vw, 26px); font-weight: 700; color: var(--blue-900); letter-spacing: -0.5px; margin-bottom: 4px; line-height: 1.2; }
+.h-title p { font-size: 13px; color: var(--gray-600); font-weight: 500; }
+
+.header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.pill-btn {
+  height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 18px; border-radius: 40px; font-size: 13px; font-weight: 700; font-family: var(--font);
+  white-space: nowrap;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,1); border-bottom-color: rgba(200,210,220,0.6);
+  color: var(--blue-800); cursor: pointer;
+  box-shadow: 0 4px 12px rgba(10,37,64,0.05);
 }
-.btn-help {
-  background: linear-gradient(135deg, #FF9800, #E65100); color: white; border: none;
-  box-shadow: 0 4px 15px rgba(245,124,0,0.3); cursor: pointer;
-  animation: pulse-glow 2.5s infinite; /* ลูกเล่นให้ปุ่มน่ากด */
-}
-@keyframes pulse-glow {
-  0% { box-shadow: 0 0 0 0 rgba(245,124,0,0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(245,124,0,0); }
-  100% { box-shadow: 0 0 0 0 rgba(245,124,0,0); }
-}
-.btn-help:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245,124,0,0.4); }
+.pill-btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(10,37,64,0.1); }
+.pill-btn svg { color: var(--blue-600); }
 
 .datetime-badge {
-  background: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,1);
-  color: var(--blue-800); box-shadow: 0 4px 16px rgba(10,37,64,0.05);
+  height: 42px; display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 18px; border-radius: 40px; font-size: 13px; font-weight: 600;
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,1);
+  color: var(--blue-800); white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(10,37,64,0.05);
 }
 .datetime-badge svg { color: var(--blue-600); }
 
-/* ─── Section Labels ─── */
-.sec-lbl{
-  font-size:14px;font-weight:700;letter-spacing:1.5px;
-  color:var(--blue-800);text-transform:uppercase;
-  display:flex;align-items:center;gap:12px;
-  padding:0 12px; opacity: 0.85; margin-top: 10px;
+/* ══════════════════════════════════════════════
+   Section Divider — "Zone" Concept
+══════════════════════════════════════════════ */
+.zone-header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 4px;
 }
-.sec-lbl::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,rgba(10,37,64,0.1),transparent); border-radius: 2px;}
+.zone-icon-pill {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 14px; flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+.zone-icon-pill svg { width: 20px; height: 20px; }
 
-/* ─── Menu Cards (Ultra Liquid Glass) ─── */
-.cards-row{
-  display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:20px;
+.zone-text { flex: 1; min-width: 0; }
+.zone-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+  opacity: 0.6; margin-bottom: 2px;
 }
-.menu-card{
-  padding: 32px 28px; text-decoration:none; display:flex; flex-direction:column;
-  border-radius: var(--r); position:relative; overflow:hidden;
-  backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
-  background:rgba(255,255,255,0.55); 
-  border:1px solid rgba(255,255,255,0.9); border-bottom-color:rgba(255,255,255,0.5); border-right-color:rgba(255,255,255,0.5);
-  box-shadow:0 12px 32px rgba(10,37,64,0.05), inset 0 1px 0 rgba(255,255,255,1);
-  transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  /* Staggered Animation */
-  opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s forwards;
+.zone-title { font-size: 18px; font-weight: 700; color: var(--blue-900); letter-spacing: -0.3px; }
+.zone-desc { font-size: 13px; font-weight: 500; color: var(--gray-600); margin-top: 2px; }
+
+.zone-line { flex: 1; height: 2px; border-radius: 2px; opacity: 0.15; }
+
+/* Zone A — Create (Blue/Teal) */
+.zone-a .zone-icon-pill { background: linear-gradient(135deg, #60A5FA, #2563EB); color: #fff; }
+.zone-a .zone-label { color: var(--blue-600); }
+.zone-a .zone-line { background: var(--blue-600); }
+
+/* Zone B — Manage (Dark Navy) */
+.zone-b .zone-icon-pill { background: linear-gradient(135deg, #475569, #0A2540); color: #fff; }
+.zone-b .zone-label { color: var(--gray-600); }
+.zone-b .zone-line { background: var(--gray-600); }
+
+/* ══════════════════════════════════════════════
+   Action Banner — "What do you need?"
+   แถบบนสุดช่วยให้ User ตัดสินใจทันที
+══════════════════════════════════════════════ */
+.intent-banner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  opacity: 0; transform: translateY(16px); animation: fadeUp 0.5s forwards 0.05s;
 }
 @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-.menu-card:nth-child(1) { animation-delay: 0.1s; }
-.menu-card:nth-child(2) { animation-delay: 0.2s; }
-.menu-card:nth-child(3) { animation-delay: 0.3s; }
-.menu-card:nth-child(4) { animation-delay: 0.4s; }
-.menu-card:nth-child(5) { animation-delay: 0.5s; }
 
-/* Shine Effect */
+.intent-card {
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 24px; border-radius: 20px; text-decoration: none; cursor: default;
+  border: 2px solid transparent;
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative; overflow: hidden;
+}
+.intent-card::before {
+  content: ''; position: absolute; inset: 0; border-radius: 18px; opacity: 0;
+  transition: opacity 0.35s;
+}
+.intent-card:hover::before { opacity: 1; }
+.intent-card:hover { transform: translateY(-4px); }
+
+/* Intent A — สร้างงาน */
+.intent-a {
+  background: rgba(58,134,255,0.08);
+  border-color: rgba(58,134,255,0.25);
+  box-shadow: 0 8px 24px rgba(58,134,255,0.08);
+}
+.intent-a::before { background: linear-gradient(135deg, rgba(58,134,255,0.05), rgba(58,134,255,0.12)); }
+.intent-a:hover { border-color: rgba(58,134,255,0.5); box-shadow: 0 16px 36px rgba(58,134,255,0.15); }
+
+/* Intent B — ดูและแก้ไข */
+.intent-b {
+  background: rgba(10,37,64,0.06);
+  border-color: rgba(10,37,64,0.15);
+  box-shadow: 0 8px 24px rgba(10,37,64,0.05);
+}
+.intent-b::before { background: linear-gradient(135deg, rgba(10,37,64,0.04), rgba(10,37,64,0.1)); }
+.intent-b:hover { border-color: rgba(10,37,64,0.3); box-shadow: 0 16px 36px rgba(10,37,64,0.1); }
+
+.intent-icon {
+  width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: #fff;
+}
+.intent-card:hover .intent-icon { transform: scale(1.12) rotate(-5deg); }
+.intent-a .intent-icon { background: linear-gradient(135deg, #60A5FA, #2563EB); }
+.intent-b .intent-icon { background: linear-gradient(135deg, #475569, #0A2540); }
+
+.intent-text { flex: 1; min-width: 0; }
+.intent-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 20px; display: inline-block; margin-bottom: 6px;
+}
+.intent-a .intent-tag { background: rgba(58,134,255,0.15); color: var(--blue-600); }
+.intent-b .intent-tag { background: rgba(10,37,64,0.1); color: var(--blue-800); }
+.intent-title { font-size: 16px; font-weight: 700; color: var(--blue-900); margin-bottom: 2px; }
+.intent-hint { font-size: 12px; color: var(--gray-600); font-weight: 500; line-height: 1.5; }
+.intent-arrow {
+  font-size: 20px; color: var(--blue-400); opacity: 0.4;
+  transform: translateX(4px); transition: all 0.3s;
+}
+.intent-card:hover .intent-arrow { opacity: 1; transform: translateX(0); }
+
+/* ══════════════════════════════════════════════
+   Menu Cards — Create Zone
+══════════════════════════════════════════════ */
+.cards-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
+}
+.menu-card {
+  padding: 28px 24px; text-decoration: none; display: flex; flex-direction: column;
+  border-radius: var(--r); position: relative; overflow: hidden;
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(255,255,255,0.9);
+  box-shadow: 0 10px 28px rgba(10,37,64,0.05), inset 0 1px 0 rgba(255,255,255,1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s forwards;
+}
+.menu-card:nth-child(1) { animation-delay: 0.1s; }
+.menu-card:nth-child(2) { animation-delay: 0.18s; }
+.menu-card:nth-child(3) { animation-delay: 0.26s; }
+.menu-card:nth-child(4) { animation-delay: 0.34s; }
+.menu-card:nth-child(5) { animation-delay: 0.42s; }
+
+/* Shine Sweep */
 .menu-card::before {
   content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-  background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.55), transparent);
   transform: skewX(-25deg); transition: 0s; z-index: 1;
 }
-.menu-card:hover::before { left: 200%; transition: 0.8s ease-in-out; }
+.menu-card:hover::before { left: 200%; transition: 0.7s ease-in-out; }
 
-.menu-card::after{
-  content:'';position:absolute;top:-20%;right:-20%; width:200px;height:200px;border-radius:50%;
-  opacity:0.3;filter:blur(40px);pointer-events:none;transition:all 0.4s ease; z-index:0;
+/* Glow Blob */
+.menu-card::after {
+  content: ''; position: absolute; top: -20%; right: -20%; width: 180px; height: 180px;
+  border-radius: 50%; opacity: 0.25; filter: blur(40px); pointer-events: none;
+  transition: all 0.4s ease; z-index: 0;
 }
-.menu-card:hover{transform:translateY(-10px) scale(1.02); background:rgba(255,255,255,0.85); box-shadow:0 24px 48px rgba(10,37,64,0.1), inset 0 1px 0 rgba(255,255,255,1);}
-.menu-card:hover::after{opacity:0.8; transform:scale(1.3);}
+.menu-card:hover { transform: translateY(-8px) scale(1.02); background: rgba(255,255,255,0.88); }
+.menu-card:hover::after { opacity: 0.8; transform: scale(1.3); }
 
-/* Colors */
-.c-am  {border-color:rgba(58,134,255,0.4);} .c-am::after{background:radial-gradient(circle, #3A86FF 0%, transparent 70%);}
-.c-am:hover { box-shadow: 0 24px 48px rgba(58,134,255,0.15), inset 0 1px 0 #fff; }
+.c-am  { border-color: rgba(58,134,255,0.35); } .c-am::after  { background: radial-gradient(circle, #3A86FF 0%, transparent 70%); }
+.c-am:hover  { box-shadow: 0 20px 44px rgba(58,134,255,0.14), inset 0 1px 0 #fff; }
 
-.c-opl {border-color:rgba(245,124,0,0.4);}  .c-opl::after{background:radial-gradient(circle, #F57C00 0%, transparent 70%);}
-.c-opl:hover { box-shadow: 0 24px 48px rgba(245,124,0,0.15), inset 0 1px 0 #fff; }
+.c-opl { border-color: rgba(245,124,0,0.35); }  .c-opl::after { background: radial-gradient(circle, #F57C00 0%, transparent 70%); }
+.c-opl:hover { box-shadow: 0 20px 44px rgba(245,124,0,0.14), inset 0 1px 0 #fff; }
 
-.c-fi  {border-color:rgba(99,102,241,0.4);} .c-fi::after{background:radial-gradient(circle, #6366F1 0%, transparent 70%);}
-.c-fi:hover { box-shadow: 0 24px 48px rgba(99,102,241,0.15), inset 0 1px 0 #fff; }
+.c-fi  { border-color: rgba(99,102,241,0.35); } .c-fi::after  { background: radial-gradient(circle, #6366F1 0%, transparent 70%); }
+.c-fi:hover  { box-shadow: 0 20px 44px rgba(99,102,241,0.14), inset 0 1px 0 #fff; }
 
-.c-kz  {border-color:rgba(16,185,129,0.4);} .c-kz::after{background:radial-gradient(circle, #10B981 0%, transparent 70%);}
-.c-kz:hover { box-shadow: 0 24px 48px rgba(16,185,129,0.15), inset 0 1px 0 #fff; }
+.c-kz  { border-color: rgba(16,185,129,0.35); } .c-kz::after  { background: radial-gradient(circle, #10B981 0%, transparent 70%); }
+.c-kz:hover  { box-shadow: 0 20px 44px rgba(16,185,129,0.14), inset 0 1px 0 #fff; }
 
-.c-mk  {border-color:rgba(244,63,94,0.4);}   .c-mk::after{background:radial-gradient(circle, #F43F5E 0%, transparent 70%);}
-.c-mk:hover { box-shadow: 0 24px 48px rgba(244,63,94,0.15), inset 0 1px 0 #fff; }
+.c-mk  { border-color: rgba(244,63,94,0.35); }  .c-mk::after  { background: radial-gradient(circle, #F43F5E 0%, transparent 70%); }
+.c-mk:hover  { box-shadow: 0 20px 44px rgba(244,63,94,0.14), inset 0 1px 0 #fff; }
 
-.mc-icon-wrap{
-  width:68px; height:68px; border-radius:20px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  box-shadow:0 10px 24px rgba(0,0,0,0.1); color: #fff;
-  margin-bottom:24px;position:relative;z-index:2;
-  transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.menu-card:hover .mc-icon-wrap{transform:scale(1.1) rotate(-5deg)}
-.mc-icon-wrap svg{width:32px; height:32px;}
-
-.c-am .mc-icon-wrap{background:linear-gradient(135deg, #60A5FA, #2563EB);}
-.c-opl .mc-icon-wrap{background:linear-gradient(135deg, #FBBF24, #EA580C);}
-.c-fi .mc-icon-wrap{background:linear-gradient(135deg, #A78BFA, #4F46E5);}
-.c-kz .mc-icon-wrap{background:linear-gradient(135deg, #34D399, #059669);}
-.c-mk .mc-icon-wrap{background:linear-gradient(135deg, #FB7185, #E11D48);}
-
-.mc-body{display:contents}
-.mc-title{font-size:20px;font-weight:700;color:var(--blue-900); margin-bottom:8px;position:relative;z-index:2; letter-spacing: -0.3px;}
-.mc-desc{font-size:14px;color:var(--gray-600);line-height:1.6;font-weight:500;position:relative;z-index:2;flex:1;}
-
-.mc-arrow{
-  align-self:flex-end;margin-top:20px;
-  display:flex;align-items:center;gap:6px;
-  font-size:13px;font-weight:700;color:var(--blue-600);
-  opacity:0.4;transform:translateX(4px);
-  transition:all 0.3s ease;position:relative;z-index:2;
-}
-.menu-card:hover .mc-arrow{opacity:1;transform:translateX(0); color:var(--blue-900);}
-
-/* ─── Lux Dashboard Banner ─── */
-.dash-card{
-  text-decoration:none;display:flex;align-items:center;justify-content:space-between;
-  gap:20px;flex-wrap:wrap; padding: 32px 40px; margin-top: 10px;
-  border-radius:36px;position:relative;overflow:hidden;
-  background:rgba(10,37,64,0.85); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-  border:1px solid rgba(255,255,255,0.15); border-top-color:rgba(255,255,255,0.3);
-  box-shadow:0 20px 50px rgba(10,37,64,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
-  transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s forwards 0.6s;
-}
-.dash-card::after{
-  content:'';position:absolute;top:-50%;left:-10%;width:500px;height:500px;border-radius:50%;
-  background:radial-gradient(circle,rgba(58,134,255,0.3) 0%,transparent 60%);
-  pointer-events:none;z-index:0;animation:dg 6s ease-in-out infinite alternate
-}
-@keyframes dg{to{opacity:0.6;transform:scale(1.2) translate(30px,20px)}}
-.dash-card:hover{
-  transform:translateY(-8px);
-  box-shadow:0 30px 60px rgba(10,37,64,0.5), 0 0 40px rgba(58,134,255,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
-}
-
-.dash-left{display:flex;align-items:center;gap:24px;position:relative;z-index:2;flex:1;min-width:0}
-.dash-icon{
-  width:76px;height:76px;border-radius:24px;flex-shrink:0;
-  background:linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
-  border:1px solid rgba(255,255,255,0.2);
-  display:flex;align-items:center;justify-content:center; color:#fff;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+/* Card Icon */
+.mc-icon-wrap {
+  width: 64px; height: 64px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1); color: #fff;
+  margin-bottom: 20px; position: relative; z-index: 2;
   transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.dash-card:hover .dash-icon { transform: scale(1.1) rotate(5deg); background:rgba(255,255,255,0.15); }
-.dash-icon svg{width:36px;height:36px}
+.menu-card:hover .mc-icon-wrap { transform: scale(1.1) rotate(-5deg); }
+.mc-icon-wrap svg { width: 28px; height: 28px; }
 
-.dash-title{font-size:clamp(18px,2vw,24px);font-weight:700;color:#fff;margin-bottom:6px; letter-spacing:-0.5px;}
-.dash-desc{font-size:14px;color:rgba(255,255,255,0.7);font-weight:500;line-height:1.5}
-.dash-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.dash-pill{font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;background:rgba(58,134,255,0.2);color:#fff;border:1px solid rgba(58,134,255,0.4); backdrop-filter: blur(10px);}
+.c-am .mc-icon-wrap  { background: linear-gradient(135deg, #60A5FA, #2563EB); }
+.c-opl .mc-icon-wrap { background: linear-gradient(135deg, #FBBF24, #EA580C); }
+.c-fi .mc-icon-wrap  { background: linear-gradient(135deg, #A78BFA, #4F46E5); }
+.c-kz .mc-icon-wrap  { background: linear-gradient(135deg, #34D399, #059669); }
+.c-mk .mc-icon-wrap  { background: linear-gradient(135deg, #FB7185, #E11D48); }
 
-.dash-cta{
-  display:inline-flex;align-items:center;justify-content:center; gap:10px;
-  padding:16px 36px; border-radius:40px;
-  background:linear-gradient(135deg, #fff, #f8fafc); color:var(--blue-900);
-  font-size:15px;font-weight:700; text-decoration:none;
-  box-shadow:0 10px 25px rgba(0,0,0,0.4);
-  position:relative;z-index:2;white-space:nowrap;
-  transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* Card Content */
+.mc-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 20px;
+  display: inline-block; margin-bottom: 8px; position: relative; z-index: 2;
 }
-.dash-card:hover .dash-cta { transform: scale(1.05); box-shadow:0 15px 35px rgba(0,0,0,0.5); color: var(--blue-600); }
+.c-am  .mc-tag { background: rgba(58,134,255,0.12);  color: #1E6091; }
+.c-opl .mc-tag { background: rgba(245,124,0,0.12);   color: #C46200; }
+.c-fi  .mc-tag { background: rgba(99,102,241,0.12);  color: #4F46E5; }
+.c-kz  .mc-tag { background: rgba(16,185,129,0.12);  color: #059669; }
+.c-mk  .mc-tag { background: rgba(244,63,94,0.12);   color: #E11D48; }
+
+.mc-title { font-size: 17px; font-weight: 700; color: var(--blue-900); margin-bottom: 8px; position: relative; z-index: 2; letter-spacing: -0.3px; line-height: 1.3; }
+.mc-desc  { font-size: 13px; color: var(--gray-600); line-height: 1.65; font-weight: 500; position: relative; z-index: 2; flex: 1; }
+
+.mc-arrow {
+  align-self: flex-end; margin-top: 18px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; color: var(--blue-600);
+  opacity: 0; transform: translateX(6px);
+  transition: all 0.3s ease; position: relative; z-index: 2;
+}
+.menu-card:hover .mc-arrow { opacity: 1; transform: translateX(0); }
+
+/* ══════════════════════════════════════════════
+   Dashboard Banner — Manage Zone (Dark Luxury)
+══════════════════════════════════════════════ */
+.dash-card {
+  text-decoration: none; display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap; padding: 32px 40px; border-radius: 36px;
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, rgba(10,37,64,0.88) 0%, rgba(17,58,93,0.88) 100%);
+  backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255,255,255,0.12); border-top-color: rgba(255,255,255,0.25);
+  box-shadow: 0 20px 50px rgba(10,37,64,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s forwards 0.5s;
+}
+
+/* Moving Glow */
+.dash-card::before {
+  content: ''; position: absolute; top: -60%; left: -20%; width: 500px; height: 500px;
+  border-radius: 50%; background: radial-gradient(circle, rgba(58,134,255,0.25) 0%, transparent 60%);
+  pointer-events: none; z-index: 0; animation: dg 7s ease-in-out infinite alternate;
+}
+.dash-card::after {
+  content: ''; position: absolute; bottom: -50%; right: -10%; width: 400px; height: 400px;
+  border-radius: 50%; background: radial-gradient(circle, rgba(12,164,124,0.15) 0%, transparent 60%);
+  pointer-events: none; z-index: 0; animation: dg2 9s ease-in-out infinite alternate;
+}
+@keyframes dg  { to { transform: translate(40px, 30px) scale(1.15); opacity: 0.7; } }
+@keyframes dg2 { to { transform: translate(-30px, -20px) scale(0.9); opacity: 0.5; } }
+
+.dash-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 32px 64px rgba(10,37,64,0.45), 0 0 50px rgba(58,134,255,0.15), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+/* Tag on Dashboard */
+.dash-zone-tag {
+  position: absolute; top: 20px; left: 40px; z-index: 3;
+  font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+
+.dash-left { display: flex; align-items: center; gap: 24px; position: relative; z-index: 2; flex: 1; min-width: 0; }
+.dash-icon {
+  width: 72px; height: 72px; border-radius: 22px; flex-shrink: 0;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.dash-card:hover .dash-icon { transform: scale(1.1) rotate(5deg); background: rgba(255,255,255,0.14); }
+.dash-icon svg { width: 32px; height: 32px; }
+
+.dash-info { flex: 1; min-width: 0; }
+.dash-title { font-size: clamp(18px, 2vw, 22px); font-weight: 700; color: #fff; margin-bottom: 6px; letter-spacing: -0.4px; line-height: 1.2; }
+.dash-desc { font-size: 14px; color: rgba(255,255,255,0.65); font-weight: 500; line-height: 1.6; margin-bottom: 14px; }
+
+/* Feature Pills */
+.dash-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.dash-pill {
+  font-size: 11px; font-weight: 700; padding: 5px 14px; border-radius: 20px;
+  display: flex; align-items: center; gap: 5px;
+}
+.dp-teal   { background: rgba(12,164,124,0.2); color: #10D2A1; border: 1px solid rgba(16,210,161,0.3); }
+.dp-blue   { background: rgba(58,134,255,0.2); color: #93C5FD; border: 1px solid rgba(58,134,255,0.3); }
+.dp-orange { background: rgba(245,124,0,0.2);  color: #FCD34D; border: 1px solid rgba(245,124,0,0.3); }
+
+.dash-cta-wrap { position: relative; z-index: 2; flex-shrink: 0; }
+.dash-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 16px 36px; border-radius: 40px;
+  background: linear-gradient(135deg, #fff, #f8fafc); color: var(--blue-900);
+  font-size: 15px; font-weight: 700; text-decoration: none;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  white-space: nowrap;
+}
+.dash-card:hover .dash-cta { transform: scale(1.05); box-shadow: 0 16px 36px rgba(0,0,0,0.45); color: var(--blue-600); }
 .dash-cta svg { transition: transform 0.3s; }
 .dash-card:hover .dash-cta svg { transform: translateX(5px); }
 
-/* 📱 Mobile Adjustments */
-@media(max-width:767px){
-  .shell{padding:16px 20px 30px; gap:16px;}
-  .header{padding:24px 20px; flex-direction: column; align-items: flex-start; gap: 16px;}
-  .header-actions { width: 100%; justify-content: flex-start; }
-  .btn-help, .datetime-badge { flex: 1; padding: 0; font-size: 13px; justify-content: center; } /* ปุ่มยืดเต็มและสูงเท่ากัน */
-  
-  .cards-row{display:flex;flex-direction:column;}
-  .menu-card{flex-direction:row!important;align-items:center;padding:24px 20px!important;gap:16px;}
-  .mc-icon-wrap{margin-bottom:0!important;flex-shrink:0; width:56px; height:56px; border-radius:16px;}
-  .mc-icon-wrap svg{width:26px; height:26px;}
-  .mc-body{flex:1;min-width:0}
-  .mc-title{font-size:17px!important;margin-bottom:4px!important}
-  .mc-desc{font-size:13px!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .mc-arrow{display:none;} /* ซ่อนลูกศรบนมือถือประหยัดพื้นที่ */
+/* ══════════════════════════════════════════════
+   Mobile
+══════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .shell { padding: 12px 16px 60px; gap: 16px; }
+  .header { padding: 18px 20px; flex-direction: column; align-items: flex-start; gap: 14px; }
+  .header-actions { width: 100%; }
+  .pill-btn, .datetime-badge { flex: 1; justify-content: center; padding: 0; }
 
-  .dash-card{padding:28px 24px;flex-direction:column;gap:24px; border-radius:28px;}
-  .dash-left{flex-direction:column;align-items:center;text-align:center;gap:16px}
-  .dash-pills{justify-content:center;}
-  .dash-cta{width:100%;}
+  .intent-banner { grid-template-columns: 1fr; }
+
+  .cards-row { grid-template-columns: 1fr; gap: 12px; }
+  .menu-card { flex-direction: row !important; align-items: center; padding: 20px !important; gap: 14px; }
+  .mc-icon-wrap { margin-bottom: 0 !important; width: 52px; height: 52px; border-radius: 14px; }
+  .mc-icon-wrap svg { width: 24px; height: 24px; }
+  .mc-tag { display: none; }
+  .mc-title { font-size: 16px !important; margin-bottom: 4px !important; }
+  .mc-desc { font-size: 12px !important; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .mc-arrow { display: none; }
+
+  .dash-card { padding: 56px 24px 28px; flex-direction: column; border-radius: 28px; }
+  .dash-left { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .dash-cta { width: 100%; }
 }
 </style>
 </head>
@@ -275,161 +425,220 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 <div class="shell">
 
+  <!-- ══ HEADER ══ -->
   <div class="header glass" id="tour-header">
     <div class="h-title">
       <h1>Office Improvement (OI) Center</h1>
-      <p>ศูนย์รวมแอปพลิเคชันระบบงานเสา OI ครบวงจร</p>
+      <p>ศูนย์รวมระบบงาน TPM Office Improvement ครบวงจร</p>
     </div>
     <div class="header-actions">
-        <button class="btn-help" id="btn-guide" onclick="startHomeTour()">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            สอนใช้งาน
-        </button>
-        <div class="datetime-badge" id="live-time">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span>กำลังโหลด...</span>
-        </div>
+      <button class="pill-btn" onclick="startHomeTour()" id="btn-guide">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        สอนใช้งาน
+      </button>
+      <div class="datetime-badge" id="live-time">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>กำลังโหลด...</span>
+      </div>
     </div>
   </div>
 
-  <div class="sec-lbl">ระบบสร้างงาน / ประเมินผล (Action)</div>
+  <!-- ══ INTENT BANNER — "ต้องการทำอะไร?" ══ -->
+  <div class="intent-banner" id="tour-intent">
 
-  <div class="cards-row" id="tour-apps">
-    
+    <div class="intent-card intent-a">
+      <div class="intent-icon">
+        <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      <div class="intent-text">
+        <div class="intent-tag">Zone A</div>
+        <div class="intent-title">สร้างงานใหม่</div>
+        <div class="intent-hint">เพิ่ม OPL · ประเมิน 5ส · ขึ้นโครงการ FI<br>เลือกเมนูด้านล่างตามประเภทงาน</div>
+      </div>
+      <div class="intent-arrow">↓</div>
+    </div>
+
+    <a href="dashboard.html" class="intent-card intent-b" style="text-decoration:none;">
+      <div class="intent-icon">
+        <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17h7M17 14v7"/></svg>
+      </div>
+      <div class="intent-text">
+        <div class="intent-tag">Zone B</div>
+        <div class="intent-title">ดู / แก้ไข / อนุมัติงานเดิม</div>
+        <div class="intent-hint">แก้ไขข้อมูลที่บันทึกไว้ · หัวหน้ากดอนุมัติ<br>ดูสถิติ KPI ภาพรวมแผนก</div>
+      </div>
+      <div class="intent-arrow" style="color: var(--blue-900);">→</div>
+    </a>
+
+  </div>
+
+  <!-- ══ ZONE A — สร้างงาน ══ -->
+  <div class="zone-header zone-a" id="tour-apps">
+    <div class="zone-icon-pill">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </div>
+    <div class="zone-text">
+      <div class="zone-label zone-a">Zone A — สร้างงานใหม่</div>
+      <div class="zone-title">เลือกประเภทงานที่ต้องการสร้าง</div>
+      <div class="zone-desc">คลิกการ์ดเพื่อเข้าสู่หน้าบันทึกข้อมูลใหม่</div>
+    </div>
+    <div class="zone-line"></div>
+  </div>
+
+  <div class="cards-row">
+
     <a href="index.html" class="menu-card c-am" id="step-am">
       <div class="mc-icon-wrap">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       </div>
-      <div class="mc-body">
-        <div class="mc-title">AM-OI Assessment</div>
-        <p class="mc-desc">ระบบประเมิน 5ส. ออฟฟิศและพื้นที่โรงงาน (Step 1–5)</p>
-      </div>
-      <div class="mc-arrow">เข้าประเมิน <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      <div class="mc-tag">ประเมิน</div>
+      <div class="mc-title">AM-OI Assessment</div>
+      <p class="mc-desc">ประเมิน 5ส. ออฟฟิศและพื้นที่โรงงาน<br>Step 1–5 พร้อมรายงานผล</p>
+      <div class="mc-arrow">เข้าประเมิน <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
     <a href="opl.html" class="menu-card c-opl" id="step-opl">
       <div class="mc-icon-wrap">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-4 12.74V17a1 1 0 001 1h6a1 1 0 001-1v-2.26A7 7 0 0012 2z"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
       </div>
-      <div class="mc-body">
-        <div class="mc-title">OPL Center</div>
-        <p class="mc-desc">ระบบขึ้นทะเบียนและคลังความรู้ One Point Lesson</p>
-      </div>
-      <div class="mc-arrow">สร้าง OPL <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      <div class="mc-tag">สร้างใหม่</div>
+      <div class="mc-title">OPL Center</div>
+      <p class="mc-desc">ขึ้นทะเบียนและสร้างคลังความรู้<br>One Point Lesson</p>
+      <div class="mc-arrow">สร้าง OPL <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
     <a href="fitheme.html" class="menu-card c-fi" id="step-fi">
       <div class="mc-icon-wrap">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
       </div>
-      <div class="mc-body">
-        <div class="mc-title">FI Theme Center</div>
-        <p class="mc-desc">ระบบติดตามโครงการ Focused Improvement (10 Steps)</p>
-      </div>
-      <div class="mc-arrow">จัดการโครงการ <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      <div class="mc-tag">สร้างใหม่</div>
+      <div class="mc-title">FI Theme Center</div>
+      <p class="mc-desc">ขึ้นทะเบียนโครงการ Focused Improvement<br>ติดตาม 10 Steps</p>
+      <div class="mc-arrow">ขึ้นโครงการ <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
     <a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="menu-card c-kz" id="step-kz">
       <div class="mc-icon-wrap">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
       </div>
-      <div class="mc-body">
-        <div class="mc-title">Kaizen Suggestion</div>
-        <p class="mc-desc">ระบบเสนอแนะแนวทางการปรับปรุงงาน (ส่วนกลาง)</p>
-      </div>
-      <div class="mc-arrow">เปิดระบบ <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      <div class="mc-tag">เปิดระบบกลาง</div>
+      <div class="mc-title">Kaizen Suggestion</div>
+      <p class="mc-desc">เสนอแนะแนวทางการปรับปรุงงาน<br>ผ่านระบบส่วนกลาง</p>
+      <div class="mc-arrow">เปิดระบบ <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
     <a href="makigami.html" class="menu-card c-mk" id="step-mk">
       <div class="mc-icon-wrap">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/><path d="M15 13l-3 3-2-2"/></svg>
       </div>
-      <div class="mc-body">
-        <div class="mc-title">Makigami Analysis</div>
-        <p class="mc-desc">ระบบจัดทำ Flow Chart และวิเคราะห์กระบวนการ</p>
-      </div>
-      <div class="mc-arrow">อัปเดตสถานะ <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      <div class="mc-tag">สร้างใหม่</div>
+      <div class="mc-title">Makigami Analysis</div>
+      <p class="mc-desc">จัดทำ Flow Chart วิเคราะห์<br>และลดความสูญเปล่าในกระบวนการ</p>
+      <div class="mc-arrow">สร้าง Makigami <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
   </div>
 
-  <div class="sec-lbl" style="margin-top: 20px;">ศูนย์ปฏิบัติการผู้บริหาร (Executive Center)</div>
+  <!-- ══ ZONE B — Dashboard ══ -->
+  <div class="zone-header zone-b" id="tour-dash-label" style="margin-top: 8px;">
+    <div class="zone-icon-pill">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    </div>
+    <div class="zone-text">
+      <div class="zone-label zone-b">Zone B — ดู / แก้ไข / อนุมัติ</div>
+      <div class="zone-title">ศูนย์ปฏิบัติการผู้บริหาร</div>
+      <div class="zone-desc">จัดการงานที่สร้างไว้แล้ว · ดูภาพรวม KPI · กดอนุมัติ</div>
+    </div>
+    <div class="zone-line"></div>
+  </div>
 
+  <!-- Dashboard Banner -->
   <a href="dashboard.html" class="dash-card" id="tour-dash">
+    <span class="dash-zone-tag">EXECUTIVE CENTER · ZONE B</span>
     <div class="dash-left">
       <div class="dash-icon">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       </div>
-      <div>
-        <div class="dash-title">Smart Action & KPI Dashboard</div>
-        <div class="dash-desc">แจ้งเตือนงานด่วน วิเคราะห์ภาพรวมด้วย AI และจัดการสถานะโครงการ</div>
+      <div class="dash-info">
+        <div class="dash-title">Smart KPI Dashboard</div>
+        <div class="dash-desc">ดูภาพรวม KPI ทั้ง 5 เสา · แก้ไขข้อมูลที่บันทึกไว้ · หัวหน้ากดอนุมัติ · วิเคราะห์ด้วย AI</div>
         <div class="dash-pills">
-          <span class="dash-pill">ติดตามผลงานภาพรวม</span>
-          <span class="dash-pill">ปุ่มอนุมัติสำหรับหัวหน้า</span>
-          <span class="dash-pill">แก้ไขข้อมูลเดิม</span>
+          <span class="dash-pill dp-teal"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> ดูและแก้ไขงานเดิม</span>
+          <span class="dash-pill dp-blue"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> หัวหน้าอนุมัติ</span>
+          <span class="dash-pill dp-orange"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> สถิติ KPI ภาพรวม</span>
         </div>
       </div>
     </div>
-    <div class="dash-cta">
-      เปิดดู Dashboard
-      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    <div class="dash-cta-wrap">
+      <div class="dash-cta">
+        เปิด Dashboard
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
     </div>
   </a>
 
-</div>
+</div><!-- /.shell -->
 
-<script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
 <script>
-function updateTime(){
-  const now=new Date();
-  const str=now.toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).replace(' น.','');
+/* ── Live Clock ── */
+function updateTime() {
+  const now = new Date();
+  const str = now.toLocaleDateString('th-TH', {
+    weekday: 'short', year: 'numeric', month: 'short',
+    day: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
   document.querySelector('#live-time span').textContent = ' ' + str;
 }
-setInterval(updateTime,1000);
+setInterval(updateTime, 1000);
 updateTime();
 
-// 💡 4. ฟังก์ชันกำหนดขั้นตอนการสอน (Guided Tour)
+/* ── Guided Tour ── */
 function startHomeTour() {
   introJs().setOptions({
     steps: [
       {
-        title: 'ยินดีต้อนรับสู่ OI Center 👋',
-        intro: 'ระบบนี้จะช่วยให้การทำกิจกรรม TPM Office Improvement ของคุณง่ายและเป็นดิจิทัลมากขึ้นครับ'
+        title: 'ยินดีต้อนรับสู่ OI Center',
+        intro: 'ระบบนี้แบ่งออกเป็น 2 โซนหลัก เพื่อให้ง่ายต่อการใช้งานครับ'
+      },
+      {
+        element: document.querySelector('#tour-intent'),
+        intro: '<b>เลือกโซนให้ถูกต้องก่อน:</b><br><br>▸ <b>Zone A (ซ้าย)</b> = ต้องการ<b>สร้างงานใหม่</b><br>▸ <b>Zone B (ขวา)</b> = ต้องการ<b>แก้ไข / อนุมัติ / ดูผล</b>งานที่บันทึกไว้แล้ว',
+        position: 'bottom'
       },
       {
         element: document.querySelector('#step-am'),
-        intro: '<b>1. ประเมิน 5ส:</b> หากคุณต้องการประเมินพื้นที่ประจำเดือน ให้กดเข้าที่เมนูนี้ครับ',
-        position: 'bottom'
+        intro: '<b>AM-OI:</b> กดที่นี่เพื่อเริ่มประเมินพื้นที่ใหม่ครับ',
+        position: 'right'
       },
       {
         element: document.querySelector('#step-opl'),
-        intro: '<b>2. สร้าง OPL:</b> เมื่อมีการปรับปรุงเล็กๆ หรืออยากแชร์ความรู้ให้เพื่อนร่วมงาน ใช้ปุ่มนี้สร้าง OPL ได้เลย',
-        position: 'bottom'
+        intro: '<b>OPL:</b> กดที่นี่เพื่อสร้าง OPL ใหม่',
+        position: 'right'
       },
       {
         element: document.querySelector('#step-fi'),
-        intro: '<b>3. ทำโครงการ FI:</b> สำหรับโครงการลด Loss ขนาดใหญ่ ให้มาขึ้นทะเบียนและอัปเดต Step ที่นี่ครับ',
-        position: 'bottom'
+        intro: '<b>FI Theme:</b> ขึ้นทะเบียนโครงการ Focused Improvement ใหม่',
+        position: 'right'
       },
       {
         element: document.querySelector('#step-kz'),
-        intro: '<b>4. Kaizen Suggestion:</b> หากมีไอเดียปรับปรุงงานย่อยๆ สามารถเข้าไปกรอกข้อเสนอแนะในระบบกลางได้ที่นี่',
-        position: 'bottom'
+        intro: '<b>Kaizen:</b> เสนอแนะแนวทางปรับปรุงงานผ่านระบบส่วนกลาง',
+        position: 'right'
       },
       {
         element: document.querySelector('#step-mk'),
-        intro: '<b>5. Makigami:</b> ระบบสำหรับเขียน Flow Chart วิเคราะห์และลดความสูญเปล่าในขั้นตอนการทำงาน',
-        position: 'bottom'
+        intro: '<b>Makigami:</b> สร้าง Flow Chart วิเคราะห์กระบวนการใหม่',
+        position: 'right'
       },
       {
         element: document.querySelector('#tour-dash'),
-        intro: '<b>6. สรุปผล & แก้ไขงาน:</b> <br>✨ จุดสำคัญที่สุด! <br>ถ้าต้องการดูว่าแผนกเราได้กี่ %, ต้องการ <b>แก้ไขงานเดิม</b> หรือหัวหน้าจะเข้ามา <b>กดอนุมัติ</b> ให้เข้าที่เมนู Dashboard นี้ครับ',
+        intro: '<b>จุดสำคัญที่สุด!</b><br><br>ต้องการ<b>แก้ไขงานเดิม</b>, หัวหน้าต้องการ<b>กดอนุมัติ</b>, หรืออยากดู<b>KPI ภาพรวม</b>?<br><br>→ <b>เข้า Dashboard ที่นี่เลยครับ</b>',
         position: 'top'
       },
       {
         element: document.querySelector('#btn-guide'),
-        intro: 'หากลืมวิธีใช้งานเมื่อไหร่ กดปุ่มนี้เพื่อเรียกผมมาสอนใหม่ได้ตลอดเวลานะครับ!',
+        intro: 'ลืมวิธีใช้งานเมื่อไหร่ กดปุ่มนี้เพื่อเรียกทัวร์ได้ตลอดเวลาครับ!',
         position: 'bottom'
       }
     ],
@@ -438,18 +647,17 @@ function startHomeTour() {
     doneLabel: 'เข้าใจแล้ว เริ่มเลย!',
     showProgress: true,
     showStepNumbers: false,
-    disableInteraction: true // ป้องกัน User กดมั่วระหว่างทัวร์
+    disableInteraction: true
   }).start();
 }
 
-// 💡 สั่งให้เริ่มทัวร์อัตโนมัติเฉพาะการเข้าใช้งานครั้งแรก
-window.onload = function() {
-  if (!localStorage.getItem('home_tour_done_v3')) {
-    setTimeout(() => { startHomeTour(); }, 500); // หน่วงเวลาให้ CSS โหลดเสร็จก่อน
-    localStorage.setItem('home_tour_done_v3', 'true');
+/* ── Auto Tour (first visit) ── */
+window.addEventListener('DOMContentLoaded', () => {
+  if (!localStorage.getItem('home_tour_done_v4')) {
+    setTimeout(() => { startHomeTour(); }, 800);
+    localStorage.setItem('home_tour_done_v4', 'true');
   }
-};
+});
 </script>
-
 </body>
 </html>
