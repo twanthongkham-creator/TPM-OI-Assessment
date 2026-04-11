@@ -634,6 +634,7 @@ body::after { width: 60vw; height: 60vw; max-width: 700px; max-height: 700px; ba
 
 <div class="toast" id="toast"></div>
 
+<script src="dept-helper.js"></script>
 <script>
 // ══════════════════════════════════════════════
 // Config
@@ -696,6 +697,10 @@ async function loadAdminData() {
     if (data.status === 'success') {
       allUsers     = data.users     || [];
       allApprovers = data.approvers || [];
+      // โหลด dept list พร้อมกัน (เรียกครั้งเดียวหลัง login สำเร็จ)
+      if (!DeptHelper.isLoaded()) {
+        await DeptHelper.loadDepts(API_URL);
+      }
       buildPlants();
       updateStats();
       populateFilters();
@@ -884,10 +889,11 @@ function switchTab(tab, btn) {
 // Modal — User
 // ══════════════════════════════════════════════
 const PLANT_OPTIONS = () => plants.map(p => `<option value="${p}">${p}</option>`).join('');
-const DEPT_OPTIONS = () => {
-  const d = [...new Set([...allUsers.map(u=>u.dept), ...allApprovers.map(a=>a.dept)])].filter(Boolean).sort();
-  return d.map(x => `<option value="${x}">${x}</option>`).join('');
-};
+// ใช้ DeptHelper แทน hardcode — ดึงจาก DeptList Sheet
+const DEPT_OPTIONS = (selectedCode = '') =>
+  DeptHelper.getDepts().map(d =>
+    `<option value="${d.code}"${d.code === selectedCode ? ' selected' : ''}>${d.code} — ${d.name}</option>`
+  ).join('');
 
 function openAddUser() {
   currentModal = 'addUser'; editIndex = null;
@@ -906,6 +912,8 @@ function openEditUser(rowIndex) {
 }
 
 function userFormHTML(u = {}) {
+  // set plant after render (setTimeout เพราะ innerHTML ยังไม่ mount ตอน return)
+  setTimeout(() => { if(u.plant) document.getElementById('mf-plant').value = u.plant; }, 10);
   return `
     <div class="modal-grid">
       <div class="fg">
@@ -917,7 +925,10 @@ function userFormHTML(u = {}) {
       </div>
       <div class="fg">
         <label>Department <span style="color:var(--rose-500);">*</span></label>
-        <input id="mf-dept" placeholder="เช่น MT, QC, PD..." value="${u.dept||''}">
+        <select id="mf-dept">
+          <option value="">-- เลือก Department --</option>
+          ${DEPT_OPTIONS(u.dept||'')}
+        </select>
       </div>
     </div>
     <div class="modal-grid">
@@ -931,8 +942,6 @@ function userFormHTML(u = {}) {
       </div>
     </div>
   `;
-  // set plant after render
-  setTimeout(() => { if(u.plant) document.getElementById('mf-plant').value = u.plant; }, 10);
 }
 
 // ══════════════════════════════════════════════
@@ -967,7 +976,10 @@ function approverFormHTML(a = {}) {
       </div>
       <div class="fg">
         <label>Department <span style="color:var(--rose-500);">*</span></label>
-        <input id="mf-dept" placeholder="เช่น MT, QC, PD..." value="${a.dept||''}">
+        <select id="mf-dept">
+          <option value="">-- เลือก Department --</option>
+          ${DEPT_OPTIONS(a.dept||'')}
+        </select>
       </div>
     </div>
     <div class="modal-grid">
