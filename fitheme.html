@@ -39,10 +39,10 @@
 
 :root {
   --blue-900:#0A2540; --blue-800:#113A5D; --blue-600:#1E6091; --blue-400:#3A86FF;
-  --teal-700:#087A5C; --teal-600:#0CA47C; --teal-500:#14B8A6; --teal-400:#10D2A1;
-  --red-600:#EF4444; --rose-500:#F43F5E; --rose-600:#E11D48;
-  --orange-700:#C46200; --orange-600:#E65100; --orange-500:#F57C00;
-  --indigo-50:#EEF2FF; --indigo-300:#A5B4FC; --indigo-400:#818CF8; --indigo-500:#6366F1; --indigo-600:#4F46E5; --indigo-700:#4338CA; --indigo-800:#3730A3;
+  --teal-700:#087A5C; --teal-600:#0CA47C; 
+  --orange-700:#C46200; --orange-600:#E65100; --orange-500:#F57C00; --orange-400:#FF9800; --orange-50:#FFF3E0;
+  --rose-500:#F43F5E; --rose-600:#E11D48;
+  --red-500:#F44336; 
   --gray-900:#1A1C1E; --gray-600:#505A64; --gray-400:#9BA5B1; --gray-200:#D9E2EC;
   --font:'IBM Plex Sans Thai',sans-serif;
   --blur:blur(32px) saturate(180%);
@@ -90,13 +90,13 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
   white-space: nowrap; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .btn-help {
-  background: linear-gradient(135deg, #6366F1, #4F46E5); color: white; border: none;
-  box-shadow: 0 4px 15px rgba(99,102,241,0.3); cursor: pointer;
+  background: linear-gradient(135deg, #F57C00, #E11D48); color: white; border: none;
+  box-shadow: 0 4px 15px rgba(225,29,72,0.3); cursor: pointer;
 }
-.btn-help:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99,102,241,0.4); }
+.btn-help:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(225,29,72,0.4); }
 .pill-btn {
   background: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,1);
-  color: var(--indigo-600); text-decoration: none; box-shadow: 0 4px 14px rgba(10,37,64,0.06);
+  color: var(--rose-600); text-decoration: none; box-shadow: 0 4px 14px rgba(10,37,64,0.06);
 }
 .pill-btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,37,64,0.1); }
 
@@ -127,7 +127,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 .fg{display:flex;flex-direction:column;gap:8px; min-width:0;}
 .fg label{font-size:13px;font-weight:700;color:var(--blue-900); padding-left: 4px; display:flex; align-items:center;}
-.req{background:var(--rose-500);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:8px; box-shadow:0 2px 6px rgba(244,63,94,0.3);}
+.req{background:var(--red-500);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:8px; box-shadow:0 2px 6px rgba(244,63,94,0.3);}
 
 /* 💡 Premium Inputs */
 input[type=text],input[type=number],input[type=date],input[type=password],select,textarea{ 
@@ -138,11 +138,10 @@ input[type=text],input[type=number],input[type=date],input[type=password],select
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition:all .3s ease; font-weight: 500; 
 }
 input:focus,select:focus,textarea:focus{ 
-    background: #fff; border-color:var(--indigo-500); 
-    box-shadow: 0 0 0 4px rgba(99,102,241,0.15), inset 0 2px 4px rgba(0,0,0,0.02); 
+    background: #fff; border-color:var(--rose-500); 
+    box-shadow: 0 0 0 4px rgba(244,63,94,0.15), inset 0 2px 4px rgba(0,0,0,0.02); 
 }
-/* เปลี่ยน SVG สีลูกศร Dropdown ให้เป็นสีน้ำเงิน-ม่วง */
-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%234F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%23E11D48' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;}
 textarea{resize:vertical;min-height:80px;line-height:1.6;}
 input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--indigo-600); cursor:not-allowed; border-color:rgba(99,102,241,0.2); font-weight:700;}
 
@@ -167,7 +166,7 @@ input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--i
 .file-link-card:hover { background: #fff; box-shadow: 0 4px 12px rgba(99,102,241,0.1); transform: translateY(-2px); }
 
 /* Actions Button */
-.actions{display:flex;justify-content:flex-end;gap:12px;margin-top:1rem; flex-wrap:wrap; padding-top: 24px; border-top: 1px dashed rgba(99,102,241,0.2);}
+.actions{display:flex;justify-content:flex-end;gap:12px;margin-top:1rem; flex-wrap:wrap; padding-top: 24px; border-top: 1px dashed rgba(244,63,94,0.2);}
 .btn{font-family:var(--font);font-size:14px;font-weight:700;padding:14px 32px;border-radius:40px;cursor:pointer;transition:all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border:none; box-shadow:0 4px 12px rgba(0,0,0,0.05); display:inline-flex; align-items:center; gap:8px;}
 .btn-reset{background:rgba(255,255,255,0.8);color:var(--gray-600); border:1px solid rgba(255,255,255,0.9);}
 .btn-reset:hover{background:#fff; transform:translateY(-2px); box-shadow:0 8px 16px rgba(0,0,0,0.08);}
@@ -215,7 +214,7 @@ input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--i
     <p>แบบฟอร์มขึ้นทะเบียนและติดตามความคืบหน้า Focused Improvement</p>
   </div>
   <div class="header-actions">
-    <button class="btn-help" id="btn-guide" onclick="startTour()">
+    <button class="btn-help" id="btn-start-guide" onclick="startTour()">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       สอนใช้งาน
     </button>
@@ -332,9 +331,14 @@ input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--i
           </div>
         </div>
 
-        <div class="grid2" style="display:none;">
-          <input type="text" id="f-year" value="2026">
-          <input type="text" id="f-email">
+        <div class="grid2" style="margin-bottom:20px;">
+          <div class="fg">
+            <label>ปีที่ดำเนินการ (Year)</label>
+            <input type="text" id="f-year" value="2026" onchange="generateFiId()">
+          </div>
+          <div class="fg" style="display:none;">
+            <input type="text" id="f-email">
+          </div>
         </div>
 
         <div class="fg" id="tour-id">
@@ -498,7 +502,7 @@ input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--i
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-// 💡 4. ฟังก์ชัน Guided Tour (แก้ปัญหาจอมืดค้าง 100%)
+// 💡 4. ฟังก์ชัน Guided Tour (เพิ่มการปิด UI กวนใจตอนสอน)
 function startTour() {
   document.body.classList.add('tour-active');
   
@@ -512,7 +516,7 @@ function startTour() {
         },
         {
           element: '#tour-1',
-          intro: '<b>1. ข้อมูลผู้จัดทำ:</b> เลือกโรงงาน แผนก และชื่อของคุณ ระบบจะสร้างรหัส FI อัตโนมัติและดึงอีเมลให้เองครับ',
+          intro: '<b>1. ข้อมูลโครงการ:</b> เลือกโรงงาน แผนก และผู้รับผิดชอบ ระบบจะสร้างรหัส FI ให้อัตโนมัติ',
           position: 'bottom'
         },
         {
@@ -546,16 +550,15 @@ function startTour() {
       doneLabel: 'เข้าใจแล้ว!',
       showProgress: true,
       showStepNumbers: false,
-      disableInteraction: false, // ป้องกันการติดบั๊กในมือถือ
+      disableInteraction: true,
       exitOnOverlayClick: true
     });
 
-    // เมื่อออกจากทัวร์ ลบคลาสออก เพื่อเปิด Effect กลับมา
     tour.onexit(function() { document.body.classList.remove('tour-active'); });
     tour.oncomplete(function() { document.body.classList.remove('tour-active'); });
     
     tour.start();
-  }, 300);
+  }, 300); 
 }
 
 const imageStore = []; const docStore = []; let oldFileLinks = '';
@@ -577,9 +580,9 @@ async function initData() {
     prefillFromURL();
 
     // 💡 เริ่มทัวร์อัตโนมัติเฉพาะเข้าใช้งานครั้งแรก
-    if (!localStorage.getItem('fitheme_tour_done_v3')) {
-      setTimeout(() => { startTour(); }, 1500); // ดีเลย์ให้ CSS ทำงานเสร็จ
-      localStorage.setItem('fitheme_tour_done_v3', 'true');
+    if (!localStorage.getItem('fitheme_tour_done_v4')) {
+      setTimeout(() => { startTour(); }, 1500); 
+      localStorage.setItem('fitheme_tour_done_v4', 'true');
     }
 
   } catch(e) {
@@ -587,93 +590,118 @@ async function initData() {
   }
 }
 
+// 💡 เพิ่ม Try-Catch ป้องกัน Error ถ้าหา element ไม่เจอ
 function prefillFromURL() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const paramFiId = urlParams.get('fiId');
-  const roleParam = urlParams.get('role');
+  try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramFiId = urlParams.get('fiId');
+      const roleParam = urlParams.get('role');
 
-  if (roleParam) {
-      document.getElementById('f-role').value = roleParam;
-      togglePIN();
-  }
-
-  if (paramFiId && fiHistoryData.length > 0) {
-      const record = fiHistoryData.slice().reverse().find(r => (r['FI ID'] || Object.values(r)[1]) === paramFiId);
-      if (record) {
-          document.getElementById('history-banner').style.display = 'flex';
-          const vals = Object.values(record); 
-          document.getElementById('f-fi-id').value = paramFiId;
-          document.getElementById('f-factory').value = vals[3] || '';
-          document.getElementById('f-dept').value = vals[4] || '';
-          document.getElementById('f-title').value = vals[5] || '';
-          document.getElementById('f-type').value = vals[6] || '';
-          document.getElementById('f-loss').value = vals[7] || '';
-          document.getElementById('f-unit').value = vals[8] || '';
-          document.getElementById('f-baseline').value = vals[9] || '';
-          document.getElementById('f-target').value = vals[10] || '';
-          document.getElementById('f-result').value = vals[11] || '';
-          document.getElementById('f-measure').value = vals[12] || '';
-          document.getElementById('f-step').value = vals[13] || 'Step 1';
-          
-          let oldStatus = vals[14] || 'อยู่ระหว่างดำเนินการ';
-          if (roleParam !== 'lead') {
-              if (oldStatus.includes('รอหัวหน้า') || oldStatus.includes('อนุมัติสมบูรณ์')) oldStatus = 'เสร็จสมบูรณ์';
-              else if (oldStatus.includes('ไม่อนุมัติ')) oldStatus = 'อยู่ระหว่างดำเนินการ';
-          } else {
-             const statusOpt = document.createElement('option');
-             statusOpt.value = oldStatus; statusOpt.textContent = oldStatus;
-             document.getElementById('f-status').appendChild(statusOpt);
-          }
-          document.getElementById('f-status').value = oldStatus;
-          
-          if (roleParam === 'lead') {
-             document.getElementById('f-role').value = 'lead';
-             document.getElementById('f-role').disabled = true; 
-             togglePIN();
-          } else if (roleParam === 'edit') {
-             document.getElementById('f-role').value = 'self';
-             document.getElementById('f-role').disabled = true;
-             togglePIN();
-          }
-
-          populateUsers();
-          setTimeout(() => {
-              const nameSelect = document.getElementById('f-name');
-              if (roleParam === 'lead' && nameSelect.options.length > 1) { nameSelect.selectedIndex = 1; } 
-              else { nameSelect.value = vals[2] || ''; }
-              autoFillEmail(); 
-          }, 300);
-
-          oldFileLinks = vals[15] || Object.values(record).find(v => typeof v === 'string' && v.includes('drive.google.com')) || ''; 
-          renderAttachedFiles(oldFileLinks);
+      if (roleParam) {
+          document.getElementById('f-role').value = roleParam;
+          togglePIN();
       }
-  } else {
+
+      if (paramFiId && fiHistoryData.length > 0) {
+          const record = fiHistoryData.slice().reverse().find(r => (r['FI ID'] || Object.values(r)[1]) === paramFiId);
+          if (record) {
+              document.getElementById('history-banner').style.display = 'flex';
+              const vals = Object.values(record); 
+              
+              const safeSet = (id, val) => { if(document.getElementById(id)) document.getElementById(id).value = val; };
+              
+              safeSet('f-fi-id', paramFiId);
+              safeSet('f-factory', vals[3] || '');
+              safeSet('f-dept', vals[4] || '');
+              safeSet('f-title', vals[5] || '');
+              safeSet('f-type', vals[6] || '');
+              safeSet('f-loss', vals[7] || '');
+              safeSet('f-unit', vals[8] || '');
+              safeSet('f-baseline', vals[9] || '');
+              safeSet('f-target', vals[10] || '');
+              safeSet('f-result', vals[11] || '');
+              safeSet('f-measure', vals[12] || '');
+              safeSet('f-step', vals[13] || 'Step 1');
+              
+              let oldStatus = vals[14] || 'อยู่ระหว่างดำเนินการ';
+              if (roleParam !== 'lead') {
+                  if (oldStatus.includes('รอหัวหน้า') || oldStatus.includes('อนุมัติสมบูรณ์')) oldStatus = 'เสร็จสมบูรณ์';
+                  else if (oldStatus.includes('ไม่อนุมัติ')) oldStatus = 'อยู่ระหว่างดำเนินการ';
+              } else {
+                 const statusOpt = document.createElement('option');
+                 statusOpt.value = oldStatus; statusOpt.textContent = oldStatus;
+                 if(document.getElementById('f-status')) document.getElementById('f-status').appendChild(statusOpt);
+              }
+              safeSet('f-status', oldStatus);
+              
+              if (roleParam === 'lead') {
+                 safeSet('f-role', 'lead');
+                 if(document.getElementById('f-role')) document.getElementById('f-role').disabled = true; 
+                 togglePIN();
+              } else if (roleParam === 'edit') {
+                 safeSet('f-role', 'self');
+                 if(document.getElementById('f-role')) document.getElementById('f-role').disabled = true;
+                 togglePIN();
+              }
+
+              populateUsers();
+              setTimeout(() => {
+                  const nameSelect = document.getElementById('f-name');
+                  if (nameSelect) {
+                      if (roleParam === 'lead' && nameSelect.options.length > 1) { nameSelect.selectedIndex = 1; } 
+                      else { nameSelect.value = vals[2] || ''; }
+                  }
+                  autoFillEmail(); 
+              }, 300);
+
+              oldFileLinks = vals[15] || Object.values(record).find(v => typeof v === 'string' && v.includes('drive.google.com')) || ''; 
+              renderAttachedFiles(oldFileLinks);
+          }
+      } else {
+          generateFiId();
+          checkApprovalLogic();
+      }
+  } catch(e) {
+      console.error("Prefill Error: ", e);
       generateFiId();
-      checkApprovalLogic();
   }
 }
 
 function generateFiId() {
-  const urlParams = new URLSearchParams(window.location.search);
-  if(urlParams.get('fiId')) return; 
-  const fac = document.getElementById('f-factory').value;
-  const dept = document.getElementById('f-dept').value;
-  const year = document.getElementById('f-year').value || '2026';
-  if(!fac || !dept) { document.getElementById('f-fi-id').value = ''; return; }
-  const prefix = `FI-${fac}-${dept}-${year}-`;
-  let maxRun = 0;
-  fiHistoryData.forEach(r => {
-    const id = r['FI ID'] || Object.values(r)[1]; 
-    if(id && id.startsWith(prefix)) {
-      const numPart = id.split('-')[4]; 
-      if(numPart) {
-         const num = parseInt(numPart, 10);
-         if(num > maxRun) maxRun = num;
-      }
-    }
-  });
-  const nextRun = String(maxRun + 1).padStart(3, '0');
-  document.getElementById('f-fi-id').value = `${prefix}${nextRun}`;
+  try {
+      const urlParams = new URLSearchParams(window.location.search);
+      if(urlParams.get('fiId')) return; 
+      
+      const facEl = document.getElementById('f-factory');
+      const deptEl = document.getElementById('f-dept');
+      const yearEl = document.getElementById('f-year');
+      const idEl = document.getElementById('f-fi-id');
+      
+      if(!facEl || !deptEl || !yearEl || !idEl) return;
+
+      const fac = facEl.value;
+      const dept = deptEl.value;
+      const year = yearEl.value || '2026';
+
+      if(!fac || !dept) { idEl.value = ''; return; }
+
+      const prefix = `FI-${fac}-${dept}-${year}-`;
+      let maxRun = 0;
+      fiHistoryData.forEach(r => {
+        const id = r['FI ID'] || Object.values(r)[1]; 
+        if(id && id.startsWith(prefix)) {
+          const numPart = id.split('-')[4]; 
+          if(numPart) {
+             const num = parseInt(numPart, 10);
+             if(num > maxRun) maxRun = num;
+          }
+        }
+      });
+      const nextRun = String(maxRun + 1).padStart(3, '0');
+      idEl.value = `${prefix}${nextRun}`;
+  } catch(e) {
+      console.error("ID Gen Error: ", e);
+  }
 }
 
 function populateUsers() {
@@ -681,6 +709,9 @@ function populateUsers() {
   const role = document.getElementById('f-role').value;
   const nameSelect = document.getElementById('f-name');
   const emailInput = document.getElementById('f-email');
+  
+  if(!nameSelect || !emailInput) return;
+
   nameSelect.innerHTML = '<option value="">-- กรุณาเลือกชื่อ --</option>';
   emailInput.value = '';
   if (!dept) return;
@@ -709,12 +740,18 @@ function populateUsers() {
 
 function autoFillEmail() {
   const nameSelect = document.getElementById('f-name');
+  const emailInput = document.getElementById('f-email');
+  if(!nameSelect || !emailInput) return;
+  
   const selectedOpt = nameSelect.options[nameSelect.selectedIndex];
-  document.getElementById('f-email').value = (selectedOpt && selectedOpt.dataset.email) ? selectedOpt.dataset.email : '';
+  emailInput.value = (selectedOpt && selectedOpt.dataset.email) ? selectedOpt.dataset.email : '';
 }
 
 function togglePIN() {
-  const role = document.getElementById('f-role').value;
+  const roleEl = document.getElementById('f-role');
+  if(!roleEl) return;
+  const role = roleEl.value;
+
   if (role === 'lead') {
       document.getElementById('pin-box').style.display = 'block';
       document.getElementById('btn-reject').style.display = 'inline-flex';
@@ -876,7 +913,7 @@ async function handleSubmit(actionType) {
   }
 }
 
-// ผูก Event Listener ป้องกันการกดรัว
+// 💡 Event Listener ป้องกันการกดรัว
 document.getElementById('btn-start-guide').addEventListener('click', function(e) {
     e.preventDefault();
     startTour();
