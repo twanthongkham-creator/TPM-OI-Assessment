@@ -12,19 +12,31 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
 
 <style>
-  /* 🟢 Intro.js Custom Premium Style (แก้ปัญหาจอมืด) */
+  /* 🟢 Intro.js Custom Premium Style */
   .introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 16px; transition: all 0.2s; cursor: pointer; }
   .introjs-nextbutton { background: linear-gradient(135deg, #3A86FF, #1E6091) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(58,134,255,0.3) !important; }
   .introjs-nextbutton:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(58,134,255,0.4) !important; }
   .introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; background: #F8FAFC !important; border: 1px solid #D9E2EC !important; }
   .introjs-donebutton { background: linear-gradient(135deg, #2DD4BF, #0CA47C) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(12,164,124,0.3) !important; }
-  .introjs-tooltip { border-radius: 24px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.3); border: 1px solid rgba(255,255,255,0.9); font-family: 'IBM Plex Sans Thai', sans-serif; z-index: 9999999 !important; }
+  .introjs-tooltip { border-radius: 24px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.3); border: 1px solid rgba(255,255,255,0.9); font-family: 'IBM Plex Sans Thai', sans-serif; }
   .introjs-progress { background-color: #E2E8F0; border-radius: 4px; overflow: hidden; }
   .introjs-progressbar { background-color: #3A86FF; }
-  
-  /* ป้องกัน Stacking Context ทำให้ทะลุ Overlay */
-  .introjs-showElement { z-index: 9999998 !important; position: relative; }
-  .tour-wrapper { position: relative; width: 100%; border-radius: var(--r-lg); }
+
+  /* 💡 หัวใจสำคัญในการแก้บั๊กจอมืด: ปิด Effect ขัดขวางตอนกำลังสอนใช้งาน */
+  body.tour-active .introjs-showElement,
+  body.tour-active .glass,
+  body.tour-active .kpi-card,
+  body.tour-active .chart-box,
+  body.tour-active .chat-container,
+  body.tour-active .ai-box {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      transform: none !important;
+      animation: none !important;
+      transition: none !important;
+      background-color: #ffffff !important; /* ปรับพื้นให้ทึบเพื่อให้ลอยเด่นชัดเจน */
+      z-index: 9999999 !important;
+  }
 
 :root {
   --blue-900:#0A2540; --blue-800:#113A5D; --blue-600:#1E6091; --blue-400:#3A86FF;
@@ -187,7 +199,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .ai-header-wrapper { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
 .ai-branding { display:flex; align-items:center; gap: 16px; }
 
-/* 💡 Gemini Custom SVG Logo (ออกแบบเหมือนของแท้เป๊ะๆ) */
+/* 💡 Gemini Real SVG Shape & Gradient */
 .gemini-logo-svg {
   width: 48px; height: 48px;
   filter: drop-shadow(0 4px 12px rgba(139,92,246,0.3));
@@ -224,6 +236,11 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .chat-container { display: flex; flex-direction: column; height: 500px; background: rgba(255,255,255,0.7); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border: 1px solid rgba(255,255,255,0.9); border-radius: var(--r-lg); box-shadow: 0 16px 48px rgba(10,37,64,0.08), inset 0 1px 0 rgba(255,255,255,1); overflow: hidden; position: relative; margin-bottom: 40px;}
 .chat-container::after { content:''; position:absolute; bottom:-10%; left:-10%; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%); pointer-events:none; z-index:0;}
 .chat-header { padding: 20px 32px; background: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(255,255,255,0.7); display: flex; align-items: center; gap: 16px; z-index: 1;}
+
+.chat-header-icon { 
+  width: 42px; height: 42px; background: transparent; 
+  display: flex; align-items: center; justify-content: center;
+}
 
 .chat-header-text h3 { font-size: 18px; font-weight: 700; color: var(--blue-900); line-height: 1.2; margin-bottom:4px;}
 .chat-header-text p { font-size: 13px; color: var(--gray-600); font-weight: 500; }
@@ -340,13 +357,13 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 <div class="ambient-blob"></div>
 
-<div class="header glass">
+<div class="header glass" id="tour-header">
   <div class="h-title">
     <h2>TPM OI — Executive Dashboard</h2>
     <p>ระบบประเมินและบริหารจัดการเป้าหมาย (KPI Tracker)</p>
   </div>
   <div class="header-actions">
-    <button class="btn-help" onclick="startTour()">
+    <button class="btn-help" id="btn-guide" onclick="startTour()">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         สอนใช้งาน
     </button>
@@ -362,123 +379,116 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
   <div id="main-dashboard-view" style="display:none;">
 
-    <div id="tour-1" class="tour-wrapper" style="margin-bottom: 32px;">
-      <div class="filter-section glass" style="margin-bottom: 0;">
-        <label>
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          คัดกรองข้อมูลตามแผนก:
-        </label>
-        <select id="global-filter-dept" class="filter-select" onchange="processAndRender()">
-          <option value="all">แสดงภาพรวมทั้งหมด (All Departments)</option>
-        </select>
-      </div>
+    <div class="filter-section glass" id="tour-filter">
+      <label>
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        คัดกรองข้อมูลตามแผนก:
+      </label>
+      <select id="global-filter-dept" class="filter-select" onchange="processAndRender()">
+        <option value="all">แสดงภาพรวมทั้งหมด (All Departments)</option>
+      </select>
     </div>
 
-    <div id="tour-2" class="tour-wrapper" style="margin-bottom: 40px;">
-      <div class="sec-lbl">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-        ผลลัพธ์ KPI ภาพรวม 5 เสาหลัก
-      </div>
-      <div class="kpi-grid" id="kpi-cards-container" style="margin-bottom: 0;"></div>
+    <div class="sec-lbl">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      ผลลัพธ์ KPI ภาพรวม 5 เสาหลัก
     </div>
+    
+    <div class="kpi-grid" id="kpi-cards-container"></div>
 
-    <div id="tour-3" class="tour-wrapper" style="margin-bottom: 40px;">
-      <div class="sec-lbl">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        เครื่องมือระดับบริหาร (Executive Tools)
-      </div>
-      <div class="glass ai-box" style="margin-bottom: 0;">
-          <div class="ai-header-wrapper">
-              <div class="ai-branding">
-                  <div class="ai-logo">
-                      <svg viewBox="0 0 24 24" class="gemini-logo-svg">
-                        <defs>
-                          <linearGradient id="geminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#4285F4"/>
-                            <stop offset="33%" stop-color="#9B72CB"/>
-                            <stop offset="67%" stop-color="#D96570"/>
-                            <stop offset="100%" stop-color="#F59E0B"/>
-                          </linearGradient>
-                        </defs>
-                        <path fill="url(#geminiGrad)" d="M12 0C12 6.62742 6.62742 12 0 12C6.62742 12 12 17.3726 12 24C12 17.3726 17.3726 12 24 12C17.3726 12 12 6.62742 12 0Z"/>
-                      </svg>
-                  </div>
-                  <div>
-                      <h3>Gemini Executive Insights ✨</h3>
-                      <p>ระบบ AI สรุปข้อมูลคอขวด และให้คำแนะนำทางยุทธศาสตร์</p>
-                  </div>
-              </div>
-              <div class="ai-btn-group">
-                  <button class="ai-btn" id="btn-ai-analyze" onclick="generateInsights()">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                      เริ่มวิเคราะห์ข้อมูล
-                  </button>
-              </div>
-          </div>
-          <div id="ai-result-box" class="ai-result"></div>
-      </div>
+    <div class="sec-lbl" style="margin-top:16px;">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      เครื่องมือระดับบริหาร (Executive Tools)
     </div>
-
-    <div id="tour-4" class="tour-wrapper" style="margin-bottom: 40px;">
-      <div class="sec-lbl">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        กราฟวิเคราะห์ประสิทธิภาพ (Analytics)
-      </div>
-      <div class="charts-overview" style="margin-bottom: 0;">
-        <div class="chart-box">
-          <div class="chart-header">
-            <div class="chart-title-text">
-              <div class="chart-icon-pill">
-                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-              </div>
-              เปรียบเทียบ % ความคืบหน้าโครงการ
+    
+    <div class="glass ai-box" id="tour-ai-insights">
+        <div class="ai-header-wrapper">
+            <div class="ai-branding">
+                <div class="ai-logo">
+                    <svg viewBox="0 0 24 24" class="gemini-logo-svg">
+                      <defs>
+                        <linearGradient id="geminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#E84A5F"/>
+                          <stop offset="50%" stop-color="#4285F4"/>
+                          <stop offset="100%" stop-color="#34A853"/>
+                        </linearGradient>
+                      </defs>
+                      <path fill="url(#geminiGrad)" d="M12 0C12 6.62742 6.62742 12 0 12C6.62742 12 12 17.3726 12 24C12 17.3726 17.3726 12 24 12C17.3726 12 12 6.62742 12 0Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3>Gemini Executive Insights ✨</h3>
+                    <p>ระบบ AI สรุปข้อมูลคอขวด และให้คำแนะนำทางยุทธศาสตร์</p>
+                </div>
             </div>
-          </div>
-          <div style="flex:1;position:relative"><canvas id="kpiBarChart"></canvas></div>
-        </div>
-        <div class="chart-box">
-          <div class="chart-header">
-            <div class="chart-title-text">
-              <div class="chart-icon-pill">
-                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
-              </div>
-              การกระจายตัวพื้นที่ AM-OI (ราย Step)
+            <div class="ai-btn-group">
+                <button class="ai-btn" id="btn-ai-analyze" onclick="generateInsights()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    เริ่มวิเคราะห์ข้อมูล
+                </button>
             </div>
-          </div>
-          <div style="flex:1;position:relative"><canvas id="amStepChart"></canvas></div>
         </div>
+        <div id="ai-result-box" class="ai-result"></div>
+    </div>
+
+    <div class="sec-lbl" style="margin-top:20px;">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      กราฟวิเคราะห์ประสิทธิภาพ (Analytics)
+    </div>
+    
+    <div class="charts-overview" id="tour-charts">
+      <div class="chart-box">
+        <div class="chart-header">
+          <div class="chart-title-text">
+            <div class="chart-icon-pill">
+              <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            เปรียบเทียบ % ความคืบหน้าโครงการ
+          </div>
+        </div>
+        <div style="flex:1;position:relative"><canvas id="kpiBarChart"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-header">
+          <div class="chart-title-text">
+            <div class="chart-icon-pill">
+              <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+            </div>
+            การกระจายตัวพื้นที่ AM-OI (ราย Step)
+          </div>
+        </div>
+        <div style="flex:1;position:relative"><canvas id="amStepChart"></canvas></div>
       </div>
     </div>
 
-    <div id="tour-5" class="tour-wrapper" style="margin-bottom: 40px;">
-      <div class="sec-lbl">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        ที่ปรึกษาส่วนตัว (AI TPM Advisor)
+    <div class="sec-lbl" style="margin-top: 20px;">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      ที่ปรึกษาส่วนตัว (AI TPM Advisor)
+    </div>
+    
+    <div class="chat-container" id="tour-advisor">
+      <div class="chat-header">
+        <div class="chat-header-icon">
+          <svg viewBox="0 0 24 24" class="gemini-logo-svg" style="width:28px; height:28px;">
+            <path fill="url(#geminiGrad)" d="M12 0C12 6.62742 6.62742 12 0 12C6.62742 12 12 17.3726 12 24C12 17.3726 17.3726 12 24 12C17.3726 12 12 6.62742 12 0Z"/>
+          </svg>
+        </div>
+        <div class="chat-header-text">
+          <h3>สอบถามผู้เชี่ยวชาญ TPM (Gemini AI)</h3>
+          <p>สอบถามสถานะ KPI ดึงข้อมูลจากฐานข้อมูลจริงมาตอบ</p>
+        </div>
       </div>
-      <div class="chat-container" style="margin-bottom: 0;">
-        <div class="chat-header">
-          <div class="chat-header-icon">
-            <svg viewBox="0 0 24 24" class="gemini-logo-svg" style="width:28px; height:28px;">
-              <path fill="url(#geminiGrad)" d="M12 0C12 6.62742 6.62742 12 0 12C6.62742 12 12 17.3726 12 24C12 17.3726 17.3726 12 24 12C17.3726 12 12 6.62742 12 0Z"/>
-            </svg>
-          </div>
-          <div class="chat-header-text">
-            <h3>สอบถามผู้เชี่ยวชาญ TPM (Gemini AI)</h3>
-            <p>สอบถามสถานะ KPI ดึงข้อมูลจากฐานข้อมูลจริงมาตอบ</p>
-          </div>
+      <div class="chat-body" id="chat-body">
+        <div class="msg-wrap ai">
+          <div class="msg-bubble">สวัสดีครับ! ผมคือ <b>AI Advisor</b> ประจำหน้า Dashboard 👋<br><br>อยากให้ผมอัปเดตสถานะ KPI ของแผนกไหน หรืออยากให้ช่วยคิดไอเดียการปรับปรุงงาน พิมพ์ถามได้เลยครับ!</div>
         </div>
-        <div class="chat-body" id="chat-body">
-          <div class="msg-wrap ai">
-            <div class="msg-bubble">สวัสดีครับ! ผมคือ <b>AI Advisor</b> ประจำหน้า Dashboard 👋<br><br>อยากให้ผมอัปเดตสถานะ KPI ของแผนกไหน หรืออยากให้ช่วยคิดไอเดียการปรับปรุงงาน พิมพ์ถามได้เลยครับ!</div>
-          </div>
-        </div>
-        <div class="chat-footer">
-          <input type="text" id="chat-input" class="chat-input" placeholder="พิมพ์คำถามของคุณที่นี่..." onkeypress="if(event.key==='Enter')sendMessage()">
-          <button id="chat-btn" class="chat-send-btn" onclick="sendMessage()">
-            ส่ง
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          </button>
-        </div>
+      </div>
+      <div class="chat-footer">
+        <input type="text" id="chat-input" class="chat-input" placeholder="พิมพ์คำถามของคุณที่นี่..." onkeypress="if(event.key==='Enter')sendMessage()">
+        <button id="chat-btn" class="chat-send-btn" onclick="sendMessage()">
+          ส่ง
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
       </div>
     </div>
 
@@ -504,41 +514,45 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 // ⚠️ เปลี่ยน URL ของ Google Apps Script ของคุณตรงนี้
 const API_URL='https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-// 💡 4. ฟังก์ชัน Guided Tour (ใช้ Wrapper ID ทำให้ทัวร์ไม่หลุดหาย 100%)
+// 💡 4. ฟังก์ชัน Guided Tour (แก้ปัญหาจอดำ และค้าง 100%)
 function startTour() {
   if(document.getElementById('detail-view').style.display === 'block') {
      goBackToDashboard(); 
   }
+
+  // เติม class tour-active เพื่อปิด Effect กระจกทั้งหมดที่ทำให้เกิดบั๊กซ้อนทับ
+  document.body.classList.add('tour-active');
   
   setTimeout(() => {
-    introJs().setOptions({
+    const tour = introJs();
+    tour.setOptions({
       steps: [
         {
           title: 'ยินดีต้อนรับสู่ Dashboard 👋',
           intro: 'ศูนย์ควบคุมข้อมูล OI ที่จะช่วยให้คุณติดตามทุกโปรเจกต์ได้ในที่เดียวครับ'
         },
         {
-          element: '#tour-1',
+          element: '#tour-filter',
           intro: '<b>1. ตัวกรองแผนก:</b> เลือกแผนกของคุณที่นี่เพื่อดูข้อมูลเฉพาะส่วน กราฟและตัวเลขทั้งหมดจะเปลี่ยนตามทันทีครับ',
           position: 'bottom'
         },
         {
-          element: '#tour-2',
+          element: '#kpi-cards-container',
           intro: '<b>2. สรุป KPI 5 เสา:</b> ดูความสำเร็จเป็นเปอร์เซ็นต์ <br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดและกด "แก้ไข" งานเก่าได้จากที่นี่ครับ',
           position: 'top'
         },
         {
-          element: '#tour-3',
+          element: '#tour-ai-insights',
           intro: '<b>3. AI วิเคราะห์เชิงลึก:</b> หากข้อมูลเยอะเกินไป กดปุ่มนี้ให้ Gemini AI สรุป "จุดคอขวด" และข้อเสนอแนะให้คุณทันทีครับ',
-          position: 'top'
+          position: 'bottom'
         },
         {
-          element: '#tour-4',
+          element: '#tour-charts',
           intro: '<b>4. กราฟเปรียบเทียบ:</b> แสดงสถิติเชิงเปรียบเทียบ <br>✨ <b>ทริค:</b> ลองคลิกที่แท่งกราฟเพื่อขยายดูข้อมูลรายการงานของเสานั้นๆ ได้ทันทีครับ!',
           position: 'top'
         },
         {
-          element: '#tour-5',
+          element: '#tour-advisor',
           intro: '<b>5. AI Advisor:</b> สงสัยตรงไหน พิมพ์ถามเป็นภาษาไทยได้เลยครับ เช่น "แผนกผลิตมี OPL เรื่องอะไรบ้าง?"',
           position: 'top'
         }
@@ -548,9 +562,15 @@ function startTour() {
       doneLabel: 'เริ่มใช้งานเลย!',
       showProgress: true,
       showStepNumbers: false,
-      disableInteraction: true,
+      disableInteraction: false,
       exitOnOverlayClick: true
-    }).start();
+    });
+
+    // เมื่อจบหรือกดออก ให้คืนค่า Effect กระจกกลับมา
+    tour.onexit(function() { document.body.classList.remove('tour-active'); });
+    tour.oncomplete(function() { document.body.classList.remove('tour-active'); });
+
+    tour.start();
   }, 400); 
 }
 
@@ -630,9 +650,9 @@ async function loadData(){
     processAndRender();
 
     // 💡 เริ่มทัวร์อัตโนมัติครั้งแรก
-    if (!localStorage.getItem('dashboard_tour_done_vFINAL10')) {
+    if (!localStorage.getItem('dashboard_tour_done_vFINAL11')) {
         setTimeout(() => { startTour(); }, 2000); 
-        localStorage.setItem('dashboard_tour_done_vFINAL10', 'true');
+        localStorage.setItem('dashboard_tour_done_vFINAL11', 'true');
     }
 
   } catch(e) { 
