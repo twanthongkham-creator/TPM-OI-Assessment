@@ -1149,79 +1149,126 @@ function openDetail(type,title){
 function goBackToDashboard(){ document.getElementById('detail-view').style.display='none'; document.getElementById('main-dashboard-view').style.display='block'; }
 
 async function generateInsights() {
-    const btn = document.getElementById('btn-ai-analyze'); const resBox = document.getElementById('ai-result-box');
-    btn.disabled = true; resBox.style.display = 'block'; resBox.innerHTML = '<div style="text-align:center; padding:30px; color:var(--indigo-600); font-weight:bold;">กำลังดึงข้อมูลทั้งระบบให้ AI ประมวลผลเชิงลึก กรุณารอสักครู่... ⏳</div>';
-    const fd = document.getElementById('global-filter-dept').value; const deptText = fd === 'all' ? 'ภาพรวมทั้งโรงงาน (ทุกแผนก)' : `แผนก ${fd}`;
-    
-    // 💡 ส่งเฉพาะข้อมูลสรุป เพื่อไม่ให้ AI ตัดจบกลางคัน และแนบ Project ล่าช้า
-    let wipProjects = [];
-    if(appData.am.wip > 0) wipProjects.push('AM-OI (รอการประเมิน)');
-    if(appData.opl.wip > 0) wipProjects.push(`OPL (${appData.opl.wip} เรื่องรอหัวหน้าอนุมัติ)`);
-    if(appData.fi.wip > 0) wipProjects.push(`FI Theme (${appData.fi.wip} โครงการกำลังดำเนินการ)`);
-    if(appData.mk.wip > 0) wipProjects.push(`Makigami (${appData.mk.wip} โครงการที่ยังไม่ปิด)`);
+    const btn = document.getElementById('btn-ai-analyze');
+    const resBox = document.getElementById('ai-result-box');
+    btn.disabled = true; 
+    resBox.style.display = 'block'; 
+    resBox.innerHTML = '<div style="text-align:center; padding:20px; color:var(--blue-600);">กำลังดึงข้อมูลทั้งระบบให้ AI ประมวลผลเชิงลึก กรุณารอสักครู่... ⏳</div>';
 
-    const summaryData = {
-       AM: { target: appData.am.target, wip: appData.am.wip, completed: appData.am.actual, success_rate: appData.am.pct + '%' },
-       OPL: { target: appData.opl.target, wip: appData.opl.wip, completed: appData.opl.actual, success_rate: appData.opl.pct + '%' },
-       FI_Theme: { target: appData.fi.target, wip: appData.fi.wip, completed: appData.fi.actual, success_rate: appData.fi.pct + '%' },
-       Kaizen: { target: appData.kz.target, wip: appData.kz.wip, completed: appData.kz.actual, success_rate: appData.kz.pct + '%' },
-       Makigami: { target: appData.mk.target, wip: appData.mk.wip, completed: appData.mk.actual, success_rate: appData.mk.pct + '%' },
-       WIP_Warning: wipProjects
-    };
-    
-    const dbContext = JSON.stringify(summaryData);
+    const fd = document.getElementById('global-filter-dept').value;
+    const deptText = fd === 'all' ? 'ภาพรวมทั้งโรงงาน (ทุกแผนก)' : `แผนก ${fd}`;
 
-    const promptText = `ในฐานะที่ปรึกษา TPM ระดับสูง กรุณาวิเคราะห์ Performance เชิงลึกของ "${deptText}" จากข้อมูลนี้: ${dbContext}
+    const dbContext = JSON.stringify({
+        kpi: kpiMaster,
+        am: amHistory,
+        opl: oplHistory,
+        fi: fiHistory,
+        kz: kzHistory,
+        mk: mkHistory
+    });
 
-กรุณาเขียนวิเคราะห์เชิงลึก (แต่ความยาวรวมต้องไม่เกิน 15 บรรทัด) โดยแบ่งเป็น 3 ส่วนดังนี้:
-1. [ภาพรวมความสำเร็จ]: วิเคราะห์เสาหลักที่ทำผลงานได้ดีเยี่ยม และเสาที่ต้องเร่งรัด พร้อมระบุตัวเลข % ความสำเร็จ
-2. [จุดคอขวดที่ต้องระวัง]: วิเคราะห์จากจำนวน WIP และ WIP_Warning ว่ามีงานค้างอยู่ที่กระบวนการใดที่อาจส่งผลกระทบต่อเป้าหมายภาพรวม
-3. [Executive Action Plan]: เสนอแนะกลยุทธ์สำหรับผู้บริหาร 3 ข้อที่ควรสั่งการทันทีเพื่อทะลวงคอขวดในข้อ 2
+    const promptText = `คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง
+นี่คือข้อมูลดิบของโรงงาน: ${dbContext}
 
-ใช้รูปแบบ Bullet points เพื่อให้อ่านง่าย ห้ามเกริ่นนำและห้ามมีคำลงท้าย ให้เข้าประเด็นทันที`;
+กรุณาวิเคราะห์ Performance ของ "${deptText}" อย่างละเอียดที่สุด
+โครงสร้างการตอบ (ให้ใช้ Bullet point):
+1. [ภาพรวม KPI]: สรุปความสำเร็จและเปอร์เซ็นต์ที่ได้
+2. [จุดเด่น]: แผนก หรือ ระบบที่ทำผลงานได้ดีเยี่ยม (ระบุชื่อ)
+3. [จุดคอขวด]: โปรเจกต์ หรือ แผนกที่ล่าช้า น่าเป็นห่วงที่สุด (ระบุตัวเลขและชื่อเรื่องให้ชัดเจน)
+4. [Action Plan]: ข้อเสนอแนะเชิงกลยุทธ์สำหรับผู้บริหาร 3 ข้อ ว่าควรเข้าไปจี้จุดไหนก่อน
+
+อธิบายให้ละเอียด เป็นมืออาชีพ (ความยาว 10-15 บรรทัด) ห้ามเกริ่นนำ ให้เข้าประเด็นทันที`;
 
     try {
-        const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'ai_advisor', prompt: promptText }) });
+        const response = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ type: 'ai_advisor', prompt: promptText }) 
+        });
         const data = await response.json();
-        if (data.status === 'success') { resBox.innerHTML = data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'); } 
-        else { resBox.innerHTML = `❌ เกิดข้อผิดพลาดจาก AI: ${data.message}`; }
-    } catch(err) { resBox.innerHTML = '❌ เชื่อมต่อเครือข่าย AI ไม่สำเร็จ'; } finally { btn.disabled = false; }
+        
+        if (data.status === 'success') {
+            resBox.innerHTML = data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+        } else { 
+            resBox.innerHTML = `❌ เกิดข้อผิดพลาดจาก AI: ${data.message}`; 
+        }
+    } catch(err) { 
+        resBox.innerHTML = '❌ เชื่อมต่อเครือข่าย AI ไม่สำเร็จ'; 
+    } finally { 
+        btn.disabled = false; 
+    }
 }
 
 function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 
 async function sendMessage() {
-    const inputEl = document.getElementById('chat-input'); const btnEl = document.getElementById('chat-btn'); const text = inputEl.value.trim();
-    if (!text) return; appendMessage('user', text); inputEl.value = ''; btnEl.disabled = true; const typingId = appendTypingIndicator();
-    
-    const summaryData = {
-       AM: { target: appData.am.target, wip: appData.am.wip, completed: appData.am.actual, pct: appData.am.pct + '%' },
-       OPL: { target: appData.opl.target, wip: appData.opl.wip, completed: appData.opl.actual, pct: appData.opl.pct + '%' },
-       FI_Theme: { target: appData.fi.target, wip: appData.fi.wip, completed: appData.fi.actual, pct: appData.fi.pct + '%' },
-       Kaizen: { target: appData.kz.target, wip: appData.kz.wip, completed: appData.kz.actual, pct: appData.kz.pct + '%' },
-       Makigami: { target: appData.mk.target, wip: appData.mk.wip, completed: appData.mk.actual, pct: appData.mk.pct + '%' }
-    };
-    
-    const systemPrompt = `Context JSON: ${JSON.stringify(summaryData)}
+    const inputEl = document.getElementById('chat-input');
+    const btnEl = document.getElementById('chat-btn');
+    const text = inputEl.value.trim();
+    if (!text) return; 
+
+    appendMessage('user', text);
+    inputEl.value = ''; 
+    btnEl.disabled = true;
+    const typingId = appendTypingIndicator();
+
+    const dbContext = JSON.stringify({
+        staff: userDataObj,
+        kpi: kpiMaster,
+        am: amHistory,
+        opl: oplHistory,
+        fi: fiHistory,
+        kz: kzHistory,
+        mk: mkHistory
+    });
+
+    const systemPrompt = `Context JSON: ${dbContext}
 กฎการตอบ:
 1. คุณคือ AI Advisor ตอบเป็นภาษาไทย "เท่านั้น"
-2. วิเคราะห์จากสถานะ (Status) และความสำเร็จ (%) ใน JSON ด้านบน
+2. วิเคราะห์จากสถานะ (Status) และความสำเร็จ (%) ใน JSON
 3. ตอบสั้นที่สุด (ไม่เกิน 5 บรรทัด) ห้ามเกริ่น ห้ามทวนคำถาม
-4. หากถามว่าแผนกไหนน่าห่วง: ให้ดูเสาที่มี % ต่ำสุด หรือ wip เยอะสุด
+4. หากถามว่าแผนกไหนน่าห่วง: ให้ดูแผนกที่มี % ต่ำสุด หรือ Status เป็น 'ไม่ผ่าน' หรือ 'Delayed'
 5. ถ้าไม่เจอข้อมูลตอบ "ไม่มีข้อมูลครับ"
 คำถาม: "${text}"`;
 
     try {
-        const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'ai_advisor', prompt: systemPrompt }) });
+        const response = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ type: 'ai_advisor', prompt: systemPrompt }) 
+        });
         const data = await response.json();
         removeElement(typingId);
-        if (data.status === 'success') { appendMessage('ai', data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>')); } 
-        else { appendMessage('ai', `❌ Error: ${data.message}`); }
-    } catch(err) { removeElement(typingId); appendMessage('ai', `❌ เชื่อมต่อไม่สำเร็จ`); } finally { btnEl.disabled = false; inputEl.focus(); }
+
+        if (data.status === 'success') {
+            appendMessage('ai', data.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'));
+        } else { 
+            appendMessage('ai', `❌ Error: ${data.message}`); 
+        }
+    } catch(err) { 
+        removeElement(typingId); 
+        appendMessage('ai', `❌ เชื่อมต่อไม่สำเร็จ`); 
+    } finally { 
+        btnEl.disabled = false; 
+        inputEl.focus(); 
+    }
 }
 
-function appendMessage(sender, text) { const chatBody = document.getElementById('chat-body'); const msgWrap = document.createElement('div'); msgWrap.className = `msg-wrap ${sender}`; msgWrap.innerHTML = `<div class="msg-bubble">${text}</div>`; chatBody.appendChild(msgWrap); chatBody.scrollTop = chatBody.scrollHeight; }
-function appendTypingIndicator() { const chatBody = document.getElementById('chat-body'); const id = 'typing-' + Date.now(); const msgWrap = document.createElement('div'); msgWrap.id = id; msgWrap.className = `msg-wrap ai`; msgWrap.innerHTML = `<div class="msg-bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`; chatBody.appendChild(msgWrap); chatBody.scrollTop = chatBody.scrollHeight; return id; }
+function appendMessage(sender, text) {
+    const chatBody = document.getElementById('chat-body');
+    const msgWrap = document.createElement('div');
+    msgWrap.className = `msg-wrap ${sender}`;
+    msgWrap.innerHTML = `<div class="msg-bubble">${text}</div>`;
+    chatBody.appendChild(msgWrap);
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+function appendTypingIndicator() {
+    const chatBody = document.getElementById('chat-body');
+    const id = 'typing-' + Date.now();
+    const msgWrap = document.createElement('div');
+    msgWrap.id = id; msgWrap.className = `msg-wrap ai`;
+    msgWrap.innerHTML = `<div class="msg-bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+    chatBody.appendChild(msgWrap); chatBody.scrollTop = chatBody.scrollHeight;
+    return id;
+}
 function removeElement(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
 document.getElementById('btn-guide').addEventListener('click', function(e) { e.preventDefault(); startTour(); });
