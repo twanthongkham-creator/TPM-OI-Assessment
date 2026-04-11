@@ -151,74 +151,6 @@ body::after { width: 60vw; height: 60vw; max-width: 700px; max-height: 700px; ba
 .zone-b .zone-line { background: var(--gray-600); }
 
 /* ══════════════════════════════════════════════
-   Action Banner — "What do you need?"
-   แถบบนสุดช่วยให้ User ตัดสินใจทันที
-══════════════════════════════════════════════ */
-.intent-banner {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
-  opacity: 0; transform: translateY(16px); animation: fadeUp 0.5s forwards 0.05s;
-}
-@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-
-.intent-card {
-  display: flex; align-items: center; gap: 16px;
-  padding: 18px 24px; border-radius: 20px; text-decoration: none; cursor: default;
-  border: 2px solid transparent;
-  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative; overflow: hidden;
-}
-.intent-card::before {
-  content: ''; position: absolute; inset: 0; border-radius: 18px; opacity: 0;
-  transition: opacity 0.35s;
-}
-.intent-card:hover::before { opacity: 1; }
-.intent-card:hover { transform: translateY(-4px); }
-
-/* Intent A — สร้างงาน */
-.intent-a {
-  background: rgba(58,134,255,0.08);
-  border-color: rgba(58,134,255,0.25);
-  box-shadow: 0 8px 24px rgba(58,134,255,0.08);
-}
-.intent-a::before { background: linear-gradient(135deg, rgba(58,134,255,0.05), rgba(58,134,255,0.12)); }
-.intent-a:hover { border-color: rgba(58,134,255,0.5); box-shadow: 0 16px 36px rgba(58,134,255,0.15); }
-
-/* Intent B — ดูและแก้ไข */
-.intent-b {
-  background: rgba(10,37,64,0.06);
-  border-color: rgba(10,37,64,0.15);
-  box-shadow: 0 8px 24px rgba(10,37,64,0.05);
-}
-.intent-b::before { background: linear-gradient(135deg, rgba(10,37,64,0.04), rgba(10,37,64,0.1)); }
-.intent-b:hover { border-color: rgba(10,37,64,0.3); box-shadow: 0 16px 36px rgba(10,37,64,0.1); }
-
-.intent-icon {
-  width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  color: #fff;
-}
-.intent-card:hover .intent-icon { transform: scale(1.12) rotate(-5deg); }
-.intent-a .intent-icon { background: linear-gradient(135deg, #60A5FA, #2563EB); }
-.intent-b .intent-icon { background: linear-gradient(135deg, #475569, #0A2540); }
-
-.intent-text { flex: 1; min-width: 0; }
-.intent-tag {
-  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-  padding: 3px 10px; border-radius: 20px; display: inline-block; margin-bottom: 6px;
-}
-.intent-a .intent-tag { background: rgba(58,134,255,0.15); color: var(--blue-600); }
-.intent-b .intent-tag { background: rgba(10,37,64,0.1); color: var(--blue-800); }
-.intent-title { font-size: 16px; font-weight: 700; color: var(--blue-900); margin-bottom: 2px; }
-.intent-hint { font-size: 12px; color: var(--gray-600); font-weight: 500; line-height: 1.5; }
-.intent-arrow {
-  font-size: 20px; color: var(--blue-400); opacity: 0.4;
-  transform: translateX(4px); transition: all 0.3s;
-}
-.intent-card:hover .intent-arrow { opacity: 1; transform: translateX(0); }
-
-/* ══════════════════════════════════════════════
    Menu Cards — Create Zone
 ══════════════════════════════════════════════ */
 .cards-row {
@@ -402,8 +334,6 @@ body::after { width: 60vw; height: 60vw; max-width: 700px; max-height: 700px; ba
   .header-actions { width: 100%; }
   .pill-btn, .datetime-badge { flex: 1; justify-content: center; padding: 0; }
 
-  .intent-banner { grid-template-columns: 1fr; }
-
   .cards-row { grid-template-columns: 1fr; gap: 12px; }
   .menu-card { flex-direction: row !important; align-items: center; padding: 20px !important; gap: 14px; }
   .mc-icon-wrap { margin-bottom: 0 !important; width: 52px; height: 52px; border-radius: 14px; }
@@ -441,35 +371,6 @@ body::after { width: 60vw; height: 60vw; max-width: 700px; max-height: 700px; ba
         <span>กำลังโหลด...</span>
       </div>
     </div>
-  </div>
-
-  <!-- ══ INTENT BANNER — "ต้องการทำอะไร?" ══ -->
-  <div class="intent-banner" id="tour-intent">
-
-    <div class="intent-card intent-a">
-      <div class="intent-icon">
-        <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </div>
-      <div class="intent-text">
-        <div class="intent-tag">Zone A</div>
-        <div class="intent-title">สร้างงานใหม่</div>
-        <div class="intent-hint">เพิ่ม OPL · ประเมิน 5ส · ขึ้นโครงการ FI<br>เลือกเมนูด้านล่างตามประเภทงาน</div>
-      </div>
-      <div class="intent-arrow">↓</div>
-    </div>
-
-    <a href="dashboard.html" class="intent-card intent-b" style="text-decoration:none;">
-      <div class="intent-icon">
-        <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17h7M17 14v7"/></svg>
-      </div>
-      <div class="intent-text">
-        <div class="intent-tag">Zone B</div>
-        <div class="intent-title">ดู / แก้ไข / อนุมัติงานเดิม</div>
-        <div class="intent-hint">แก้ไขข้อมูลที่บันทึกไว้ · หัวหน้ากดอนุมัติ<br>ดูสถิติ KPI ภาพรวมแผนก</div>
-      </div>
-      <div class="intent-arrow" style="color: var(--blue-900);">→</div>
-    </a>
-
   </div>
 
   <!-- ══ ZONE A — สร้างงาน ══ -->
@@ -599,12 +500,7 @@ function startHomeTour() {
     steps: [
       {
         title: 'ยินดีต้อนรับสู่ OI Center',
-        intro: 'ระบบนี้แบ่งออกเป็น 2 โซนหลัก เพื่อให้ง่ายต่อการใช้งานครับ'
-      },
-      {
-        element: document.querySelector('#tour-intent'),
-        intro: '<b>เลือกโซนให้ถูกต้องก่อน:</b><br><br>▸ <b>Zone A (ซ้าย)</b> = ต้องการ<b>สร้างงานใหม่</b><br>▸ <b>Zone B (ขวา)</b> = ต้องการ<b>แก้ไข / อนุมัติ / ดูผล</b>งานที่บันทึกไว้แล้ว',
-        position: 'bottom'
+        intro: 'ระบบนี้แบ่งเป็น 2 โซน: <b>Zone A</b> สำหรับสร้างงานใหม่ และ <b>Zone B</b> สำหรับดู/แก้ไข/อนุมัติงานที่มีอยู่แล้วครับ'
       },
       {
         element: document.querySelector('#step-am'),
