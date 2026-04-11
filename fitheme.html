@@ -298,18 +298,7 @@ input[readonly], select:disabled { background: rgba(238,242,255,0.6); color: var
         <div class="grid2" style="margin-bottom:20px;">
           <div class="fg">
             <label>แผนก / กลุ่ม (Dept) <span class="req">จำเป็น</span></label>
-            <select id="f-dept" onchange="generateFiId(); populateUsers();">
-              <option value="">-- เลือกแผนก --</option>
-              <option value="MT">MT (วิศวกรรม/ซ่อมบำรุง)</option>
-              <option value="RW">RW (คลังวัตถุดิบ/อะไหล่)</option>
-              <option value="QC">QC (ควบคุมคุณภาพ)</option>
-              <option value="PD">PD (แผนกผลิต)</option>
-              <option value="WH">WH (คลังสินค้า)</option>
-              <option value="EN">EN (วิศวกรรม)</option>
-              <option value="SE">SE (ความปลอดภัย)</option>
-              <option value="HC">HC (ทรัพยากรบุคคล)</option>
-              <option value="AC">AC (บัญชี)</option>
-            </select>
+            <select id="f-dept" onchange="generateFiId(); populateUsers();"></select>
           </div>
           <div class="fg">
             <label>ชื่อ-นามสกุล (ผู้รับผิดชอบ) <span class="req">จำเป็น</span></label>
@@ -524,6 +513,7 @@ input[readonly], select:disabled { background: rgba(238,242,255,0.6); color: var
 
 <div class="toast" id="toast"></div>
 
+<script src="dept-helper.js"></script>
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
@@ -561,8 +551,14 @@ async function initData() {
       fetch(APPS_SCRIPT_URL + '?action=getUsers&t=' + Date.now()).then(r => r.json()),
       fetch(APPS_SCRIPT_URL + '?action=getFiHistory&t=' + Date.now()).then(r => r.json())
     ]);
-    if (uRes.status === 'success') { userData = uRes.users || {}; approverData = uRes.approvers || {}; }
+    if (uRes.status === 'success') {
+      userData = uRes.users || {};
+      approverData = uRes.approvers || {};
+      if (uRes.depts) DeptHelper.loadDeptsFromArray(uRes.depts);
+      else await DeptHelper.loadDepts(APPS_SCRIPT_URL);
+    }
     if (fRes.status === 'success') { fiHistoryData = fRes.data || []; }
+    DeptHelper.populateDeptSelect('f-dept');
     document.getElementById('loading-zone').style.display = 'none';
     document.getElementById('form-zone').style.display = 'block';
     prefillFromURL();
