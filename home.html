@@ -150,6 +150,60 @@ body::after { width: 60vw; height: 60vw; max-width: 700px; max-height: 700px; ba
 .zone-b .zone-label { color: var(--gray-600); }
 .zone-b .zone-line { background: var(--gray-600); }
 
+/* Zone C — Admin (Slate/Dark) */
+.zone-c .zone-icon-pill { background: linear-gradient(135deg, #374151, #111827); color: #fff; }
+.zone-c .zone-label { color: #374151; }
+.zone-c .zone-line { background: #374151; }
+
+/* ─── Admin Card ─── */
+.admin-card {
+  text-decoration: none; display: flex; align-items: center;
+  gap: 20px; padding: 24px 32px; border-radius: 24px;
+  position: relative; overflow: hidden;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(255,255,255,0.9);
+  box-shadow: 0 8px 28px rgba(10,37,64,0.05), inset 0 1px 0 rgba(255,255,255,1);
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  opacity: 0; transform: translateY(16px); animation: fadeUp 0.6s forwards 0.55s;
+  cursor: pointer;
+}
+.admin-card:hover {
+  background: rgba(255,255,255,0.88);
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(10,37,64,0.1), inset 0 1px 0 #fff;
+}
+.admin-card::after {
+  content: ''; position: absolute; top: -20%; right: -10%; width: 160px; height: 160px;
+  border-radius: 50%; background: radial-gradient(circle, rgba(55,65,81,0.15) 0%, transparent 70%);
+  opacity: 0; filter: blur(30px); pointer-events: none; transition: opacity 0.4s;
+}
+.admin-card:hover::after { opacity: 1; }
+
+.admin-icon {
+  width: 56px; height: 56px; border-radius: 16px; flex-shrink: 0;
+  background: linear-gradient(135deg, #374151, #111827); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 20px rgba(17,24,39,0.2);
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.admin-card:hover .admin-icon { transform: scale(1.1) rotate(-5deg); }
+.admin-icon svg { width: 24px; height: 24px; }
+
+.admin-text { flex: 1; min-width: 0; }
+.admin-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 20px; display: inline-block; margin-bottom: 6px;
+  background: rgba(55,65,81,0.1); color: #374151;
+}
+.admin-title { font-size: 16px; font-weight: 700; color: var(--blue-900); margin-bottom: 3px; }
+.admin-desc  { font-size: 13px; color: var(--gray-600); font-weight: 500; line-height: 1.5; }
+
+.admin-arrow {
+  font-size: 20px; color: #374151; opacity: 0.35;
+  transform: translateX(4px); transition: all 0.3s; flex-shrink: 0;
+}
+.admin-card:hover .admin-arrow { opacity: 1; transform: translateX(0); }
+
 /* ══════════════════════════════════════════════
    Menu Cards — Create Zone
 ══════════════════════════════════════════════ */
@@ -479,10 +533,43 @@ body::after { width: 60vw; height: 60vw; max-width: 700px; max-height: 700px; ba
     </div>
   </a>
 
+  <!-- ══ ZONE C — Admin ══ -->
+  <div class="zone-header zone-c" style="margin-top: 8px;" id="tour-admin-label">
+    <div class="zone-icon-pill">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <div class="zone-text">
+      <div class="zone-label zone-c">Zone C — Admin</div>
+      <div class="zone-title">จัดการผู้ใช้งานระบบ</div>
+      <div class="zone-desc">จัดการ Users · Approvers · Plants (ต้องการรหัสผ่าน)</div>
+    </div>
+    <div class="zone-line"></div>
+  </div>
+
+  <!-- Admin Card -->
+  <div class="admin-card" id="tour-admin" onclick="goToAdmin()">
+    <div class="admin-icon">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div class="admin-text">
+      <div class="admin-tag">Admin Only</div>
+      <div class="admin-title">User & Approver Management</div>
+      <div class="admin-desc">เพิ่ม / แก้ไข / ลบ User และ Approver · จัดการ Plant ทั้งหมด</div>
+    </div>
+    <div class="admin-arrow">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </div>
+  </div>
+
 </div><!-- /.shell -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
 <script>
+/* ── Admin Navigation ── */
+function goToAdmin() {
+  window.location.href = 'admin.html';
+}
+
 /* ── Live Clock ── */
 function updateTime() {
   const now = new Date();
@@ -537,6 +624,11 @@ function startHomeTour() {
         element: document.querySelector('#btn-guide'),
         intro: 'ลืมวิธีใช้งานเมื่อไหร่ กดปุ่มนี้เพื่อเรียกทัวร์ได้ตลอดเวลาครับ!',
         position: 'bottom'
+      },
+      {
+        element: document.querySelector('#tour-admin'),
+        intro: '<b>Zone C — Admin:</b> สำหรับผู้ดูแลระบบเท่านั้น กดเพื่อจัดการรายชื่อ Users, Approvers และ Plants โดยต้องกรอกรหัสผ่านก่อนเข้าใช้งาน',
+        position: 'top'
       }
     ],
     nextLabel: 'ถัดไป ›',
