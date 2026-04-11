@@ -16,7 +16,7 @@
   .introjs-nextbutton:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99,102,241,0.4) !important; }
   .introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; background: #F8FAFC !important; border: 1px solid #D9E2EC !important; }
   .introjs-donebutton { background: linear-gradient(135deg, #2DD4BF, #0CA47C) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(12,164,124,0.3) !important; }
-  .introjs-tooltip { border-radius: 24px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.3); border: 1px solid rgba(255,255,255,0.9); font-family: 'IBM Plex Sans Thai', sans-serif; }
+  .introjs-tooltip { border-radius: 24px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.3); border: 1px solid rgba(255,255,255,0.9); font-family: 'IBM Plex Sans Thai', sans-serif; z-index: 9999999 !important; }
   .introjs-progress { background-color: #EEF2FF; border-radius: 4px; overflow: hidden; }
   .introjs-progressbar { background-color: #6366F1; }
   
@@ -39,10 +39,10 @@
 
 :root {
   --blue-900:#0A2540; --blue-800:#113A5D; --blue-600:#1E6091; --blue-400:#3A86FF;
-  --teal-700:#087A5C; --teal-600:#0CA47C; --teal-500:#14B8A6; --teal-400:#10D2A1;
-  --red-600:#EF4444; --rose-500:#F43F5E; --rose-600:#E11D48;
-  --orange-700:#C46200; --orange-600:#E65100; --orange-500:#F57C00;
-  --indigo-50:#EEF2FF; --indigo-300:#A5B4FC; --indigo-400:#818CF8; --indigo-500:#6366F1; --indigo-600:#4F46E5; --indigo-700:#4338CA; --indigo-800:#3730A3;
+  --teal-700:#087A5C; --teal-600:#0CA47C; 
+  --orange-700:#C46200; --orange-600:#E65100; --orange-500:#F57C00; --orange-400:#FF9800; --orange-50:#FFF3E0;
+  --rose-500:#F43F5E; --rose-600:#E11D48;
+  --red-500:#F44336; 
   --gray-900:#1A1C1E; --gray-600:#505A64; --gray-400:#9BA5B1; --gray-200:#D9E2EC;
   --font:'IBM Plex Sans Thai',sans-serif;
   --blur:blur(32px) saturate(180%);
@@ -52,7 +52,7 @@
 html{scroll-behavior:smooth}
 body{
   font-family:var(--font); min-height:100vh;
-  /* พื้นหลังโทน Indigo สว่าง */
+  /* 🍎 พื้นหลังโทน Indigo สว่างสไตล์ Liquid Glass */
   background:linear-gradient(145deg,#eef2ff 0%,#e0eaf5 35%,#e8eaf6 65%,#f3e8ff 100%);
   background-attachment:fixed; color:var(--gray-900); padding-bottom:80px; overflow-x:hidden;
 }
@@ -90,10 +90,10 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
   white-space: nowrap; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .btn-help {
-  background: linear-gradient(135deg, #FF9800, #E65100); color: white; border: none;
-  box-shadow: 0 4px 15px rgba(245,124,0,0.3); cursor: pointer;
+  background: linear-gradient(135deg, #F57C00, #E11D48); color: white; border: none;
+  box-shadow: 0 4px 15px rgba(225,29,72,0.3); cursor: pointer;
 }
-.btn-help:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245,124,0,0.4); }
+.btn-help:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(225,29,72,0.4); }
 .pill-btn {
   background: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,1);
   color: var(--indigo-600); text-decoration: none; box-shadow: 0 4px 14px rgba(10,37,64,0.06);
@@ -117,6 +117,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 #tour-2 { animation-delay: 0.2s; }
 #tour-3 { animation-delay: 0.3s; }
 #tour-4 { animation-delay: 0.4s; }
+#tour-5 { animation-delay: 0.5s; }
 
 .sec-label{font-size:15px;font-weight:700;color:var(--indigo-600);letter-spacing:0.5px;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
 .sec-label::after{content:'';flex:1;height:2px;background:linear-gradient(90deg, rgba(99,102,241,0.15), transparent); border-radius:2px;}
@@ -127,7 +128,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 .fg{display:flex;flex-direction:column;gap:8px; min-width:0;}
 .fg label{font-size:13px;font-weight:700;color:var(--blue-900); padding-left: 4px; display:flex; align-items:center;}
-.req{background:var(--red-500);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:8px; box-shadow:0 2px 6px rgba(244,67,54,0.3);}
+.req{background:var(--rose-500);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:8px; box-shadow:0 2px 6px rgba(244,63,94,0.3);}
 
 /* 💡 Premium Inputs */
 input[type=text],input[type=number],input[type=date],input[type=password],select,textarea{ 
@@ -292,7 +293,7 @@ input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--i
           </div>
         </div>
 
-        <div class="fg" style="margin-bottom:20px;">
+        <div class="fg" style="margin-bottom:20px;" id="tour-title">
           <label>ชื่อเรื่อง (Theme Name) <span class="req">จำเป็น</span></label>
           <input type="text" id="f-title" placeholder="ระบุชื่อเรื่องการปรับปรุง เช่น การลดเวลาสูญเสียในการตั้งเครื่อง..." style="font-weight:bold; color:var(--indigo-600); font-size:15px;">
         </div>
@@ -460,7 +461,7 @@ input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--i
       </div>
     </div>
 
-    <div id="tour-actions" class="tour-wrapper">
+    <div id="tour-5" class="tour-wrapper">
       <div class="card-box glass" id="pin-box" style="display:none; background:var(--indigo-50); border: 1px solid var(--indigo-400);">
         <div class="sec-label" style="color:var(--indigo-600); border-bottom:none; margin-bottom:5px;">🔑 ยืนยันตัวตนผู้อนุมัติ FI Theme</div>
         <div class="fg">
@@ -497,10 +498,11 @@ input[readonly], select:disabled{background:rgba(238,242,255,0.6); color:var(--i
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-// 💡 4. ฟังก์ชัน Guided Tour (เพิ่มการซ่อน UI กวนใจตอนเริ่มทัวร์)
+// 💡 4. ฟังก์ชัน Guided Tour (แก้ปัญหาจอมืดค้าง 100%)
 function startTour() {
+  // เพิ่มคลาส tour-active เพื่อปิด Effect กระจกทั้งหมดชั่วคราว
   document.body.classList.add('tour-active');
-  
+
   setTimeout(() => {
     const tour = introJs();
     tour.setOptions({
@@ -515,22 +517,27 @@ function startTour() {
           position: 'bottom'
         },
         {
+          element: '#tour-title',
+          intro: '<b>2. ชื่อเรื่อง:</b> พิมพ์ชื่อกระบวนการที่คุณกำลังปรับปรุงให้ชัดเจน',
+          position: 'top'
+        },
+        {
           element: '#tour-2',
-          intro: '<b>2. ตั้งเป้าหมาย:</b> เลือกหน่วยที่ต้องการวัด และใส่ตัวเลขก่อนปรับปรุง (Baseline) และเป้าหมายที่อยากได้ (Target)',
+          intro: '<b>3. ตั้งเป้าหมาย:</b> เลือกหน่วยที่ต้องการวัด และใส่ตัวเลขก่อนปรับปรุง (Baseline) และเป้าหมายที่อยากได้ (Target)',
           position: 'top'
         },
         {
           element: '#tour-3',
-          intro: '<b>3. ไฟล์ประกอบ:</b> แนะนำให้แนบสไลด์นำเสนอ (PDF) หรือไฟล์ Excel ข้อมูลตั้งต้น เพื่อให้ทีมตรวจสอบได้ง่ายขึ้น',
+          intro: '<b>4. ไฟล์ประกอบ:</b> แนะนำให้แนบสไลด์นำเสนอ (PDF) หรือไฟล์ Excel ข้อมูลตั้งต้น เพื่อให้ทีมตรวจสอบได้ง่ายขึ้น',
           position: 'top'
         },
         {
           element: '#tour-4',
-          intro: '<b>4. อัปเดตความคืบหน้า:</b> เมื่อโครงการดำเนินการไปถึงไหน คุณสามารถเข้ามา "เปลี่ยน Step" ได้เรื่อยๆ จนกว่าจะถึง Step 10',
+          intro: '<b>5. อัปเดตความคืบหน้า:</b> เมื่อโครงการดำเนินการไปถึงไหน คุณสามารถเข้ามา "เปลี่ยน Step" ได้เรื่อยๆ จนกว่าจะถึง Step 10',
           position: 'top'
         },
         {
-          element: '#tour-actions',
+          element: '#tour-5',
           intro: '✨ <b>จุดสำคัญ:</b> ในระหว่างอัปเดต Step 1-9 ให้กด "บันทึกอัปเดต" <br>แต่ถ้าคุณเลือก Step 10 และสถานะเป็น "เสร็จสมบูรณ์" ปุ่มจะเปลี่ยนเป็น <b>"ส่งอนุมัติ"</b> แทนครับ!',
           position: 'top'
         }
@@ -540,7 +547,7 @@ function startTour() {
       doneLabel: 'เข้าใจแล้ว!',
       showProgress: true,
       showStepNumbers: false,
-      disableInteraction: true,
+      disableInteraction: false, // ป้องกันการติดบั๊กในมือถือ
       exitOnOverlayClick: true
     });
 
@@ -549,7 +556,7 @@ function startTour() {
     tour.oncomplete(function() { document.body.classList.remove('tour-active'); });
     
     tour.start();
-  }, 400); 
+  }, 300);
 }
 
 const imageStore = []; const docStore = []; let oldFileLinks = '';
@@ -571,9 +578,9 @@ async function initData() {
     prefillFromURL();
 
     // 💡 เริ่มทัวร์อัตโนมัติเฉพาะเข้าใช้งานครั้งแรก
-    if (!localStorage.getItem('fitheme_tour_done_v2')) {
-        setTimeout(() => { startTour(); }, 1500); // ดีเลย์เล็กน้อยให้หน้าเว็บนิ่ง
-        localStorage.setItem('fitheme_tour_done_v2', 'true');
+    if (!localStorage.getItem('fitheme_tour_done_v3')) {
+      setTimeout(() => { startTour(); }, 1500); // ดีเลย์ให้ CSS ทำงานเสร็จ
+      localStorage.setItem('fitheme_tour_done_v3', 'true');
     }
 
   } catch(e) {
@@ -871,7 +878,7 @@ async function handleSubmit(actionType) {
   }
 }
 
-// 💡 Event Listener ป้องกันการกดเริ่มทัวร์ซ้ำซ้อน
+// ผูก Event Listener
 document.getElementById('btn-start-guide').addEventListener('click', function(e) {
     e.preventDefault();
     startTour();
