@@ -87,6 +87,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
+/* 💡 ปุ่ม Pill เหมือนตัวอย่างรูปภาพเป๊ะ */
 .pill-btn {
   height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 0 18px; border-radius: 40px; font-size: 13px; font-weight: 700; font-family: var(--font);
@@ -371,7 +372,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     <p>ระบบประเมินและบริหารจัดการเป้าหมาย (KPI Tracker)</p>
   </div>
   <div class="header-actions">
-    <button class="pill-btn" id="btn-guide" style="color:var(--orange-600); border-color:var(--orange-200); box-shadow: 0 4px 12px rgba(245,124,0,0.15);">
+    <button class="pill-btn" id="btn-guide" style="color:var(--blue-600); border-color:var(--blue-200); box-shadow: 0 4px 12px rgba(58,134,255,0.15);">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         สอนใช้งาน
     </button>
@@ -649,7 +650,8 @@ function startTour() {
       doneLabel: 'เข้าใจแล้ว!',
       showProgress: true,
       showStepNumbers: false,
-      disableInteraction: true
+      disableInteraction: false,
+      exitOnOverlayClick: true
     });
 
     // เมื่อจบหรือกดออก ให้คืนค่า Effect กระจกกลับมา
@@ -1194,17 +1196,14 @@ async function generateInsights() {
     
     const dbContext = JSON.stringify(summaryData);
 
-    const promptText = `คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง
-นี่คือข้อมูลสรุปของโรงงาน: ${dbContext}
+    const promptText = `ในฐานะที่ปรึกษา TPM กรุณาสรุปภาพรวม Performance ของ "${deptText}" จากข้อมูลนี้: ${dbContext}
 
-กรุณาวิเคราะห์ Performance ของ "${deptText}" อย่างละเอียดที่สุด
-โครงสร้างการตอบ (ให้ใช้ Bullet point):
-1. [ภาพรวม KPI]: สรุปความสำเร็จและเปอร์เซ็นต์ที่ได้แต่ละเสาอย่างเป็นมืออาชีพ
-2. [จุดเด่น]: แผนก หรือ ระบบที่ทำผลงานได้ดีเยี่ยม
-3. [จุดคอขวด]: โปรเจกต์ หรือ เสาหลักที่ล่าช้า น่าเป็นห่วงที่สุด และต้องเร่งตามงาน
-4. [Action Plan]: ข้อเสนอแนะเชิงกลยุทธ์สำหรับผู้บริหาร 3 ข้อ ว่าควรเข้าไปจี้จุดไหนก่อน
+ให้ตอบแบบสั้น กระชับ ตรงประเด็นที่สุด (ห้ามเกิน 8 บรรทัด) โดยแบ่งเป็น 3 ข้อ:
+1. ภาพรวมความสำเร็จ: เสาที่ทำได้ดีที่สุด และเสาที่รั้งท้าย
+2. จุดคอขวดที่ต้องระวัง: (ดูจากตัวเลข WIP ที่ค้างอยู่)
+3. Action Plan ทันที: แนะนำผู้บริหาร 2 ข้อสั้นๆ
 
-อธิบายให้ละเอียด เป็นมืออาชีพ (ความยาว 10-15 บรรทัด) ห้ามเกริ่นนำ ให้เข้าประเด็นทันที`;
+ห้ามเกริ่นนำ ห้ามลงท้าย เข้าประเด็นทันที`;
 
     try {
         const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'ai_advisor', prompt: promptText }) });
