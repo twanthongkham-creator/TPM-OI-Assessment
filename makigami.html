@@ -264,19 +264,7 @@ input[readonly], select:disabled { background: rgba(255,228,230,0.6); color: var
           </div>
           <div class="fg">
             <label>แผนก / กลุ่ม (Dept) <span class="req">จำเป็น</span></label>
-            <select id="m-dept" onchange="generateMkId(); populateUsers();">
-              <option value="">-- เลือกแผนก --</option>
-              <option value="MT">MT (วิศวกรรม/ซ่อมบำรุง)</option>
-              <option value="RW">RW (คลังวัตถุดิบ/อะไหล่)</option>
-              <option value="QC">QC (ควบคุมคุณภาพ)</option>
-              <option value="PD">PD (แผนกผลิต)</option>
-              <option value="WH.P">WH (คลังสินค้า)</option>
-              <option value="EN">EN (วิศวกรรม)</option>
-              <option value="SE.P">SE (ความปลอดภัย)</option>
-              <option value="HC.P">HC (ทรัพยากรบุคคล)</option>
-              <option value="AC.P">AC (บัญชี)</option>
-              <option value="PIS">PIS (Production Improvement)</option>
-            </select>
+            <select id="m-dept" onchange="generateMkId(); populateUsers();"></select>
           </div>
         </div>
 
@@ -362,6 +350,7 @@ input[readonly], select:disabled { background: rgba(255,228,230,0.6); color: var
 
 <div class="toast" id="toast"></div>
 
+<script src="dept-helper.js"></script>
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
@@ -402,8 +391,13 @@ async function initData() {
       fetch(APPS_SCRIPT_URL + '?action=getUsers&t=' + Date.now()).then(r => r.json()),
       fetch(APPS_SCRIPT_URL + '?action=getMakigamiHistory&t=' + Date.now()).then(r => r.json())
     ]);
-    if (uRes.status === 'success') { userData = uRes.users || {}; }
+    if (uRes.status === 'success') {
+      userData = uRes.users || {};
+      if (uRes.depts) DeptHelper.loadDeptsFromArray(uRes.depts);
+      else await DeptHelper.loadDepts(APPS_SCRIPT_URL);
+    }
     if (mRes.status === 'success') { rawHistory = mRes.data || []; }
+    DeptHelper.populateDeptSelect('m-dept');
     document.getElementById('loading-zone').style.display = 'none';
     document.getElementById('form-zone').style.display = 'block';
     prefillFromURL();
