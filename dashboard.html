@@ -87,6 +87,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 
 .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
+/* 💡 ปุ่ม Pill เหมือนตัวอย่างรูปภาพเป๊ะ */
 .pill-btn {
   height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 0 18px; border-radius: 40px; font-size: 13px; font-weight: 700; font-family: var(--font);
@@ -199,7 +200,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .ai-header-wrapper { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
 .ai-branding { display:flex; align-items:center; gap: 16px; }
 
-/* 💡 Gemini Real SVG Shape (Star Sparkle) */
+/* 💡 Gemini Real SVG Shape (Star Sparkle) - แก้ไขสมบูรณ์เต็มดวง ไม่แหว่ง */
 .gemini-logo-svg {
   width: 48px; height: 48px;
   filter: drop-shadow(0 4px 12px rgba(139,92,246,0.3));
@@ -371,7 +372,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     <p>ระบบประเมินและบริหารจัดการเป้าหมาย (KPI Tracker)</p>
   </div>
   <div class="header-actions">
-    <button class="pill-btn" id="btn-guide" style="color:var(--blue-600); border-color:var(--blue-200); box-shadow: 0 4px 12px rgba(58,134,255,0.15);">
+    <button class="btn-help" onclick="startTour()">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         สอนใช้งาน
     </button>
@@ -383,131 +384,127 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 </div>
 
 <div class="wrap">
-  <div id="loader" style="text-align:center; padding:100px;">
-      <div class="spinner" style="width:40px;height:40px;border-width:4px;"></div>
-      <div id="loader-text" style="margin-top:16px;font-weight:700;color:var(--blue-800);">กำลังประมวลผลข้อมูล...</div>
-  </div>
+  <div id="loader" style="text-align:center; padding:100px;"><div class="spinner" style="width:40px;height:40px;border-width:4px;"></div><div style="margin-top:16px;font-weight:700;color:var(--blue-800);">กำลังประมวลผลข้อมูล...</div></div>
 
   <div id="main-dashboard-view" style="display:none;">
 
     <div id="tour-1" class="tour-wrapper" style="margin-bottom: 32px;">
-        <div class="filter-section glass" style="margin-bottom: 0;">
-          <label>
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            คัดกรองข้อมูลตามแผนก:
-          </label>
-          <select id="global-filter-dept" class="filter-select" onchange="processAndRender()">
-            <option value="all">แสดงภาพรวมทั้งหมด (All Departments)</option>
-          </select>
-        </div>
+      <div class="filter-section glass" style="margin-bottom: 0;">
+        <label>
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          คัดกรองข้อมูลตามแผนก:
+        </label>
+        <select id="global-filter-dept" class="filter-select" onchange="processAndRender()">
+          <option value="all">แสดงภาพรวมทั้งหมด (All Departments)</option>
+        </select>
+      </div>
     </div>
 
     <div id="tour-2" class="tour-wrapper" style="margin-bottom: 40px;">
-        <div class="sec-lbl">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-          ผลลัพธ์ KPI ภาพรวม 5 เสาหลัก
-        </div>
-        <div class="kpi-grid" id="kpi-cards-container" style="margin-bottom: 0;"></div>
+      <div class="sec-lbl">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        ผลลัพธ์ KPI ภาพรวม 5 เสาหลัก
+      </div>
+      <div class="kpi-grid" id="kpi-cards-container" style="margin-bottom: 0;"></div>
     </div>
 
     <div id="tour-3" class="tour-wrapper" style="margin-bottom: 40px;">
-        <div class="sec-lbl">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          เครื่องมือระดับบริหาร (Executive Tools)
-        </div>
-        <div class="glass ai-box" style="margin-bottom: 0;">
-            <div class="ai-header-wrapper">
-                <div class="ai-branding">
-                    <div class="ai-logo">
-                        <svg viewBox="0 0 24 24" class="gemini-logo-svg">
-                          <defs>
-                            <linearGradient id="geminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                              <stop offset="0%" stop-color="#4285F4"/>
-                              <stop offset="33%" stop-color="#9B72CB"/>
-                              <stop offset="67%" stop-color="#D96570"/>
-                              <stop offset="100%" stop-color="#F59E0B"/>
-                            </linearGradient>
-                          </defs>
-                          <path fill="url(#geminiGrad)" d="M12 0C12 6.62742 6.62742 12 0 12C6.62742 12 17.3726 12 24 12C17.3726 12 12 6.62742 12 0Z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3>Gemini Executive Insights ✨</h3>
-                        <p>ระบบ AI สรุปข้อมูลคอขวด และให้คำแนะนำทางยุทธศาสตร์</p>
-                    </div>
-                </div>
-                <div class="ai-btn-group">
-                    <button class="ai-btn" id="btn-ai-analyze" onclick="generateInsights()">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        เริ่มวิเคราะห์ข้อมูล
-                    </button>
-                </div>
-            </div>
-            <div id="ai-result-box" class="ai-result"></div>
-        </div>
+      <div class="sec-lbl">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        เครื่องมือระดับบริหาร (Executive Tools)
+      </div>
+      <div class="glass ai-box" style="margin-bottom: 0;">
+          <div class="ai-header-wrapper">
+              <div class="ai-branding">
+                  <div class="ai-logo">
+                      <svg viewBox="0 0 24 24" class="gemini-logo-svg">
+                        <defs>
+                          <linearGradient id="geminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#E84A5F"/>
+                            <stop offset="50%" stop-color="#4285F4"/>
+                            <stop offset="100%" stop-color="#34A853"/>
+                          </linearGradient>
+                        </defs>
+                        <path fill="url(#geminiGrad)" d="M12.0001 0.000213623C12.0001 6.62764 6.62753 12.0002 0.00012207 12.0002C6.62753 12.0002 12.0001 17.3728 12.0001 24.0002C12.0001 17.3728 17.3727 12.0002 24.0001 12.0002C17.3727 12.0002 12.0001 6.62764 12.0001 0.000213623Z"/>
+                      </svg>
+                  </div>
+                  <div>
+                      <h3>Gemini Executive Insights ✨</h3>
+                      <p>ระบบ AI สรุปข้อมูลคอขวด และให้คำแนะนำทางยุทธศาสตร์</p>
+                  </div>
+              </div>
+              <div class="ai-btn-group">
+                  <button class="ai-btn" id="btn-ai-analyze" onclick="generateInsights()">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                      เริ่มวิเคราะห์ข้อมูล
+                  </button>
+              </div>
+          </div>
+          <div id="ai-result-box" class="ai-result"></div>
+      </div>
     </div>
 
     <div id="tour-4" class="tour-wrapper" style="margin-bottom: 40px;">
-        <div class="sec-lbl">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          กราฟวิเคราะห์ประสิทธิภาพ (Analytics)
-        </div>
-        <div class="charts-overview" style="margin-bottom: 0;">
-          <div class="chart-box">
-            <div class="chart-header">
-              <div class="chart-title-text">
-                <div class="chart-icon-pill">
-                  <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                </div>
-                เปรียบเทียบ % ความคืบหน้าโครงการ
+      <div class="sec-lbl">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        กราฟวิเคราะห์ประสิทธิภาพ (Analytics)
+      </div>
+      <div class="charts-overview" style="margin-bottom: 0;">
+        <div class="chart-box">
+          <div class="chart-header">
+            <div class="chart-title-text">
+              <div class="chart-icon-pill">
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
               </div>
+              เปรียบเทียบ % ความคืบหน้าโครงการ
             </div>
-            <div style="flex:1;position:relative"><canvas id="kpiBarChart"></canvas></div>
           </div>
-          <div class="chart-box">
-            <div class="chart-header">
-              <div class="chart-title-text">
-                <div class="chart-icon-pill">
-                  <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
-                </div>
-                การกระจายตัวพื้นที่ AM-OI (ราย Step)
-              </div>
-            </div>
-            <div style="flex:1;position:relative"><canvas id="amStepChart"></canvas></div>
-          </div>
+          <div style="flex:1;position:relative"><canvas id="kpiBarChart"></canvas></div>
         </div>
+        <div class="chart-box">
+          <div class="chart-header">
+            <div class="chart-title-text">
+              <div class="chart-icon-pill">
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+              </div>
+              การกระจายตัวพื้นที่ AM-OI (ราย Step)
+            </div>
+          </div>
+          <div style="flex:1;position:relative"><canvas id="amStepChart"></canvas></div>
+        </div>
+      </div>
     </div>
 
     <div id="tour-5" class="tour-wrapper" style="margin-bottom: 40px;">
-        <div class="sec-lbl">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          ที่ปรึกษาส่วนตัว (AI TPM Advisor)
-        </div>
-        <div class="chat-container" style="margin-bottom: 0;">
-          <div class="chat-header">
-            <div class="chat-header-icon">
-              <svg viewBox="0 0 24 24" class="gemini-logo-svg" style="width:28px; height:28px;">
-                <path fill="url(#geminiGrad)" d="M12 0C12 6.62742 6.62742 12 0 12C6.62742 12 17.3726 12 24 12C17.3726 12 12 6.62742 12 0Z"/>
-              </svg>
-            </div>
-            <div class="chat-header-text">
-              <h3>สอบถามผู้เชี่ยวชาญ TPM (Gemini AI)</h3>
-              <p>สอบถามสถานะ KPI ดึงข้อมูลจากฐานข้อมูลจริงมาตอบ</p>
-            </div>
+      <div class="sec-lbl">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        ที่ปรึกษาส่วนตัว (AI TPM Advisor)
+      </div>
+      <div class="chat-container" style="margin-bottom: 0;">
+        <div class="chat-header">
+          <div class="chat-header-icon">
+            <svg viewBox="0 0 24 24" class="gemini-logo-svg" style="width:28px; height:28px;">
+              <path fill="url(#geminiGrad)" d="M12.0001 0.000213623C12.0001 6.62764 6.62753 12.0002 0.00012207 12.0002C6.62753 12.0002 12.0001 17.3728 12.0001 24.0002C12.0001 17.3728 17.3727 12.0002 24.0001 12.0002C17.3727 12.0002 12.0001 6.62764 12.0001 0.000213623Z"/>
+            </svg>
           </div>
-          <div class="chat-body" id="chat-body">
-            <div class="msg-wrap ai">
-              <div class="msg-bubble">สวัสดีครับ! ผมคือ <b>AI Advisor</b> ประจำหน้า Dashboard 👋<br><br>อยากให้ผมอัปเดตสถานะ KPI ของแผนกไหน หรืออยากให้ช่วยคิดไอเดียการปรับปรุงงาน พิมพ์ถามได้เลยครับ!</div>
-            </div>
-          </div>
-          <div class="chat-footer">
-            <input type="text" id="chat-input" class="chat-input" placeholder="พิมพ์คำถามของคุณที่นี่..." onkeypress="if(event.key==='Enter')sendMessage()">
-            <button id="chat-btn" class="chat-send-btn" onclick="sendMessage()">
-              ส่ง
-              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
+          <div class="chat-header-text">
+            <h3>สอบถามผู้เชี่ยวชาญ TPM (Gemini AI)</h3>
+            <p>สอบถามสถานะ KPI ดึงข้อมูลจากฐานข้อมูลจริงมาตอบ</p>
           </div>
         </div>
+        <div class="chat-body" id="chat-body">
+          <div class="msg-wrap ai">
+            <div class="msg-bubble">สวัสดีครับ! ผมคือ <b>AI Advisor</b> ประจำหน้า Dashboard 👋<br><br>อยากให้ผมอัปเดตสถานะ KPI ของแผนกไหน หรืออยากให้ช่วยคิดไอเดียการปรับปรุงงาน พิมพ์ถามได้เลยครับ!</div>
+          </div>
+        </div>
+        <div class="chat-footer">
+          <input type="text" id="chat-input" class="chat-input" placeholder="พิมพ์คำถามของคุณที่นี่..." onkeypress="if(event.key==='Enter')sendMessage()">
+          <button id="chat-btn" class="chat-send-btn" onclick="sendMessage()">
+            ส่ง
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -521,109 +518,70 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
       <div class="detail-header-title" id="detail-page-title">รายละเอียด</div>
     </div>
     <div id="detail-am" style="display:none;"><div class="grid" id="am-card-container"></div></div>
-    
-    <div id="detail-opl" style="display:none;" class="data-table-wrapper">
-      <div class="tbl-scroll">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th class="col-fit">วันที่</th>
-              <th class="col-fit">รหัส OPL</th>
-              <th class="col-fit">แผนก</th>
-              <th class="col-title">ชื่อเรื่อง</th>
-              <th class="col-owner">ผู้จัดทำ</th>
-              <th class="col-fit">สถานะ</th>
-              <th class="col-fit">จัดการ</th>
-            </tr>
-          </thead>
-          <tbody id="opl-table-body"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="detail-fi" style="display:none;" class="data-table-wrapper">
-      <div class="tbl-scroll">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th class="col-fit">รหัส FI</th>
-              <th class="col-fit">แผนก</th>
-              <th class="col-title">ชื่อเรื่อง</th>
-              <th class="col-owner">ผู้รับผิดชอบ</th>
-              <th class="col-fit">ความคืบหน้า</th>
-              <th class="col-fit">สถานะ</th>
-              <th class="col-fit">จัดการ</th>
-            </tr>
-          </thead>
-          <tbody id="fi-table-body"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="detail-kz" style="display:none;" class="data-table-wrapper">
-      <div class="tbl-scroll">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th class="col-fit">วันที่</th>
-              <th class="col-fit">เลขที่</th>
-              <th class="col-fit">แผนก</th>
-              <th class="col-title">ชื่อเรื่อง</th>
-              <th class="col-owner">ผู้ดำเนินการ</th>
-              <th class="col-fit">ประเภท</th>
-              <th class="col-fit">จัดการ</th>
-            </tr>
-          </thead>
-          <tbody id="kz-table-body"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="detail-mk" style="display:none;" class="data-table-wrapper">
-      <div class="tbl-scroll">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th class="col-fit">รหัส</th>
-              <th class="col-fit">แผนก</th>
-              <th class="col-title">ชื่อเรื่อง</th>
-              <th class="col-owner">ผู้รับผิดชอบ</th>
-              <th class="col-fit">Phase</th>
-              <th class="col-fit">สถานะ</th>
-              <th class="col-fit">จัดการ</th>
-            </tr>
-          </thead>
-          <tbody id="mk-table-body"></tbody>
-        </table>
-      </div>
-    </div>
-
+    <div id="detail-opl" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่</th><th>รหัส OPL</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้จัดทำ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="opl-table-body"></tbody></table></div></div>
+    <div id="detail-fi" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>รหัส FI</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้รับผิดชอบ</th><th>ความคืบหน้า</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="fi-table-body"></tbody></table></div></div>
+    <div id="detail-kz" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่</th><th>เลขที่</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้ดำเนินการ</th><th>ประเภท</th><th>จัดการ</th></tr></thead><tbody id="kz-table-body"></tbody></table></div></div>
+    <div id="detail-mk" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>รหัส</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้รับผิดชอบ</th><th>Phase</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="mk-table-body"></tbody></table></div></div>
   </div>
 </div>
 
 <script>
+// ⚠️ เปลี่ยน URL ของ Google Apps Script ของคุณตรงนี้
 const API_URL='https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
+// 💡 4. ฟังก์ชัน Guided Tour (ใช้ Wrapper ID ทำให้ทัวร์ไม่หลุดหาย 100%)
 function startTour() {
   if(document.getElementById('detail-view').style.display === 'block') {
      goBackToDashboard(); 
   }
-  document.body.classList.add('tour-active');
+  
   setTimeout(() => {
+    document.body.classList.add('tour-active');
     const tour = introJs();
     tour.setOptions({
       steps: [
-        { title: 'ยินดีต้อนรับสู่ Dashboard 👋', intro: 'ศูนย์ควบคุมข้อมูล OI ที่จะช่วยให้คุณติดตามทุกโปรเจกต์ได้ในที่เดียวครับ' },
-        { element: '#tour-1', intro: '<b>1. ตัวกรองแผนก:</b> เลือกแผนกของคุณที่นี่เพื่อดูข้อมูลเฉพาะส่วน กราฟและตัวเลขทั้งหมดจะเปลี่ยนตามทันทีครับ', position: 'bottom' },
-        { element: '#tour-2', intro: '<b>2. สรุป KPI 5 เสา:</b> ดูความสำเร็จเป็นเปอร์เซ็นต์ <br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดและกด "แก้ไข" งานเก่าได้จากที่นี่ครับ', position: 'top' },
-        { element: '#tour-3', intro: '<b>3. AI วิเคราะห์เชิงลึก:</b> หากข้อมูลเยอะเกินไป กดปุ่มนี้ให้ Gemini AI สรุป "จุดคอขวด" และข้อเสนอแนะให้คุณทันทีครับ', position: 'top' },
-        { element: '#tour-4', intro: '<b>4. กราฟเปรียบเทียบ:</b> แสดงสถิติเชิงเปรียบเทียบ <br>✨ <b>ทริค:</b> ลองคลิกที่แท่งกราฟเพื่อขยายดูข้อมูลรายการงานของเสานั้นๆ ได้ทันทีครับ!', position: 'top' },
-        { element: '#tour-5', intro: '<b>5. AI Advisor:</b> สงสัยตรงไหน พิมพ์ถามเป็นภาษาไทยได้เลยครับ เช่น "แผนกผลิตมี OPL เรื่องอะไรบ้าง?"', position: 'top' }
+        {
+          title: 'ยินดีต้อนรับสู่ Dashboard 👋',
+          intro: 'ศูนย์ควบคุมข้อมูล OI ที่จะช่วยให้คุณติดตามทุกโปรเจกต์ได้ในที่เดียวครับ'
+        },
+        {
+          element: '#tour-1',
+          intro: '<b>1. ตัวกรองแผนก:</b> เลือกแผนกของคุณที่นี่เพื่อดูข้อมูลเฉพาะส่วน กราฟและตัวเลขทั้งหมดจะเปลี่ยนตามทันทีครับ',
+          position: 'bottom'
+        },
+        {
+          element: '#tour-2',
+          intro: '<b>2. สรุป KPI 5 เสา:</b> ดูความสำเร็จเป็นเปอร์เซ็นต์ <br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดและกด "แก้ไข" งานเก่าได้จากที่นี่ครับ',
+          position: 'top'
+        },
+        {
+          element: '#tour-3',
+          intro: '<b>3. AI วิเคราะห์เชิงลึก:</b> หากข้อมูลเยอะเกินไป กดปุ่มนี้ให้ Gemini AI สรุป "จุดคอขวด" และข้อเสนอแนะให้คุณทันทีครับ',
+          position: 'top'
+        },
+        {
+          element: '#tour-4',
+          intro: '<b>4. กราฟเปรียบเทียบ:</b> แสดงสถิติเชิงเปรียบเทียบ <br>✨ <b>ทริค:</b> ลองคลิกที่แท่งกราฟเพื่อขยายดูข้อมูลรายการงานของเสานั้นๆ ได้ทันทีครับ!',
+          position: 'top'
+        },
+        {
+          element: '#tour-5',
+          intro: '<b>5. AI Advisor:</b> สงสัยตรงไหน พิมพ์ถามเป็นภาษาไทยได้เลยครับ เช่น "แผนกผลิตมี OPL เรื่องอะไรบ้าง?"',
+          position: 'top'
+        }
       ],
-      nextLabel: 'ถัดไป ›', prevLabel: '‹ ย้อนกลับ', doneLabel: 'เข้าใจแล้ว!', showProgress: true, showStepNumbers: false, disableInteraction: false, exitOnOverlayClick: true
+      nextLabel: 'ถัดไป ›',
+      prevLabel: '‹ ย้อนกลับ',
+      doneLabel: 'เริ่มใช้งานเลย!',
+      showProgress: true,
+      showStepNumbers: false,
+      disableInteraction: false,
+      exitOnOverlayClick: true
     });
+
     tour.onexit(function() { document.body.classList.remove('tour-active'); });
     tour.oncomplete(function() { document.body.classList.remove('tour-active'); });
+
     tour.start();
   }, 400); 
 }
@@ -670,18 +628,31 @@ async function loadData(){
   try {
     const res = await fetch(API_URL + '?action=getAllDashboardData&t=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
+
     if(data.status === 'success'){
       kpiMaster = data.kpi || [];
       kpiMaster.forEach(k => {
         let s = sg(k,'System',0), d = sg(k,'Department',2), a = sg(k,'Area',3);
-        if(s === 'AM-OI' && d && a && a !== 'ALL' && a !== 'All'){ if(!areaData[d]) areaData[d] = []; if(!areaData[d].includes(a)) areaData[d].push(a); }
+        if(s === 'AM-OI' && d && a && a !== 'ALL' && a !== 'All'){
+          if(!areaData[d]) areaData[d] = [];
+          if(!areaData[d].includes(a)) areaData[d].push(a);
+        }
       });
-      amHistory = data.am || []; oplHistory = data.opl || []; fiHistory = data.fi || []; kzHistory = data.kz || []; mkHistory = data.mk || [];
-      userDataObj = data.users || {}; approverDataObj = data.approvers || {};
+      amHistory = data.am || [];
+      oplHistory = data.opl || [];
+      fiHistory = data.fi || [];
+      kzHistory = data.kz || [];
+      mkHistory = data.mk || [];
+      userDataObj = data.users || {}; 
+      approverDataObj = data.approvers || {};
     }
-    initFilter(); processAndRender();
-    if (!localStorage.getItem('dashboard_tour_done_vFINAL_DASH2')) { setTimeout(() => { startTour(); }, 2000); localStorage.setItem('dashboard_tour_done_vFINAL_DASH2', 'true'); }
-  } catch(e) { document.getElementById('loader-text').innerHTML = '<span style="color:var(--red-600); font-weight:bold;">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชอีกครั้ง</span>'; }
+
+    initFilter(); 
+    processAndRender();
+
+  } catch(e) { 
+    document.getElementById('loader').innerHTML = '<span style="color:var(--red-600); font-weight:bold;">❌ โหลดข้อมูลล้มเหลว กรุณารีเฟรชอีกครั้ง</span>'; 
+  }
 }
 
 function initFilter(){
@@ -693,200 +664,401 @@ function getSysTarget(sys,fd){
   let t=0;
   kpiMaster.forEach(r=>{
       let rs=sg(r,'System',0)||'', rd=sg(r,'Department',2)||'', rv=parseInt(sg(r,'Target_Value',4))||0;
-      if(rs.trim().toUpperCase() === sys.toUpperCase() && (fd === 'all' || rd.trim() === fd)) { t += rv; }
-  }); return t;
+      if(rs.trim().toUpperCase() === sys.toUpperCase() && (fd === 'all' || rd.trim() === fd)) {
+          t += rv;
+      }
+  });
+  return t;
 }
 
+// 🍎 Holographic Chart Bar Edge Reflection Effect
 const shadowPlugin = {
     id: 'shadowPlugin',
-    beforeDatasetsDraw: function(chart) { chart.ctx.shadowColor = 'rgba(0, 0, 0, 0.2)'; chart.ctx.shadowBlur = 15; chart.ctx.shadowOffsetX = 0; chart.ctx.shadowOffsetY = 10; },
-    afterDatasetsDraw: function(chart) { chart.ctx.shadowColor = 'transparent'; chart.ctx.shadowBlur = 0; chart.ctx.shadowOffsetX = 0; chart.ctx.shadowOffsetY = 0; }
-}; 
-if(typeof Chart !== 'undefined') Chart.register(shadowPlugin);
+    beforeDatasetsDraw: function(chart) {
+        chart.ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+        chart.ctx.shadowBlur = 15;
+        chart.ctx.shadowOffsetX = 0;
+        chart.ctx.shadowOffsetY = 10;
+    },
+    afterDatasetsDraw: function(chart) {
+        chart.ctx.shadowColor = 'transparent';
+        chart.ctx.shadowBlur = 0;
+        chart.ctx.shadowOffsetX = 0;
+        chart.ctx.shadowOffsetY = 0;
+    }
+};
+Chart.register(shadowPlugin);
 
 function createGrad(ctx, colorStart, colorEnd, isHorizontal) {
     let grad = isHorizontal ? ctx.createLinearGradient(0, 0, 400, 0) : ctx.createLinearGradient(0, 400, 0, 0);
-    grad.addColorStop(0, colorStart); grad.addColorStop(1, colorEnd); return grad;
+    grad.addColorStop(0, colorStart);
+    grad.addColorStop(1, colorEnd);
+    return grad;
 }
 
 function processAndRender(){
-  try {
-    const fd=document.getElementById('global-filter-dept').value;
-    document.getElementById('loader').style.display='none';
-    document.getElementById('main-dashboard-view').style.display='block';
+  const fd=document.getElementById('global-filter-dept').value;
+  document.getElementById('loader').style.display='none';
+  document.getElementById('main-dashboard-view').style.display='block';
 
-    appData.am.target=0; appData.am.actual=0; appData.am.wip=0; appData.am.stepDist=[0,0,0,0,0]; appData.am.stepDetails={1:[], 2:[], 3:[], 4:[], 5:[]}; appData.am.targetScore = 0; appData.am.actualScore = 0; 
-    const amC=document.getElementById('am-card-container'); amC.innerHTML='';
-    const amT=kpiMaster.filter(k=>sg(k,'System',0)==='AM-OI'&&(fd==='all'||sg(k,'Department',2)===fd)&&sg(k,'Area',3)!=='ALL'&&sg(k,'Area',3)!=='All');
-    appData.am.target=amT.length;
+  // รีเซ็ตข้อมูล
+  appData.am.target=0; appData.am.actual=0; appData.am.wip=0; 
+  appData.am.stepDist=[0,0,0,0,0]; 
+  appData.am.stepDetails={1:[], 2:[], 3:[], 4:[], 5:[]};
+  appData.am.targetScore = 0; appData.am.actualScore = 0; 
 
-    amT.forEach(tr=>{
-      const dept=sg(tr,'Department',2), area=sg(tr,'Area',3), tStep=parseInt(sg(tr,'Target_Value',4))||4;
-      const ah=amHistory.filter(h=>(sg(h,'Department',3)===dept||Object.values(h)[3]===dept)&&(sg(h,'Area',4)===area||Object.values(h)[4]===area));
-      appData.am.targetScore += tStep;
-      
-      const maxAttemptedStep = ah.length > 0 ? Math.max(...ah.map(h => parseInt(sg(h,'AuditRound',6))||0)) : 0;
-      let maxStep = 0; let pStep = 1; let currentStepRecords = [];
-      
-      if (maxAttemptedStep > 0) {
-          const recordsOfMaxAttempt = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === maxAttemptedStep);
-          const l = recordsOfMaxAttempt[recordsOfMaxAttempt.length - 1]; 
-          const pf = sg(l, 'PassFail', 15) || Object.values(l)[15];
-          const stat = sg(l, 'Status', 23) || Object.values(l)[23];
-          if ((pf === 'ผ่านเกณฑ์' || pf === 'Pass') && stat === 'อนุมัติสมบูรณ์') { maxStep = maxAttemptedStep; pStep = maxStep === 5 ? 'all' : maxStep + 1; currentStepRecords = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === pStep); } 
-          else { maxStep = maxAttemptedStep - 1; pStep = maxAttemptedStep; currentStepRecords = recordsOfMaxAttempt; }
-      }
+  const amC=document.getElementById('am-card-container'); amC.innerHTML='';
 
-      let highestLevel = 0; let pendingRank = 0; 
-      if (pStep !== 'all' && currentStepRecords.length > 0) {
-          const l = currentStepRecords[currentStepRecords.length - 1]; 
-          const pf = sg(l, 'PassFail', 15) || Object.values(l)[15];
-          const stat = sg(l, 'Status', 23) || Object.values(l)[23];
-          if (pf !== 'ผ่านเกณฑ์' && pf !== 'Pass') { pendingRank = 1; } 
-          else {
-              if (stat && stat.includes('รอผู้บริหาร')) { highestLevel = 0.7; pendingRank = 3; }
-              else if (stat && stat.includes('รอหัวหน้า')) { highestLevel = 0.3; pendingRank = 2; }
-              else {
-                  const at = sg(l, 'AuditorType', 7) || Object.values(l)[7];
-                  if (at === 'lead' || at === 'clead' || at === 'mgr') { highestLevel = 0.7; pendingRank = 3; }
-                  else if (at === 'self') { highestLevel = 0.3; pendingRank = 2; }
-              }
-          }
-      }
-      
-      let areaScore = maxStep + highestLevel; appData.am.actualScore += Math.min(areaScore, tStep); 
-      if (maxStep >= tStep) appData.am.actual++; else if (maxStep > 0 || currentStepRecords.length > 0) appData.am.wip++;
-      if (maxStep >= 1 && maxStep <= 5) { appData.am.stepDist[maxStep - 1]++; appData.am.stepDetails[maxStep].push(`[${dept}] ${area}`); }
+  const amT=kpiMaster.filter(k=>sg(k,'System',0)==='AM-OI'&&(fd==='all'||sg(k,'Department',2)===fd)&&sg(k,'Area',3)!=='ALL'&&sg(k,'Area',3)!=='All');
+  appData.am.target=amT.length;
 
-      let si = {};
-      for(let s=1; s<=5; s++) {
-          if (s <= maxStep) { si[s] = {class:'st-pass', text:'ผ่านสมบูรณ์', rank:4}; } 
-          else if (s === pStep) {
-              if (currentStepRecords.length === 0) si[s] = {class:'st-none', text:'ยังไม่เริ่ม', rank:0};
-              else {
-                  if (pendingRank === 1) si[s] = {class:'st-fail', text:'แก้ไข', rank:1};
-                  else if (pendingRank === 2) si[s] = {class:'st-wait-lead', text:'รอหัวหน้า', rank:2};
-                  else if (pendingRank === 3) si[s] = {class:'st-wait-exec', text:'รอผู้บริหาร', rank:3};
-              }
-          } else { si[s] = {class:'st-none', text:'ยังไม่เริ่ม', rank:0}; }
-      }
+  amT.forEach(tr=>{
+    const dept=sg(tr,'Department',2), area=sg(tr,'Area',3), tStep=parseInt(sg(tr,'Target_Value',4))||4;
+    const ah=amHistory.filter(h=>(sg(h,'Department',3)===dept||Object.values(h)[3]===dept)&&(sg(h,'Area',4)===area||Object.values(h)[4]===area));
+    
+    appData.am.targetScore += tStep;
+    
+    const maxAttemptedStep = ah.length > 0 ? Math.max(...ah.map(h => parseInt(sg(h,'AuditRound',6))||0)) : 0;
+    let maxStep = 0; 
+    let pStep = 1;   
+    let currentStepRecords = [];
+    
+    if (maxAttemptedStep > 0) {
+        const recordsOfMaxAttempt = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === maxAttemptedStep);
+        const l = recordsOfMaxAttempt[recordsOfMaxAttempt.length - 1]; 
+        const pf = sg(l, 'PassFail', 15) || Object.values(l)[15];
+        const stat = sg(l, 'Status', 23) || Object.values(l)[23];
+        
+        if ((pf === 'ผ่านเกณฑ์' || pf === 'Pass') && stat === 'อนุมัติสมบูรณ์') {
+            maxStep = maxAttemptedStep;
+            pStep = maxStep === 5 ? 'all' : maxStep + 1;
+            currentStepRecords = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === pStep);
+        } else {
+            maxStep = maxAttemptedStep - 1;
+            pStep = maxAttemptedStep;
+            currentStepRecords = recordsOfMaxAttempt;
+        }
+    }
 
-      let os = {};
-      if (maxStep === 5) { os = {text:'ผ่านครบ 5 Step', color:'#0CA47C', bg:'rgba(12,164,124,0.12)', rank:4}; } 
+    let highestLevel = 0;
+    let pendingRank = 0; 
+    
+    if (pStep !== 'all' && currentStepRecords.length > 0) {
+        const l = currentStepRecords[currentStepRecords.length - 1]; 
+        const pf = sg(l, 'PassFail', 15) || Object.values(l)[15];
+        const stat = sg(l, 'Status', 23) || Object.values(l)[23];
+        
+        if (pf !== 'ผ่านเกณฑ์' && pf !== 'Pass') {
+            pendingRank = 1; 
+        } else {
+            if (stat && stat.includes('รอผู้บริหาร')) { highestLevel = 0.7; pendingRank = 3; }
+            else if (stat && stat.includes('รอหัวหน้า')) { highestLevel = 0.3; pendingRank = 2; }
+            else {
+                const at = sg(l, 'AuditorType', 7) || Object.values(l)[7];
+                if (at === 'lead' || at === 'clead' || at === 'mgr') { highestLevel = 0.7; pendingRank = 3; }
+                else if (at === 'self') { highestLevel = 0.3; pendingRank = 2; }
+            }
+        }
+    }
+    
+    let areaScore = maxStep + highestLevel;
+    appData.am.actualScore += Math.min(areaScore, tStep); 
+
+    if (maxStep >= tStep) appData.am.actual++; 
+    else if (maxStep > 0 || currentStepRecords.length > 0) appData.am.wip++;
+    
+    if (maxStep >= 1 && maxStep <= 5) {
+        appData.am.stepDist[maxStep - 1]++;
+        appData.am.stepDetails[maxStep].push(`[${dept}] ${area}`);
+    }
+
+    let si = {};
+    for(let s=1; s<=5; s++) {
+        if (s <= maxStep) { si[s] = {class:'st-pass', text:'ผ่านสมบูรณ์', rank:4}; } 
+        else if (s === pStep) {
+            if (currentStepRecords.length === 0) si[s] = {class:'st-none', text:'ยังไม่เริ่ม', rank:0};
+            else {
+                if (pendingRank === 1) si[s] = {class:'st-fail', text:'แก้ไข', rank:1};
+                else if (pendingRank === 2) si[s] = {class:'st-wait-lead', text:'รอหัวหน้า', rank:2};
+                else if (pendingRank === 3) si[s] = {class:'st-wait-exec', text:'รอผู้บริหาร', rank:3};
+            }
+        } else { si[s] = {class:'st-none', text:'ยังไม่เริ่ม', rank:0}; }
+    }
+
+    let os = {};
+    if (maxStep === 5) { os = {text:'ผ่านครบ 5 Step', color:'#0CA47C', bg:'rgba(12,164,124,0.12)', rank:4}; } 
+    else {
+         if (currentStepRecords.length === 0) os = {text:`รอประเมิน Step ${pStep}`, color:'var(--blue-800)', bg:'rgba(58,134,255,0.1)', rank:0};
+         else if (pendingRank === 1) os = {text:`แก้ไข Step ${pStep}`, color:'var(--red-600)', bg:'rgba(244,63,94,0.1)', rank:1};
+         else if (pendingRank === 2) os = {text:`รอ หน. Step ${pStep}`, color:'#fff', bg:'rgba(245,124,0,0.85)', rank:2};
+         else if (pendingRank === 3) os = {text:`รอ ผบร. Step ${pStep}`, color:'#fff', bg:'rgba(30,96,145,0.85)', rank:3};
+    }
+
+    let tn='<div class="step-tracker">';
+    for(let i=1;i<=5;i++){tn+=`<div class="step-node ${si[i].class}">${i}</div>`;if(i<5)tn+=`<div class="step-line ${si[i].rank===4?'line-pass':''}"></div>`;}
+    tn+='</div>';
+
+    let acts = `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pStep}" class="btn-eval btn-user">ประเมินพื้นที่</a>`;
+    if(os.rank===2) acts += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pStep}" class="btn-eval btn-lead">หัวหน้าตรวจ</a>`;
+    else if(os.rank===3) acts += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pStep}" class="btn-eval btn-exec">ผู้บริหารตรวจ</a>`;
+
+    let areaPercent = Math.min(Math.round((areaScore / tStep) * 100), 100);
+    const hb = maxStep >= tStep ? `<span class="kpi-badge-hit">Step ${tStep} ✓</span>` : `<span class="kpi-badge-miss">เป้า Step ${tStep} (${areaPercent}%)</span>`;
+    
+    const card=document.createElement('div'); card.className='area-card';
+    card.innerHTML=`<div class="ac-top"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;"><span class="ac-dept">${dept}</span>${hb}</div><span class="ac-status" style="background:${os.bg};color:${os.color};border:1px solid ${os.color}22;">${os.text}</span></div><div class="ac-name">${area}</div>${tn}<div style="margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;">${acts}</div>`;
+    amC.appendChild(card);
+  });
+  
+  appData.am.pct = appData.am.targetScore > 0 ? Math.round((appData.am.actualScore / appData.am.targetScore) * 100) : 0;
+
+  appData.opl.target=getSysTarget('OPL',fd); appData.fi.target=getSysTarget('FI',fd); appData.kz.target=getSysTarget('Kaizen',fd); appData.mk.target=getSysTarget('Makigami',fd);
+  
+  const fOpl=fd==='all'?oplHistory:oplHistory.filter(r=>sg(r,'Department',4)===fd);
+  const fFi=fd==='all'?fiHistory:fiHistory.filter(r=>sg(r,'Department',4)===fd);
+  const fKz=fd==='all'?kzHistory:kzHistory.filter(r=>sg(r,'แผนก',3)===fd);
+  const fMk=fd==='all'?mkHistory:mkHistory.filter(r=>sg(r,'แผนก',3)===fd);
+  
+  const uOpl=[...new Map(fOpl.map(i=>[sg(i,'OPL ID',1),i])).values()];
+  const uFi=[...new Map(fFi.map(i=>[sg(i,'FI ID',1),i])).values()];
+  const uKz=[...new Map(fKz.map(i=>[sg(i,'เลขที่ Kaizen',0),i])).values()];
+  const uMk=[...new Map(fMk.map(i=>[sg(i,'Makigami ID',1),i])).values()];
+
+  // 1. OPL Progress
+  appData.opl.actual = 0;
+  uOpl.forEach(r => {
+      let st = sg(r,'Status',14) || '';
+      if (st.includes('สมบูรณ์') || st.includes('ผ่าน') || st.includes('Completed')) appData.opl.actual += 1;
+      else if (st.includes('รอหัวหน้า')) appData.opl.actual += 0.5;
+      else if (st.includes('ไม่อนุมัติ') || st.includes('ไม่ผ่าน')) appData.opl.actual += 0;
+      else appData.opl.actual += 0.2; 
+  });
+
+  // 2. FI Theme Progress
+  appData.fi.actual = 0;
+  uFi.forEach(r => {
+      let st = sg(r,'Status',14) || '';
+      let step = sg(r,'Step ปัจจุบัน',13) || '';
+      if (st.includes('สมบูรณ์') || st.includes('Completed')) appData.fi.actual += 1;
+      else if (st.includes('ยกเลิก') || st.includes('Cancelled')) appData.fi.actual += 0;
       else {
-           if (currentStepRecords.length === 0) os = {text:`รอประเมิน Step ${pStep}`, color:'var(--blue-800)', bg:'rgba(58,134,255,0.1)', rank:0};
-           else if (pendingRank === 1) os = {text:`แก้ไข Step ${pStep}`, color:'var(--red-600)', bg:'rgba(244,63,94,0.1)', rank:1};
-           else if (pendingRank === 2) os = {text:`รอ หน. Step ${pStep}`, color:'#fff', bg:'rgba(245,124,0,0.85)', rank:2};
-           else if (pendingRank === 3) os = {text:`รอ ผบร. Step ${pStep}`, color:'#fff', bg:'rgba(30,96,145,0.85)', rank:3};
+          let m = step.match(/Step\s*(\d+)/i);
+          if (m && m[1]) appData.fi.actual += (parseInt(m[1]) / 10);
+          else appData.fi.actual += 0.1;
       }
+  });
 
-      let tn='<div class="step-tracker">'; for(let i=1;i<=5;i++){tn+=`<div class="step-node ${si[i].class}">${i}</div>`;if(i<5)tn+=`<div class="step-line ${si[i].rank===4?'line-pass':''}"></div>`;} tn+='</div>';
+  // 3. Kaizen
+  appData.kz.actual = uKz.length;
 
-      let acts = `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&step=${pStep}" class="btn-eval btn-user">ประเมินพื้นที่</a>`;
-      if(os.rank===2) acts += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=lead&step=${pStep}" class="btn-eval btn-lead">หัวหน้าตรวจ</a>`;
-      else if(os.rank===3) acts += `<a href="index.html?dept=${encodeURIComponent(dept)}&area=${encodeURIComponent(area)}&role=exec&step=${pStep}" class="btn-eval btn-exec">ผู้บริหารตรวจ</a>`;
+  // 4. Makigami Progress
+  appData.mk.actual = 0;
+  uMk.forEach(r => {
+      let st = sg(r,'Status',9) || '';
+      let phase = sg(r,'Current Phase',6) || '';
+      if (st.includes('สมบูรณ์') || st.includes('Completed')) appData.mk.actual += 1;
+      else if (st.includes('ยกเลิก') || st.includes('Cancelled')) appData.mk.actual += 0;
+      else {
+          if (phase.includes('Phase 4')) appData.mk.actual += 0.90;
+          else if (phase.includes('Phase 3')) appData.mk.actual += 0.75;
+          else if (phase.includes('Phase 2')) appData.mk.actual += 0.50;
+          else if (phase.includes('Phase 1')) appData.mk.actual += 0.25;
+          else appData.mk.actual += 0.1;
+      }
+  });
 
-      let areaPercent = Math.min(Math.round((areaScore / tStep) * 100), 100);
-      const hb = maxStep >= tStep ? `<span class="kpi-badge-hit">Step ${tStep} ✓</span>` : `<span class="kpi-badge-miss">เป้า Step ${tStep} (${areaPercent}%)</span>`;
-      
-      const card=document.createElement('div'); card.className='area-card';
-      card.innerHTML=`<div class="ac-top"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;"><span class="ac-dept">${dept}</span>${hb}</div><span class="ac-status" style="background:${os.bg};color:${os.color};border:1px solid ${os.color}22;">${os.text}</span></div><div class="ac-name">${area}</div>${tn}<div style="margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;">${acts}</div>`;
-      amC.appendChild(card);
-    });
+  appData.opl.target = getSysTarget('OPL', fd) || uOpl.length || 0;
+  appData.fi.target  = getSysTarget('FI', fd)  || uFi.length  || 0;
+  appData.kz.target  = getSysTarget('Kaizen', fd) || uKz.length || 0;
+  let mkTarget = getSysTarget('Makigami', fd);
+  appData.mk.target  = mkTarget > 0 ? mkTarget : (uMk.length || 0);
+
+  appData.opl.wip = uOpl.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
+  appData.fi.wip = uFi.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
+  appData.kz.wip = 0; 
+  appData.mk.wip = uMk.filter(r=>!(sg(r,'Status',9)||'').includes('Completed')).length;
+
+  ['opl','fi','kz','mk'].forEach(k => {
+      appData[k].pct = appData[k].target > 0 ? Math.round((appData[k].actual / appData[k].target) * 100) : (appData[k].actual > 0 ? 100 : 0);
+  });
+
+  const formatActual = (val) => Number.isInteger(val) ? val : (Math.round(val * 10) / 10).toFixed(1);
+
+  const defs=[{k:'am',tc:'am',unit:'พื้นที่',did:'am'},{k:'opl',tc:'opl',unit:'เรื่อง',did:'opl'},{k:'fi',tc:'fi',unit:'โครงการ',did:'fi'},{k:'kz',tc:'kz',unit:'เรื่อง',did:'kz'},{k:'mk',tc:'mk',unit:'โครงการ',did:'mk'}];
+  const con=document.getElementById('kpi-cards-container'); con.innerHTML='';
+  defs.forEach(def=>{
+    const d=appData[def.k];
+    const pct=d.pct;
+    const wip=d.wip>0?`<span class="wip-badge">⏳ ${d.wip}</span>`:'';
+    const card=document.createElement('div'); card.className=`kpi-card p-${def.tc}`;
+    card.onclick=()=>openDetail(def.did,d.title);
     
-    appData.am.pct = appData.am.targetScore > 0 ? Math.round((appData.am.actualScore / appData.am.targetScore) * 100) : 0;
-
-    appData.opl.target=getSysTarget('OPL',fd); appData.fi.target=getSysTarget('FI',fd); appData.kz.target=getSysTarget('Kaizen',fd); appData.mk.target=getSysTarget('Makigami',fd);
+    let barWidth = Math.min(pct, 100); 
     
-    const fOpl=fd==='all'?oplHistory:oplHistory.filter(r=>sg(r,'Department',4)===fd);
-    const fFi=fd==='all'?fiHistory:fiHistory.filter(r=>sg(r,'Department',4)===fd);
-    const fKz=fd==='all'?kzHistory:kzHistory.filter(r=>sg(r,'แผนก',3)===fd);
-    const fMk=fd==='all'?mkHistory:mkHistory.filter(r=>sg(r,'แผนก',3)===fd);
-    
-    const uOpl=[...new Map(fOpl.map(i=>[sg(i,'OPL ID',1),i])).values()];
-    const uFi=[...new Map(fFi.map(i=>[sg(i,'FI ID',1),i])).values()];
-    const uKz=[...new Map(fKz.map(i=>[sg(i,'เลขที่ Kaizen',0),i])).values()];
-    const uMk=[...new Map(fMk.map(i=>[sg(i,'Makigami ID',1),i])).values()];
+    card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูรายละเอียด →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${pct}%</span><span class="kpi-unit">(${formatActual(d.actual)}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${barWidth}"></div></div>`;
+    con.appendChild(card);
+  });
 
-    appData.opl.actual = 0;
-    uOpl.forEach(r => { let st = sg(r,'Status',14) || ''; if (st.includes('สมบูรณ์') || st.includes('ผ่าน') || st.includes('Completed')) appData.opl.actual += 1; else if (st.includes('รอหัวหน้า')) appData.opl.actual += 0.5; else if (st.includes('ไม่อนุมัติ') || st.includes('ไม่ผ่าน')) appData.opl.actual += 0; else appData.opl.actual += 0.2; });
+  document.querySelectorAll('.kpi-card').forEach((c,i)=>{ setTimeout(()=>{c.classList.add('visible');const f=c.querySelector('.progress-fill');if(f)setTimeout(()=>{f.style.width=f.dataset.w+'%'},60);},i*70); });
 
-    appData.fi.actual = 0;
-    uFi.forEach(r => { let st = sg(r,'Status',14) || ''; let step = sg(r,'Step ปัจจุบัน',13) || ''; if (st.includes('สมบูรณ์') || st.includes('Completed')) appData.fi.actual += 1; else if (st.includes('ยกเลิก') || st.includes('Cancelled')) appData.fi.actual += 0; else { let m = step.match(/Step\s*(\d+)/i); if (m && m[1]) appData.fi.actual += (parseInt(m[1]) / 10); else appData.fi.actual += 0.1; }});
-
-    appData.kz.actual = uKz.length;
-
-    appData.mk.actual = 0;
-    uMk.forEach(r => { let st = sg(r,'Status',9) || ''; let phase = sg(r,'Current Phase',6) || ''; if (st.includes('สมบูรณ์') || st.includes('Completed')) appData.mk.actual += 1; else if (st.includes('ยกเลิก') || st.includes('Cancelled')) appData.mk.actual += 0; else { if (phase.includes('Phase 4')) appData.mk.actual += 0.90; else if (phase.includes('Phase 3')) appData.mk.actual += 0.75; else if (phase.includes('Phase 2')) appData.mk.actual += 0.50; else if (phase.includes('Phase 1')) appData.mk.actual += 0.25; else appData.mk.actual += 0.1; }});
-
-    appData.opl.target = getSysTarget('OPL', fd) || uOpl.length || 0; appData.fi.target  = getSysTarget('FI', fd)  || uFi.length  || 0; appData.kz.target  = getSysTarget('Kaizen', fd) || uKz.length || 0; let mkTarget = getSysTarget('Makigami', fd); appData.mk.target  = mkTarget > 0 ? mkTarget : (uMk.length || 0);
-    appData.opl.wip = uOpl.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length; appData.fi.wip = uFi.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length; appData.kz.wip = 0; appData.mk.wip = uMk.filter(r=>!(sg(r,'Status',9)||'').includes('Completed')).length;
-    ['opl','fi','kz','mk'].forEach(k => { appData[k].pct = appData[k].target > 0 ? Math.round((appData[k].actual / appData[k].target) * 100) : (appData[k].actual > 0 ? 100 : 0); });
-
-    const formatActual = (val) => Number.isInteger(val) ? val : (Math.round(val * 10) / 10).toFixed(1);
-    const defs=[{k:'am',tc:'am',unit:'พื้นที่',did:'am'},{k:'opl',tc:'opl',unit:'เรื่อง',did:'opl'},{k:'fi',tc:'fi',unit:'โครงการ',did:'fi'},{k:'kz',tc:'kz',unit:'เรื่อง',did:'kz'},{k:'mk',tc:'mk',unit:'โครงการ',did:'mk'}];
-    const con=document.getElementById('kpi-cards-container'); con.innerHTML='';
-    defs.forEach(def=>{
-      const d=appData[def.k]; const pct=d.pct; const wip=d.wip>0?`<span class="wip-badge">⏳ ${d.wip}</span>`:'';
-      const card=document.createElement('div'); card.className=`kpi-card p-${def.tc}`; card.onclick=()=>openDetail(def.did,d.title);
-      let barWidth = Math.min(pct, 100); 
-      card.innerHTML=`<div class="kpi-icon-row"><div class="kpi-svg-wrap">${mkSVG(def.k)}</div><span class="hint-arrow">ดูรายละเอียด →</span></div><div class="kpi-title">${d.title}</div><div class="kpi-val-row"><span class="kpi-val">${pct}%</span><span class="kpi-unit">(${formatActual(d.actual)}/${d.target})</span></div><div class="kpi-sub">${def.unit} ${wip}</div><div class="progress-track"><div class="progress-fill" style="width:0" data-w="${barWidth}"></div></div>`;
-      con.appendChild(card);
-    });
-    document.querySelectorAll('.kpi-card').forEach((c,i)=>{ setTimeout(()=>{c.classList.add('visible');const f=c.querySelector('.progress-fill');if(f)setTimeout(()=>{f.style.width=f.dataset.w+'%'},60);},i*70); });
-
-    const cf={family:'IBM Plex Sans Thai',size:13}, gc='rgba(0,0,0,0.04)';
-    if(chartKPI)chartKPI.destroy();
-    let ctxKpi = document.getElementById('kpiBarChart');
-    if(ctxKpi) {
-        chartKPI=new Chart(ctxKpi.getContext('2d'),{
-          type:'bar', data:{ labels:['AM-OI','OPL','FI Theme','Kaizen','Makigami'], datasets:[{ label: ' % ความคืบหน้า', data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct], backgroundColor:[createGrad(ctxKpi.getContext('2d'), '#3B82F6', '#1E40AF', true), createGrad(ctxKpi.getContext('2d'), '#F59E0B', '#B45309', true), createGrad(ctxKpi.getContext('2d'), '#8B5CF6', '#4338CA', true), createGrad(ctxKpi.getContext('2d'), '#10B981', '#047857', true), createGrad(ctxKpi.getContext('2d'), '#F43F5E', '#BE123C', true)], hoverBackgroundColor: ['#60A5FA', '#FBBF24', '#A78BFA', '#34D399', '#FB7185'], hoverBorderColor: '#ffffff', hoverBorderWidth: 4, borderRadius:14, borderSkipped:false, barPercentage:0.6 }] },
-          plugins: [{ id: 'barLabels', afterDatasetsDraw(chart) { const { ctx, data } = chart; ctx.save(); chart.getDatasetMeta(0).data.forEach((datapoint, index) => { const value = data.datasets[0].data[index]; if (value > 0) { ctx.font = 'bold 14px "IBM Plex Sans Thai"'; ctx.fillStyle = '#0f172a'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(value + '%', datapoint.x + 10, datapoint.y + 1); } }); ctx.restore(); } }],
-          options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, animation: { duration: 2000, easing: 'easeOutElastic' }, onClick: (event, elements) => { if (elements.length > 0) { const idx = elements[0].index; const map = [{k:'am',t:appData.am.title},{k:'opl',t:appData.opl.title},{k:'fi',t:appData.fi.title},{k:'kz',t:appData.kz.title},{k:'mk',t:appData.mk.title}]; openDetail(map[idx].k, map[idx].t); } }, onHover: (event, elements) => { event.native.target.style.cursor = elements.length ? 'pointer' : 'default'; }, layout: { padding: { right: 50 } }, plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'rgba(255,255,255,0.95)', titleColor:'#0f172a', bodyColor:'#334155', borderColor:'rgba(255,255,255,1)', borderWidth:1, padding:16, titleFont:{family:'IBM Plex Sans Thai',size:15,weight:'bold'}, bodyFont:{family:'IBM Plex Sans Thai',size:14}, boxShadow:'0 15px 40px rgba(0,0,0,0.15)', cornerRadius: 12 } }, scales:{ x:{beginAtZero:true, grid:{color:gc, borderDash:[6,6]}, ticks:{font:cf}}, y:{grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai', weight:'bold', size:13}}} } }
-        });
+  const cf={family:'IBM Plex Sans Thai',size:13}, gc='rgba(0,0,0,0.04)';
+  
+  if(chartKPI)chartKPI.destroy();
+  let ctxKpi = document.getElementById('kpiBarChart').getContext('2d');
+  chartKPI=new Chart(ctxKpi,{
+    type:'bar',
+    data:{
+        labels:['AM-OI','OPL','FI Theme','Kaizen','Makigami'],
+        datasets:[{
+            label: ' % ความคืบหน้า',
+            data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct],
+            backgroundColor:[
+                createGrad(ctxKpi, '#3B82F6', '#1E40AF', true),
+                createGrad(ctxKpi, '#F59E0B', '#B45309', true),
+                createGrad(ctxKpi, '#8B5CF6', '#4338CA', true),
+                createGrad(ctxKpi, '#10B981', '#047857', true),
+                createGrad(ctxKpi, '#F43F5E', '#BE123C', true)
+            ],
+            hoverBackgroundColor: [
+                '#60A5FA', '#FBBF24', '#A78BFA', '#34D399', '#FB7185'
+            ],
+            hoverBorderColor: '#ffffff',
+            hoverBorderWidth: 4,
+            borderRadius:14, borderSkipped:false, barPercentage:0.6
+        }]
+    },
+    plugins: [{
+        id: 'barLabels',
+        afterDatasetsDraw(chart) {
+            const { ctx, data } = chart;
+            ctx.save();
+            chart.getDatasetMeta(0).data.forEach((datapoint, index) => {
+                const value = data.datasets[0].data[index];
+                if (value > 0) {
+                    ctx.font = 'bold 14px "IBM Plex Sans Thai"';
+                    ctx.fillStyle = '#0f172a';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(value + '%', datapoint.x + 10, datapoint.y + 1);
+                }
+            });
+            ctx.restore();
+        }
+    }],
+    options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        animation: { duration: 2000, easing: 'easeOutElastic' },
+        onClick: (event, elements) => {
+            if (elements.length > 0) {
+                const idx = elements[0].index;
+                const map = [{k:'am',t:appData.am.title},{k:'opl',t:appData.opl.title},{k:'fi',t:appData.fi.title},{k:'kz',t:appData.kz.title},{k:'mk',t:appData.mk.title}];
+                openDetail(map[idx].k, map[idx].t);
+            }
+        },
+        onHover: (event, elements) => { event.native.target.style.cursor = elements.length ? 'pointer' : 'default'; },
+        layout: { padding: { right: 50 } }, 
+        plugins:{
+            legend:{display:false}, 
+            tooltip:{
+                backgroundColor:'rgba(255,255,255,0.95)', titleColor:'#0f172a', bodyColor:'#334155',
+                borderColor:'rgba(255,255,255,1)', borderWidth:1, padding:16,
+                titleFont:{family:'IBM Plex Sans Thai',size:15,weight:'bold'}, bodyFont:{family:'IBM Plex Sans Thai',size:14},
+                boxShadow:'0 15px 40px rgba(0,0,0,0.15)', cornerRadius: 12
+            }
+        },
+        scales:{
+            x:{beginAtZero:true, grid:{color:gc, borderDash:[6,6]}, ticks:{font:cf}},
+            y:{grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai', weight:'bold', size:13}}}
+        }
     }
+  });
 
-    if(chartAM)chartAM.destroy();
-    let ctxAm = document.getElementById('amStepChart');
-    if(ctxAm) {
-        chartAM=new Chart(ctxAm.getContext('2d'),{
-          type:'bar', data:{ labels:['Step 1','Step 2','Step 3','Step 4','Step 5'], datasets:[{ label: ' จำนวนพื้นที่', data:appData.am.stepDist, backgroundColor:[createGrad(ctxAm.getContext('2d'), '#93C5FD', '#2563EB', false), createGrad(ctxAm.getContext('2d'), '#FCD34D', '#D97706', false), createGrad(ctxAm.getContext('2d'), '#C4B5FD', '#6D28D9', false), createGrad(ctxAm.getContext('2d'), '#6EE7B7', '#059669', false), createGrad(ctxAm.getContext('2d'), '#FDA4AF', '#E11D48', false)], hoverBackgroundColor: ['#BFDBFE', '#FDE68A', '#DDD6FE', '#A7F3D0', '#FECACA'], hoverBorderColor: '#ffffff', hoverBorderWidth: 4, borderRadius:14, borderSkipped:false, barPercentage:0.55 }] },
-          options:{ responsive:true, maintainAspectRatio:false, animation: { duration: 1800, easing: 'easeOutQuart' }, onClick: (event, elements) => { if (elements.length > 0) openDetail('am', appData.am.title); }, onHover: (event, elements) => { event.native.target.style.cursor = elements.length ? 'pointer' : 'default'; }, plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'rgba(255,255,255,0.95)', titleColor:'#0f172a', bodyColor:'#334155', borderColor:'rgba(12,164,124,0.3)', borderWidth:1, padding:18, titleFont:{family:'IBM Plex Sans Thai',size:16,weight:'bold'}, bodyFont:{family:'IBM Plex Sans Thai',size:14}, boxShadow:'0 15px 40px rgba(0,0,0,0.15)', cornerRadius: 12, callbacks: { title: function(context) { return context[0].label + ' (' + context[0].raw + ' พื้นที่)'; }, label: function(context) { let step = context.dataIndex + 1; let areas = appData.am.stepDetails[step]; if (!areas || areas.length === 0) return 'ไม่มีข้อมูลพื้นที่ใน Step นี้'; return areas.map(a => '📌 ' + a); } } } }, scales:{ y:{beginAtZero:true, grid:{color:gc, borderDash:[6,6]}, ticks:{stepSize:1, font:cf}}, x:{grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai', weight:'bold', size:13}}} } }
-        });
+  if(chartAM)chartAM.destroy();
+  let ctxAm = document.getElementById('amStepChart').getContext('2d');
+  chartAM=new Chart(ctxAm,{
+    type:'bar',
+    data:{
+        labels:['Step 1','Step 2','Step 3','Step 4','Step 5'],
+        datasets:[{
+            label: ' จำนวนพื้นที่',
+            data:appData.am.stepDist,
+            backgroundColor:[
+                createGrad(ctxAm, '#93C5FD', '#2563EB', false), 
+                createGrad(ctxAm, '#FCD34D', '#D97706', false), 
+                createGrad(ctxAm, '#C4B5FD', '#6D28D9', false), 
+                createGrad(ctxAm, '#6EE7B7', '#059669', false), 
+                createGrad(ctxAm, '#FDA4AF', '#E11D48', false)  
+            ],
+            hoverBackgroundColor: [
+                '#BFDBFE', '#FDE68A', '#DDD6FE', '#A7F3D0', '#FECACA'
+            ],
+            hoverBorderColor: '#ffffff', hoverBorderWidth: 4,
+            borderRadius:14, borderSkipped:false, barPercentage:0.55
+        }]
+    },
+    options:{
+        responsive:true, maintainAspectRatio:false,
+        animation: { duration: 1800, easing: 'easeOutQuart' },
+        onClick: (event, elements) => { if (elements.length > 0) openDetail('am', appData.am.title); },
+        onHover: (event, elements) => { event.native.target.style.cursor = elements.length ? 'pointer' : 'default'; },
+        plugins:{
+            legend:{display:false},
+            tooltip:{
+                backgroundColor:'rgba(255,255,255,0.95)', titleColor:'#0f172a', bodyColor:'#334155',
+                borderColor:'rgba(12,164,124,0.3)', borderWidth:1, padding:18,
+                titleFont:{family:'IBM Plex Sans Thai',size:16,weight:'bold'}, bodyFont:{family:'IBM Plex Sans Thai',size:14},
+                boxShadow:'0 15px 40px rgba(0,0,0,0.15)', cornerRadius: 12,
+                callbacks: {
+                    title: function(context) { return context[0].label + ' (' + context[0].raw + ' พื้นที่)'; },
+                    label: function(context) {
+                        let step = context.dataIndex + 1;
+                        let areas = appData.am.stepDetails[step];
+                        if (!areas || areas.length === 0) return 'ไม่มีข้อมูลพื้นที่ใน Step นี้';
+                        return areas.map(a => '📌 ' + a); 
+                    }
+                }
+            }
+        },
+        scales:{
+            y:{beginAtZero:true, grid:{color:gc, borderDash:[6,6]}, ticks:{stepSize:1, font:cf}},
+            x:{grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai', weight:'bold', size:13}}}
+        }
     }
+  });
 
-    const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:40px;color:#9BA5B1;font-weight:600;">ไม่มีข้อมูลให้แสดงผล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
-    
-    tbl('opl-table-body', uOpl, 7, r => {
-      const oplId = sg(r, 'OPL ID', 1); const status = sg(r, 'Status', 14) || ''; const isWaiting = status.includes('รอหัวหน้า');
-      let btns = `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=edit" class="btn-edit">แก้ไข/แนบไฟล์</a>`;
-      if (isWaiting) btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
-      return `<td class="col-fit">${formatDateTH(sg(r, 'วันที่ทำ OPL', 2))}</td><td class="col-fit"><span style="font-weight:700; color:var(--orange-600);">${oplId}</span></td><td class="col-fit">${sg(r, 'Department', 4)}</td><td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td><td class="col-owner">${sg(r, 'ชื่อผู้สอน', 10)}</td><td class="col-fit"><span class="badge ${getStatusBadge(status)}">${status}</span></td><td class="col-fit"><div style="display:flex; gap:8px;">${btns}</div></td>`;
-    });
-    tbl('fi-table-body', uFi, 7, r => {
-      const fiId = sg(r, 'FI ID', 1); const status = sg(r, 'Status', 14) || ''; const isWaiting = status.includes('รอหัวหน้า');
-      let btns = `<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=edit" class="btn-edit">อัปเดตงาน</a>`;
-      if (isWaiting) btns += `<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
-      return `<td class="col-fit"><span style="font-weight:700; color:var(--indigo-600);">${fiId}</span></td><td class="col-fit">${sg(r, 'Department', 4)}</td><td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td><td class="col-owner">${sg(r, 'ผู้รับผิดชอบ', 2)}</td><td class="col-fit"><span style="color:var(--indigo-600); font-weight:700; background:var(--indigo-50); padding:4px 10px; border-radius:12px;">${sg(r, 'Step ปัจจุบัน', 13)}</span></td><td class="col-fit"><span class="badge ${getStatusBadge(status)}">${status}</span></td><td class="col-fit"><div style="display:flex; gap:8px;">${btns}</div></td>`;
-    });
-    tbl('kz-table-body', uKz, 7, r => {
-      return `<td class="col-fit">${formatDateTH(sg(r, 'วันที่ทำ Kaizen', 1))}</td><td class="col-fit"><span style="font-weight:700; color:var(--teal-600);">${sg(r, 'เลขที่ Kaizen', 0)}</span></td><td class="col-fit">${sg(r, 'แผนก', 3)}</td><td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 4)}</strong></td><td class="col-owner">${sg(r, 'ผู้ดำเนินการ', 7)}</td><td class="col-fit"><span class="badge b-pass">${sg(r, 'ประเภท', 5)}</span></td><td class="col-fit"><a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="btn-edit">เปิดระบบ</a></td>`;
-    });
-    tbl('mk-table-body', uMk, 7, r => {
-      const mkId = sg(r, 'Makigami ID', 1); const status = sg(r, 'Status', 9) || '';
-      return `<td class="col-fit"><span style="font-weight:700; color:var(--rose-500);">${mkId}</span></td><td class="col-fit">${sg(r, 'แผนก', 3)}</td><td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 4) || sg(r, 'ชื่อเรื่อง (Theme Name)', 4)}</strong></td><td class="col-owner">${sg(r, 'ผู้รับผิดชอบ', 5)}</td><td class="col-fit"><span style="color:var(--rose-500); font-weight:700; background:rgba(244,63,94,0.1); padding:4px 10px; border-radius:12px;">${sg(r, 'Current Phase', 6)}</span></td><td class="col-fit"><span class="badge ${getStatusBadge(status)}">${status}</span></td><td class="col-fit"><a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=edit" class="btn-edit">อัปเดตงาน</a></td>`;
-    });
-  } catch (err) {
-    console.error("Render Error:", err);
-    document.getElementById('loader').style.display='block';
-    document.getElementById('loader').innerHTML = `<span style="color:red; font-weight:bold;">❌ เกิดข้อผิดพลาดในการแสดงผล: ${err.message}</span>`;
-    document.getElementById('main-dashboard-view').style.display='none';
-  }
+  const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:40px;color:#9BA5B1;font-weight:600;">ไม่มีข้อมูลให้แสดงผล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
+  
+  tbl('opl-table-body', uOpl, 7, r => {
+    const oplId = sg(r, 'OPL ID', 1); const status = sg(r, 'Status', 14) || ''; const isWaiting = status.includes('รอหัวหน้า');
+    let btns = `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=edit" class="btn-edit">แก้ไข/แนบไฟล์</a>`;
+    if (isWaiting) btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
+    return `<td>${formatDateTH(sg(r, 'วันที่ทำ OPL', 2))}</td><td><span style="font-weight:700; color:var(--orange-600);">${oplId}</span></td><td>${sg(r, 'Department', 4)}</td><td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td><td>${sg(r, 'ชื่อผู้สอน', 10)}</td><td><span class="badge ${getStatusBadge(status)}">${status}</span></td><td><div style="display:flex; gap:8px;">${btns}</div></td>`;
+  });
+  
+  tbl('fi-table-body', uFi, 7, r => {
+    const fiId = sg(r, 'FI ID', 1); const status = sg(r, 'Status', 14) || ''; const isWaiting = status.includes('รอหัวหน้า');
+    let btns = `<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=edit" class="btn-edit">อัปเดตงาน</a>`;
+    if (isWaiting) btns += `<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
+    return `<td><span style="font-weight:700; color:var(--indigo-600);">${fiId}</span></td><td>${sg(r, 'Department', 4)}</td><td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td><td>${sg(r, 'ผู้รับผิดชอบ', 2)}</td><td><span style="color:var(--indigo-600); font-weight:700; background:var(--indigo-50); padding:4px 10px; border-radius:12px;">${sg(r, 'Step ปัจจุบัน', 13)}</span></td><td><span class="badge ${getStatusBadge(status)}">${status}</span></td><td><div style="display:flex; gap:8px;">${btns}</div></td>`;
+  });
+
+  tbl('kz-table-body', uKz, 7, r => {
+    return `<td>${formatDateTH(sg(r, 'วันที่ทำ Kaizen', 1))}</td><td><span style="font-weight:700; color:var(--teal-600);">${sg(r, 'เลขที่ Kaizen', 0)}</span></td><td>${sg(r, 'แผนก', 3)}</td><td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 4)}</strong></td><td>${sg(r, 'ผู้ดำเนินการ', 7)}</td><td><span class="badge b-pass">${sg(r, 'ประเภท', 5)}</span></td><td><a href="https://ops.sermsukplc.com/kaizen/" target="_blank" class="btn-edit">เปิดระบบ</a></td>`;
+  });
+
+  tbl('mk-table-body', uMk, 7, r => {
+    const mkId = sg(r, 'Makigami ID', 1); const status = sg(r, 'Status', 9) || '';
+    return `<td><span style="font-weight:700; color:var(--rose-500);">${mkId}</span></td><td>${sg(r, 'แผนก', 3)}</td><td style="width:100%; min-width:200px;"><strong>${sg(r, 'ชื่อเรื่อง', 4) || sg(r, 'ชื่อเรื่อง (Theme Name)', 4)}</strong></td><td>${sg(r, 'ผู้รับผิดชอบ', 5)}</td><td><span style="color:var(--rose-500); font-weight:700; background:rgba(244,63,94,0.1); padding:4px 10px; border-radius:12px;">${sg(r, 'Current Phase', 6)}</span></td><td><span class="badge ${getStatusBadge(status)}">${status}</span></td><td><a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=edit" class="btn-edit">อัปเดตงาน</a></td>`;
+  });
 }
 
 function openDetail(type,title){
-  document.getElementById('main-dashboard-view').style.display='none'; document.getElementById('detail-view').style.display='block'; window.scrollTo({top:0,behavior:'smooth'}); document.getElementById('detail-page-title').innerHTML=`<div class="detail-icon-badge">${mkSVG(type,24)}</div>${title}`;
-  ['am','opl','fi','kz','mk'].forEach(t=>document.getElementById('detail-'+t).style.display='none'); document.getElementById('detail-'+type).style.display='block';
+  document.getElementById('main-dashboard-view').style.display='none';
+  document.getElementById('detail-view').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('detail-page-title').innerHTML=`<div class="detail-icon-badge">${mkSVG(type,24)}</div>${title}`;
+  ['am','opl','fi','kz','mk'].forEach(t=>document.getElementById('detail-'+t).style.display='none');
+  document.getElementById('detail-'+type).style.display='block';
 }
 
 function goBackToDashboard(){ document.getElementById('detail-view').style.display='none'; document.getElementById('main-dashboard-view').style.display='block'; }
@@ -896,32 +1068,40 @@ async function generateInsights() {
     btn.disabled = true; resBox.style.display = 'block'; resBox.innerHTML = '<div style="text-align:center; padding:30px; color:var(--indigo-600); font-weight:bold;">กำลังดึงข้อมูลทั้งระบบให้ AI ประมวลผลเชิงลึก กรุณารอสักครู่... ⏳</div>';
     const fd = document.getElementById('global-filter-dept').value; const deptText = fd === 'all' ? 'ภาพรวมทั้งโรงงาน (ทุกแผนก)' : `แผนก ${fd}`;
     
-    // 💡 ส่งเฉพาะข้อมูลสรุป เพื่อไม่ให้ AI ตัดจบกลางคัน และแนบ Project ล่าช้า
-    let wipProjects = [];
-    if(appData.am.wip > 0) wipProjects.push('AM-OI (รอการประเมิน)');
-    if(appData.opl.wip > 0) wipProjects.push(`OPL (${appData.opl.wip} เรื่องรอหัวหน้าอนุมัติ)`);
-    if(appData.fi.wip > 0) wipProjects.push(`FI Theme (${appData.fi.wip} โครงการกำลังดำเนินการ)`);
-    if(appData.mk.wip > 0) wipProjects.push(`Makigami (${appData.mk.wip} โครงการที่ยังไม่ปิด)`);
-
+    // 💡 ส่งเฉพาะข้อมูลสรุป เพื่อไม่ให้ AI ตัดจบกลางคัน
     const summaryData = {
        AM: { target: appData.am.target, wip: appData.am.wip, completed: appData.am.actual, success_rate: appData.am.pct + '%' },
        OPL: { target: appData.opl.target, wip: appData.opl.wip, completed: appData.opl.actual, success_rate: appData.opl.pct + '%' },
        FI_Theme: { target: appData.fi.target, wip: appData.fi.wip, completed: appData.fi.actual, success_rate: appData.fi.pct + '%' },
        Kaizen: { target: appData.kz.target, wip: appData.kz.wip, completed: appData.kz.actual, success_rate: appData.kz.pct + '%' },
-       Makigami: { target: appData.mk.target, wip: appData.mk.wip, completed: appData.mk.actual, success_rate: appData.mk.pct + '%' },
-       WIP_Warning: wipProjects
+       Makigami: { target: appData.mk.target, wip: appData.mk.wip, completed: appData.mk.actual, success_rate: appData.mk.pct + '%' }
     };
     
-    const dbContext = JSON.stringify(summaryData);
+    // 💡 แนบข้อมูลงานที่ค้าง (WIP) ที่มีตัวตนจริงๆ ไปด้วย เพื่อให้วิเคราะห์เจาะจงได้
+    let bottleneckDetails = "รายการงานที่ยังค้างอยู่ (WIP/Delay):\n";
+    if (appData.opl.wip > 0) {
+        const oplWait = oplHistory.filter(r => (sg(r,'Status',14)||'').includes('รอ') && (fd==='all'||sg(r,'Department',4)===fd));
+        if(oplWait.length > 0) bottleneckDetails += `- OPL รอหัวหน้าตรวจ: ${oplWait.map(r => sg(r,'ชื่อเรื่อง',5)).join(', ')}\n`;
+    }
+    if (appData.fi.wip > 0) {
+        const fiWait = fiHistory.filter(r => !(sg(r,'Status',14)||'').includes('สมบูรณ์') && (fd==='all'||sg(r,'Department',4)===fd));
+        if(fiWait.length > 0) bottleneckDetails += `- FI Theme ที่ยังไม่จบ: ${fiWait.map(r => sg(r,'ชื่อเรื่อง',5)).join(', ')}\n`;
+    }
+    if (appData.mk.wip > 0) {
+        const mkWait = mkHistory.filter(r => !(sg(r,'Status',9)||'').includes('Completed') && (fd==='all'||sg(r,'แผนก',3)===fd));
+        if(mkWait.length > 0) bottleneckDetails += `- Makigami ที่กำลังทำ: ${mkWait.map(r => sg(r,'ชื่อเรื่อง',4) || sg(r,'ชื่อเรื่อง (Theme Name)',4)).join(', ')}\n`;
+    }
 
-    const promptText = `ในฐานะที่ปรึกษา TPM ระดับสูง กรุณาวิเคราะห์ Performance เชิงลึกของ "${deptText}" จากข้อมูลนี้: ${dbContext}
+    const promptText = `ในฐานะที่ปรึกษา TPM ระดับสูง กรุณาวิเคราะห์ Performance ของ "${deptText}" แบบเจาะลึก
+ข้อมูลสรุปตัวเลข: ${JSON.stringify(summaryData)}
+รายละเอียดงานค้าง (WIP): ${bottleneckDetails}
 
-กรุณาเขียนวิเคราะห์เชิงลึก (แต่ความยาวรวมต้องไม่เกิน 15 บรรทัด) โดยแบ่งเป็น 3 ส่วนดังนี้:
-1. [ภาพรวมความสำเร็จ]: วิเคราะห์เสาหลักที่ทำผลงานได้ดีเยี่ยม และเสาที่ต้องเร่งรัด พร้อมระบุตัวเลข % ความสำเร็จ
-2. [จุดคอขวดที่ต้องระวัง]: วิเคราะห์จากจำนวน WIP และ WIP_Warning ว่ามีงานค้างอยู่ที่กระบวนการใดที่อาจส่งผลกระทบต่อเป้าหมายภาพรวม
-3. [Executive Action Plan]: เสนอแนะกลยุทธ์สำหรับผู้บริหาร 3 ข้อที่ควรสั่งการทันทีเพื่อทะลวงคอขวดในข้อ 2
+ให้เขียนตอบแบบจัดเต็ม (ความยาวไม่เกิน 15 บรรทัด) โดยแบ่งหัวข้อให้ชัดเจน:
+1. ภาพรวมและเสาที่โดดเด่น: (ระบุ % ความสำเร็จของเสาที่ดีที่สุด)
+2. คอขวดและจุดที่น่าเป็นห่วง: (วิเคราะห์เจาะจงจากชื่อ "รายการงานที่ยังค้างอยู่" ด้านบน ว่าติดขัดตรงไหน)
+3. แผนรับมือ (Action Plan): แนะนำกลยุทธ์เชิงรุก 3 ข้อสำหรับผู้บริหารเพื่อเร่งรัดงานที่ค้างอยู่
 
-ใช้รูปแบบ Bullet points เพื่อให้อ่านง่าย ห้ามเกริ่นนำและห้ามมีคำลงท้าย ให้เข้าประเด็นทันที`;
+ตอบให้คมคาย เป็นมืออาชีพ ห้ามเกริ่นนำหรือลงท้าย`;
 
     try {
         const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'ai_advisor', prompt: promptText }) });
@@ -937,6 +1117,9 @@ async function sendMessage() {
     const inputEl = document.getElementById('chat-input'); const btnEl = document.getElementById('chat-btn'); const text = inputEl.value.trim();
     if (!text) return; appendMessage('user', text); inputEl.value = ''; btnEl.disabled = true; const typingId = appendTypingIndicator();
     
+    const fd = document.getElementById('global-filter-dept').value;
+    
+    // 💡 ส่งข้อมูลสรุป + ข้อมูล WIP ให้บอทแชทด้วย จะได้ตอบคำถามได้ตรงจุด
     const summaryData = {
        AM: { target: appData.am.target, wip: appData.am.wip, completed: appData.am.actual, pct: appData.am.pct + '%' },
        OPL: { target: appData.opl.target, wip: appData.opl.wip, completed: appData.opl.actual, pct: appData.opl.pct + '%' },
@@ -945,13 +1128,16 @@ async function sendMessage() {
        Makigami: { target: appData.mk.target, wip: appData.mk.wip, completed: appData.mk.actual, pct: appData.mk.pct + '%' }
     };
     
-    const systemPrompt = `Context JSON: ${JSON.stringify(summaryData)}
+    let bottleneckDetails = "งานค้าง (WIP):\n";
+    const oplWait = oplHistory.filter(r => (sg(r,'Status',14)||'').includes('รอ') && (fd==='all'||sg(r,'Department',4)===fd));
+    if(oplWait.length > 0) bottleneckDetails += `- OPL รอตรวจ: ${oplWait.map(r => sg(r,'ชื่อเรื่อง',5)).join(', ')}\n`;
+    const fiWait = fiHistory.filter(r => !(sg(r,'Status',14)||'').includes('สมบูรณ์') && (fd==='all'||sg(r,'Department',4)===fd));
+    if(fiWait.length > 0) bottleneckDetails += `- FI Theme: ${fiWait.map(r => sg(r,'ชื่อเรื่อง',5)).join(', ')}\n`;
+
+    const systemPrompt = `Context: ${JSON.stringify(summaryData)} | ${bottleneckDetails}
 กฎการตอบ:
-1. คุณคือ AI Advisor ตอบเป็นภาษาไทย "เท่านั้น"
-2. วิเคราะห์จากสถานะ (Status) และความสำเร็จ (%) ใน JSON ด้านบน
-3. ตอบสั้นที่สุด (ไม่เกิน 5 บรรทัด) ห้ามเกริ่น ห้ามทวนคำถาม
-4. หากถามว่าแผนกไหนน่าห่วง: ให้ดูเสาที่มี % ต่ำสุด หรือ wip เยอะสุด
-5. ถ้าไม่เจอข้อมูลตอบ "ไม่มีข้อมูลครับ"
+1. คุณคือ AI Advisor ตอบสั้นๆ ตรงคำถาม (ไม่เกิน 5 บรรทัด)
+2. ถ้าถามถึงงานค้าง ให้ดูจากชื่อเรื่องใน "งานค้าง (WIP)" 
 คำถาม: "${text}"`;
 
     try {
@@ -963,16 +1149,24 @@ async function sendMessage() {
     } catch(err) { removeElement(typingId); appendMessage('ai', `❌ เชื่อมต่อไม่สำเร็จ`); } finally { btnEl.disabled = false; inputEl.focus(); }
 }
 
-function appendMessage(sender, text) { const chatBody = document.getElementById('chat-body'); const msgWrap = document.createElement('div'); msgWrap.className = `msg-wrap ${sender}`; msgWrap.innerHTML = `<div class="msg-bubble">${text}</div>`; chatBody.appendChild(msgWrap); chatBody.scrollTop = chatBody.scrollHeight; }
-function appendTypingIndicator() { const chatBody = document.getElementById('chat-body'); const id = 'typing-' + Date.now(); const msgWrap = document.createElement('div'); msgWrap.id = id; msgWrap.className = `msg-wrap ai`; msgWrap.innerHTML = `<div class="msg-bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`; chatBody.appendChild(msgWrap); chatBody.scrollTop = chatBody.scrollHeight; return id; }
+function appendMessage(sender, text) {
+    const chatBody = document.getElementById('chat-body'); const msgWrap = document.createElement('div'); msgWrap.className = `msg-wrap ${sender}`;
+    msgWrap.innerHTML = `<div class="msg-bubble">${text}</div>`; chatBody.appendChild(msgWrap); chatBody.scrollTop = chatBody.scrollHeight;
+}
+function appendTypingIndicator() {
+    const chatBody = document.getElementById('chat-body'); const id = 'typing-' + Date.now(); const msgWrap = document.createElement('div');
+    msgWrap.id = id; msgWrap.className = `msg-wrap ai`; msgWrap.innerHTML = `<div class="msg-bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+    chatBody.appendChild(msgWrap); chatBody.scrollTop = chatBody.scrollHeight; return id;
+}
 function removeElement(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
-document.getElementById('btn-guide').addEventListener('click', function(e) { e.preventDefault(); startTour(); });
-
-// 💡 แก้ไขการทำงานของ window.onload เพื่อไม่ให้รอไฟล์ค้างจนจอขาว
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(loadData, 100);
+// 💡 ผูก Event ไว้ที่ปุ่มสอนใช้งาน
+document.getElementById('btn-guide').addEventListener('click', function(e) {
+    e.preventDefault();
+    startTour();
 });
+
+window.onload = loadData;
 </script>
 </body>
 </html>
