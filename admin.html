@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — OI Center</title>
+
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════════════
+   Root Variables — ตรงกับ home.html
+══════════════════════════════════════════════ */
+:root {
+  --blue-900: #0A2540; --blue-800: #113A5D; --blue-600: #1E6091; --blue-400: #3A86FF;
+  --teal-600: #0CA47C; --teal-400: #10D2A1;
+  --orange-500: #F57C00; --orange-600: #E65100;
+  --rose-500: #F43F5E; --rose-600: #E11D48;
+  --red-600: #D93838;
+  --gray-900: #1A1C1E; --gray-600: #505A64; --gray-400: #9BA5B1; --gray-200: #D9E2EC;
+  --font: 'IBM Plex Sans Thai', sans-serif;
+  --blur: blur(32px) saturate(180%);
+  --r-lg: 28px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font); min-height: 100vh;
+  background: linear-gradient(145deg, #E0EAF5 0%, #E8F4F0 35%, #EAECF5 65%, #F4EAE4 100%);
+  background-attachment: fixed; color: var(--gray-900); overflow-x: hidden;
+}
+
+/* ══════════════════════════════════════════════
+   Ambient Blobs
+══════════════════════════════════════════════ */
+body::before, body::after { content: ''; position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(120px); opacity: 0.55; }
+body::before { width: 70vw; height: 70vw; max-width: 800px; max-height: 800px; background: radial-gradient(circle, rgba(58,134,255,0.4) 0%, transparent 70%); top: -20%; left: -10%; animation: b1 18s ease-in-out infinite alternate; }
+body::after { width: 60vw; height: 60vw; max-width: 700px; max-height: 700px; background: radial-gradient(circle, rgba(12,164,124,0.3) 0%, transparent 70%); bottom: -15%; right: -10%; animation: b2 22s ease-in-out infinite alternate; }
+@keyframes b1 { to { transform: translate(80px, 60px) scale(1.1); } }
+@keyframes b2 { to { transform: translate(-80px, -60px) scale(0.9); } }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* ══════════════════════════════════════════════
+   Glass Base
+══════════════════════════════════════════════ */
+.glass {
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-bottom-color: rgba(255,255,255,0.4); border-right-color: rgba(255,255,255,0.4);
+  box-shadow: 0 12px 40px rgba(10,37,64,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
+  border-radius: var(--r-lg); position: relative; overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════
+   Layout
+══════════════════════════════════════════════ */
+.shell {
+  position: relative; z-index: 1;
+  max-width: 1100px; margin: 0 auto;
+  padding: 12px 24px 80px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+/* ══════════════════════════════════════════════
+   Header — ตรงกับ home.html
+══════════════════════════════════════════════ */
+.page-header {
+  position: sticky; top: 12px; z-index: 100;
+  padding: 20px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.h-title h2 {
+  font-size: clamp(18px, 2vw, 22px); font-weight: 700;
+  color: var(--blue-900); letter-spacing: -0.4px;
+  margin-bottom: 4px; line-height: 1.2;
+  display: flex; align-items: center; gap: 10px;
+}
+.h-title h2 svg { color: var(--blue-600); flex-shrink: 0; }
+.h-title p { font-size: 13px; color: var(--gray-600); font-weight: 500; }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+
+.pill-btn {
+  height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 18px; border-radius: 40px; font-size: 13px; font-weight: 700; font-family: var(--font);
+  white-space: nowrap; cursor: pointer; text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,1); border-bottom-color: rgba(200,210,220,0.6);
+  color: var(--blue-800); box-shadow: 0 4px 12px rgba(10,37,64,0.05);
+}
+.pill-btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(10,37,64,0.1); }
+.pill-btn svg { color: var(--blue-600); }
+
+/* Admin Badge */
+.admin-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, #0A2540, #113A5D);
+  color: #fff; padding: 6px 14px; border-radius: 20px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+}
+
+/* ══════════════════════════════════════════════
+   Login Overlay
+══════════════════════════════════════════════ */
+#login-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(10,37,64,0.6);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+.login-box {
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(255,255,255,1);
+  border-radius: 32px;
+  padding: 48px 40px;
+  width: 100%; max-width: 400px;
+  box-shadow: 0 32px 80px rgba(10,37,64,0.25), inset 0 1px 0 rgba(255,255,255,1);
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+  text-align: center;
+}
+.login-icon {
+  width: 72px; height: 72px; border-radius: 22px; margin: 0 auto 24px;
+  background: linear-gradient(135deg, #1E6091, #0A2540);
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  box-shadow: 0 12px 28px rgba(10,37,64,0.25);
+}
+.login-icon svg { width: 32px; height: 32px; }
+.login-box h3 { font-size: 22px; font-weight: 700; color: var(--blue-900); margin-bottom: 8px; }
+.login-box p { font-size: 14px; color: var(--gray-600); font-weight: 500; margin-bottom: 28px; }
+.login-input {
+  width: 100%; padding: 14px 18px; border-radius: 14px;
+  border: 1.5px solid rgba(58,134,255,0.3); font-family: var(--font);
+  font-size: 16px; font-weight: 600; color: var(--blue-900);
+  background: rgba(255,255,255,0.9); outline: none; text-align: center;
+  letter-spacing: 4px; margin-bottom: 16px;
+  transition: all 0.3s;
+}
+.login-input:focus { border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(58,134,255,0.15); }
+.login-input.error { border-color: var(--rose-500); box-shadow: 0 0 0 4px rgba(244,63,94,0.15); animation: shake 0.4s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+.login-btn {
+  width: 100%; padding: 14px; border-radius: 40px; border: none;
+  background: linear-gradient(135deg, #3A86FF, #1E6091); color: #fff;
+  font-family: var(--font); font-size: 15px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 8px 24px rgba(58,134,255,0.35);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.login-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(58,134,255,0.45); }
+.login-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+.login-error { font-size: 13px; color: var(--rose-600); font-weight: 600; margin-top: 12px; display: none; }
+
+/* ══════════════════════════════════════════════
+   Main Content (hidden until login)
+══════════════════════════════════════════════ */
+#main-content { display: none; }
+
+/* ══════════════════════════════════════════════
+   Stats Bar
+══════════════════════════════════════════════ */
+.stats-bar {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+.stat-card {
+  padding: 20px 24px; border-radius: 20px;
+  background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9);
+  box-shadow: 0 8px 24px rgba(10,37,64,0.05);
+  display: flex; align-items: center; gap: 16px;
+  opacity: 0; transform: translateY(12px); animation: fadeUp 0.5s forwards;
+}
+.stat-icon {
+  width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+.stat-icon.blue  { background: linear-gradient(135deg, #60A5FA, #2563EB); }
+.stat-icon.teal  { background: linear-gradient(135deg, #34D399, #059669); }
+.stat-icon.orange{ background: linear-gradient(135deg, #FBBF24, #EA580C); }
+.stat-icon svg { width: 22px; height: 22px; }
+.stat-val { font-size: 28px; font-weight: 700; color: var(--blue-900); letter-spacing: -1px; line-height: 1; }
+.stat-lbl { font-size: 12px; font-weight: 600; color: var(--gray-600); margin-top: 2px; }
+
+/* ══════════════════════════════════════════════
+   Tabs
+══════════════════════════════════════════════ */
+.tab-bar {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 8px; background: rgba(255,255,255,0.5);
+  border-radius: 20px; border: 1px solid rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+}
+.tab-btn {
+  flex: 1; min-width: 120px; padding: 12px 20px; border-radius: 14px; border: none;
+  font-family: var(--font); font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: transparent; color: var(--gray-600);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.tab-btn.active {
+  background: #fff; color: var(--blue-900);
+  box-shadow: 0 4px 16px rgba(10,37,64,0.08);
+}
+.tab-btn:hover:not(.active) { background: rgba(255,255,255,0.6); color: var(--blue-800); }
+.tab-count {
+  font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+  background: rgba(58,134,255,0.12); color: var(--blue-600);
+}
+.tab-btn.active .tab-count { background: rgba(58,134,255,0.15); }
+
+/* Tab Panels */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeUp 0.35s ease; }
+
+/* ══════════════════════════════════════════════
+   Filter + Add Bar
+══════════════════════════════════════════════ */
+.toolbar {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 16px 20px; border-radius: 20px;
+  background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px); margin-bottom: 16px;
+}
+.filter-select, .filter-input {
+  padding: 10px 16px; border-radius: 12px; border: 1.5px solid rgba(58,134,255,0.2);
+  font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--blue-900);
+  background: rgba(255,255,255,0.85); outline: none; transition: all 0.2s;
+}
+.filter-select { appearance: none; cursor: pointer; padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%231E6091' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+.filter-input { flex: 1; min-width: 180px; }
+.filter-select:focus, .filter-input:focus { border-color: var(--blue-400); background: #fff; box-shadow: 0 0 0 3px rgba(58,134,255,0.12); }
+
+.btn-add {
+  height: 42px; padding: 0 20px; border-radius: 40px; border: none;
+  background: linear-gradient(135deg, #3A86FF, #1E6091); color: #fff;
+  font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(58,134,255,0.3);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn-add:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(58,134,255,0.4); }
+
+/* ══════════════════════════════════════════════
+   Data Table
+══════════════════════════════════════════════ */
+.table-wrap {
+  background: rgba(255,255,255,0.75); border: 1px solid rgba(255,255,255,0.9);
+  border-radius: 24px; overflow: hidden; box-shadow: 0 12px 32px rgba(10,37,64,0.06);
+}
+.tbl-scroll { overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 600px; }
+.data-table thead { background: rgba(248,250,252,0.9); }
+.data-table th {
+  padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 700;
+  color: var(--blue-800); letter-spacing: 0.8px; text-transform: uppercase;
+  border-bottom: 2px solid rgba(10,37,64,0.06); white-space: nowrap;
+}
+.data-table td {
+  padding: 14px 16px; border-bottom: 1px solid rgba(10,37,64,0.04);
+  color: var(--gray-900); font-weight: 500; vertical-align: middle;
+}
+.data-table tbody tr { transition: background 0.2s; }
+.data-table tbody tr:hover { background: rgba(255,255,255,0.9); }
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+.plant-badge {
+  display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 700; background: rgba(58,134,255,0.12); color: var(--blue-600);
+  border: 1px solid rgba(58,134,255,0.2);
+}
+.dept-badge {
+  display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 700; background: rgba(12,164,124,0.1); color: var(--teal-600);
+  border: 1px solid rgba(12,164,124,0.2);
+}
+.role-badge {
+  display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
+}
+.role-lead { background: rgba(245,124,0,0.1); color: var(--orange-600); border: 1px solid rgba(245,124,0,0.2); }
+.role-exec { background: rgba(79,70,229,0.1); color: #4F46E5; border: 1px solid rgba(79,70,229,0.2); }
+.role-user { background: rgba(58,134,255,0.1); color: var(--blue-600); border: 1px solid rgba(58,134,255,0.2); }
+
+.btn-icon {
+  width: 34px; height: 34px; border-radius: 10px; border: none; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.btn-edit-row { background: rgba(58,134,255,0.1); color: var(--blue-600); }
+.btn-edit-row:hover { background: rgba(58,134,255,0.2); transform: scale(1.08); }
+.btn-delete-row { background: rgba(244,63,94,0.1); color: var(--rose-600); }
+.btn-delete-row:hover { background: rgba(244,63,94,0.2); transform: scale(1.08); }
+.btn-icon svg { width: 16px; height: 16px; }
+
+.empty-row td { text-align: center; padding: 48px; color: var(--gray-400); font-weight: 600; font-size: 14px; }
+
+/* ══════════════════════════════════════════════
+   Modal (Add/Edit)
+══════════════════════════════════════════════ */
+#modal-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  background: rgba(10,37,64,0.5);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+#modal-overlay.open { display: flex; animation: fadeIn 0.25s ease; }
+.modal-box {
+  background: rgba(255,255,255,0.97);
+  border: 1px solid rgba(255,255,255,1);
+  border-radius: 28px; padding: 36px;
+  width: 100%; max-width: 520px;
+  box-shadow: 0 28px 70px rgba(10,37,64,0.2);
+  animation: slideUp 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+.modal-title {
+  font-size: 20px; font-weight: 700; color: var(--blue-900);
+  margin-bottom: 24px; display: flex; align-items: center; gap: 12px;
+}
+.modal-title svg { color: var(--blue-600); }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.modal-grid.full { grid-template-columns: 1fr; }
+.fg { display: flex; flex-direction: column; gap: 7px; }
+.fg label { font-size: 12px; font-weight: 700; color: var(--blue-800); letter-spacing: 0.3px; }
+.fg input, .fg select {
+  padding: 11px 14px; border-radius: 12px; border: 1.5px solid rgba(58,134,255,0.2);
+  font-family: var(--font); font-size: 14px; font-weight: 500; color: var(--blue-900);
+  background: rgba(255,255,255,0.9); outline: none; transition: all 0.2s; width: 100%;
+}
+.fg input:focus, .fg select:focus { border-color: var(--blue-400); box-shadow: 0 0 0 3px rgba(58,134,255,0.12); background: #fff; }
+.fg select { appearance: none; cursor: pointer; padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' fill='none' stroke='%231E6091' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px dashed rgba(58,134,255,0.15); }
+.btn-modal-cancel {
+  padding: 12px 24px; border-radius: 40px; border: 1px solid var(--gray-200);
+  background: rgba(255,255,255,0.8); color: var(--gray-600); font-family: var(--font);
+  font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+}
+.btn-modal-cancel:hover { background: #fff; transform: translateY(-1px); }
+.btn-modal-save {
+  padding: 12px 28px; border-radius: 40px; border: none;
+  background: linear-gradient(135deg, #3A86FF, #1E6091); color: #fff;
+  font-family: var(--font); font-size: 14px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(58,134,255,0.3);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-modal-save:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(58,134,255,0.4); }
+.btn-modal-save:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+/* ══════════════════════════════════════════════
+   Plants Tab
+══════════════════════════════════════════════ */
+.plant-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;
+}
+.plant-card {
+  padding: 24px; border-radius: 20px;
+  background: rgba(255,255,255,0.75); border: 1px solid rgba(255,255,255,0.9);
+  box-shadow: 0 8px 24px rgba(10,37,64,0.05);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  opacity: 0; transform: translateY(12px); animation: fadeUp 0.5s forwards;
+}
+.plant-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(10,37,64,0.1); background: rgba(255,255,255,0.9); }
+.plant-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.plant-code { font-size: 24px; font-weight: 700; color: var(--blue-900); letter-spacing: -0.5px; }
+.plant-name { font-size: 13px; color: var(--gray-600); font-weight: 500; margin-bottom: 16px; }
+.plant-stats { display: flex; gap: 12px; }
+.plant-stat { font-size: 12px; font-weight: 700; color: var(--gray-600); display: flex; align-items: center; gap: 4px; }
+.plant-stat span { font-size: 16px; font-weight: 700; color: var(--blue-900); }
+
+/* ══════════════════════════════════════════════
+   Toast
+══════════════════════════════════════════════ */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem;
+  background: rgba(10,37,64,0.92); backdrop-filter: blur(10px);
+  color: #fff; padding: 14px 24px; border-radius: 14px;
+  font-size: 14px; font-weight: 600; opacity: 0;
+  transform: translateY(20px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none; z-index: 99999; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  display: flex; align-items: center; gap: 10px; max-width: 360px;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* Spinner */
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+/* ══════════════════════════════════════════════
+   Logout confirm
+══════════════════════════════════════════════ */
+#confirm-overlay {
+  position: fixed; inset: 0; z-index: 9997;
+  background: rgba(10,37,64,0.5); backdrop-filter: blur(12px);
+  display: none; align-items: center; justify-content: center;
+}
+#confirm-overlay.open { display: flex; }
+.confirm-box {
+  background: #fff; border-radius: 24px; padding: 32px; max-width: 380px; width: 90%;
+  text-align: center; box-shadow: 0 24px 60px rgba(10,37,64,0.2);
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+.confirm-box h4 { font-size: 18px; font-weight: 700; color: var(--blue-900); margin-bottom: 8px; }
+.confirm-box p { font-size: 14px; color: var(--gray-600); margin-bottom: 24px; line-height: 1.6; }
+.confirm-actions { display: flex; gap: 10px; justify-content: center; }
+.btn-confirm-yes {
+  padding: 11px 24px; border-radius: 40px; border: none;
+  background: linear-gradient(135deg, var(--rose-500), var(--rose-600));
+  color: #fff; font-family: var(--font); font-size: 14px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(244,63,94,0.3); transition: all 0.2s;
+}
+.btn-confirm-yes:hover { transform: translateY(-1px); }
+.btn-confirm-no {
+  padding: 11px 24px; border-radius: 40px; border: 1px solid var(--gray-200);
+  background: #fff; color: var(--gray-600); font-family: var(--font); font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+}
+
+/* ══════════════════════════════════════════════
+   Mobile
+══════════════════════════════════════════════ */
+@media(max-width: 767px) {
+  .shell { padding: 12px 16px 60px; }
+  .page-header { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
+  .header-actions { width: 100%; }
+  .pill-btn { flex: 1; justify-content: center; }
+  .modal-grid { grid-template-columns: 1fr; }
+  .tab-btn { font-size: 12px; padding: 10px 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN OVERLAY ══ -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-icon">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h3>Admin Access</h3>
+    <p>กรุณากรอกรหัสผ่านเพื่อเข้าสู่ระบบจัดการ</p>
+    <input type="password" id="login-pw" class="login-input" placeholder="••••••••" maxlength="20" onkeypress="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()" id="login-btn">เข้าสู่ระบบ</button>
+    <div class="login-error" id="login-error">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</div>
+  </div>
+</div>
+
+<!-- ══ MODAL (Add/Edit) ══ -->
+<div id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <span id="modal-title-text">เพิ่มข้อมูล</span>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn-modal-save" id="btn-modal-save" onclick="saveRecord()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        บันทึก
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONFIRM OVERLAY ══ -->
+<div id="confirm-overlay">
+  <div class="confirm-box">
+    <h4 id="confirm-title">ยืนยันการลบ</h4>
+    <p id="confirm-msg">คุณต้องการลบรายการนี้ออกจากระบบหรือไม่?</p>
+    <div class="confirm-actions">
+      <button class="btn-confirm-no" onclick="closeConfirm()">ยกเลิก</button>
+      <button class="btn-confirm-yes" id="btn-confirm-yes">ลบออก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN CONTENT ══ -->
+<div class="shell" id="main-content">
+
+  <!-- Header -->
+  <div class="page-header glass" id="page-header">
+    <div class="h-title">
+      <h2>
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Admin Panel
+      </h2>
+      <p>จัดการ Users, Approvers และ Plants ในระบบ OI Center</p>
+    </div>
+    <div class="header-actions" style="gap:10px; flex-wrap:wrap;">
+      <div class="admin-badge">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Admin
+      </div>
+      <button class="pill-btn" onclick="showLogout()">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        ออกจากระบบ
+      </button>
+      <a href="home.html" class="pill-btn">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        กลับหน้าหลัก
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-card" style="animation-delay:0.05s;">
+      <div class="stat-icon blue"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+      <div><div class="stat-val" id="stat-users">—</div><div class="stat-lbl">Users ทั้งหมด</div></div>
+    </div>
+    <div class="stat-card" style="animation-delay:0.12s;">
+      <div class="stat-icon teal"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div><div class="stat-val" id="stat-approvers">—</div><div class="stat-lbl">Approvers ทั้งหมด</div></div>
+    </div>
+    <div class="stat-card" style="animation-delay:0.19s;">
+      <div class="stat-icon orange"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+      <div><div class="stat-val" id="stat-plants">—</div><div class="stat-lbl">Plants ทั้งหมด</div></div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('users',this)">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      Users
+      <span class="tab-count" id="tc-users">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('approvers',this)">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Approvers
+      <span class="tab-count" id="tc-approvers">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('plants',this)">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Plants
+      <span class="tab-count" id="tc-plants">0</span>
+    </button>
+  </div>
+
+  <!-- ══ TAB: USERS ══ -->
+  <div class="tab-panel active" id="panel-users">
+    <div class="toolbar">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--gray-400); flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="filter-input" id="u-search" placeholder="ค้นหาชื่อ หรือ Email..." oninput="renderUsers()">
+      <select class="filter-select" id="u-plant" onchange="renderUsers()">
+        <option value="">ทุก Plant</option>
+      </select>
+      <select class="filter-select" id="u-dept" onchange="renderUsers()">
+        <option value="">ทุก Department</option>
+      </select>
+      <button class="btn-add" onclick="openAddUser()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        เพิ่ม User
+      </button>
+    </div>
+    <div class="table-wrap">
+      <div class="tbl-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Plant</th>
+              <th>Department</th>
+              <th>ชื่อ-นามสกุล</th>
+              <th>Email</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="user-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: APPROVERS ══ -->
+  <div class="tab-panel" id="panel-approvers">
+    <div class="toolbar">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--gray-400); flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="filter-input" id="a-search" placeholder="ค้นหาชื่อ Department..." oninput="renderApprovers()">
+      <select class="filter-select" id="a-plant" onchange="renderApprovers()">
+        <option value="">ทุก Plant</option>
+      </select>
+      <button class="btn-add" onclick="openAddApprover()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        เพิ่ม Approver
+      </button>
+    </div>
+    <div class="table-wrap">
+      <div class="tbl-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Plant</th>
+              <th>Department</th>
+              <th>หัวหน้า (Lead)</th>
+              <th>Email Lead</th>
+              <th>ผู้บริหาร (Exec)</th>
+              <th>Email Exec</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="approver-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: PLANTS ══ -->
+  <div class="tab-panel" id="panel-plants">
+    <div class="toolbar">
+      <span style="font-size:13px; font-weight:600; color:var(--gray-600);">Plants ที่มีในระบบ (รวบรวมจาก UserList)</span>
+      <div style="flex:1;"></div>
+      <button class="btn-add" onclick="openAddPlantPrompt()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        เพิ่ม Plant
+      </button>
+    </div>
+    <div class="plant-grid" id="plant-grid"></div>
+  </div>
+
+</div><!-- /.shell -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// Config
+// ══════════════════════════════════════════════
+const API_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
+
+// ══════════════════════════════════════════════
+// State
+// ══════════════════════════════════════════════
+let allUsers = [];       // [{rowIndex, plant, dept, name, email}]
+let allApprovers = [];   // [{rowIndex, plant, dept, leadName, leadEmail, execName, execEmail}]
+let plants = [];         // unique plant codes
+let currentModal = null; // 'addUser' | 'editUser' | 'addApprover' | 'editApprover'
+let editIndex = null;
+let confirmCallback = null;
+
+// ══════════════════════════════════════════════
+// Login
+// ══════════════════════════════════════════════
+async function doLogin() {
+  const pw = document.getElementById('login-pw').value.trim();
+  if (!pw) return;
+  const btn = document.getElementById('login-btn');
+  const errEl = document.getElementById('login-error');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;"></span> กำลังตรวจสอบ...';
+  errEl.style.display = 'none';
+
+  try {
+    const res = await fetch(API_URL + '?action=verifyAdmin&password=' + encodeURIComponent(pw) + '&t=' + Date.now());
+    const data = await res.json();
+    if (data.status === 'success' && data.valid) {
+      document.getElementById('login-overlay').style.display = 'none';
+      document.getElementById('main-content').style.display = 'flex';
+      await loadAdminData();
+    } else {
+      const inp = document.getElementById('login-pw');
+      inp.classList.add('error');
+      setTimeout(() => inp.classList.remove('error'), 600);
+      errEl.style.display = 'block';
+      inp.value = '';
+    }
+  } catch(e) {
+    errEl.textContent = 'เชื่อมต่อไม่สำเร็จ กรุณาลองใหม่';
+    errEl.style.display = 'block';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = 'เข้าสู่ระบบ';
+}
+
+// ══════════════════════════════════════════════
+// Load Data
+// ══════════════════════════════════════════════
+async function loadAdminData() {
+  showToast('กำลังโหลดข้อมูล...', 'var(--blue-800)');
+  try {
+    const res = await fetch(API_URL + '?action=getAdminData&t=' + Date.now());
+    const data = await res.json();
+    if (data.status === 'success') {
+      allUsers     = data.users     || [];
+      allApprovers = data.approvers || [];
+      buildPlants();
+      updateStats();
+      populateFilters();
+      renderUsers();
+      renderApprovers();
+      renderPlants();
+      showToast('โหลดข้อมูลสำเร็จ', '#0CA47C');
+    } else {
+      showToast('โหลดข้อมูลล้มเหลว: ' + data.message, '#D93838');
+    }
+  } catch(e) {
+    showToast('เชื่อมต่อไม่สำเร็จ', '#D93838');
+  }
+}
+
+function buildPlants() {
+  const set = new Set();
+  allUsers.forEach(u => { if (u.plant) set.add(u.plant); });
+  allApprovers.forEach(a => { if (a.plant) set.add(a.plant); });
+  plants = [...set].sort();
+}
+
+function updateStats() {
+  document.getElementById('stat-users').textContent = allUsers.length;
+  document.getElementById('stat-approvers').textContent = allApprovers.length;
+  document.getElementById('stat-plants').textContent = plants.length;
+  document.getElementById('tc-users').textContent = allUsers.length;
+  document.getElementById('tc-approvers').textContent = allApprovers.length;
+  document.getElementById('tc-plants').textContent = plants.length;
+}
+
+function populateFilters() {
+  const plantOpts = plants.map(p => `<option value="${p}">${p}</option>`).join('');
+  ['u-plant','a-plant'].forEach(id => {
+    const el = document.getElementById(id);
+    const prev = el.value;
+    el.innerHTML = '<option value="">ทุก Plant</option>' + plantOpts;
+    el.value = prev;
+  });
+
+  const depts = [...new Set(allUsers.map(u => u.dept))].filter(Boolean).sort();
+  const dEl = document.getElementById('u-dept');
+  const prevD = dEl.value;
+  dEl.innerHTML = '<option value="">ทุก Department</option>' + depts.map(d => `<option value="${d}">${d}</option>`).join('');
+  dEl.value = prevD;
+}
+
+// ══════════════════════════════════════════════
+// Render Users
+// ══════════════════════════════════════════════
+function renderUsers() {
+  const q     = document.getElementById('u-search').value.toLowerCase();
+  const plant = document.getElementById('u-plant').value;
+  const dept  = document.getElementById('u-dept').value;
+
+  const filtered = allUsers.filter(u => {
+    const matchQ = !q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
+    const matchP = !plant || u.plant === plant;
+    const matchD = !dept  || u.dept  === dept;
+    return matchQ && matchP && matchD;
+  });
+
+  const tbody = document.getElementById('user-tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">ไม่พบข้อมูล</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((u, i) => `
+    <tr>
+      <td style="color:var(--gray-400); font-size:12px;">${i+1}</td>
+      <td><span class="plant-badge">${u.plant || '—'}</span></td>
+      <td><span class="dept-badge">${u.dept || '—'}</span></td>
+      <td style="font-weight:600;">${u.name}</td>
+      <td style="color:var(--gray-600); font-size:13px;">${u.email}</td>
+      <td>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-icon btn-edit-row" onclick="openEditUser(${u.rowIndex})" title="แก้ไข">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="btn-icon btn-delete-row" onclick="deleteUser(${u.rowIndex}, '${u.name}')" title="ลบ">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════
+// Render Approvers
+// ══════════════════════════════════════════════
+function renderApprovers() {
+  const q     = document.getElementById('a-search').value.toLowerCase();
+  const plant = document.getElementById('a-plant').value;
+
+  const filtered = allApprovers.filter(a => {
+    const matchQ = !q || a.dept.toLowerCase().includes(q) || (a.leadName||'').toLowerCase().includes(q);
+    const matchP = !plant || a.plant === plant;
+    return matchQ && matchP;
+  });
+
+  const tbody = document.getElementById('approver-tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="8">ไม่พบข้อมูล</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((a, i) => `
+    <tr>
+      <td style="color:var(--gray-400); font-size:12px;">${i+1}</td>
+      <td><span class="plant-badge">${a.plant || '—'}</span></td>
+      <td><span class="dept-badge">${a.dept || '—'}</span></td>
+      <td>
+        <span class="role-badge role-lead">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          ${a.leadName || '—'}
+        </span>
+      </td>
+      <td style="color:var(--gray-600); font-size:13px;">${a.leadEmail || '—'}</td>
+      <td>
+        <span class="role-badge role-exec">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          ${a.execName || '—'}
+        </span>
+      </td>
+      <td style="color:var(--gray-600); font-size:13px;">${a.execEmail || '—'}</td>
+      <td>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-icon btn-edit-row" onclick="openEditApprover(${a.rowIndex})" title="แก้ไข">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="btn-icon btn-delete-row" onclick="deleteApprover(${a.rowIndex}, '${a.dept}')" title="ลบ">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════
+// Render Plants
+// ══════════════════════════════════════════════
+function renderPlants() {
+  const grid = document.getElementById('plant-grid');
+  if (!plants.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:48px; color:var(--gray-400); font-weight:600;">ไม่พบข้อมูล Plant</div>';
+    return;
+  }
+  grid.innerHTML = plants.map((p, i) => {
+    const userCount = allUsers.filter(u => u.plant === p).length;
+    const approverCount = allApprovers.filter(a => a.plant === p).length;
+    const depts = [...new Set(allUsers.filter(u => u.plant === p).map(u => u.dept))].filter(Boolean);
+    return `
+      <div class="plant-card" style="animation-delay:${i * 0.07}s;">
+        <div class="plant-card-top">
+          <div class="plant-code">${p}</div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn-icon btn-edit-row" onclick="openEditPlant('${p}')" title="แก้ไขชื่อ Plant">
+              <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="plant-name">${depts.length > 0 ? depts.join(', ') : 'ยังไม่มี Department'}</div>
+        <div class="plant-stats">
+          <div class="plant-stat"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> <span>${userCount}</span> Users</div>
+          <div class="plant-stat"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> <span>${approverCount}</span> Approvers</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// Tabs
+// ══════════════════════════════════════════════
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// Modal — User
+// ══════════════════════════════════════════════
+const PLANT_OPTIONS = () => plants.map(p => `<option value="${p}">${p}</option>`).join('');
+const DEPT_OPTIONS = () => {
+  const d = [...new Set([...allUsers.map(u=>u.dept), ...allApprovers.map(a=>a.dept)])].filter(Boolean).sort();
+  return d.map(x => `<option value="${x}">${x}</option>`).join('');
+};
+
+function openAddUser() {
+  currentModal = 'addUser'; editIndex = null;
+  document.getElementById('modal-title-text').textContent = 'เพิ่ม User ใหม่';
+  document.getElementById('modal-body').innerHTML = userFormHTML();
+  openModal();
+}
+
+function openEditUser(rowIndex) {
+  const u = allUsers.find(x => x.rowIndex === rowIndex);
+  if (!u) return;
+  currentModal = 'editUser'; editIndex = rowIndex;
+  document.getElementById('modal-title-text').textContent = 'แก้ไขข้อมูล User';
+  document.getElementById('modal-body').innerHTML = userFormHTML(u);
+  openModal();
+}
+
+function userFormHTML(u = {}) {
+  return `
+    <div class="modal-grid">
+      <div class="fg">
+        <label>Plant <span style="color:var(--rose-500);">*</span></label>
+        <select id="mf-plant">
+          <option value="">-- เลือก Plant --</option>
+          ${PLANT_OPTIONS()}
+        </select>
+      </div>
+      <div class="fg">
+        <label>Department <span style="color:var(--rose-500);">*</span></label>
+        <input id="mf-dept" placeholder="เช่น MT, QC, PD..." value="${u.dept||''}">
+      </div>
+    </div>
+    <div class="modal-grid">
+      <div class="fg">
+        <label>ชื่อ-นามสกุล <span style="color:var(--rose-500);">*</span></label>
+        <input id="mf-name" placeholder="ชื่อเต็ม" value="${u.name||''}">
+      </div>
+      <div class="fg">
+        <label>Email <span style="color:var(--rose-500);">*</span></label>
+        <input id="mf-email" placeholder="example@company.com" value="${u.email||''}">
+      </div>
+    </div>
+  `;
+  // set plant after render
+  setTimeout(() => { if(u.plant) document.getElementById('mf-plant').value = u.plant; }, 10);
+}
+
+// ══════════════════════════════════════════════
+// Modal — Approver
+// ══════════════════════════════════════════════
+function openAddApprover() {
+  currentModal = 'addApprover'; editIndex = null;
+  document.getElementById('modal-title-text').textContent = 'เพิ่ม Approver ใหม่';
+  document.getElementById('modal-body').innerHTML = approverFormHTML();
+  openModal();
+}
+
+function openEditApprover(rowIndex) {
+  const a = allApprovers.find(x => x.rowIndex === rowIndex);
+  if (!a) return;
+  currentModal = 'editApprover'; editIndex = rowIndex;
+  document.getElementById('modal-title-text').textContent = 'แก้ไขข้อมูล Approver';
+  document.getElementById('modal-body').innerHTML = approverFormHTML(a);
+  openModal();
+}
+
+function approverFormHTML(a = {}) {
+  setTimeout(() => { if(a.plant) document.getElementById('mf-plant').value = a.plant; }, 10);
+  return `
+    <div class="modal-grid">
+      <div class="fg">
+        <label>Plant <span style="color:var(--rose-500);">*</span></label>
+        <select id="mf-plant">
+          <option value="">-- เลือก Plant --</option>
+          ${PLANT_OPTIONS()}
+        </select>
+      </div>
+      <div class="fg">
+        <label>Department <span style="color:var(--rose-500);">*</span></label>
+        <input id="mf-dept" placeholder="เช่น MT, QC, PD..." value="${a.dept||''}">
+      </div>
+    </div>
+    <div class="modal-grid">
+      <div class="fg">
+        <label>ชื่อหัวหน้า (Lead)</label>
+        <input id="mf-lead-name" placeholder="ชื่อหัวหน้าแผนก" value="${a.leadName||''}">
+      </div>
+      <div class="fg">
+        <label>Email หัวหน้า</label>
+        <input id="mf-lead-email" placeholder="lead@company.com" value="${a.leadEmail||''}">
+      </div>
+    </div>
+    <div class="modal-grid">
+      <div class="fg">
+        <label>ชื่อผู้บริหาร (Exec)</label>
+        <input id="mf-exec-name" placeholder="ชื่อผู้บริหาร" value="${a.execName||''}">
+      </div>
+      <div class="fg">
+        <label>Email ผู้บริหาร</label>
+        <input id="mf-exec-email" placeholder="exec@company.com" value="${a.execEmail||''}">
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════
+// Modal — Plant
+// ══════════════════════════════════════════════
+function openAddPlantPrompt() {
+  currentModal = 'addPlant'; editIndex = null;
+  document.getElementById('modal-title-text').textContent = 'เพิ่ม Plant ใหม่';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-grid full">
+      <div class="fg">
+        <label>รหัส Plant (เช่น PT, KR, NS) <span style="color:var(--rose-500);">*</span></label>
+        <input id="mf-plant-code" placeholder="รหัส Plant (ตัวพิมพ์ใหญ่)" style="text-transform:uppercase; letter-spacing:2px; font-weight:700;">
+      </div>
+      <div class="fg">
+        <label>ชื่อเต็มโรงงาน</label>
+        <input id="mf-plant-name" placeholder="เช่น ปทุมธานี, นครราชสีมา">
+      </div>
+    </div>
+    <p style="font-size:12px; color:var(--gray-400); margin-top:8px;">Plant จะถูกเพิ่มในฐานข้อมูลโดยอัตโนมัติ เมื่อคุณเพิ่ม User หรือ Approver ที่ใช้ Plant นี้</p>
+  `;
+  openModal();
+}
+
+function openEditPlant(code) {
+  currentModal = 'editPlant'; editIndex = code;
+  document.getElementById('modal-title-text').textContent = 'แก้ไขรหัส Plant';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-grid full">
+      <div class="fg">
+        <label>รหัส Plant ปัจจุบัน</label>
+        <input value="${code}" readonly style="background:rgba(238,242,255,0.6); color:var(--blue-600); font-weight:700; letter-spacing:2px;">
+      </div>
+      <div class="fg">
+        <label>รหัส Plant ใหม่ <span style="color:var(--rose-500);">*</span></label>
+        <input id="mf-new-plant-code" placeholder="รหัสใหม่" style="text-transform:uppercase; letter-spacing:2px; font-weight:700;">
+      </div>
+    </div>
+    <p style="font-size:12px; color:var(--orange-600); font-weight:600; margin-top:8px;">การเปลี่ยนรหัส Plant จะอัปเดตทุก User และ Approver ที่ใช้ Plant นี้</p>
+  `;
+  openModal();
+}
+
+// ══════════════════════════════════════════════
+// Save Record
+// ══════════════════════════════════════════════
+async function saveRecord() {
+  const btn = document.getElementById('btn-modal-save');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;"></span> กำลังบันทึก...';
+
+  try {
+    let payload = {};
+
+    if (currentModal === 'addUser' || currentModal === 'editUser') {
+      const plant = document.getElementById('mf-plant').value.trim();
+      const dept  = document.getElementById('mf-dept').value.trim();
+      const name  = document.getElementById('mf-name').value.trim();
+      const email = document.getElementById('mf-email').value.trim();
+      if (!plant || !dept || !name || !email) { showToast('กรุณากรอกข้อมูลให้ครบ', '#D93838'); return; }
+      payload = { action: 'saveUser', mode: currentModal === 'addUser' ? 'add' : 'edit', rowIndex: editIndex, plant, dept, name, email };
+
+    } else if (currentModal === 'addApprover' || currentModal === 'editApprover') {
+      const plant     = document.getElementById('mf-plant').value.trim();
+      const dept      = document.getElementById('mf-dept').value.trim();
+      const leadName  = document.getElementById('mf-lead-name').value.trim();
+      const leadEmail = document.getElementById('mf-lead-email').value.trim();
+      const execName  = document.getElementById('mf-exec-name').value.trim();
+      const execEmail = document.getElementById('mf-exec-email').value.trim();
+      if (!plant || !dept) { showToast('กรุณาเลือก Plant และ Department', '#D93838'); return; }
+      payload = { action: 'saveApprover', mode: currentModal === 'addApprover' ? 'add' : 'edit', rowIndex: editIndex, plant, dept, leadName, leadEmail, execName, execEmail };
+
+    } else if (currentModal === 'addPlant') {
+      const code = (document.getElementById('mf-plant-code').value || '').trim().toUpperCase();
+      if (!code) { showToast('กรุณากรอกรหัส Plant', '#D93838'); return; }
+      if (plants.includes(code)) { showToast('Plant นี้มีอยู่แล้วในระบบ', '#D93838'); return; }
+      // Plant is just a value — no separate sheet row needed, just note it
+      showToast(`Plant "${code}" พร้อมใช้งาน เพิ่ม User ที่ใช้ Plant นี้ได้เลย`, '#0CA47C', 4000);
+      plants.push(code); plants.sort(); populateFilters(); renderPlants(); updateStats();
+      closeModal(); return;
+
+    } else if (currentModal === 'editPlant') {
+      const newCode = (document.getElementById('mf-new-plant-code').value || '').trim().toUpperCase();
+      if (!newCode) { showToast('กรุณากรอกรหัส Plant ใหม่', '#D93838'); return; }
+      payload = { action: 'renamePlant', oldPlant: editIndex, newPlant: newCode };
+    }
+
+    const res = await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+    showToast('บันทึกสำเร็จ! กำลังโหลดข้อมูลใหม่...', '#0CA47C');
+    closeModal();
+    await loadAdminData();
+
+  } catch(e) {
+    showToast('เกิดข้อผิดพลาด: ' + e.message, '#D93838');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> บันทึก';
+  }
+}
+
+// ══════════════════════════════════════════════
+// Delete
+// ══════════════════════════════════════════════
+function deleteUser(rowIndex, name) {
+  showConfirm(`ลบ User "${name}"`, `รายการนี้จะถูกลบออกจาก UserList ถาวร`, async () => {
+    await sendDelete({ action: 'deleteUser', rowIndex });
+  });
+}
+
+function deleteApprover(rowIndex, dept) {
+  showConfirm(`ลบ Approver "${dept}"`, `รายการ Approver ของแผนก ${dept} จะถูกลบออกถาวร`, async () => {
+    await sendDelete({ action: 'deleteApprover', rowIndex });
+  });
+}
+
+async function sendDelete(payload) {
+  try {
+    await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+    showToast('ลบสำเร็จ! กำลังโหลดใหม่...', '#0CA47C');
+    await loadAdminData();
+  } catch(e) {
+    showToast('ลบไม่สำเร็จ', '#D93838');
+  }
+}
+
+// ══════════════════════════════════════════════
+// Modal / Confirm helpers
+// ══════════════════════════════════════════════
+function openModal() { document.getElementById('modal-overlay').classList.add('open'); }
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); currentModal = null; editIndex = null; }
+
+function showConfirm(title, msg, callback) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent = msg;
+  confirmCallback = callback;
+  document.getElementById('confirm-overlay').classList.add('open');
+  document.getElementById('btn-confirm-yes').onclick = async () => { closeConfirm(); await callback(); };
+}
+function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('open'); }
+
+function showLogout() {
+  showConfirm('ออกจากระบบ Admin', 'คุณต้องการออกจากระบบหรือไม่? หน้าจะรีเซ็ตกลับไปที่หน้า Login', () => {
+    location.reload();
+  });
+}
+
+// ══════════════════════════════════════════════
+// Toast
+// ══════════════════════════════════════════════
+function showToast(msg, color = 'rgba(10,37,64,0.92)', ms = 3000) {
+  const t = document.getElementById('toast');
+  t.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> ${msg}`;
+  if (color.includes('#D') || color.includes('rose')) {
+    t.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> ${msg}`;
+  }
+  t.style.background = color;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), ms);
+}
+
+// Close modal on overlay click
+document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target === document.getElementById('modal-overlay')) closeModal(); });
+document.getElementById('login-pw').addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+</script>
+</body>
+</html>
