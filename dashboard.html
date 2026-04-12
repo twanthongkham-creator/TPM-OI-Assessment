@@ -399,11 +399,18 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     <div id="tour-1" class="tour-wrapper" style="margin-bottom: 32px;">
       <div class="filter-section glass" style="margin-bottom: 0;">
         <label>
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          โรงงาน:
+        </label>
+        <select id="global-filter-plant" class="filter-select" style="min-width:200px;" onchange="onPlantChange()">
+          <option value="all">ทุกโรงงาน</option>
+        </select>
+        <label>
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          คัดกรองข้อมูลตามแผนก:
+          แผนก:
         </label>
         <select id="global-filter-dept" class="filter-select" onchange="processAndRender()">
-          <option value="all">แสดงภาพรวมทั้งหมด (All Departments)</option>
+          <option value="all">ทุกแผนก</option>
         </select>
       </div>
     </div>
@@ -598,7 +605,8 @@ function startTour() {
 }
 
 let areaData={}, kpiMaster=[], amHistory=[], oplHistory=[], fiHistory=[], kzHistory=[], mkHistory=[];
-let userDataObj={}, approverDataObj={}; 
+let userDataObj={}, usersByPlant={}, approverDataObj={}, approversByPlant={};
+let allPlants = []; // ['PT','KR','NS',...]
 let chartKPI=null, chartAM=null;
 
 let appData={
@@ -679,7 +687,10 @@ async function loadData() {
       kzHistory = Array.isArray(data.kz) ? data.kz : [];
       mkHistory = Array.isArray(data.mk) ? data.mk : [];
       userDataObj = data.users || {}; 
+      usersByPlant = data.usersByPlant || {};
       approverDataObj = data.approvers || {};
+      approversByPlant = data.approversByPlant || {};
+      allPlants = Array.isArray(data.plants) ? data.plants : [];
 
       // โหลด dept list — getAllDashboardData ส่ง depts มาด้วยแล้ว
       if (data.depts) DeptHelper.loadDeptsFromArray(data.depts);
@@ -727,20 +738,68 @@ async function loadData() {
 }
 
 function initFilter(){
-  const s = document.getElementById('global-filter-dept');
-  if (!s) return;
-  // ใช้ DeptHelper เพื่อแสดงชื่อเต็มแทน code เปล่า
-  // กรอง เฉพาะ dept ที่มีข้อมูลใน areaData (มีพื้นที่ AM) เท่านั้น
+  // ── Plant filter ──────────────────────────────────────────
+  const ps = document.getElementById('global-filter-plant');
+  if (ps) {
+    ps.innerHTML = '<option value="all">ทุกโรงงาน</option>';
+    allPlants.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p; o.textContent = p;
+      ps.appendChild(o);
+    });
+  }
+
+  // ── Dept filter (แสดงชื่อเต็มจาก DeptHelper) ─────────────
+  const ds = document.getElementById('global-filter-dept');
+  if (!ds) return;
+  ds.innerHTML = '<option value="all">ทุกแผนก</option>';
   const depts = DeptHelper.getDepts();
   const activeCodes = Object.keys(areaData).sort();
   activeCodes.forEach(code => {
     const o = document.createElement('option');
     o.value = code;
-    // หาชื่อเต็มจาก DeptHelper ถ้าไม่พบให้แสดง code เดิม
     const found = depts.find(d => d.code === code);
-    o.innerText = found ? `${code} — ${found.name}` : `แผนก ${code}`;
-    s.appendChild(o);
+    o.textContent = found ? `${code} — ${found.name}` : `แผนก ${code}`;
+    ds.appendChild(o);
   });
+}
+
+// เมื่อเปลี่ยน Plant: reset dept filter แล้ว render ใหม่
+function onPlantChange() {
+  const fp = document.getElementById('global-filter-plant').value;
+  const ds = document.getElementById('global-filter-dept');
+  if (!ds) return;
+
+  // rebuild dept options ตาม plant ที่เลือก
+  ds.innerHTML = '<option value="all">ทุกแผนก</option>';
+  const depts = DeptHelper.getDepts();
+
+  // ถ้าเลือก plant เฉพาะ → กรองเฉพาะ dept ที่มีใน plant นั้น
+  let activeCodes;
+  if (fp === 'all') {
+    activeCodes = Object.keys(areaData).sort();
+  } else {
+    // หา dept ที่มีข้อมูลใน kpiMaster สำหรับ plant นี้
+    const plantDepts = new Set();
+    kpiMaster.forEach(k => {
+      const kPlant = String(sg(k,'Plant',0)||'').trim();
+      const kDept  = String(sg(k,'Department',2)||'').trim();
+      if ((kPlant === fp || !kPlant) && kDept) plantDepts.add(kDept);
+    });
+    // fallback: ถ้า KPI ไม่มี Plant field ให้แสดง dept ทั้งหมด
+    activeCodes = plantDepts.size > 0 ? [...plantDepts].sort() : Object.keys(areaData).sort();
+  }
+
+  activeCodes.forEach(code => {
+    const o = document.createElement('option');
+    o.value = code;
+    const found = depts.find(d => d.code === code);
+    o.textContent = found ? `${code} — ${found.name}` : `แผนก ${code}`;
+    ds.appendChild(o);
+  });
+
+  ds.value = 'all'; // reset dept selection
+  processAndRender();
 }
 
 function getSysTarget(sys,fd){
@@ -782,8 +841,10 @@ function createGrad(ctx, colorStart, colorEnd, isHorizontal) {
 function processAndRender() {
   try {
       const fdEl = document.getElementById('global-filter-dept');
+      const fpEl = document.getElementById('global-filter-plant');
       if (!fdEl) return;
-      const fd = fdEl.value;
+      const fd = fdEl.value;           // dept filter ('all' | 'PD' | ...)
+      const fp = fpEl ? fpEl.value : 'all'; // plant filter ('all' | 'PT' | ...)
       
       const loaderEl = document.getElementById('loader');
       const mainViewEl = document.getElementById('main-dashboard-view');
@@ -800,12 +861,25 @@ function processAndRender() {
       const amC=document.getElementById('am-card-container'); 
       if(amC) amC.innerHTML='';
 
-      const amT=kpiMaster.filter(k=>sg(k,'System',0)==='AM-OI'&&(fd==='all'||sg(k,'Department',2)===fd)&&sg(k,'Area',3)!=='ALL'&&sg(k,'Area',3)!=='All');
+      const amT=kpiMaster.filter(k=>{
+        const kPlant = String(sg(k,'Plant',0)||'').trim();
+        const plantOk = fp==='all' || kPlant===fp || kPlant==='';
+        return sg(k,'System',0)==='AM-OI' && plantOk &&
+               (fd==='all'||sg(k,'Department',2)===fd) &&
+               sg(k,'Area',3)!=='ALL' && sg(k,'Area',3)!=='All';
+      });
       appData.am.target=amT.length;
 
       amT.forEach(tr=>{
         const dept=sg(tr,'Department',2), area=sg(tr,'Area',3), tStep=parseInt(sg(tr,'Target_Value',4))||4;
-        const ah=amHistory.filter(h=>(sg(h,'Department',3)===dept||Object.values(h)[3]===dept)&&(sg(h,'Area',4)===area||Object.values(h)[4]===area));
+        // กรอง amHistory ตาม Plant ด้วย (Plant=col0, Dept=col4, Area=col5)
+        const ah=amHistory.filter(h=>{
+          const hPlant = String(sg(h,'Plant',0)||Object.values(h)[0]||'').trim();
+          const plantOk = fp==='all' || hPlant===fp || hPlant==='';
+          return plantOk &&
+            (sg(h,'Department',4)===dept||Object.values(h)[4]===dept) &&
+            (sg(h,'Area',5)===area||Object.values(h)[5]===area);
+        });
         
         appData.am.targetScore += tStep;
         
@@ -904,11 +978,21 @@ function processAndRender() {
       appData.am.pct = appData.am.targetScore > 0 ? Math.round((appData.am.actualScore / appData.am.targetScore) * 100) : 0;
 
       appData.opl.target=getSysTarget('OPL',fd); appData.fi.target=getSysTarget('FI',fd); appData.kz.target=getSysTarget('Kaizen',fd); appData.mk.target=getSysTarget('Makigami',fd);
-      
-      const fOpl=fd==='all'?oplHistory:oplHistory.filter(r=>sg(r,'Department',4)===fd);
-      const fFi=fd==='all'?fiHistory:fiHistory.filter(r=>sg(r,'Department',4)===fd);
-      const fKz=fd==='all'?kzHistory:kzHistory.filter(r=>sg(r,'แผนก',3)===fd);
-      const fMk=fd==='all'?mkHistory:mkHistory.filter(r=>sg(r,'แผนก',3)===fd);
+
+      // helper: กรองตาม Plant (col 0 = Plant) + Dept
+      const matchPlant = (r, plantCol) => {
+        if (fp === 'all') return true;
+        const rp = String(sg(r, 'Plant', plantCol) || Object.values(r)[plantCol] || '').trim();
+        return rp === fp || rp === '';
+      };
+
+      // OPL, FI: Plant=col0, Dept=col5 (schema: Plant|Timestamp|ID|Date|Factory|Dept|...)
+      const fOpl = oplHistory.filter(r => matchPlant(r,0) && (fd==='all' || sg(r,'Department',5)===fd || sg(r,'Department',4)===fd));
+      const fFi  = fiHistory.filter(r  => matchPlant(r,0) && (fd==='all' || sg(r,'Department',5)===fd || sg(r,'Department',4)===fd));
+      // Kaizen: ไม่มี Plant column (ระบบ external) — กรองแค่ Dept
+      const fKz  = kzHistory.filter(r  => fd==='all' || sg(r,'แผนก',3)===fd);
+      // Makigami: Plant=col0, Dept=col4
+      const fMk  = mkHistory.filter(r  => matchPlant(r,0) && (fd==='all' || sg(r,'แผนก',4)===fd || sg(r,'แผนก',3)===fd));
       
       const uOpl=[...new Map(fOpl.map(i=>[sg(i,'OPL ID',1),i])).values()];
       const uFi=[...new Map(fFi.map(i=>[sg(i,'FI ID',1),i])).values()];
