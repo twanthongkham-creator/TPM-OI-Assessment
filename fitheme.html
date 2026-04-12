@@ -284,7 +284,7 @@ input[readonly], select:disabled { background: rgba(238,242,255,0.6); color: var
           </div>
           <div class="fg">
             <label>โรงงาน (Factory) <span class="req">จำเป็น</span></label>
-            <select id="f-factory" onchange="generateFiId()">
+            <select id="f-factory" onchange="generateFiId(); populateUsers();">
               <option value="">-- เลือกโรงงาน --</option>
               <option value="PT">ปทุมธานี (PT)</option>
               <option value="KR">นครราชสีมา (KR)</option>
@@ -518,7 +518,9 @@ input[readonly], select:disabled { background: rgba(238,242,255,0.6); color: var
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 const imageStore = []; const docStore = []; let oldFileLinks = '';
-let userData = {}; let approverData = {}; let fiHistoryData = [];
+let userData = {}; let usersByPlant = {};
+let approverData = {}; let approversByPlant = {};
+let fiHistoryData = [];
 
 /* ── Guided Tour ── */
 function startTour() {
@@ -553,7 +555,9 @@ async function initData() {
     ]);
     if (uRes.status === 'success') {
       userData = uRes.users || {};
+      usersByPlant = uRes.usersByPlant || {};
       approverData = uRes.approvers || {};
+      approversByPlant = uRes.approversByPlant || {};
       if (uRes.depts) DeptHelper.loadDeptsFromArray(uRes.depts);
       else await DeptHelper.loadDepts(APPS_SCRIPT_URL);
     }
@@ -652,18 +656,30 @@ function generateFiId() {
 function populateUsers() {
   const dept = document.getElementById('f-dept').value;
   const role = document.getElementById('f-role').value;
+  const plant = document.getElementById('f-factory').value;
   const nameSelect = document.getElementById('f-name');
   if (!nameSelect) return;
   nameSelect.innerHTML = '<option value="">-- กรุณาเลือกชื่อ --</option>';
   document.getElementById('f-email').value = '';
   if (!dept) return;
-  if (role === 'self' && userData[dept] && userData[dept].length > 0) {
-    userData[dept].forEach(u => { const opt = document.createElement('option'); opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name; nameSelect.appendChild(opt); });
-  } else if (role === 'lead' && approverData[dept]?.lead?.name) {
-    const u = approverData[dept].lead;
-    const opt = document.createElement('option'); opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
-    nameSelect.appendChild(opt);
-  } else { nameSelect.innerHTML = `<option value="">(ไม่พบรายชื่อ${role === 'lead' ? 'หัวหน้า' : 'พนักงาน'})</option>`; }
+
+  if (role === 'self') {
+    const list = (plant && usersByPlant[plant] && usersByPlant[plant][dept])
+      ? usersByPlant[plant][dept]
+      : (userData[dept] || []);
+    if (list.length > 0) {
+      list.forEach(u => { const opt = document.createElement('option'); opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name; nameSelect.appendChild(opt); });
+    } else { nameSelect.innerHTML = '<option value="">(ไม่พบรายชื่อพนักงาน)</option>'; }
+  } else if (role === 'lead') {
+    const approver = (plant && approversByPlant[plant] && approversByPlant[plant][dept])
+      ? approversByPlant[plant][dept]
+      : approverData[dept];
+    const u = approver?.lead;
+    if (u && u.name) {
+      const opt = document.createElement('option'); opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
+      nameSelect.appendChild(opt);
+    } else { nameSelect.innerHTML = '<option value="">(ไม่พบข้อมูลหัวหน้า)</option>'; }
+  }
 }
 
 function autoFillEmail() {
