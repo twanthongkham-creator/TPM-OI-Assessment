@@ -318,6 +318,18 @@ input[readonly] { background: rgba(230,241,255,0.6); color: var(--blue-600); cur
         </div>
         <div class="grid2">
           <div class="fg">
+            <label>โรงงาน (Plant) <span class="req">จำเป็น</span></label>
+            <select id="f-factory" onchange="populateUsers()">
+              <option value="">-- เลือกโรงงาน --</option>
+              <option value="PT">ปทุมธานี (PT)</option>
+              <option value="KR">นครราชสีมา (KR)</option>
+              <option value="NS">นครสวรรค์ (NS)</option>
+              <option value="CH">ชลบุรี (CH)</option>
+              <option value="NP">นครปฐม (NP)</option>
+              <option value="SR">สุราษฎร์ธานี (SR)</option>
+            </select>
+          </div>
+          <div class="fg">
             <label>แผนก / กลุ่ม <span class="req">จำเป็น</span></label>
             <select id="f-dept" onchange="filterAreas(); populateUsers();">
               <option value="">-- เลือกแผนก --</option>
@@ -511,7 +523,8 @@ input[readonly] { background: rgba(230,241,255,0.6); color: var(--blue-600); cur
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-let areaData = {}; let userData = {}; let approverData = {};
+let areaData = {}; let userData = {}; let usersByPlant = {};
+let approverData = {}; let approversByPlant = {};
 const scores = {}; const imageStore = []; const docStore = [];
 
 /* ── Guided Tour ── */
@@ -548,8 +561,9 @@ async function loadMasterData() {
     ]);
     if (uRes.status === 'success') {
       userData = uRes.users || {};
+      usersByPlant = uRes.usersByPlant || {};
       approverData = uRes.approvers || {};
-      // โหลด dept list จาก API (ถ้า getUsers ส่ง depts มาด้วยใช้เลย)
+      approversByPlant = uRes.approversByPlant || {};
       if (uRes.depts) DeptHelper.loadDeptsFromArray(uRes.depts);
       else await DeptHelper.loadDepts(APPS_SCRIPT_URL);
     }
@@ -593,19 +607,25 @@ function filterAreas() {
 function populateUsers() {
   const role = document.getElementById('f-auditor').value;
   const dept = document.getElementById('f-dept').value;
+  const plant = (document.getElementById('f-factory') || {}).value || '';
   const nameSelect = document.getElementById('f-name');
   nameSelect.innerHTML = '<option value="">-- เลือกชื่อผู้ประเมิน --</option>';
   if (!dept) return;
+
   if (role === 'self') {
-    if (userData[dept]) {
-      userData[dept].forEach(u => {
-        const opt = document.createElement('option'); opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
-        nameSelect.appendChild(opt);
-      });
-    }
+    const list = (plant && usersByPlant[plant] && usersByPlant[plant][dept])
+      ? usersByPlant[plant][dept]
+      : (userData[dept] || []);
+    list.forEach(u => {
+      const opt = document.createElement('option'); opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
+      nameSelect.appendChild(opt);
+    });
   } else {
-    const u = role === 'lead' ? approverData[dept]?.lead : approverData[dept]?.exec;
-    if (u) {
+    const approver = (plant && approversByPlant[plant] && approversByPlant[plant][dept])
+      ? approversByPlant[plant][dept]
+      : approverData[dept];
+    const u = role === 'lead' ? approver?.lead : approver?.exec;
+    if (u && u.name) {
       const opt = document.createElement('option'); opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
       nameSelect.appendChild(opt);
     }
