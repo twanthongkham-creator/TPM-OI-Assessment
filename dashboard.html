@@ -418,7 +418,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     <div id="tour-2" class="tour-wrapper" style="margin-bottom: 40px;">
       <div class="sec-lbl">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-        ผลลัพธ์ KPI ภาพรวม 5 งานหลัก
+        ผลลัพธ์ KPI ภาพรวม 5 เสาหลัก
       </div>
       <div class="kpi-grid" id="kpi-cards-container" style="margin-bottom: 0;"></div>
     </div>
@@ -569,7 +569,7 @@ function startTour() {
         },
         {
           element: '#tour-2',
-          intro: '<b>2. สรุป KPI 5 งาน:</b> ดูความสำเร็จเป็นเปอร์เซ็นต์ <br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดและกด "แก้ไข" งานเก่าได้จากที่นี่ครับ',
+          intro: '<b>2. สรุป KPI 5 เสา:</b> ดูความสำเร็จเป็นเปอร์เซ็นต์ <br>✨ <b>ทริค:</b> คลิกที่การ์ดเพื่อดูตารางรายละเอียดและกด "แก้ไข" งานเก่าได้จากที่นี่ครับ',
           position: 'top'
         },
         {
@@ -579,7 +579,7 @@ function startTour() {
         },
         {
           element: '#tour-4',
-          intro: '<b>4. กราฟเปรียบเทียบ:</b> แสดงสถิติเชิงเปรียบเทียบ <br>✨ <b>ทริค:</b> ลองคลิกที่แท่งกราฟเพื่อขยายดูข้อมูลรายการงานของงานนั้นๆ ได้ทันทีครับ!',
+          intro: '<b>4. กราฟเปรียบเทียบ:</b> แสดงสถิติเชิงเปรียบเทียบ <br>✨ <b>ทริค:</b> ลองคลิกที่แท่งกราฟเพื่อขยายดูข้อมูลรายการงานของเสานั้นๆ ได้ทันทีครับ!',
           position: 'top'
         },
         {
@@ -883,21 +883,22 @@ function processAndRender() {
         
         appData.am.targetScore += tStep;
         
-        const maxAttemptedStep = ah.length > 0 ? Math.max(...ah.map(h => parseInt(sg(h,'AuditRound',6))||0)) : 0;
+        const maxAttemptedStep = ah.length > 0 ? Math.max(...ah.map(h => parseInt(sg(h,'AuditRound',7))||0)) : 0;
         let maxStep = 0; 
         let pStep = 1;   
         let currentStepRecords = [];
         
         if (maxAttemptedStep > 0) {
-            const recordsOfMaxAttempt = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === maxAttemptedStep);
+            const recordsOfMaxAttempt = ah.filter(h => (parseInt(sg(h,'AuditRound',7))||0) === maxAttemptedStep);
             const l = recordsOfMaxAttempt[recordsOfMaxAttempt.length - 1]; 
-            const pf = sg(l, 'PassFail', 15) || Object.values(l)[15];
-            const stat = sg(l, 'Status', 23) || Object.values(l)[23];
+            // 5S schema ใหม่: Plant(0)|Timestamp(1)|Name(2)|Email(3)|Dept(4)|Area(5)|Date(6)|AuditRound(7)|AuditorType(8)|...|PassFail(16)|...|Status(24)
+            const pf = sg(l, 'PassFail', 16) || Object.values(l)[16];
+            const stat = sg(l, 'Status', 24) || Object.values(l)[24];
             
             if ((pf === 'ผ่านเกณฑ์' || pf === 'Pass') && stat === 'อนุมัติสมบูรณ์') {
                 maxStep = maxAttemptedStep;
                 pStep = maxStep === 5 ? 'all' : maxStep + 1;
-                currentStepRecords = ah.filter(h => (parseInt(sg(h,'AuditRound',6))||0) === pStep);
+                currentStepRecords = ah.filter(h => (parseInt(sg(h,'AuditRound',7))||0) === pStep);
             } else {
                 maxStep = maxAttemptedStep - 1;
                 pStep = maxAttemptedStep;
@@ -910,8 +911,8 @@ function processAndRender() {
         
         if (pStep !== 'all' && currentStepRecords.length > 0) {
             const l = currentStepRecords[currentStepRecords.length - 1]; 
-            const pf = sg(l, 'PassFail', 15) || Object.values(l)[15];
-            const stat = sg(l, 'Status', 23) || Object.values(l)[23];
+            const pf = sg(l, 'PassFail', 16) || Object.values(l)[16];
+            const stat = sg(l, 'Status', 24) || Object.values(l)[24];
             
             if (pf !== 'ผ่านเกณฑ์' && pf !== 'Pass') {
                 pendingRank = 1; 
@@ -919,7 +920,7 @@ function processAndRender() {
                 if (stat && stat.includes('รอผู้บริหาร')) { highestLevel = 0.7; pendingRank = 3; }
                 else if (stat && stat.includes('รอหัวหน้า')) { highestLevel = 0.3; pendingRank = 2; }
                 else {
-                    const at = sg(l, 'AuditorType', 7) || Object.values(l)[7];
+                    const at = sg(l, 'AuditorType', 8) || Object.values(l)[8];
                     if (at === 'lead' || at === 'clead' || at === 'mgr') { highestLevel = 0.7; pendingRank = 3; }
                     else if (at === 'self') { highestLevel = 0.3; pendingRank = 2; }
                 }
@@ -994,24 +995,24 @@ function processAndRender() {
       // Makigami: Plant=col0, Dept=col4
       const fMk  = mkHistory.filter(r  => matchPlant(r,0) && (fd==='all' || sg(r,'แผนก',4)===fd || sg(r,'แผนก',3)===fd));
       
-      const uOpl=[...new Map(fOpl.map(i=>[sg(i,'OPL ID',1),i])).values()];
-      const uFi=[...new Map(fFi.map(i=>[sg(i,'FI ID',1),i])).values()];
+      const uOpl=[...new Map(fOpl.map(i=>[sg(i,'OPL ID',2),i])).values()];
+      const uFi=[...new Map(fFi.map(i=>[sg(i,'FI ID',2),i])).values()];
       const uKz=[...new Map(fKz.map(i=>[sg(i,'เลขที่ Kaizen',0),i])).values()];
-      const uMk=[...new Map(fMk.map(i=>[sg(i,'Makigami ID',1),i])).values()];
+      const uMk=[...new Map(fMk.map(i=>[sg(i,'Makigami ID',2),i])).values()];
 
       appData.opl.actual = 0;
       uOpl.forEach(r => {
-          let st = sg(r,'Status',14) || '';
+          let st = sg(r,'Status',15) || '';   // OPL Status col15
           if (st.includes('สมบูรณ์') || st.includes('ผ่าน') || st.includes('Completed')) appData.opl.actual += 1;
           else if (st.includes('รอหัวหน้า')) appData.opl.actual += 0.5;
           else if (st.includes('ไม่อนุมัติ') || st.includes('ไม่ผ่าน')) appData.opl.actual += 0;
-          else appData.opl.actual += 0.2; 
+          else appData.opl.actual += 0.2;
       });
 
       appData.fi.actual = 0;
       uFi.forEach(r => {
-          let st = sg(r,'Status',14) || '';
-          let step = sg(r,'Step ปัจจุบัน',13) || '';
+          let st = sg(r,'Status',15) || '';   // FI Status col15
+          let step = sg(r,'Step ปัจจุบัน',14) || '';  // FI Step col14
           if (st.includes('สมบูรณ์') || st.includes('Completed')) appData.fi.actual += 1;
           else if (st.includes('ยกเลิก') || st.includes('Cancelled')) appData.fi.actual += 0;
           else {
@@ -1025,8 +1026,8 @@ function processAndRender() {
 
       appData.mk.actual = 0;
       uMk.forEach(r => {
-          let st = sg(r,'Status',9) || '';
-          let phase = sg(r,'Current Phase',6) || '';
+          let st = sg(r,'Status',10) || '';       // MK Status col10
+          let phase = sg(r,'Current Phase',7) || ''; // MK Phase col7
           if (st.includes('สมบูรณ์') || st.includes('Completed')) appData.mk.actual += 1;
           else if (st.includes('ยกเลิก') || st.includes('Cancelled')) appData.mk.actual += 0;
           else {
@@ -1044,10 +1045,10 @@ function processAndRender() {
       let mkTarget = getSysTarget('Makigami', fd);
       appData.mk.target  = mkTarget > 0 ? mkTarget : (uMk.length || 0);
 
-      appData.opl.wip = uOpl.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
-      appData.fi.wip = uFi.filter(r=>!(sg(r,'Status',14)||'').includes('สมบูรณ์')).length;
-      appData.kz.wip = 0; 
-      appData.mk.wip = uMk.filter(r=>!(sg(r,'Status',9)||'').includes('Completed')).length;
+      appData.opl.wip = uOpl.filter(r=>!(sg(r,'Status',15)||'').includes('สมบูรณ์')).length;
+      appData.fi.wip  = uFi.filter(r=>!(sg(r,'Status',15)||'').includes('สมบูรณ์')).length;
+      appData.kz.wip  = 0;
+      appData.mk.wip  = uMk.filter(r=>!(sg(r,'Status',10)||'').includes('Completed')).length;
 
       ['opl','fi','kz','mk'].forEach(k => {
           appData[k].pct = appData[k].target > 0 ? Math.round((appData[k].actual / appData[k].target) * 100) : (appData[k].actual > 0 ? 100 : 0);
@@ -1204,27 +1205,29 @@ function processAndRender() {
       const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);if(!b)return; b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:40px;color:#9BA5B1;font-weight:600;">ไม่มีข้อมูลให้แสดงผล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
       
       tbl('opl-table-body', uOpl, 7, r => {
-        const oplId = sg(r, 'OPL ID', 1); const status = sg(r, 'Status', 14) || ''; const isWaiting = status.includes('รอหัวหน้า');
+        // OPL schema ใหม่: Plant(0)|Timestamp(1)|OPL_ID(2)|OPL_Date(3)|Factory(4)|Department(5)|Title(6)|...|Instructor(11)|...|Status(15)
+        const oplId = sg(r, 'OPL ID', 2); const status = sg(r, 'Status', 15) || ''; const isWaiting = status.includes('รอหัวหน้า');
         let btns = `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=edit" class="btn-edit">แก้ไข/แนบไฟล์</a>`;
         if (isWaiting) btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
-        return `<td class="col-fit">${formatDateTH(sg(r, 'วันที่ทำ OPL', 2))}</td>
+        return `<td class="col-fit">${formatDateTH(sg(r, 'วันที่ทำ OPL', 3))}</td>
                 <td class="col-fit"><span style="font-weight:700; color:var(--orange-600);">${oplId}</span></td>
-                <td class="col-fit">${sg(r, 'Department', 4)}</td>
-                <td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td>
-                <td class="col-owner">${sg(r, 'ชื่อผู้สอน', 10)}</td>
+                <td class="col-fit">${sg(r, 'Department', 5)}</td>
+                <td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 6)}</strong></td>
+                <td class="col-owner">${sg(r, 'ชื่อผู้สอน', 11)}</td>
                 <td class="col-fit"><span class="badge ${getStatusBadge(status)}">${status}</span></td>
                 <td class="col-fit"><div style="display:flex; gap:8px;">${btns}</div></td>`;
       });
       
       tbl('fi-table-body', uFi, 7, r => {
-        const fiId = sg(r, 'FI ID', 1); const status = sg(r, 'Status', 14) || ''; const isWaiting = status.includes('รอหัวหน้า');
+        // FI schema ใหม่: Plant(0)|Timestamp(1)|FI_ID(2)|Owner(3)|Factory(4)|Dept(5)|Title(6)|...|Step(14)|Status(15)
+        const fiId = sg(r, 'FI ID', 2); const status = sg(r, 'Status', 15) || ''; const isWaiting = status.includes('รอหัวหน้า');
         let btns = `<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=edit" class="btn-edit">อัปเดตงาน</a>`;
         if (isWaiting) btns += `<a href="fitheme.html?fiId=${encodeURIComponent(fiId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
         return `<td class="col-fit"><span style="font-weight:700; color:var(--indigo-600);">${fiId}</span></td>
-                <td class="col-fit">${sg(r, 'Department', 4)}</td>
-                <td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 5)}</strong></td>
-                <td class="col-owner">${sg(r, 'ผู้รับผิดชอบ', 2)}</td>
-                <td class="col-fit"><span style="color:var(--indigo-600); font-weight:700; background:var(--indigo-50); padding:4px 10px; border-radius:12px;">${sg(r, 'Step ปัจจุบัน', 13)}</span></td>
+                <td class="col-fit">${sg(r, 'Department', 5)}</td>
+                <td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 6)}</strong></td>
+                <td class="col-owner">${sg(r, 'ผู้รับผิดชอบ', 3)}</td>
+                <td class="col-fit"><span style="color:var(--indigo-600); font-weight:700; background:var(--indigo-50); padding:4px 10px; border-radius:12px;">${sg(r, 'Step ปัจจุบัน', 14)}</span></td>
                 <td class="col-fit"><span class="badge ${getStatusBadge(status)}">${status}</span></td>
                 <td class="col-fit"><div style="display:flex; gap:8px;">${btns}</div></td>`;
       });
@@ -1240,12 +1243,13 @@ function processAndRender() {
       });
 
       tbl('mk-table-body', uMk, 7, r => {
-        const mkId = sg(r, 'Makigami ID', 1); const status = sg(r, 'Status', 9) || '';
+        // MK schema ใหม่: Plant(0)|Timestamp(1)|MK_ID(2)|Factory(3)|Dept(4)|Title(5)|Owner(6)|Phase(7)|TargetDate(8)|ActualDate(9)|Status(10)
+        const mkId = sg(r, 'Makigami ID', 2); const status = sg(r, 'Status', 10) || '';
         return `<td class="col-fit"><span style="font-weight:700; color:var(--rose-500);">${mkId}</span></td>
-                <td class="col-fit">${sg(r, 'แผนก', 3)}</td>
-                <td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 4) || sg(r, 'ชื่อเรื่อง (Theme Name)', 4)}</strong></td>
-                <td class="col-owner">${sg(r, 'ผู้รับผิดชอบ', 5)}</td>
-                <td class="col-fit"><span style="color:var(--rose-500); font-weight:700; background:rgba(244,63,94,0.1); padding:4px 10px; border-radius:12px;">${sg(r, 'Current Phase', 6)}</span></td>
+                <td class="col-fit">${sg(r, 'แผนก', 4)}</td>
+                <td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 5) || sg(r, 'ชื่อเรื่อง (Theme Name)', 5)}</strong></td>
+                <td class="col-owner">${sg(r, 'ผู้รับผิดชอบ', 6)}</td>
+                <td class="col-fit"><span style="color:var(--rose-500); font-weight:700; background:rgba(244,63,94,0.1); padding:4px 10px; border-radius:12px;">${sg(r, 'Current Phase', 7)}</span></td>
                 <td class="col-fit"><span class="badge ${getStatusBadge(status)}">${status}</span></td>
                 <td class="col-fit"><a href="makigami.html?mkId=${encodeURIComponent(mkId)}&role=edit" class="btn-edit">อัปเดตงาน</a></td>`;
       });
