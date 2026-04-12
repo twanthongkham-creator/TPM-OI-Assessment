@@ -489,6 +489,40 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
           <div style="flex:1;position:relative"><canvas id="amStepChart"></canvas></div>
         </div>
       </div>
+
+      <!-- ══ Dept Comparison Charts ══ -->
+      <div style="margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:24px;" id="dept-charts-grid">
+
+        <div class="chart-box" id="box-deptOplKz">
+          <div class="chart-header">
+            <div class="chart-title-text">
+              <div class="chart-icon-pill" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">
+                <svg fill="none" stroke="#B45309" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-4 12.74V17a1 1 0 001 1h6a1 1 0 001-1v-2.26A7 7 0 0012 2z"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+              </div>
+              OPL & Kaizen — ผลงานรายแผนก
+            </div>
+            <div style="font-size:11px;color:var(--gray-400);font-weight:600;">Actual vs Target</div>
+          </div>
+          <div style="flex:1;position:relative;min-height:220px;"><canvas id="deptOplKzChart"></canvas></div>
+        </div>
+
+        <div class="chart-box" id="box-deptFiMk">
+          <div class="chart-header">
+            <div class="chart-title-text">
+              <div class="chart-icon-pill" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">
+                <svg fill="none" stroke="#6D28D9" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              </div>
+              FI Theme & Makigami — ผลงานรายแผนก
+            </div>
+            <div style="font-size:11px;color:var(--gray-400);font-weight:600;">Actual vs Target</div>
+          </div>
+          <div style="flex:1;position:relative;min-height:220px;"><canvas id="deptFiMkChart"></canvas></div>
+        </div>
+
+      </div>
+      <style>
+        @media(max-width:800px){ #dept-charts-grid{ grid-template-columns:1fr !important; } }
+      </style>
     </div>
 
     <div id="tour-5" class="tour-wrapper" style="margin-bottom: 40px;">
@@ -607,7 +641,7 @@ function startTour() {
 let areaData={}, kpiMaster=[], amHistory=[], oplHistory=[], fiHistory=[], kzHistory=[], mkHistory=[];
 let userDataObj={}, usersByPlant={}, approverDataObj={}, approversByPlant={};
 let allPlants = []; // ['PT','KR','NS',...]
-let chartKPI=null, chartAM=null;
+let chartKPI=null, chartAM=null, chartDeptOplKz=null, chartDeptFiMk=null;
 
 let appData={
   am:{key:'am',title:'AM-OI Assessment',target:0,actual:0,wip:0,stepDist:[0,0,0,0,0], stepDetails:{1:[],2:[],3:[],4:[],5:[]}, targetScore:0, actualScore:0, pct:0},
@@ -800,6 +834,203 @@ function onPlantChange() {
 
   ds.value = 'all'; // reset dept selection
   processAndRender();
+}
+
+// ================================================================
+// Dept Comparison Charts — OPL/Kaizen และ FI/Makigami รายแผนก
+// ================================================================
+function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
+  try {
+    // ── รวบรวม dept ที่มีข้อมูลทั้งหมด ──────────────────────
+    const deptSet = new Set();
+    [...fOpl, ...fFi, ...fKz, ...fMk].forEach(r => {
+      const d = sg(r,'Department',5) || sg(r,'แผนก',4) || sg(r,'แผนก',3) || '';
+      if (d) deptSet.add(d);
+    });
+    // ถ้ากรองตาม dept ให้แสดงแค่ dept นั้น
+    const labels = fd !== 'all' ? [fd] : [...deptSet].sort();
+    if (!labels.length) return;
+
+    // ── นับ Actual ต่อ dept ──────────────────────────────────
+    const countByDept = (arr, deptKey5, deptKey4, deptKey3) => {
+      const map = {};
+      labels.forEach(d => map[d] = 0);
+      arr.forEach(r => {
+        const d = sg(r, 'Department', deptKey5) || sg(r, 'แผนก', deptKey4) || sg(r, 'แผนก', deptKey3) || '';
+        if (map[d] !== undefined) map[d]++;
+      });
+      return labels.map(d => map[d] || 0);
+    };
+
+    // OPL unique records (dedup by OPL ID)
+    const uOplAll = [...new Map(fOpl.map(r => [sg(r,'OPL ID',2), r])).values()];
+    // FI unique
+    const uFiAll  = [...new Map(fFi.map(r  => [sg(r,'FI ID',2),  r])).values()];
+    // Kaizen
+    const uKzAll  = [...new Map(fKz.map(r  => [sg(r,'เลขที่ Kaizen',0), r])).values()];
+    // MK unique
+    const uMkAll  = [...new Map(fMk.map(r  => [sg(r,'Makigami ID',2), r])).values()];
+
+    const oplActual = countByDept(uOplAll, 5, 4, 3);
+    const kzActual  = countByDept(uKzAll,  3, 3, 3);  // Kaizen: แผนก col3
+    const fiActual  = countByDept(uFiAll,  5, 5, 4);
+    const mkActual  = countByDept(uMkAll,  4, 4, 3);
+
+    // ── Target ต่อ dept จาก kpiMaster ───────────────────────
+    const getTargetByDept = (sys) => {
+      const map = {};
+      labels.forEach(d => map[d] = 0);
+      kpiMaster.forEach(k => {
+        const kSys   = String(sg(k,'System',0)||'').trim();
+        const kDept  = String(sg(k,'Department',2)||'').trim();
+        const kPlant = String(sg(k,'Plant',0)||'').trim();
+        const plantOk = fp === 'all' || kPlant === fp || kPlant === '';
+        const tv = parseInt(sg(k,'Target_Value',4)) || 0;
+        if (kSys.toUpperCase() === sys.toUpperCase() && plantOk && map[kDept] !== undefined) {
+          map[kDept] += tv;
+        }
+      });
+      return labels.map(d => map[d] || 0);
+    };
+
+    const oplTarget = getTargetByDept('OPL');
+    const kzTarget  = getTargetByDept('Kaizen');
+    const fiTarget  = getTargetByDept('FI');
+    const mkTarget  = getTargetByDept('Makigami');
+
+    // ── แปลง label เป็นชื่อเต็ม ──────────────────────────────
+    const fullLabels = labels.map(code => {
+      const found = DeptHelper.getDepts().find(d => d.code === code);
+      return found ? `${code}\n${found.name}` : code;
+    });
+
+    // ── Chart options shared ──────────────────────────────────
+    const cf = { family: 'IBM Plex Sans Thai', size: 12, weight: '600' };
+    const gc = 'rgba(200,210,225,0.4)';
+    const tooltipOpt = {
+      backgroundColor: 'rgba(255,255,255,0.97)',
+      titleColor: '#0f172a', bodyColor: '#334155',
+      borderColor: 'rgba(200,210,225,0.6)', borderWidth: 1,
+      padding: 14, cornerRadius: 12,
+      titleFont: { family: 'IBM Plex Sans Thai', size: 14, weight: 'bold' },
+      bodyFont: { family: 'IBM Plex Sans Thai', size: 13 },
+    };
+    const groupedOpts = (title) => ({
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 1400, easing: 'easeOutQuart' },
+      plugins: {
+        legend: {
+          display: true, position: 'top',
+          labels: { font: { family: 'IBM Plex Sans Thai', size: 12, weight: '700' }, boxWidth: 14, padding: 16 }
+        },
+        tooltip: { ...tooltipOpt,
+          callbacks: {
+            title: ctx => ctx[0].label.replace('\n', ' — '),
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw} รายการ`
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: cf } },
+        y: { beginAtZero: true, grid: { color: gc, borderDash: [4,4] }, ticks: { stepSize: 1, font: cf } }
+      }
+    });
+
+    // ── Chart 1: OPL + Kaizen ─────────────────────────────────
+    const ctxOK = document.getElementById('deptOplKzChart');
+    if (ctxOK) {
+      if (chartDeptOplKz) chartDeptOplKz.destroy();
+      chartDeptOplKz = new Chart(ctxOK.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: fullLabels,
+          datasets: [
+            {
+              label: 'OPL — Target',
+              data: oplTarget,
+              backgroundColor: 'rgba(245,158,11,0.2)',
+              borderColor: 'rgba(245,158,11,0.8)',
+              borderWidth: 2, borderRadius: 8, borderSkipped: false,
+              barPercentage: 0.4, categoryPercentage: 0.85
+            },
+            {
+              label: 'OPL — Actual',
+              data: oplActual,
+              backgroundColor: 'rgba(245,158,11,0.85)',
+              borderColor: 'rgba(180,83,9,0.9)',
+              borderWidth: 0, borderRadius: 8, borderSkipped: false,
+              barPercentage: 0.4, categoryPercentage: 0.85
+            },
+            {
+              label: 'Kaizen — Target',
+              data: kzTarget,
+              backgroundColor: 'rgba(16,185,129,0.2)',
+              borderColor: 'rgba(16,185,129,0.8)',
+              borderWidth: 2, borderRadius: 8, borderSkipped: false,
+              barPercentage: 0.4, categoryPercentage: 0.85
+            },
+            {
+              label: 'Kaizen — Actual',
+              data: kzActual,
+              backgroundColor: 'rgba(16,185,129,0.85)',
+              borderColor: 'rgba(4,120,87,0.9)',
+              borderWidth: 0, borderRadius: 8, borderSkipped: false,
+              barPercentage: 0.4, categoryPercentage: 0.85
+            }
+          ]
+        },
+        options: groupedOpts('OPL & Kaizen รายแผนก')
+      });
+    }
+
+    // ── Chart 2: FI Theme + Makigami ─────────────────────────
+    const ctxFM = document.getElementById('deptFiMkChart');
+    if (ctxFM) {
+      if (chartDeptFiMk) chartDeptFiMk.destroy();
+      chartDeptFiMk = new Chart(ctxFM.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: fullLabels,
+          datasets: [
+            {
+              label: 'FI Theme — Target',
+              data: fiTarget,
+              backgroundColor: 'rgba(139,92,246,0.2)',
+              borderColor: 'rgba(139,92,246,0.8)',
+              borderWidth: 2, borderRadius: 8, borderSkipped: false,
+              barPercentage: 0.4, categoryPercentage: 0.85
+            },
+            {
+              label: 'FI Theme — Actual',
+              data: fiActual,
+              backgroundColor: 'rgba(139,92,246,0.85)',
+              borderColor: 'rgba(109,40,217,0.9)',
+              borderWidth: 0, borderRadius: 8, borderSkipped: false,
+              barPercentage: 0.4, categoryPercentage: 0.85
+            },
+            {
+              label: 'Makigami — Target',
+              data: mkTarget,
+              backgroundColor: 'rgba(244,63,94,0.2)',
+              borderColor: 'rgba(244,63,94,0.8)',
+              borderWidth: 2, borderRadius: 8, borderSkipped: false,
+              barPercentage: 0.4, categoryPercentage: 0.85
+            },
+            {
+              label: 'Makigami — Actual',
+              data: mkActual,
+              backgroundColor: 'rgba(244,63,94,0.85)',
+              borderColor: 'rgba(190,18,60,0.9)',
+              borderWidth: 0, borderRadius: 8, borderSkipped: false,
+              barPercentage: 0.4, categoryPercentage: 0.85
+            }
+          ]
+        },
+        options: groupedOpts('FI Theme & Makigami รายแผนก')
+      });
+    }
+
+  } catch(e) { console.error('renderDeptCharts Error:', e); }
 }
 
 function getSysTarget(sys,fd){
@@ -1200,6 +1431,9 @@ function processAndRender() {
                 }
               });
           }
+
+          // ── Dept Comparison Charts ─────────────────────────
+          renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp);
       }
 
       const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);if(!b)return; b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:40px;color:#9BA5B1;font-weight:600;">ไม่มีข้อมูลให้แสดงผล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
@@ -1282,59 +1516,26 @@ async function generateInsights() {
     const resBox = document.getElementById('ai-result-box');
     btn.disabled = true; 
     resBox.style.display = 'block'; 
-    resBox.innerHTML = '<div style="text-align:center; padding:30px; color:var(--blue-600); font-weight:bold;">กำลังให้ Gemini AI ประมวลผลข้อมูลเชิงลึก กรุณารอสักครู่... ⏳</div>';
+    resBox.innerHTML = '<div style="text-align:center; padding:20px; color:var(--blue-600);">กำลังดึงข้อมูลทั้งระบบให้ AI ประมวลผลเชิงลึก กรุณารอสักครู่... ⏳</div>';
 
     const fd = document.getElementById('global-filter-dept').value;
     const deptText = fd === 'all' ? 'ภาพรวมทั้งโรงงาน (ทุกแผนก)' : `แผนก ${fd}`;
 
-    // 💡 1. สกัดข้อมูลเฉพาะ "รายชื่องานที่ค้างอยู่ (WIP)" เพื่อให้ AI วิเคราะห์คอขวดได้แม่นยำ (ป้องกัน Token ล้น)
-    const getWipTitles = (arr, statusKey, statusIdx, titleKey, titleIdx, deptKey, deptIdx) => {
-        return arr.filter(r => {
-            const d = sg(r, deptKey, deptIdx) || '';
-            const s = sg(r, statusKey, statusIdx) || '';
-            // หางานที่ยังไม่เสร็จสมบูรณ์
-            const isWip = !s.includes('สมบูรณ์') && !s.includes('Completed') && !s.includes('ผ่านเกณฑ์');
-            return isWip && (fd === 'all' || d === fd);
-        }).map(r => sg(r, titleKey, titleIdx)).slice(0, 10); // ดึงมาแค่ 10 รายการล่าสุดเพื่อไม่ให้ข้อมูลล้น
-    };
-
-    const wipDetails = {
-        AM_OI: getWipTitles(amHistory, 'Status', 23, 'Area', 4, 'Department', 3),
-        OPL: getWipTitles(oplHistory, 'Status', 14, 'ชื่อเรื่อง', 5, 'Department', 4),
-        FI_Theme: getWipTitles(fiHistory, 'Status', 14, 'ชื่อเรื่อง', 5, 'Department', 4),
-        Makigami: getWipTitles(mkHistory, 'Status', 9, 'ชื่อเรื่อง', 4, 'แผนก', 3)
-    };
-
-    // 💡 2. ดึงสถิติจากตัวแปร appData ที่คำนวณไว้แล้ว (AI จะได้ไม่ต้องบวกเลขเอง ป้องกันการมั่วข้อมูล)
-    const summaryStats = {
-       AM: { เป้าหมาย: appData.am.target, สำเร็จแล้ว: appData.am.actual, อัตราความสำเร็จ: appData.am.pct + '%' },
-       OPL: { เป้าหมาย: appData.opl.target, สำเร็จแล้ว: appData.opl.actual, อัตราความสำเร็จ: appData.opl.pct + '%' },
-       FI_Theme: { เป้าหมาย: appData.fi.target, สำเร็จแล้ว: appData.fi.actual, อัตราความสำเร็จ: appData.fi.pct + '%' },
-       Kaizen: { เป้าหมาย: appData.kz.target, สำเร็จแล้ว: appData.kz.actual, อัตราความสำเร็จ: appData.kz.pct + '%' },
-       Makigami: { เป้าหมาย: appData.mk.target, สำเร็จแล้ว: appData.mk.actual, อัตราความสำเร็จ: appData.mk.pct + '%' }
-    };
-
-    // มัดรวมข้อมูลส่งให้ AI
     const dbContext = JSON.stringify({
-        Statistics: summaryStats,
-        Delayed_Projects_List: wipDetails
+        kpi: kpiMaster, am: amHistory, opl: oplHistory, fi: fiHistory, kz: kzHistory, mk: mkHistory
     });
 
-    // 💡 3. Prompt บังคับให้ตอบอย่างละเอียด แต่ให้อยู่ในขอบเขตที่ป้องกันการโดนตัดจบ
     const promptText = `คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง
-นี่คือข้อมูลสรุป Performance ล่าสุดของ "${deptText}"
-ข้อมูล: ${dbContext}
+นี่คือข้อมูลดิบของโรงงาน: ${dbContext}
 
-กรุณาวิเคราะห์เชิงลึกแบบผู้บริหาร (Executive Summary) โดยใช้รูปแบบ Bullet point แบ่งเป็น 4 หัวข้อชัดเจน ดังนี้:
-1. 📊 [ภาพรวม KPI]: สรุปผลลัพธ์ % ความสำเร็จ เสาไหนทำผลงานได้ยอดเยี่ยม เสาไหนรั้งท้าย
-2. ⭐ [จุดเด่น]: วิเคราะห์จุดแข็งจากข้อมูลที่มี
-3. ⚠️ [จุดคอขวด]: ระบุชื่อโปรเจกต์ หรือรายการงานที่ล่าช้า (จาก Delayed_Projects_List) ที่น่าเป็นห่วงที่สุด
-4. 🚀 [Action Plan]: ข้อเสนอแนะเชิงกลยุทธ์ 3 ข้อ สำหรับผู้บริหารเพื่อทะลวงคอขวดและเพิ่มประสิทธิภาพทันที
+กรุณาวิเคราะห์ Performance ของ "${deptText}" อย่างละเอียดที่สุด
+โครงสร้างการตอบ (ให้ใช้ Bullet point):
+1. [ภาพรวม KPI]: สรุปความสำเร็จและเปอร์เซ็นต์ที่ได้
+2. [จุดเด่น]: แผนก หรือ ระบบที่ทำผลงานได้ดีเยี่ยม (ระบุชื่อ)
+3. [จุดคอขวด]: โปรเจกต์ หรือ แผนกที่ล่าช้า น่าเป็นห่วงที่สุด (ระบุตัวเลขและชื่อเรื่องให้ชัดเจน)
+4. [Action Plan]: ข้อเสนอแนะเชิงกลยุทธ์สำหรับผู้บริหาร 3 ข้อ ว่าควรเข้าไปจี้จุดไหนก่อน
 
-คำสั่งบังคับ:
-- อธิบายให้ละเอียด เป็นมืออาชีพ (ความยาว 10-15 บรรทัด)
-- เขียนให้จบสมบูรณ์ ห้ามให้ข้อความขาดหายหรือถูกตัดจบกลางคัน
-- ห้ามมีคำเกริ่นนำหรือคำลงท้ายใดๆ ให้เริ่มที่ข้อ 1 ทันที`;
+อธิบายให้ละเอียด เป็นมืออาชีพ (ความยาว 10-15 บรรทัด) ห้ามเกริ่นนำ ให้เข้าประเด็นทันที`;
 
     try {
         const response = await fetch(API_URL, { 
