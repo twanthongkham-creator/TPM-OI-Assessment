@@ -841,12 +841,24 @@ function onPlantChange() {
 // ================================================================
 function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
   try {
-    // ── รวบรวม dept codes ─────────────────────────────────────
+    // ── helper: ดึง dept code จาก record แต่ละประเภท ─────────
+    // OPL/FI: header key 'Department', fallback col5
+    // Kaizen: header key 'แผนก', fallback col3 (ระบบ external ไม่มี Plant)
+    // MK:     header key 'แผนก' หรือ 'Department', fallback col4
+    const getDept = {
+      opl: r => sg(r,'Department',5) || sg(r,'Department',4) || '',
+      fi:  r => sg(r,'Department',5) || sg(r,'Department',4) || '',
+      kz:  r => sg(r,'แผนก',3) || sg(r,'Department',3) || '',   // Kaizen ใช้ 'แผนก'
+      mk:  r => sg(r,'แผนก',4) || sg(r,'Department',4) || sg(r,'แผนก',3) || '',
+    };
+
+    // ── รวบรวม dept codes จากทุก source ──────────────────────
     const deptSet = new Set();
-    [...fOpl, ...fFi, ...fKz, ...fMk].forEach(r => {
-      const d = sg(r,'Department',5) || sg(r,'แผนก',4) || sg(r,'แผนก',3) || '';
-      if (d) deptSet.add(d);
-    });
+    fOpl.forEach(r => { const d = getDept.opl(r); if (d) deptSet.add(d); });
+    fFi.forEach(r  => { const d = getDept.fi(r);  if (d) deptSet.add(d); });
+    fKz.forEach(r  => { const d = getDept.kz(r);  if (d) deptSet.add(d); });
+    fMk.forEach(r  => { const d = getDept.mk(r);  if (d) deptSet.add(d); });
+    // เพิ่ม dept ที่มี target ใน kpiMaster ด้วย
     kpiMaster.forEach(k => {
       const kPlant = String(sg(k,'Plant',0)||'').trim();
       if (fp === 'all' || kPlant === fp || kPlant === '') {
@@ -860,12 +872,12 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
     // ── Labels: Code เท่านั้น ─────────────────────────────────
     const codeLabels = deptCodes.slice();
 
-    // ── นับ Actual ต่อ dept ──────────────────────────────────
-    const countByDept = (arr, c5, c4, c3) => {
+    // ── นับ Actual ต่อ dept (รับ getter function) ─────────────
+    const countByDeptFn = (arr, getterFn) => {
       const map = {}; deptCodes.forEach(d => map[d] = 0);
       arr.forEach(r => {
-        const d = sg(r,'Department',c5) || sg(r,'แผนก',c4) || sg(r,'แผนก',c3) || '';
-        if (map[d] !== undefined) map[d]++;
+        const d = getterFn(r);
+        if (d && map[d] !== undefined) map[d]++;
       });
       return deptCodes.map(d => map[d] || 0);
     };
@@ -875,10 +887,10 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
     const uKz  = [...new Map(fKz.map(r  => [sg(r,'เลขที่ Kaizen',0), r])).values()];
     const uMk  = [...new Map(fMk.map(r  => [sg(r,'Makigami ID',2),   r])).values()];
 
-    const oplActual = countByDept(uOpl, 5, 4, 3);
-    const kzActual  = countByDept(uKz,  3, 3, 3);
-    const fiActual  = countByDept(uFi,  5, 5, 4);
-    const mkActual  = countByDept(uMk,  4, 4, 3);
+    const oplActual = countByDeptFn(uOpl, getDept.opl);
+    const kzActual  = countByDeptFn(uKz,  getDept.kz);   // ← ใช้ getter แยกสำหรับ Kaizen
+    const fiActual  = countByDeptFn(uFi,  getDept.fi);
+    const mkActual  = countByDeptFn(uMk,  getDept.mk);
 
     // ── Target ต่อ dept ──────────────────────────────────────
     const getTargetByDept = (sys) => {
@@ -1326,7 +1338,12 @@ function processAndRender() {
       const fOpl = oplHistory.filter(r => matchPlant(r,0) && (fd==='all' || sg(r,'Department',5)===fd || sg(r,'Department',4)===fd));
       const fFi  = fiHistory.filter(r  => matchPlant(r,0) && (fd==='all' || sg(r,'Department',5)===fd || sg(r,'Department',4)===fd));
       // Kaizen: ไม่มี Plant column (ระบบ external) — กรองแค่ Dept
-      const fKz  = kzHistory.filter(r  => fd==='all' || sg(r,'แผนก',3)===fd);
+      // Kaizen ใช้ header key 'แผนก' col3
+      const fKz  = kzHistory.filter(r => {
+        if (fd === 'all') return true;
+        const kzDept = sg(r,'แผนก',3) || sg(r,'Department',3) || '';
+        return kzDept === fd;
+      });
       // Makigami: Plant=col0, Dept=col4
       const fMk  = mkHistory.filter(r  => matchPlant(r,0) && (fd==='all' || sg(r,'แผนก',4)===fd || sg(r,'แผนก',3)===fd));
       
@@ -1620,59 +1637,26 @@ async function generateInsights() {
     const resBox = document.getElementById('ai-result-box');
     btn.disabled = true; 
     resBox.style.display = 'block'; 
-    resBox.innerHTML = '<div style="text-align:center; padding:30px; color:var(--blue-600); font-weight:bold;">กำลังให้ Gemini AI ประมวลผลข้อมูลเชิงลึก กรุณารอสักครู่... ⏳</div>';
+    resBox.innerHTML = '<div style="text-align:center; padding:20px; color:var(--blue-600);">กำลังดึงข้อมูลทั้งระบบให้ AI ประมวลผลเชิงลึก กรุณารอสักครู่... ⏳</div>';
 
     const fd = document.getElementById('global-filter-dept').value;
     const deptText = fd === 'all' ? 'ภาพรวมทั้งโรงงาน (ทุกแผนก)' : `แผนก ${fd}`;
 
-    // 💡 1. สกัดข้อมูลเฉพาะ "รายชื่องานที่ค้างอยู่ (WIP)" เพื่อให้ AI วิเคราะห์คอขวดได้แม่นยำ (ป้องกัน Token ล้น)
-    const getWipTitles = (arr, statusKey, statusIdx, titleKey, titleIdx, deptKey, deptIdx) => {
-        return arr.filter(r => {
-            const d = sg(r, deptKey, deptIdx) || '';
-            const s = sg(r, statusKey, statusIdx) || '';
-            // หางานที่ยังไม่เสร็จสมบูรณ์
-            const isWip = !s.includes('สมบูรณ์') && !s.includes('Completed') && !s.includes('ผ่านเกณฑ์');
-            return isWip && (fd === 'all' || d === fd);
-        }).map(r => sg(r, titleKey, titleIdx)).slice(0, 10); // ดึงมาแค่ 10 รายการล่าสุดเพื่อไม่ให้ข้อมูลล้น
-    };
-
-    const wipDetails = {
-        AM_OI: getWipTitles(amHistory, 'Status', 23, 'Area', 4, 'Department', 3),
-        OPL: getWipTitles(oplHistory, 'Status', 14, 'ชื่อเรื่อง', 5, 'Department', 4),
-        FI_Theme: getWipTitles(fiHistory, 'Status', 14, 'ชื่อเรื่อง', 5, 'Department', 4),
-        Makigami: getWipTitles(mkHistory, 'Status', 9, 'ชื่อเรื่อง', 4, 'แผนก', 3)
-    };
-
-    // 💡 2. ดึงสถิติจากตัวแปร appData ที่คำนวณไว้แล้ว (AI จะได้ไม่ต้องบวกเลขเอง ป้องกันการมั่วข้อมูล)
-    const summaryStats = {
-       AM: { เป้าหมาย: appData.am.target, สำเร็จแล้ว: appData.am.actual, อัตราความสำเร็จ: appData.am.pct + '%' },
-       OPL: { เป้าหมาย: appData.opl.target, สำเร็จแล้ว: appData.opl.actual, อัตราความสำเร็จ: appData.opl.pct + '%' },
-       FI_Theme: { เป้าหมาย: appData.fi.target, สำเร็จแล้ว: appData.fi.actual, อัตราความสำเร็จ: appData.fi.pct + '%' },
-       Kaizen: { เป้าหมาย: appData.kz.target, สำเร็จแล้ว: appData.kz.actual, อัตราความสำเร็จ: appData.kz.pct + '%' },
-       Makigami: { เป้าหมาย: appData.mk.target, สำเร็จแล้ว: appData.mk.actual, อัตราความสำเร็จ: appData.mk.pct + '%' }
-    };
-
-    // มัดรวมข้อมูลส่งให้ AI
     const dbContext = JSON.stringify({
-        Statistics: summaryStats,
-        Delayed_Projects_List: wipDetails
+        kpi: kpiMaster, am: amHistory, opl: oplHistory, fi: fiHistory, kz: kzHistory, mk: mkHistory
     });
 
-    // 💡 3. Prompt บังคับให้ตอบอย่างละเอียด แต่ให้อยู่ในขอบเขตที่ป้องกันการโดนตัดจบ
     const promptText = `คุณคือผู้เชี่ยวชาญด้าน TPM และที่ปรึกษาผู้บริหารระดับสูง
-นี่คือข้อมูลสรุป Performance ล่าสุดของ "${deptText}"
-ข้อมูล: ${dbContext}
+นี่คือข้อมูลดิบของโรงงาน: ${dbContext}
 
-กรุณาวิเคราะห์เชิงลึกแบบผู้บริหาร (Executive Summary) โดยใช้รูปแบบ Bullet point แบ่งเป็น 4 หัวข้อชัดเจน ดังนี้:
-1. 📊 [ภาพรวม KPI]: สรุปผลลัพธ์ % ความสำเร็จ เสาไหนทำผลงานได้ยอดเยี่ยม เสาไหนรั้งท้าย
-2. ⭐ [จุดเด่น]: วิเคราะห์จุดแข็งจากข้อมูลที่มี
-3. ⚠️ [จุดคอขวด]: ระบุชื่อโปรเจกต์ หรือรายการงานที่ล่าช้า (จาก Delayed_Projects_List) ที่น่าเป็นห่วงที่สุด
-4. 🚀 [Action Plan]: ข้อเสนอแนะเชิงกลยุทธ์ 3 ข้อ สำหรับผู้บริหารเพื่อทะลวงคอขวดและเพิ่มประสิทธิภาพทันที
+กรุณาวิเคราะห์ Performance ของ "${deptText}" อย่างละเอียดที่สุด
+โครงสร้างการตอบ (ให้ใช้ Bullet point):
+1. [ภาพรวม KPI]: สรุปความสำเร็จและเปอร์เซ็นต์ที่ได้
+2. [จุดเด่น]: แผนก หรือ ระบบที่ทำผลงานได้ดีเยี่ยม (ระบุชื่อ)
+3. [จุดคอขวด]: โปรเจกต์ หรือ แผนกที่ล่าช้า น่าเป็นห่วงที่สุด (ระบุตัวเลขและชื่อเรื่องให้ชัดเจน)
+4. [Action Plan]: ข้อเสนอแนะเชิงกลยุทธ์สำหรับผู้บริหาร 3 ข้อ ว่าควรเข้าไปจี้จุดไหนก่อน
 
-คำสั่งบังคับ:
-- อธิบายให้ละเอียด เป็นมืออาชีพ (ความยาว 10-15 บรรทัด)
-- เขียนให้จบสมบูรณ์ ห้ามให้ข้อความขาดหายหรือถูกตัดจบกลางคัน
-- ห้ามมีคำเกริ่นนำหรือคำลงท้ายใดๆ ให้เริ่มที่ข้อ 1 ทันที`;
+อธิบายให้ละเอียด เป็นมืออาชีพ (ความยาว 10-15 บรรทัด) ห้ามเกริ่นนำ ให้เข้าประเด็นทันที`;
 
     try {
         const response = await fetch(API_URL, { 
