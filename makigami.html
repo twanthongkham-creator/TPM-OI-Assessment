@@ -252,7 +252,7 @@ input[readonly], select:disabled { background: rgba(255,228,230,0.6); color: var
         <div class="grid2" style="margin-bottom:20px;">
           <div class="fg">
             <label>โรงงาน (Factory) <span class="req">จำเป็น</span></label>
-            <select id="m-factory" onchange="generateMkId()">
+            <select id="m-factory" onchange="generateMkId(); populateUsers();">
               <option value="">-- เลือกโรงงาน --</option>
               <option value="PT">ปทุมธานี (PT)</option>
               <option value="KR">นครราชสีมา (KR)</option>
@@ -354,7 +354,7 @@ input[readonly], select:disabled { background: rgba(255,228,230,0.6); color: var
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
-let userData = {};
+let userData = {}; let usersByPlant = {};
 let rawHistory = [];
 
 const safeGet = (row, keyStr, fallbackIndex) => {
@@ -393,6 +393,7 @@ async function initData() {
     ]);
     if (uRes.status === 'success') {
       userData = uRes.users || {};
+      usersByPlant = uRes.usersByPlant || {};
       if (uRes.depts) DeptHelper.loadDeptsFromArray(uRes.depts);
       else await DeptHelper.loadDepts(APPS_SCRIPT_URL);
     }
@@ -459,14 +460,21 @@ function generateMkId() {
 
 function populateUsers() {
   const dept = document.getElementById('m-dept').value;
+  const plant = document.getElementById('m-factory').value;
   const ownerSelect = document.getElementById('m-owner');
   ownerSelect.innerHTML = '<option value="">-- เลือกชื่อผู้รับผิดชอบ --</option>';
   if (!dept) return;
-  if (userData[dept] && userData[dept].length > 0) {
-    userData[dept].forEach(u => {
+  // กรองตาม Plant ก่อน ถ้าไม่มีใน plant นั้น fallback ไปใช้ flat list
+  const list = (plant && usersByPlant[plant] && usersByPlant[plant][dept])
+    ? usersByPlant[plant][dept]
+    : (userData[dept] || []);
+  if (list.length > 0) {
+    list.forEach(u => {
       const opt = document.createElement('option'); opt.value = u.name; opt.textContent = u.name;
       ownerSelect.appendChild(opt);
     });
+  } else {
+    ownerSelect.innerHTML = '<option value="">(ไม่พบรายชื่อพนักงาน)</option>';
   }
 }
 
