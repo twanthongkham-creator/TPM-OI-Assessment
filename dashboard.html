@@ -490,33 +490,63 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
         </div>
       </div>
 
-      <!-- ══ Dept Comparison Charts ══ -->
+      <!-- ══ Dept Comparison Charts — 4 แยกกัน ══ -->
       <div style="margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:24px;" id="dept-charts-grid">
 
-        <div class="chart-box" id="box-deptOplKz">
+        <!-- OPL รายแผนก -->
+        <div class="chart-box" id="box-deptOpl">
           <div class="chart-header">
             <div class="chart-title-text">
               <div class="chart-icon-pill" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">
                 <svg fill="none" stroke="#B45309" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-4 12.74V17a1 1 0 001 1h6a1 1 0 001-1v-2.26A7 7 0 0012 2z"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
               </div>
-              OPL & Kaizen — ผลงานรายแผนก
+              OPL รายแผนก
             </div>
             <div style="font-size:11px;color:var(--gray-400);font-weight:600;">Actual vs Target</div>
           </div>
-          <div style="flex:1;position:relative;min-height:220px;"><canvas id="deptOplKzChart"></canvas></div>
+          <div style="flex:1;position:relative;min-height:220px;"><canvas id="deptOplChart"></canvas></div>
         </div>
 
-        <div class="chart-box" id="box-deptFiMk">
+        <!-- Kaizen รายแผนก -->
+        <div class="chart-box" id="box-deptKz">
+          <div class="chart-header">
+            <div class="chart-title-text">
+              <div class="chart-icon-pill" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);">
+                <svg fill="none" stroke="#065F46" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              </div>
+              Kaizen รายแผนก
+            </div>
+            <div style="font-size:11px;color:var(--gray-400);font-weight:600;">Actual vs Target</div>
+          </div>
+          <div style="flex:1;position:relative;min-height:220px;"><canvas id="deptKzChart"></canvas></div>
+        </div>
+
+        <!-- FI Theme รายแผนก -->
+        <div class="chart-box" id="box-deptFi">
           <div class="chart-header">
             <div class="chart-title-text">
               <div class="chart-icon-pill" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">
                 <svg fill="none" stroke="#6D28D9" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
               </div>
-              FI Theme & Makigami — ผลงานรายแผนก
+              FI Theme รายแผนก
             </div>
-            <div style="font-size:11px;color:var(--gray-400);font-weight:600;">Actual vs Target</div>
+            <div style="font-size:11px;color:var(--gray-400);font-weight:600;">% ความสำเร็จ</div>
           </div>
-          <div style="flex:1;position:relative;min-height:220px;"><canvas id="deptFiMkChart"></canvas></div>
+          <div style="flex:1;position:relative;min-height:220px;"><canvas id="deptFiChart"></canvas></div>
+        </div>
+
+        <!-- Makigami รายแผนก -->
+        <div class="chart-box" id="box-deptMk">
+          <div class="chart-header">
+            <div class="chart-title-text">
+              <div class="chart-icon-pill" style="background:linear-gradient(135deg,#FFE4E6,#FECDD3);">
+                <svg fill="none" stroke="#BE123C" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/><path d="M15 13l-3 3-2-2"/></svg>
+              </div>
+              Makigami รายแผนก
+            </div>
+            <div style="font-size:11px;color:var(--gray-400);font-weight:600;">% ความสำเร็จ</div>
+          </div>
+          <div style="flex:1;position:relative;min-height:220px;"><canvas id="deptMkChart"></canvas></div>
         </div>
 
       </div>
@@ -641,7 +671,7 @@ function startTour() {
 let areaData={}, kpiMaster=[], amHistory=[], oplHistory=[], fiHistory=[], kzHistory=[], mkHistory=[];
 let userDataObj={}, usersByPlant={}, approverDataObj={}, approversByPlant={};
 let allPlants = []; // ['PT','KR','NS',...]
-let chartKPI=null, chartAM=null, chartDeptOplKz=null, chartDeptFiMk=null;
+let chartKPI=null, chartAM=null, chartDeptOpl=null, chartDeptKz=null, chartDeptFi=null, chartDeptMk=null;
 
 let appData={
   am:{key:'am',title:'AM-OI Assessment',target:0,actual:0,wip:0,stepDist:[0,0,0,0,0], stepDetails:{1:[],2:[],3:[],4:[],5:[]}, targetScore:0, actualScore:0, pct:0},
@@ -841,310 +871,284 @@ function onPlantChange() {
 // ================================================================
 function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
   try {
-    // ── helper: ดึง dept code จาก record แต่ละประเภท ─────────
-    // OPL/FI: header key 'Department', fallback col5
-    // Kaizen: header key 'แผนก', fallback col3 (ระบบ external ไม่มี Plant)
-    // MK:     header key 'แผนก' หรือ 'Department', fallback col4
+    // ── dept getter per data type ──────────────────────────────
     const getDept = {
       opl: r => sg(r,'Department',5) || sg(r,'Department',4) || '',
       fi:  r => sg(r,'Department',5) || sg(r,'Department',4) || '',
-      kz:  r => sg(r,'แผนก',3) || sg(r,'Department',3) || '',   // Kaizen ใช้ 'แผนก'
+      kz:  r => sg(r,'แผนก',3) || sg(r,'Department',3) || '',
       mk:  r => sg(r,'แผนก',4) || sg(r,'Department',4) || sg(r,'แผนก',3) || '',
     };
 
-    // ── รวบรวม dept codes จากทุก source ──────────────────────
+    // ── รวบรวม dept codes ──────────────────────────────────────
     const deptSet = new Set();
-    fOpl.forEach(r => { const d = getDept.opl(r); if (d) deptSet.add(d); });
-    fFi.forEach(r  => { const d = getDept.fi(r);  if (d) deptSet.add(d); });
-    fKz.forEach(r  => { const d = getDept.kz(r);  if (d) deptSet.add(d); });
-    fMk.forEach(r  => { const d = getDept.mk(r);  if (d) deptSet.add(d); });
-    // เพิ่ม dept ที่มี target ใน kpiMaster ด้วย
+    fOpl.forEach(r => { const d=getDept.opl(r); if(d) deptSet.add(d); });
+    fFi.forEach(r  => { const d=getDept.fi(r);  if(d) deptSet.add(d); });
+    fKz.forEach(r  => { const d=getDept.kz(r);  if(d) deptSet.add(d); });
+    fMk.forEach(r  => { const d=getDept.mk(r);  if(d) deptSet.add(d); });
     kpiMaster.forEach(k => {
-      const kPlant = String(sg(k,'Plant',0)||'').trim();
-      if (fp === 'all' || kPlant === fp || kPlant === '') {
+      const kp = String(sg(k,'Plant',0)||'').trim();
+      if (fp==='all' || kp===fp || kp==='') {
         const d = String(sg(k,'Department',2)||'').trim();
         if (d) deptSet.add(d);
       }
     });
-    const deptCodes = fd !== 'all' ? [fd] : [...deptSet].sort();
-    if (!deptCodes.length) return;
+    const codes = fd !== 'all' ? [fd] : [...deptSet].sort();
+    if (!codes.length) return;
 
-    // ── Labels: Code เท่านั้น ─────────────────────────────────
-    const codeLabels = deptCodes.slice();
-
-    // ── นับ Actual ต่อ dept (รับ getter function) ─────────────
-    const countByDeptFn = (arr, getterFn) => {
-      const map = {}; deptCodes.forEach(d => map[d] = 0);
-      arr.forEach(r => {
-        const d = getterFn(r);
-        if (d && map[d] !== undefined) map[d]++;
-      });
-      return deptCodes.map(d => map[d] || 0);
+    // ── นับ actual ───────────────────────────────────────────
+    const count = (arr, fn) => {
+      const m = {}; codes.forEach(c => m[c]=0);
+      arr.forEach(r => { const d=fn(r); if(d && m[d]!==undefined) m[d]++; });
+      return codes.map(c => m[c]||0);
     };
 
-    const uOpl = [...new Map(fOpl.map(r => [sg(r,'OPL ID',2),        r])).values()];
-    const uFi  = [...new Map(fFi.map(r  => [sg(r,'FI ID',2),         r])).values()];
-    const uKz  = [...new Map(fKz.map(r  => [sg(r,'เลขที่ Kaizen',0), r])).values()];
-    const uMk  = [...new Map(fMk.map(r  => [sg(r,'Makigami ID',2),   r])).values()];
+    const uOpl = [...new Map(fOpl.map(r=>[sg(r,'OPL ID',2),r])).values()];
+    const uFi  = [...new Map(fFi.map(r =>[sg(r,'FI ID',2), r])).values()];
+    const uKz  = [...new Map(fKz.map(r =>[sg(r,'เลขที่ Kaizen',0),r])).values()];
+    const uMk  = [...new Map(fMk.map(r =>[sg(r,'Makigami ID',2),r])).values()];
 
-    const oplActual = countByDeptFn(uOpl, getDept.opl);
-    const kzActual  = countByDeptFn(uKz,  getDept.kz);   // ← ใช้ getter แยกสำหรับ Kaizen
-    const fiActual  = countByDeptFn(uFi,  getDept.fi);
-    const mkActual  = countByDeptFn(uMk,  getDept.mk);
+    const oplA = count(uOpl, getDept.opl);
+    const kzA  = count(uKz,  getDept.kz);
+    const fiA  = count(uFi,  getDept.fi);
+    const mkA  = count(uMk,  getDept.mk);
 
-    // ── Target ต่อ dept ──────────────────────────────────────
-    const getTargetByDept = (sys) => {
-      const map = {}; deptCodes.forEach(d => map[d] = 0);
+    // ── target per dept ───────────────────────────────────────
+    const target = (sys) => {
+      const m = {}; codes.forEach(c => m[c]=0);
       kpiMaster.forEach(k => {
-        const kSys   = String(sg(k,'System',0)||'').trim();
-        const kDept  = String(sg(k,'Department',2)||'').trim();
-        const kPlant = String(sg(k,'Plant',0)||'').trim();
-        const plantOk = fp === 'all' || kPlant === fp || kPlant === '';
-        const tv = parseInt(sg(k,'Target_Value',4)) || 0;
-        if (kSys.toUpperCase() === sys.toUpperCase() && plantOk && map[kDept] !== undefined)
-          map[kDept] += tv;
+        const s  = String(sg(k,'System',0)||'').trim();
+        const d  = String(sg(k,'Department',2)||'').trim();
+        const kp = String(sg(k,'Plant',0)||'').trim();
+        const tv = parseInt(sg(k,'Target_Value',4))||0;
+        if (s.toUpperCase()===sys.toUpperCase() && (fp==='all'||kp===fp||kp==='') && m[d]!==undefined)
+          m[d] += tv;
       });
-      return deptCodes.map(d => map[d] || 0);
+      return codes.map(c => m[c]||0);
     };
 
-    const oplTarget = getTargetByDept('OPL');
-    const kzTarget  = getTargetByDept('Kaizen');
-    const fiTarget  = getTargetByDept('FI');
-    const mkTarget  = getTargetByDept('Makigami');
+    const oplT = target('OPL');
+    const kzT  = target('Kaizen');
+    const fiT  = target('FI');
+    const mkT  = target('Makigami');
 
-    const cf = { family: 'IBM Plex Sans Thai', size: 12, weight: '700' };
+    const cf = { family:'IBM Plex Sans Thai', size:12, weight:'700' };
     const gc = 'rgba(200,210,225,0.4)';
-
-    // ── tooltip title helper ──────────────────────────────────
-    const fullName = (code) => {
-      const found = DeptHelper.getDepts().find(d => d.code === code);
-      return found ? `${code} — ${found.name}` : code;
+    const fullName = code => {
+      const f = DeptHelper.getDepts().find(d=>d.code===code);
+      return f ? `${code} — ${f.name}` : code;
     };
 
     // ════════════════════════════════════════════════════════
-    // CHART 1: OPL & Kaizen — Stacked bar, Code labels, หนาขึ้น
+    // helper: สร้าง stacked bar chart (Actual solid + Remaining faded)
+    // แสดง "a/t" เหนือแท่งเท่านั้น ไม่มี label ใน solid bar
     // ════════════════════════════════════════════════════════
-    const ctxOK = document.getElementById('deptOplKzChart');
-    if (ctxOK) {
-      if (chartDeptOplKz) chartDeptOplKz.destroy();
+    const makeCountChart = (canvasId, chartRef, actualArr, targetArr, solidColor, solidBorder, fadeColor) => {
+      const el = document.getElementById(canvasId);
+      if (!el) return chartRef;
+      if (chartRef) chartRef.destroy();
 
-      const oplRemain = deptCodes.map((_,i) => Math.max(0, (oplTarget[i]||0) - oplActual[i]));
-      const kzRemain  = deptCodes.map((_,i) => Math.max(0, (kzTarget[i] ||0) - kzActual[i]));
+      const remain = codes.map((_,i) => Math.max(0, (targetArr[i]||0) - actualArr[i]));
 
-      const barLabelPlugin = {
-        id: 'barLabels',
+      // plugin: "a/t" เหนือแท่ง (ไม่มีอะไรใน solid)
+      const topLabelPlugin = {
+        id: 'topLabel_'+canvasId,
         afterDatasetsDraw(chart) {
           const {ctx} = chart;
+          const meta0 = chart.getDatasetMeta(0); // solid
+          const meta1 = chart.getDatasetMeta(1); // remain
+          if (!meta0) return;
           ctx.save();
-          // dataset 0 = OPL solid, dataset 2 = Kaizen solid
-          [{dsIdx:0, actual:oplActual, target:oplTarget, darkColor:'#7C3F00'},
-           {dsIdx:2, actual:kzActual,  target:kzTarget,  darkColor:'#064E3B'}]
-          .forEach(({dsIdx, actual, target, darkColor}) => {
-            const meta = chart.getDatasetMeta(dsIdx);
-            if (!meta || meta.hidden) return;
-            meta.data.forEach((bar, i) => {
-              const a = actual[i] || 0;
-              const t = target[i] || 0;
-              if (a === 0 && t === 0) return;
-              const h = bar.height || 0;
-              // ตัวเลข actual กลางแท่ง (ขาว)
-              if (h > 18) {
-                ctx.font = 'bold 12px "IBM Plex Sans Thai"';
-                ctx.fillStyle = 'rgba(255,255,255,0.95)';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(String(a), bar.x, bar.y + h / 2);
-              }
-              // "a/t" เหนือแท่งรวม
-              if (t > 0) {
-                const remainMeta = chart.getDatasetMeta(dsIdx + 1);
-                const topBar = remainMeta?.data[i];
-                const topY = topBar ? Math.min(bar.y, topBar.y) : bar.y;
-                ctx.font = '700 11px "IBM Plex Sans Thai"';
-                ctx.fillStyle = darkColor;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'bottom';
-                ctx.fillText(`${a}/${t}`, bar.x, topY - 3);
-              }
-            });
+          meta0.data.forEach((bar, i) => {
+            const a = actualArr[i]||0, t = targetArr[i]||0;
+            if (a===0 && t===0) return;
+            // หาจุดบนสุดของแท่งรวม
+            const remBar = meta1?.data[i];
+            const topY = remBar ? Math.min(bar.y, remBar.y) : bar.y;
+            ctx.font = '700 11px "IBM Plex Sans Thai"';
+            ctx.fillStyle = 'rgba(30,40,60,0.75)';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(`${a}/${t}`, bar.x, topY - 3);
           });
           ctx.restore();
         }
       };
 
-      chartDeptOplKz = new Chart(ctxOK.getContext('2d'), {
+      return new Chart(el.getContext('2d'), {
         type: 'bar',
         data: {
-          labels: codeLabels,
+          labels: codes,
           datasets: [
-            { label:'OPL', data:oplActual, _target:oplTarget,
-              backgroundColor:'rgba(251,146,60,0.9)', borderColor:'rgba(234,88,12,1)',
-              borderWidth:0,
-              borderRadius:{topLeft:0,topRight:0,bottomLeft:6,bottomRight:6},
-              borderSkipped:'bottom', barPercentage:0.6, categoryPercentage:0.8, stack:'opl' },
-            { label:'OPL__rem', data:oplRemain,
-              backgroundColor:'rgba(251,146,60,0.15)', borderColor:'rgba(251,146,60,0.4)',
-              borderWidth:1.5,
-              borderRadius:{topLeft:6,topRight:6,bottomLeft:0,bottomRight:0},
-              borderSkipped:'bottom', barPercentage:0.6, categoryPercentage:0.8, stack:'opl' },
-            { label:'Kaizen', data:kzActual, _target:kzTarget,
-              backgroundColor:'rgba(52,211,153,0.9)', borderColor:'rgba(5,150,105,1)',
-              borderWidth:0,
-              borderRadius:{topLeft:0,topRight:0,bottomLeft:6,bottomRight:6},
-              borderSkipped:'bottom', barPercentage:0.6, categoryPercentage:0.8, stack:'kz' },
-            { label:'Kaizen__rem', data:kzRemain,
-              backgroundColor:'rgba(52,211,153,0.15)', borderColor:'rgba(52,211,153,0.4)',
-              borderWidth:1.5,
-              borderRadius:{topLeft:6,topRight:6,bottomLeft:0,bottomRight:0},
-              borderSkipped:'bottom', barPercentage:0.6, categoryPercentage:0.8, stack:'kz' },
+            { label: 'Actual', data: actualArr, _target: targetArr,
+              backgroundColor: solidColor, borderColor: solidBorder, borderWidth: 0,
+              borderRadius: {topLeft:0,topRight:0,bottomLeft:6,bottomRight:6},
+              borderSkipped:'bottom', barPercentage:0.65, categoryPercentage:0.8, stack:'s' },
+            { label: '__remain', data: remain,
+              backgroundColor: fadeColor, borderColor: fadeColor.replace('0.12','0.35'),
+              borderWidth: 1.5,
+              borderRadius: {topLeft:6,topRight:6,bottomLeft:0,bottomRight:0},
+              borderSkipped:'bottom', barPercentage:0.65, categoryPercentage:0.8, stack:'s' },
           ]
         },
-        plugins: [barLabelPlugin],
+        plugins: [topLabelPlugin],
         options: {
           responsive:true, maintainAspectRatio:false,
-          animation:{duration:1200, easing:'easeOutQuart'},
+          animation:{duration:1100, easing:'easeOutQuart'},
           plugins: {
-            legend: {
-              display:true, position:'top',
-              labels:{ font:cf, boxWidth:14, padding:16,
-                filter: item => !item.text.includes('__rem') }
-            },
+            legend: { display:false },
             tooltip: {
-              backgroundColor:'rgba(255,255,255,0.97)',
-              titleColor:'#0f172a', bodyColor:'#334155',
-              borderColor:'rgba(200,210,225,0.5)', borderWidth:1,
-              padding:14, cornerRadius:12,
+              backgroundColor:'rgba(255,255,255,0.97)', titleColor:'#0f172a', bodyColor:'#334155',
+              borderColor:'rgba(200,210,225,0.5)', borderWidth:1, padding:14, cornerRadius:12,
               titleFont:{family:'IBM Plex Sans Thai',size:14,weight:'bold'},
               bodyFont:{family:'IBM Plex Sans Thai',size:13},
               callbacks: {
-                title: c2 => fullName(codeLabels[c2[0].dataIndex]),
+                title: c2 => fullName(codes[c2[0].dataIndex]),
                 label: c2 => {
-                  if (c2.dataset.label.includes('__rem')) return null;
+                  if (c2.dataset.label==='__remain') return null;
                   const i=c2.dataIndex, a=c2.raw||0, t=c2.dataset._target?.[i]||0;
-                  return ` ${c2.dataset.label}: ทำแล้ว ${a} / เป้า ${t} (เหลือ ${Math.max(0,t-a)})`;
+                  return ` ทำแล้ว ${a} / เป้า ${t} (เหลือ ${Math.max(0,t-a)})`;
                 },
-                filter: item => !item.dataset.label?.includes('__rem')
+                filter: item => item.dataset.label !== '__remain'
               }
             }
           },
           scales: {
             x:{ grid:{display:false}, ticks:{font:cf, maxRotation:0} },
-            y:{ beginAtZero:true, grid:{color:gc, borderDash:[4,4]},
+            y:{ beginAtZero:true, grid:{color:gc,borderDash:[4,4]},
                 ticks:{stepSize:1, font:{family:'IBM Plex Sans Thai',size:11}} }
           }
         }
       });
-    }
+    };
 
     // ════════════════════════════════════════════════════════
-    // CHART 2: FI & Makigami — % Completion per dept
+    // helper: สร้าง % completion chart (FI / MK)
+    // ใช้ actual/target ที่แท้จริง ไม่ default เป็น 1
+    // ถ้า target=0 แสดง actual เป็น count (ไม่ใช่ %)
     // ════════════════════════════════════════════════════════
-    const ctxFM = document.getElementById('deptFiMkChart');
-    if (ctxFM) {
-      if (chartDeptFiMk) chartDeptFiMk.destroy();
+    const makePctChart = (canvasId, chartRef, actualArr, targetArr, solidColor, solidBorder, fadeColor) => {
+      const el = document.getElementById(canvasId);
+      if (!el) return chartRef;
+      if (chartRef) chartRef.destroy();
 
-      const toPct = (actual, target, i) => {
-        const t = target[i] || 1; // default 1 เพราะทุกแผนกทำ 1 เรื่อง
-        return Math.min(100, Math.round((actual[i] / t) * 100));
-      };
-      const fiPct     = deptCodes.map((_,i) => toPct(fiActual, fiTarget, i));
-      const mkPct     = deptCodes.map((_,i) => toPct(mkActual, mkTarget, i));
-      const fiRemain  = fiPct.map(p => Math.max(0, 100 - p));
-      const mkRemain  = mkPct.map(p => Math.max(0, 100 - p));
+      // คำนวณ % เฉพาะเมื่อ target > 0 มิฉะนั้น ใช้ตัวเลข actual โดยตรง
+      const hasTarget = targetArr.some(t => t > 0);
 
-      const pctLabelPlugin = {
-        id: 'pctLabels',
+      let pctArr, remainArr, yMax, yLabel;
+      if (hasTarget) {
+        pctArr   = codes.map((_,i) => targetArr[i]>0 ? Math.min(100, Math.round((actualArr[i]/targetArr[i])*100)) : 0);
+        remainArr = pctArr.map(p => Math.max(0, 100-p));
+        yMax = 100;
+        yLabel = v => v + '%';
+      } else {
+        // ไม่มี target ใน KPI Master — แสดงตัวเลข actual เปล่า
+        pctArr   = actualArr.slice();
+        remainArr = pctArr.map(() => 0);
+        yMax = Math.max(...pctArr, 1);
+        yLabel = v => v;
+      }
+
+      // plugin: % ใน solid bar + actual/target เหนือแท่ง
+      const pctPlugin = {
+        id: 'pctPlugin_'+canvasId,
         afterDatasetsDraw(chart) {
           const {ctx} = chart;
+          const meta0 = chart.getDatasetMeta(0);
+          const meta1 = chart.getDatasetMeta(1);
+          if (!meta0) return;
           ctx.save();
-          [{dsIdx:0, pctArr:fiPct,  darkColor:'#4C1D95'},
-           {dsIdx:2, pctArr:mkPct,  darkColor:'#881337'}]
-          .forEach(({dsIdx, pctArr, darkColor}) => {
-            const meta = chart.getDatasetMeta(dsIdx);
-            if (!meta || meta.hidden) return;
-            meta.data.forEach((bar, i) => {
-              const p = pctArr[i];
-              if (p === 0) return;
-              const h = bar.height || 0;
-              if (h > 16) {
-                ctx.font = 'bold 12px "IBM Plex Sans Thai"';
-                ctx.fillStyle = p >= 30 ? 'rgba(255,255,255,0.95)' : darkColor;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(`${p}%`, bar.x, bar.y + h / 2);
-              }
-            });
+          meta0.data.forEach((bar, i) => {
+            const p = pctArr[i]||0;
+            const a = actualArr[i]||0;
+            const t = targetArr[i]||0;
+            const h = bar.height||0;
+
+            // ตัวเลข % กลางแท่ง solid
+            if (p > 0 && h > 18) {
+              ctx.font = 'bold 12px "IBM Plex Sans Thai"';
+              ctx.fillStyle = 'rgba(255,255,255,0.95)';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillText(hasTarget ? `${p}%` : String(a), bar.x, bar.y + h/2);
+            }
+
+            // "a/t" หรือ "N เรื่อง" เหนือแท่งรวม
+            const remBar = meta1?.data[i];
+            const topY = remBar ? Math.min(bar.y, remBar.y) : bar.y;
+            ctx.font = '700 11px "IBM Plex Sans Thai"';
+            ctx.fillStyle = 'rgba(30,40,60,0.72)';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            if (hasTarget && t > 0) ctx.fillText(`${a}/${t}`, bar.x, topY - 3);
+            else if (a > 0)         ctx.fillText(`${a} เรื่อง`, bar.x, topY - 3);
           });
           ctx.restore();
         }
       };
 
-      chartDeptFiMk = new Chart(ctxFM.getContext('2d'), {
+      return new Chart(el.getContext('2d'), {
         type: 'bar',
         data: {
-          labels: codeLabels,
+          labels: codes,
           datasets: [
-            { label:'FI Theme', data:fiPct, _actual:fiActual, _target:fiTarget,
-              backgroundColor:'rgba(139,92,246,0.88)', borderColor:'rgba(109,40,217,1)',
-              borderWidth:0,
+            { label:'Actual', data:pctArr, _actual:actualArr, _target:targetArr,
+              backgroundColor:solidColor, borderColor:solidBorder, borderWidth:0,
               borderRadius:{topLeft:0,topRight:0,bottomLeft:6,bottomRight:6},
-              borderSkipped:'bottom', barPercentage:0.6, categoryPercentage:0.8, stack:'fi' },
-            { label:'FI__rem', data:fiRemain,
-              backgroundColor:'rgba(139,92,246,0.12)', borderColor:'rgba(139,92,246,0.35)',
+              borderSkipped:'bottom', barPercentage:0.65, categoryPercentage:0.8, stack:'s' },
+            { label:'__remain', data:remainArr,
+              backgroundColor:fadeColor, borderColor:fadeColor.replace('0.12','0.35'),
               borderWidth:1.5,
               borderRadius:{topLeft:6,topRight:6,bottomLeft:0,bottomRight:0},
-              borderSkipped:'bottom', barPercentage:0.6, categoryPercentage:0.8, stack:'fi' },
-            { label:'Makigami', data:mkPct, _actual:mkActual, _target:mkTarget,
-              backgroundColor:'rgba(244,63,94,0.88)', borderColor:'rgba(190,18,60,1)',
-              borderWidth:0,
-              borderRadius:{topLeft:0,topRight:0,bottomLeft:6,bottomRight:6},
-              borderSkipped:'bottom', barPercentage:0.6, categoryPercentage:0.8, stack:'mk' },
-            { label:'MK__rem', data:mkRemain,
-              backgroundColor:'rgba(244,63,94,0.12)', borderColor:'rgba(244,63,94,0.35)',
-              borderWidth:1.5,
-              borderRadius:{topLeft:6,topRight:6,bottomLeft:0,bottomRight:0},
-              borderSkipped:'bottom', barPercentage:0.6, categoryPercentage:0.8, stack:'mk' },
+              borderSkipped:'bottom', barPercentage:0.65, categoryPercentage:0.8, stack:'s' },
           ]
         },
-        plugins: [pctLabelPlugin],
+        plugins: [pctPlugin],
         options: {
           responsive:true, maintainAspectRatio:false,
-          animation:{duration:1200, easing:'easeOutQuart'},
+          animation:{duration:1100, easing:'easeOutQuart'},
           plugins: {
-            legend: {
-              display:true, position:'top',
-              labels:{ font:cf, boxWidth:14, padding:16,
-                filter: item => !item.text.includes('__rem') }
-            },
-            tooltip: {
-              backgroundColor:'rgba(255,255,255,0.97)',
-              titleColor:'#0f172a', bodyColor:'#334155',
-              borderColor:'rgba(200,210,225,0.5)', borderWidth:1,
-              padding:14, cornerRadius:12,
+            legend:{ display:false },
+            tooltip:{
+              backgroundColor:'rgba(255,255,255,0.97)', titleColor:'#0f172a', bodyColor:'#334155',
+              borderColor:'rgba(200,210,225,0.5)', borderWidth:1, padding:14, cornerRadius:12,
               titleFont:{family:'IBM Plex Sans Thai',size:14,weight:'bold'},
               bodyFont:{family:'IBM Plex Sans Thai',size:13},
-              callbacks: {
-                title: c2 => fullName(codeLabels[c2[0].dataIndex]),
+              callbacks:{
+                title: c2 => fullName(codes[c2[0].dataIndex]),
                 label: c2 => {
-                  if (c2.dataset.label.includes('__rem')) return null;
+                  if (c2.dataset.label==='__remain') return null;
                   const i=c2.dataIndex;
                   const a=c2.dataset._actual?.[i]||0;
-                  const t=c2.dataset._target?.[i]||1;
-                  return ` ${c2.dataset.label}: ${a}/${t} เรื่อง (${c2.raw}%)`;
+                  const t=c2.dataset._target?.[i]||0;
+                  if (hasTarget && t>0) return ` ทำแล้ว ${a}/${t} เรื่อง (${c2.raw}%)`;
+                  return ` ทำแล้ว ${a} เรื่อง`;
                 },
-                filter: item => !item.dataset.label?.includes('__rem')
+                filter: item => item.dataset.label !== '__remain'
               }
             }
           },
-          scales: {
+          scales:{
             x:{ grid:{display:false}, ticks:{font:cf, maxRotation:0} },
-            y:{ beginAtZero:true, max:100, grid:{color:gc, borderDash:[4,4]},
-                ticks:{ font:{family:'IBM Plex Sans Thai',size:11},
-                  callback: v => v + '%' } }
+            y:{ beginAtZero:true, max: hasTarget ? 100 : undefined,
+                grid:{color:gc, borderDash:[4,4]},
+                ticks:{ font:{family:'IBM Plex Sans Thai',size:11}, callback: yLabel } }
           }
         }
       });
-    }
+    };
+
+    // ── สร้าง 4 charts ─────────────────────────────────────
+    chartDeptOpl = makeCountChart('deptOplChart', chartDeptOpl, oplA, oplT,
+      'rgba(251,146,60,0.9)', 'rgba(234,88,12,1)', 'rgba(251,146,60,0.12)');
+
+    chartDeptKz  = makeCountChart('deptKzChart',  chartDeptKz,  kzA,  kzT,
+      'rgba(52,211,153,0.9)', 'rgba(5,150,105,1)', 'rgba(52,211,153,0.12)');
+
+    chartDeptFi  = makePctChart('deptFiChart',   chartDeptFi,  fiA,  fiT,
+      'rgba(139,92,246,0.9)', 'rgba(109,40,217,1)', 'rgba(139,92,246,0.12)');
+
+    chartDeptMk  = makePctChart('deptMkChart',   chartDeptMk,  mkA,  mkT,
+      'rgba(244,63,94,0.9)',  'rgba(190,18,60,1)',  'rgba(244,63,94,0.12)');
 
   } catch(e) { console.error('renderDeptCharts Error:', e); }
 }
