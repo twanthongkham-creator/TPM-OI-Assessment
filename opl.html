@@ -554,27 +554,44 @@ function prefillFromURL() {
     const roleParam = urlParams.get('role');
     if (roleParam) { document.getElementById('f-role').value = roleParam; togglePIN(); }
     if (paramOplId && oplHistoryData.length > 0) {
-      const record = oplHistoryData.slice().reverse().find(r => (r['OPL ID'] || Object.values(r)[1]) === paramOplId);
+      // ค้นหาด้วย header name ก่อน ถ้าไม่เจอ fallback ด้วย index 2 (schema ใหม่ OPL_ID อยู่ col 2)
+      const record = oplHistoryData.slice().reverse().find(r =>
+        (r['OPL ID'] || Object.values(r)[2]) === paramOplId
+      );
       if (record) {
-        const vals = Object.values(record);
+        // ใช้ header name เป็นหลัก — fallback index ตาม schema ใหม่ (Plant=col0)
+        // Plant(0)|Timestamp(1)|OPL_ID(2)|OPL_Date(3)|Factory(4)|Dept(5)|Title(6)|
+        // Category(7)|Class(8)|Details(9)|TeachDate(10)|Instructor(11)|Learners(12)|Result(13)|Files(14)|Status(15)
+        const v = record; // อ่านผ่าน header name (fetchSheetData ส่งมาเป็น object)
+        const sg = (key, fallbackIdx) => v[key] !== undefined ? v[key] : Object.values(v)[fallbackIdx] || '';
         const safeSet = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+
         document.getElementById('history-banner').style.display = 'flex';
         safeSet('f-opl-id', paramOplId);
-        safeSet('f-factory', vals[3] || '');
-        safeSet('f-dept', vals[4] || '');
-        safeSet('f-title', vals[5] || '');
-        safeSet('f-category', vals[6] || '');
-        safeSet('f-class', vals[7] || '');
-        safeSet('f-details', vals[8] || '');
-        const formatDate = (s) => { if (!s) return ''; try { const d = new Date(s); if (!isNaN(d.getTime())) { return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().split('T')[0]; } } catch(e) {} return String(s).split('T')[0]; };
-        safeSet('f-teach-date', formatDate(vals[9]));
-        safeSet('f-instructor', vals[10] || '');
+        safeSet('f-factory', sg('Factory', 4));
+        safeSet('f-dept',    sg('Department', 5));
+        safeSet('f-title',   sg('ชื่อเรื่อง', 6));
+        safeSet('f-category',sg('Category', 7));
+        safeSet('f-class',   sg('Classification', 8));
+        safeSet('f-details', sg('Details', 9));
+
+        const formatDate = (s) => {
+          if (!s) return '';
+          try { const d = new Date(s); if (!isNaN(d.getTime())) return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().split('T')[0]; }
+          catch(e) {}
+          return String(s).split('T')[0];
+        };
+        safeSet('f-teach-date', formatDate(sg('TeachDate', 10)));
+        safeSet('f-instructor', sg('ชื่อผู้สอน', 11));
+
         document.getElementById('learners-container').innerHTML = '';
-        const names = (vals[11] || '').split(',').map(s => s.trim());
-        const results = (vals[12] || '').split(',').map(s => s.trim());
+        const names   = (sg('Learners', 12) || '').split(',').map(s => s.trim());
+        const results = (sg('Result', 13)   || '').split(',').map(s => s.trim());
         if (names.length > 0 && names[0] !== '') { names.forEach((n, i) => addLearnerRow(n, results[i] || 'ผ่าน')); }
         else { addLearnerRow(); }
-        renderAttachedFiles(vals[13] || '');
+
+        renderAttachedFiles(sg('Files', 14));
+
         populateUsers();
         if (roleParam === 'lead') {
           safeSet('f-role', 'lead');
@@ -590,7 +607,7 @@ function prefillFromURL() {
           const nameSelect = document.getElementById('f-name');
           if (nameSelect) {
             if (roleParam === 'lead' && nameSelect.options.length > 1) { nameSelect.selectedIndex = 1; }
-            else { nameSelect.value = vals[2] || ''; }
+            else { nameSelect.value = sg('ชื่อผู้สอน', 11); }
           }
           autoFillEmail();
         }, 300);
@@ -607,7 +624,7 @@ function generateOplId() {
   const prefix = `OPL-${fac}-${dept}-2026-`;
   let maxRun = 0;
   oplHistoryData.forEach(r => {
-    const id = r['OPL ID'] || Object.values(r)[1];
+    const id = r['OPL ID'] || Object.values(r)[2];  // OPL_ID col2 (schema ใหม่)
     if (id && id.startsWith(prefix)) { const num = parseInt(id.split('-')[4], 10); if (num > maxRun) maxRun = num; }
   });
   idEl.value = `${prefix}${String(maxRun + 1).padStart(3, '0')}`;
