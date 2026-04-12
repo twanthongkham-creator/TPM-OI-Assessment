@@ -583,24 +583,28 @@ function prefillFromURL() {
     const roleParam = p.get('role');
     if (roleParam) { document.getElementById('f-role').value = roleParam; togglePIN(); }
     if (paramFiId && fiHistoryData.length > 0) {
-      const record = fiHistoryData.slice().reverse().find(r => (r['FI ID'] || Object.values(r)[1]) === paramFiId);
+      // FI schema ใหม่: Plant(0)|Timestamp(1)|FI_ID(2)|Owner(3)|Factory(4)|Dept(5)|Title(6)|
+      // FIType(7)|LossType(8)|Unit(9)|Baseline(10)|Target(11)|Result(12)|Measurement(13)|Step(14)|Status(15)|Files(16)
+      const record = fiHistoryData.slice().reverse().find(r => (r['FI ID'] || Object.values(r)[2]) === paramFiId);
       if (record) {
         document.getElementById('history-banner').style.display = 'flex';
-        const vals = Object.values(record);
+        const sg = (key, fallbackIdx) => record[key] !== undefined ? record[key] : Object.values(record)[fallbackIdx] || '';
         const safeSet = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
-        safeSet('f-fi-id', paramFiId);
-        safeSet('f-factory', vals[3] || '');
-        safeSet('f-dept', vals[4] || '');
-        safeSet('f-title', vals[5] || '');
-        safeSet('f-type', vals[6] || '');
-        safeSet('f-loss', vals[7] || '');
-        safeSet('f-unit', vals[8] || '');
-        safeSet('f-baseline', vals[9] || '');
-        safeSet('f-target', vals[10] || '');
-        safeSet('f-result', vals[11] || '');
-        safeSet('f-measure', vals[12] || '');
-        safeSet('f-step', vals[13] || 'Step 1');
-        let oldStatus = vals[14] || 'อยู่ระหว่างดำเนินการ';
+
+        safeSet('f-fi-id',   paramFiId);
+        safeSet('f-factory', sg('Factory', 4));
+        safeSet('f-dept',    sg('Department', 5));
+        safeSet('f-title',   sg('ชื่อเรื่อง', 6));
+        safeSet('f-type',    sg('FI Type', 7));
+        safeSet('f-loss',    sg('Loss Type', 8));
+        safeSet('f-unit',    sg('Unit', 9));
+        safeSet('f-baseline',sg('Baseline', 10));
+        safeSet('f-target',  sg('Target', 11));
+        safeSet('f-result',  sg('Result', 12));
+        safeSet('f-measure', sg('Measurement', 13));
+        safeSet('f-step',    sg('Step ปัจจุบัน', 14) || 'Step 1');
+
+        let oldStatus = sg('Status', 15) || 'อยู่ระหว่างดำเนินการ';
         if (roleParam !== 'lead') {
           if (oldStatus.includes('รอหัวหน้า') || oldStatus.includes('อนุมัติสมบูรณ์')) oldStatus = 'เสร็จสมบูรณ์';
           else if (oldStatus.includes('ไม่อนุมัติ')) oldStatus = 'อยู่ระหว่างดำเนินการ';
@@ -609,6 +613,7 @@ function prefillFromURL() {
           document.getElementById('f-status').appendChild(opt);
         }
         safeSet('f-status', oldStatus);
+
         if (roleParam === 'lead') {
           safeSet('f-role', 'lead');
           document.getElementById('f-role').disabled = true;
@@ -623,11 +628,12 @@ function prefillFromURL() {
           const nameSelect = document.getElementById('f-name');
           if (nameSelect) {
             if (roleParam === 'lead' && nameSelect.options.length > 1) { nameSelect.selectedIndex = 1; }
-            else { nameSelect.value = vals[2] || ''; }
+            else { nameSelect.value = sg('ผู้รับผิดชอบ', 3); }
           }
           autoFillEmail();
         }, 300);
-        oldFileLinks = vals[15] || Object.values(record).find(v => typeof v === 'string' && v.includes('drive.google.com')) || '';
+
+        oldFileLinks = sg('Files', 16) || Object.values(record).find(v => typeof v === 'string' && v.includes('drive.google.com')) || '';
         renderAttachedFiles(oldFileLinks);
       }
     } else { generateFiId(); checkApprovalLogic(); }
@@ -646,7 +652,7 @@ function generateFiId() {
     const prefix = `FI-${fac}-${dept}-${year}-`;
     let maxRun = 0;
     fiHistoryData.forEach(r => {
-      const id = r['FI ID'] || Object.values(r)[1];
+      const id = r['FI ID'] || Object.values(r)[2];  // FI_ID col2 (schema ใหม่)
       if (id && id.startsWith(prefix)) { const n = parseInt(id.split('-')[4], 10); if (n > maxRun) maxRun = n; }
     });
     idEl.value = `${prefix}${String(maxRun + 1).padStart(3, '0')}`;
