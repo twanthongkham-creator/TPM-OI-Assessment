@@ -358,8 +358,17 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
   .header-actions{width:100%; justify-content:space-between;}
   .btn-help, .pill-btn { flex:1; justify-content:center; padding:0; height:44px;}
   .filter-section{flex-direction:column; align-items:stretch;}
-  .filter-select{width:100%;}
+  .filter-select{width:100%; min-width:unset !important;}
   .charts-overview{grid-template-columns:1fr;}
+  #dept-charts-grid{grid-template-columns:1fr !important;}
+  .chart-box{
+    padding:20px 16px;
+    height:360px;
+    width:100%;
+    box-sizing:border-box;
+    border-radius:20px;
+  }
+  .chart-title-text{font-size:15px;}
   .dash-card{padding:24px; flex-direction:column;}
   .ai-header-wrapper { flex-direction:column; align-items:flex-start;}
   .ai-btn-group { width:100%; flex-direction:column;}
@@ -983,10 +992,9 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
     };
 
     // ════════════════════════════════════════════════════════
-    // makeCountChart: OPL / Kaizen — จำนวนรายการ
-    // แสดง "a/t" เหนือแท่ง ไม่มี label ใน solid bar
+    // makeCountChart: OPL / Kaizen
     // ════════════════════════════════════════════════════════
-    const makeCountChart = (canvasId, chartRef, actualArr, targetArr, solidColor, solidBorder, fadeColor) => {
+    const makeCountChart = (canvasId, chartRef, actualArr, targetArr, solidColor, solidBorder, fadeColor, detailType) => {
       const el = document.getElementById(canvasId);
       if (!el) return chartRef;
       if (chartRef) chartRef.destroy();
@@ -996,67 +1004,44 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
         id: 'topLabel_'+canvasId,
         afterDatasetsDraw(chart) {
           const {ctx} = chart;
-          const meta0 = chart.getDatasetMeta(0); // solid
-          const meta1 = chart.getDatasetMeta(1); // remaining
+          const meta0 = chart.getDatasetMeta(0);
+          const meta1 = chart.getDatasetMeta(1);
           if (!meta0 || !meta1) return;
           ctx.save();
           meta0.data.forEach((bar, i) => {
             const a = actualArr[i]||0, t = targetArr[i]||0;
-            const h = bar.height||0;
+            const h = bar.height||0, w = bar.width||0;
             const remBar = meta1.data[i];
             const remH = remBar ? remBar.height||0 : 0;
             const remY = remBar ? remBar.y : bar.y;
 
-            // ── actual number กลางแท่ง solid (pill style) ──
-            if (a > 0 && h > 24) {
-              const aLabel = String(a);
-              ctx.font = 'bold 13px "IBM Plex Sans Thai"';
-              const tw = ctx.measureText(aLabel).width;
-              const pad=7, ph=20, pr=10;
-              const cx=bar.x, cy=bar.y + h/2;
-              ctx.beginPath();
-              ctx.roundRect(cx-tw/2-pad, cy-ph/2, tw+pad*2, ph, pr);
-              ctx.fillStyle = 'rgba(255,255,255,0.28)';
-              ctx.fill();
-              ctx.strokeStyle = 'rgba(255,255,255,0.55)';
-              ctx.lineWidth = 1;
-              ctx.stroke();
-              ctx.fillStyle = '#ffffff';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.fillText(aLabel, cx, cy);
-            } else if (a > 0 && h > 12) {
-              ctx.font = 'bold 11px "IBM Plex Sans Thai"';
-              ctx.fillStyle = '#ffffff';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.fillText(String(a), bar.x, bar.y + h/2);
+            // actual กลาง solid bar
+            if (a > 0 && h > 24 && w > 18) {
+              ctx.font = 'bold 12px "IBM Plex Sans Thai"';
+              const tw = ctx.measureText(String(a)).width;
+              if (w > tw + 10) {
+                const pad=5, ph=17, pr=8, cx=bar.x, cy=bar.y+h/2;
+                ctx.beginPath(); ctx.roundRect(cx-tw/2-pad, cy-ph/2, tw+pad*2, ph, pr);
+                ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.fill();
+                ctx.strokeStyle='rgba(255,255,255,0.55)'; ctx.lineWidth=1; ctx.stroke();
+                ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+                ctx.fillText(String(a), cx, cy);
+              }
             }
 
-            // ── "a/t" pill กลาง remaining bar ──────────────
+            // "a/t" pill กลาง remaining bar — แสดงเฉพาะถ้ากว้างพอ
             if (t === 0) return;
-            const label = `${a}/${t}`;
+            const lbl = `${a}/${t}`;
             ctx.font = 'bold 11px "IBM Plex Sans Thai"';
-            const tw2 = ctx.measureText(label).width;
-            const pad2=5, ph2=16, pr2=6;
-
-            if (remH > ph2 + 4) {
-              const cx=bar.x, cy=remY + remH/2;
-              ctx.beginPath();
-              ctx.roundRect(cx-tw2/2-pad2, cy-ph2/2, tw2+pad2*2, ph2, pr2);
-              ctx.fillStyle = 'rgba(255,255,255,0.75)';
-              ctx.fill();
-              ctx.fillStyle = 'rgba(15,25,50,0.82)';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.fillText(label, cx, cy);
-            } else if (remH > 6) {
-              ctx.font = 'bold 10px "IBM Plex Sans Thai"';
-              ctx.fillStyle = 'rgba(15,25,50,0.75)';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'top';
-              ctx.fillText(label, bar.x, remY + 2);
+            const tw2 = ctx.measureText(lbl).width;
+            if (remH > 18 && w > tw2 + 8) {
+              const pad2=4, ph2=15, pr2=6, cx=bar.x, cy=remY+remH/2;
+              ctx.beginPath(); ctx.roundRect(cx-tw2/2-pad2, cy-ph2/2, tw2+pad2*2, ph2, pr2);
+              ctx.fillStyle='rgba(255,255,255,0.75)'; ctx.fill();
+              ctx.fillStyle='rgba(15,25,50,0.82)'; ctx.textAlign='center'; ctx.textBaseline='middle';
+              ctx.fillText(lbl, cx, cy);
             }
+            // ถ้าแคบเกินไป → ไม่วาด label (ดีกว่าทับกัน)
           });
           ctx.restore();
         }
@@ -1084,6 +1069,15 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
           layout:{ padding:{ top:4 } },
           animation:{duration:1100, easing:'easeOutQuart'},
           onHover: (e, els) => { e.native.target.style.cursor = els.length ? 'pointer' : 'default'; },
+          onClick: (e, els) => {
+            if (!els.length || !detailType) return;
+            const idx = els[0].index;
+            const deptCode = codes[idx];
+            // set dept filter แล้วไปหน้า detail ของ type นั้น
+            const deptEl = document.getElementById('global-filter-dept');
+            if (deptEl) { deptEl.value = deptCode; processAndRender(); }
+            openDetail(detailType, appData[detailType].title);
+          },
           plugins: {
             legend:{ display:false },
             tooltip:{
@@ -1096,9 +1090,11 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
                 label: c2 => {
                   if (c2.dataset.label==='__rem') return null;
                   const i=c2.dataIndex, a=c2.raw||0, t=c2.dataset._target?.[i]||0;
-                  return ` ทำแล้ว ${a} / เป้า ${t} (เหลือ ${Math.max(0,t-a)})`;
+                  const pct = t>0 ? Math.round(a/t*100) : (a>0?100:0);
+                  return ` ทำแล้ว ${a} / เป้า ${t} = ${pct}%  (เหลือ ${Math.max(0,t-a)})`;
                 },
-                filter: item => item.dataset.label!=='__rem'
+                filter: item => item.dataset.label!=='__rem',
+                footer: () => '👆 แตะเพื่อดูรายการ'
               }
             }
           },
@@ -1113,24 +1109,19 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
 
     // ════════════════════════════════════════════════════════
     // makePctChart: FI / MK — % Actual แบบเดียวกับ Card
-    // weightedActual / target * 100
     // ════════════════════════════════════════════════════════
-    const makePctChart = (canvasId, chartRef, weightedArr, targetArr, countArr, solidColor, solidBorder, fadeColor) => {
+    const makePctChart = (canvasId, chartRef, weightedArr, targetArr, countArr, solidColor, solidBorder, fadeColor, detailType) => {
       const el = document.getElementById(canvasId);
       if (!el) return chartRef;
       if (chartRef) chartRef.destroy();
 
-      // % = weighted / target * 100
-      // ถ้า target=0 → fallback: weighted / count * 100 (หรือ 0 ถ้าไม่มี)
       const pctArr = codes.map((_,i) => {
-        const wa = weightedArr[i] || 0;
-        const t  = targetArr[i];
-        const cnt = countArr[i] || 1;
-        if (t > 0) return Math.min(100, Math.round(wa / t * 100));
-        if (cnt > 0) return Math.min(100, Math.round(wa / cnt * 100));
+        const wa=weightedArr[i]||0, t=targetArr[i], cnt=countArr[i]||1;
+        if (t>0) return Math.min(100, Math.round(wa/t*100));
+        if (cnt>0) return Math.min(100, Math.round(wa/cnt*100));
         return 0;
       });
-      const remArr = pctArr.map(p => Math.max(0, 100 - p));
+      const remArr = pctArr.map(p => Math.max(0, 100-p));
 
       const pctPlugin = {
         id: 'pctPlugin_'+canvasId,
@@ -1140,36 +1131,20 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
           if (!meta0) return;
           ctx.save();
           meta0.data.forEach((bar, i) => {
-            const p = pctArr[i]||0;
-            const h = bar.height||0;
-            if (p === 0) return;
-
+            const p=pctArr[i]||0, h=bar.height||0, w=bar.width||0;
+            if (p===0) return;
             const pLabel = `${p}%`;
-            ctx.font = 'bold 13px "IBM Plex Sans Thai"';
+            ctx.font = 'bold 12px "IBM Plex Sans Thai"';
             const tw = ctx.measureText(pLabel).width;
-
-            if (h > 24) {
-              // % กลางแท่ง solid — pill สีขาวกึ่งโปร่งใส
-              const pad=7, ph=20, pr=10;
-              const cx=bar.x, cy=bar.y + h/2;
-              ctx.beginPath();
-              ctx.roundRect(cx-tw/2-pad, cy-ph/2, tw+pad*2, ph, pr);
-              ctx.fillStyle = 'rgba(255,255,255,0.28)';
-              ctx.fill();
-              ctx.strokeStyle = 'rgba(255,255,255,0.55)';
-              ctx.lineWidth = 1;
-              ctx.stroke();
-              ctx.fillStyle = '#ffffff';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
+            // แสดง pill เฉพาะเมื่อแท่งกว้าง > tw+16 และสูง > 28
+            // มิฉะนั้นไม่วาดเลย → ดูจาก tooltip แทน (ป้องกัน label ทับกัน)
+            if (h > 28 && w > tw + 16) {
+              const pad=6, ph=20, pr=10, cx=bar.x, cy=bar.y+h/2;
+              ctx.beginPath(); ctx.roundRect(cx-tw/2-pad, cy-ph/2, tw+pad*2, ph, pr);
+              ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.fill();
+              ctx.strokeStyle='rgba(255,255,255,0.6)'; ctx.lineWidth=1; ctx.stroke();
+              ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
               ctx.fillText(pLabel, cx, cy);
-            } else if (h > 12) {
-              // แท่งแคบ — text ขาวล้วนไม่มี pill
-              ctx.font = 'bold 11px "IBM Plex Sans Thai"';
-              ctx.fillStyle = '#ffffff';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.fillText(pLabel, bar.x, bar.y + h/2);
             }
           });
           ctx.restore();
@@ -1198,6 +1173,14 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
           layout:{ padding:{ top:4 } },
           animation:{duration:1100, easing:'easeOutQuart'},
           onHover: (e, els) => { e.native.target.style.cursor = els.length ? 'pointer' : 'default'; },
+          onClick: (e, els) => {
+            if (!els.length || !detailType) return;
+            const idx = els[0].index;
+            const deptCode = codes[idx];
+            const deptEl = document.getElementById('global-filter-dept');
+            if (deptEl) { deptEl.value = deptCode; processAndRender(); }
+            openDetail(detailType, appData[detailType].title);
+          },
           plugins: {
             legend:{ display:false },
             tooltip:{
@@ -1209,25 +1192,19 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
                 title: c2 => fullName(codes[c2[0].dataIndex]),
                 label: c2 => {
                   if (c2.dataset.label==='__rem') return null;
-                  const i   = c2.dataIndex;
-                  const wa  = c2.dataset._weighted?.[i]||0;
-                  const t   = c2.dataset._target?.[i]||0;
+                  const i=c2.dataIndex;
                   const cnt = c2.dataset._count?.[i]||0;
-                  const waR = Math.round(wa*10)/10;
-                  // แสดง % เป็นหลัก รายละเอียด weighted เป็น secondary
-                  return t > 0
-                    ? ` ความคืบหน้า ${c2.raw}% · ${cnt} โครงการ (${waR}/${t})`
-                    : ` ความคืบหน้า ${c2.raw}% · ${cnt} โครงการ`;
+                  return ` ความคืบหน้า ${c2.raw}%  (${cnt} โครงการ)`;
                 },
-                filter: item => item.dataset.label!=='__rem'
+                filter: item => item.dataset.label!=='__rem',
+                footer: () => '👆 แตะเพื่อดูรายการ'
               }
             }
           },
           scales:{
             x:{ grid:{display:false}, ticks:{font:cf, maxRotation:0} },
             y:{ beginAtZero:true, max:100, grid:{color:gc,borderDash:[4,4]},
-                ticks:{ font:{family:'IBM Plex Sans Thai',size:11},
-                  callback: v => v+'%' } }
+                ticks:{ font:{family:'IBM Plex Sans Thai',size:11}, callback: v=>v+'%' } }
           }
         }
       });
@@ -1235,16 +1212,16 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
 
     // ── สร้าง 4 charts ─────────────────────────────────────
     chartDeptOpl = makeCountChart('deptOplChart', chartDeptOpl, oplA, oplT,
-      'rgba(251,146,60,0.9)', 'rgba(234,88,12,1)', 'rgba(251,146,60,0.12)');
+      'rgba(251,146,60,0.9)', 'rgba(234,88,12,1)', 'rgba(251,146,60,0.12)', 'opl');
 
     chartDeptKz  = makeCountChart('deptKzChart',  chartDeptKz,  kzA,  kzT,
-      'rgba(52,211,153,0.9)', 'rgba(5,150,105,1)', 'rgba(52,211,153,0.12)');
+      'rgba(52,211,153,0.9)', 'rgba(5,150,105,1)', 'rgba(52,211,153,0.12)', 'kz');
 
     chartDeptFi  = makePctChart('deptFiChart', chartDeptFi, fiWA, fiT, fiCount,
-      'rgba(139,92,246,0.9)', 'rgba(109,40,217,1)', 'rgba(139,92,246,0.12)');
+      'rgba(139,92,246,0.9)', 'rgba(109,40,217,1)', 'rgba(139,92,246,0.12)', 'fi');
 
     chartDeptMk  = makePctChart('deptMkChart', chartDeptMk, mkWA, mkT, mkCount,
-      'rgba(244,63,94,0.9)',  'rgba(190,18,60,1)',  'rgba(244,63,94,0.12)');
+      'rgba(244,63,94,0.9)',  'rgba(190,18,60,1)',  'rgba(244,63,94,0.12)', 'mk');
 
   } catch(e) { console.error('renderDeptCharts Error:', e); }
 }
