@@ -990,20 +990,40 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
         id: 'topLabel_'+canvasId,
         afterDatasetsDraw(chart) {
           const {ctx} = chart;
-          const meta0 = chart.getDatasetMeta(0);
-          const meta1 = chart.getDatasetMeta(1);
-          if (!meta0) return;
+          const meta0 = chart.getDatasetMeta(0); // solid (actual)
+          const meta1 = chart.getDatasetMeta(1); // remaining
+          if (!meta0 || !meta1) return;
           ctx.save();
           meta0.data.forEach((bar, i) => {
-            const a=actualArr[i]||0, t=targetArr[i]||0;
+            const a = actualArr[i]||0, t = targetArr[i]||0;
             if (a===0 && t===0) return;
-            const remBar = meta1?.data[i];
-            const topY = remBar ? Math.min(bar.y, remBar.y) : bar.y;
-            ctx.font = '700 11px "IBM Plex Sans Thai"';
-            ctx.fillStyle = 'rgba(30,40,60,0.75)';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'bottom';
-            ctx.fillText(`${a}/${t}`, bar.x, topY - 3);
+            const label = `${a}/${t}`;
+            const remBar = meta1.data[i];
+            const remH = remBar ? remBar.height||0 : 0;
+            const remY = remBar ? remBar.y : bar.y;
+
+            ctx.font = 'bold 11px "IBM Plex Sans Thai"';
+            const tw = ctx.measureText(label).width;
+            const pad = 5, ph = 15, pr = 6;
+
+            if (remH > ph + 4) {
+              // วาด label กลาง remaining bar (พื้นหลัง pill กึ่งโปร่งใส + text เข้ม)
+              const cx = bar.x, cy = remY + remH / 2;
+              ctx.beginPath();
+              ctx.roundRect(cx - tw/2 - pad, cy - ph/2, tw + pad*2, ph, pr);
+              ctx.fillStyle = 'rgba(255,255,255,0.72)';
+              ctx.fill();
+              ctx.fillStyle = 'rgba(20,30,50,0.85)';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillText(label, cx, cy);
+            } else if (remH > 0) {
+              // remaining bar เล็กเกินไป → วาดชิดบนสุด remaining
+              ctx.fillStyle = 'rgba(20,30,50,0.75)';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'top';
+              ctx.fillText(label, bar.x, remY + 2);
+            }
           });
           ctx.restore();
         }
@@ -1028,6 +1048,7 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
         plugins: [topLabelPlugin],
         options: {
           responsive:true, maintainAspectRatio:false,
+          layout:{ padding:{ top:4 } },
           animation:{duration:1100, easing:'easeOutQuart'},
           plugins: {
             legend:{ display:false },
@@ -1081,34 +1102,59 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
         id: 'pctPlugin_'+canvasId,
         afterDatasetsDraw(chart) {
           const {ctx} = chart;
-          const meta0 = chart.getDatasetMeta(0);
-          const meta1 = chart.getDatasetMeta(1);
-          if (!meta0) return;
+          const meta0 = chart.getDatasetMeta(0); // solid
+          const meta1 = chart.getDatasetMeta(1); // remaining
+          if (!meta0 || !meta1) return;
           ctx.save();
           meta0.data.forEach((bar, i) => {
-            const p  = pctArr[i]||0;
-            const wa = weightedArr[i]||0;
-            const t  = targetArr[i]||0;
-            const h  = bar.height||0;
+            const p   = pctArr[i]||0;
+            const wa  = weightedArr[i]||0;
+            const t   = targetArr[i]||0;
+            const h   = bar.height||0;
+            const remBar = meta1.data[i];
+            const remH   = remBar ? remBar.height||0 : 0;
+            const remY   = remBar ? remBar.y : bar.y;
 
-            // % กลางแท่ง solid
-            if (p > 0 && h > 18) {
+            // ── % กลางแท่ง solid → dark pill ─────────────
+            if (p > 0 && h > 22) {
+              const pLabel = `${p}%`;
               ctx.font = 'bold 12px "IBM Plex Sans Thai"';
-              ctx.fillStyle = 'rgba(255,255,255,0.95)';
+              const tw = ctx.measureText(pLabel).width;
+              const pad = 6, ph = 18, pr = 9;
+              const cx = bar.x, cy = bar.y + h / 2;
+              // pill พื้นหลังขาวกึ่งโปร่งใส
+              ctx.beginPath();
+              ctx.roundRect(cx - tw/2 - pad, cy - ph/2, tw + pad*2, ph, pr);
+              ctx.fillStyle = 'rgba(255,255,255,0.25)';
+              ctx.fill();
+              // ขอบ pill
+              ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+              ctx.lineWidth = 1;
+              ctx.stroke();
+              // text สีขาวชัด (บน solid color จึงชัดได้)
+              ctx.fillStyle = '#ffffff';
               ctx.textAlign = 'center';
               ctx.textBaseline = 'middle';
-              ctx.fillText(`${p}%`, bar.x, bar.y + h/2);
+              ctx.fillText(pLabel, cx, cy);
             }
-            // "wa/t" เหนือแท่งรวม
-            if (p > 0 || t > 0) {
-              const remBar = meta1?.data[i];
-              const topY = remBar ? Math.min(bar.y, remBar.y) : bar.y;
-              ctx.font = '700 11px "IBM Plex Sans Thai"';
-              ctx.fillStyle = 'rgba(30,40,60,0.72)';
+
+            // ── "wa/t" ใน remaining bar ─────────────────
+            const waRound = Math.round(wa * 10) / 10;
+            const rLabel  = t > 0 ? `${waRound}/${t}` : `${waRound}`;
+            ctx.font = 'bold 11px "IBM Plex Sans Thai"';
+            const rTw = ctx.measureText(rLabel).width;
+            const rPad = 4, rPh = 14, rPr = 5;
+
+            if (remH > rPh + 4 && (p > 0 || t > 0)) {
+              const cx = bar.x, cy = remY + remH / 2;
+              ctx.beginPath();
+              ctx.roundRect(cx - rTw/2 - rPad, cy - rPh/2, rTw + rPad*2, rPh, rPr);
+              ctx.fillStyle = 'rgba(255,255,255,0.72)';
+              ctx.fill();
+              ctx.fillStyle = 'rgba(20,30,50,0.85)';
               ctx.textAlign = 'center';
-              ctx.textBaseline = 'bottom';
-              const waRound = Math.round(wa * 10) / 10;
-              ctx.fillText(t > 0 ? `${waRound}/${t}` : `${waRound}`, bar.x, topY - 3);
+              ctx.textBaseline = 'middle';
+              ctx.fillText(rLabel, cx, cy);
             }
           });
           ctx.restore();
@@ -1134,6 +1180,7 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
         plugins: [pctPlugin],
         options: {
           responsive:true, maintainAspectRatio:false,
+          layout:{ padding:{ top:4 } },
           animation:{duration:1100, easing:'easeOutQuart'},
           plugins: {
             legend:{ display:false },
