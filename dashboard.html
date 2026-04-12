@@ -14,32 +14,113 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
 
 <style>
-  /* 🟢 Intro.js Custom Premium Style */
-  .introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 18px; transition: all 0.2s; cursor: pointer; }
-  .introjs-nextbutton { background: linear-gradient(135deg, #3A86FF, #1E6091) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(58,134,255,0.3) !important; }
+  /* ─── Intro.js Tour Popup — สีสดใส อ่านง่าย ─── */
+  .introjs-tooltip {
+    border-radius: 20px; padding: 24px;
+    background: #ffffff !important; color: #0A2540 !important;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.06);
+    border: none !important;
+    font-family: 'IBM Plex Sans Thai', sans-serif;
+    z-index: 9999999 !important;
+  }
+  .introjs-tooltiptext { color: #334155 !important; font-size: 15px; line-height: 1.7; }
+  .introjs-tooltip-title { color: #0A2540 !important; font-size: 18px !important; font-weight: 700 !important; }
+  .introjs-button { text-shadow: none; border-radius: 12px; font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 20px; transition: all 0.2s; cursor: pointer; }
+  .introjs-nextbutton { background: linear-gradient(135deg, #3A86FF, #1E6091) !important; color: #fff !important; border: none !important; box-shadow: 0 4px 12px rgba(58,134,255,0.3) !important; }
   .introjs-nextbutton:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(58,134,255,0.4) !important; }
-  .introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; background: #F8FAFC !important; border: 1px solid #D9E2EC !important; }
-  .introjs-donebutton { background: linear-gradient(135deg, #2DD4BF, #0CA47C) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(12,164,124,0.3) !important; }
-  .introjs-tooltip { border-radius: 20px; padding: 20px; box-shadow: 0 20px 50px rgba(10,37,64,0.25); border: 1px solid rgba(255,255,255,0.9); font-family: 'IBM Plex Sans Thai', sans-serif; z-index: 9999999 !important; }
+  .introjs-prevbutton { color: #505A64 !important; text-shadow: none !important; background: #F1F5F9 !important; border: 1px solid #E2E8F0 !important; }
+  .introjs-donebutton { background: linear-gradient(135deg, #2DD4BF, #0CA47C) !important; color: #fff !important; border: none !important; box-shadow: 0 4px 12px rgba(12,164,124,0.3) !important; }
   .introjs-progress { background-color: #E2E8F0; border-radius: 6px; overflow: hidden; }
   .introjs-progressbar { background-color: #3A86FF; }
   .introjs-showElement { z-index: 9999998 !important; position: relative; }
+  .introjs-bullets ul li a { background: #CBD5E1 !important; }
+  .introjs-bullets ul li a.active { background: #3A86FF !important; }
 
-  /* 💡 แก้บั๊กจอมืด: ปิด Effect กระจกและล็อกเป้าหมายให้อยู่นิ่ง */
+  /* tour-active: highlight element ด้วยสีขาวชัดเจน */
   body.tour-active .introjs-showElement,
   body.tour-active .glass,
   body.tour-active .kpi-card,
   body.tour-active .chart-box,
   body.tour-active .chat-container,
   body.tour-active .ai-box {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      transform: translateY(0) !important; 
-      animation: none !important;
-      transition: none !important;
-      opacity: 1 !important; 
-      background-color: rgba(255,255,255,0.95) !important; 
-      z-index: 9999999 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transform: translateY(0) !important;
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    background-color: rgba(15,32,64,0.98) !important;
+    z-index: 9999999 !important;
+  }
+
+  /* ════════════════════════════════════════════
+     Light Mode overrides — body มี class="light"
+     ════════════════════════════════════════════ */
+  body.light {
+    background: linear-gradient(145deg, #e8edf5 0%, #edf4f0 35%, #eceff5 65%, #f4ece8 100%) !important;
+    color: #0A2540;
+  }
+  body.light .glass {
+    background: rgba(255,255,255,0.72) !important;
+    border-color: rgba(255,255,255,0.9) !important;
+    box-shadow: 0 12px 40px rgba(10,37,64,0.07), inset 0 1px 0 rgba(255,255,255,0.9) !important;
+  }
+  body.light .h-title h2 { color: #0A2540 !important; }
+  body.light .h-title p  { color: #505A64 !important; }
+  body.light .pill-btn   { background: rgba(255,255,255,0.8) !important; color: #113A5D !important; border-color: rgba(255,255,255,0.9) !important; }
+  body.light .pill-btn svg { color: #1E6091 !important; }
+  body.light .filter-section label { color: #113A5D !important; }
+  body.light .filter-select { background: rgba(255,255,255,0.85) !important; color: #113A5D !important; border-color: rgba(255,255,255,0.9) !important; }
+  body.light .filter-select option { background: #fff !important; color: #113A5D !important; }
+  body.light .sec-lbl    { color: rgba(10,37,64,0.7) !important; }
+  body.light .sec-lbl::after { background: linear-gradient(90deg,rgba(10,37,64,0.15),transparent) !important; }
+  /* KPI Cards */
+  body.light .kpi-card   { background: rgba(255,255,255,0.65) !important; border-color: rgba(255,255,255,0.9) !important; box-shadow: 0 12px 32px rgba(10,37,64,0.06), inset 0 1px 0 #fff !important; }
+  body.light .kpi-card:hover { background: rgba(255,255,255,0.9) !important; }
+  body.light .kpi-title  { color: #0A2540 !important; }
+  body.light .kpi-val    { color: #0A2540 !important; }
+  body.light .kpi-unit   { color: #505A64 !important; }
+  body.light .kpi-sub    { color: #505A64 !important; }
+  body.light .hint-arrow { color: #1E6091 !important; }
+  body.light .wip-badge  { color: #E65100 !important; background: rgba(245,124,0,0.12) !important; }
+  body.light .progress-track { background: rgba(0,0,0,0.06) !important; }
+  /* Chart boxes */
+  body.light .chart-box  { background: rgba(255,255,255,0.78) !important; border-color: rgba(255,255,255,0.9) !important; box-shadow: 0 16px 48px rgba(10,37,64,0.06) !important; }
+  body.light .chart-title-text { color: #113A5D !important; }
+  body.light .chart-icon-pill  { background: linear-gradient(135deg,#fff,#f0f4f8) !important; border-color: rgba(255,255,255,1) !important; color: #1E6091 !important; }
+  /* AI Box & Chat */
+  body.light .ai-box     { background: rgba(255,255,255,0.72) !important; border-color: rgba(255,255,255,0.9) !important; }
+  body.light .ai-box p   { color: #505A64 !important; }
+  body.light .chat-container { background: rgba(255,255,255,0.8) !important; border-color: rgba(255,255,255,0.9) !important; }
+  body.light .chat-header    { background: rgba(255,255,255,0.7) !important; border-bottom-color: rgba(255,255,255,0.6) !important; }
+  body.light .chat-header-text h3 { color: #0A2540 !important; }
+  body.light .chat-header-text p  { color: #505A64 !important; }
+  body.light .chat-footer    { background: rgba(255,255,255,0.7) !important; border-top-color: rgba(255,255,255,0.6) !important; }
+  body.light .chat-input     { background: rgba(255,255,255,0.9) !important; color: #0A2540 !important; border-color: rgba(200,210,220,0.6) !important; }
+  body.light .chat-input::placeholder { color: #9BA5B1 !important; }
+  body.light .msg-wrap.ai .msg-bubble { background: rgba(255,255,255,0.97) !important; color: #0A2540 !important; border-color: rgba(220,228,240,0.8) !important; }
+  body.light .msg-bubble b { color: #1D4ED8 !important; }
+  /* Detail view */
+  body.light .data-table-wrapper { background: rgba(255,255,255,0.88) !important; border-color: rgba(255,255,255,0.9) !important; }
+  body.light .data-table th  { color: #0A2540 !important; border-bottom-color: rgba(0,0,0,0.07) !important; }
+  body.light .data-table td  { color: #334155 !important; border-bottom-color: rgba(0,0,0,0.04) !important; }
+  body.light .col-title      { color: #0A2540 !important; }
+  body.light .data-table tbody tr:hover { background: rgba(58,134,255,0.04) !important; }
+  body.light .detail-header-title { color: #0A2540 !important; }
+  body.light .detail-icon-badge   { background: rgba(255,255,255,0.9) !important; color: #1E6091 !important; }
+  body.light .btn-edit   { background: #fff !important; color: #113A5D !important; border-color: #D9E2EC !important; }
+  body.light .area-card  { background: rgba(255,255,255,0.82) !important; border-color: rgba(255,255,255,0.9) !important; }
+  body.light .ac-name    { color: #0A2540 !important; }
+  body.light .ac-dept    { color: #113A5D !important; background: rgba(58,134,255,0.1) !important; }
+  body.light .btn-user   { background: #fff !important; color: #113A5D !important; border-color: #D9E2EC !important; }
+  body.light #loader     { color: #1E6091 !important; }
+  body.light .spinner    { border-top-color: #1E6091 !important; }
+  /* tour-active in light mode */
+  body.light.tour-active .introjs-showElement,
+  body.light.tour-active .glass,
+  body.light.tour-active .kpi-card,
+  body.light.tour-active .chart-box {
+    background-color: rgba(255,255,255,0.98) !important;
   }
 
 :root {
@@ -372,7 +453,6 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
     <p>ระบบประเมินและบริหารจัดการเป้าหมาย (KPI Tracker)</p>
   </div>
   <div class="header-actions">
-    <!-- ✅ FIX: เปลี่ยนจาก id="btn-guide" เป็น onclick="startTour()" โดยตรง เพื่อป้องกัน JS Error -->
     <button class="pill-btn" onclick="startTour()">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         สอนใช้งาน
@@ -381,6 +461,16 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       กลับเมนูหลัก
     </a>
+    <!-- Dark / Light Mode Toggle -->
+    <button class="pill-btn theme-toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="สลับ Dark/Light Mode" aria-label="Toggle theme">
+      <span id="theme-toggle-icon">
+        <!-- Moon icon (dark mode active) -->
+        <svg id="icon-moon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <!-- Sun icon (light mode active) — hidden by default -->
+        <svg id="icon-sun" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </span>
+      <span id="theme-toggle-label">Light</span>
+    </button>
   </div>
 </div>
 
@@ -1806,8 +1896,42 @@ function removeElement(id) { const el = document.getElementById(id); if (el) el.
 
 // ✅ FIX: ลบ addEventListener ที่ผิดออกทั้งหมด เหลือแค่ DOMContentLoaded สำหรับ loadData()
 document.addEventListener('DOMContentLoaded', () => {
+    // ── init theme จาก localStorage (default = dark) ──
+    const saved = localStorage.getItem('dashboard_theme') || 'dark';
+    applyTheme(saved);
     setTimeout(loadData, 100);
 });
+
+// ════════════════════════════════════════════════
+// Theme Toggle — Dark / Light
+// ════════════════════════════════════════════════
+function applyTheme(mode) {
+  const body       = document.body;
+  const moon       = document.getElementById('icon-moon');
+  const sun        = document.getElementById('icon-sun');
+  const label      = document.getElementById('theme-toggle-label');
+
+  if (mode === 'light') {
+    body.classList.add('light');
+    if (moon)  moon.style.display  = 'none';
+    if (sun)   sun.style.display   = 'block';
+    if (label) label.textContent   = 'Dark';
+  } else {
+    body.classList.remove('light');
+    if (moon)  moon.style.display  = 'block';
+    if (sun)   sun.style.display   = 'none';
+    if (label) label.textContent   = 'Light';
+  }
+  localStorage.setItem('dashboard_theme', mode);
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.contains('light');
+  applyTheme(isLight ? 'dark' : 'light');
+  // re-render charts หลัง theme เปลี่ยน เพราะ Chart.js ใช้สีจาก CSS variable
+  // (delay เล็กน้อยให้ CSS apply ก่อน)
+  setTimeout(() => { try { processAndRender(); } catch(e) {} }, 80);
+}
 </script>
 
 </body>
