@@ -416,29 +416,35 @@ function prefillFromURL() {
   const p = new URLSearchParams(window.location.search);
   const paramMkId = p.get('mkId');
   if (paramMkId && rawHistory.length > 0) {
-    const project = rawHistory.slice().reverse().find(r => safeGet(r, 'Makigami ID', 1) === paramMkId);
+    // MK schema ใหม่: Plant(0)|Timestamp(1)|MK_ID(2)|Factory(3)|Dept(4)|Title(5)|Owner(6)|Phase(7)|TargetDate(8)|ActualDate(9)|Status(10)
+    const project = rawHistory.slice().reverse().find(r => safeGet(r, 'Makigami ID', 2) === paramMkId);
     if (project) {
+      const sg = (key, idx) => safeGet(project, key, idx);
+      const formatDate = (s) => {
+        if (!s) return '';
+        try { const d = new Date(s); if (!isNaN(d.getTime())) return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().split('T')[0]; } catch(e) {}
+        return String(s).split('T')[0];
+      };
+
       document.getElementById('history-banner').style.display = 'flex';
-      document.getElementById('m-id').value = paramMkId;
-      document.getElementById('m-factory').value = safeGet(project, 'โรงงาน', 2) || '';
-      document.getElementById('m-dept').value = safeGet(project, 'แผนก', 3);
-      document.getElementById('m-title').value = safeGet(project, 'ชื่อเรื่อง (Theme Name)', 4) || safeGet(project, 'ชื่อเรื่อง', 4) || '';
-      document.getElementById('m-phase').value = safeGet(project, 'Current Phase', 6) || 'Phase 1: Current State';
-      let rawStatus = safeGet(project, 'Status', 9) || 'On Track';
+      document.getElementById('m-id').value      = paramMkId;
+      document.getElementById('m-factory').value = sg('Factory', 3) || '';
+      document.getElementById('m-dept').value    = sg('Department', 4) || sg('แผนก', 4) || '';
+      document.getElementById('m-title').value   = sg('ชื่อเรื่อง (Theme Name)', 5) || sg('ชื่อเรื่อง', 5) || '';
+      document.getElementById('m-phase').value   = sg('Current Phase', 7) || 'Phase 1: Current State';
+
+      let rawStatus = sg('Status', 10) || 'On Track';
       let status = 'On Track';
       if (rawStatus.includes('Delayed') || rawStatus.includes('ไม่อนุมัติ') || rawStatus.includes('รอ')) status = 'Delayed';
       if (rawStatus.includes('Completed') || rawStatus.includes('อนุมัติ') || rawStatus.includes('ผ่าน')) status = 'Completed';
       if (rawStatus.includes('Cancelled')) status = 'Cancelled';
       document.getElementById('m-status').value = status;
-      const formatDate = (s) => {
-        if (!s) return '';
-        try { const d = new Date(s); if (!isNaN(d.getTime())) { return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().split('T')[0]; } } catch(e) {}
-        return String(s).split('T')[0];
-      };
-      document.getElementById('m-target-date').value = formatDate(safeGet(project, 'Target Date', 7));
-      document.getElementById('m-actual-date').value = formatDate(safeGet(project, 'Actual Finish Date', 8));
+
+      document.getElementById('m-target-date').value = formatDate(sg('Target Date', 8));
+      document.getElementById('m-actual-date').value  = formatDate(sg('Actual Finish Date', 9));
+
       populateUsers();
-      setTimeout(() => { document.getElementById('m-owner').value = safeGet(project, 'ผู้รับผิดชอบ', 5) || ''; }, 300);
+      setTimeout(() => { document.getElementById('m-owner').value = sg('ผู้รับผิดชอบ', 6) || ''; }, 300);
     }
   } else { generateMkId(); }
 }
@@ -452,7 +458,7 @@ function generateMkId() {
   const prefix = `MK-${fac}-${dept}-2026-`;
   let maxRun = 0;
   rawHistory.forEach(r => {
-    const id = safeGet(r, 'Makigami ID', 1);
+    const id = safeGet(r, 'Makigami ID', 2);  // MK_ID col2 (schema ใหม่)
     if (id && id.startsWith(prefix)) { const n = parseInt(id.split('-')[4], 10); if (n > maxRun) maxRun = n; }
   });
   document.getElementById('m-id').value = `${prefix}${String(maxRun + 1).padStart(3, '0')}`;
