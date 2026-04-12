@@ -291,7 +291,7 @@ input[readonly], select:disabled { background: rgba(255,243,224,0.6); color: var
           </div>
           <div class="fg">
             <label>โรงงาน (Factory) <span class="req">จำเป็น</span></label>
-            <select id="f-factory" onchange="generateOplId()">
+            <select id="f-factory" onchange="generateOplId(); populateUsers();">
               <option value="">-- เลือกโรงงาน --</option>
               <option value="PT">ปทุมธานี (PT)</option>
               <option value="KR">นครราชสีมา (KR)</option>
@@ -466,7 +466,9 @@ input[readonly], select:disabled { background: rgba(255,243,224,0.6); color: var
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykz6wsB-5W-KcZi8ayMDgw8Vumy_s29dFtFCc0gyxOqD12WB2RHAZ6CJCCCv-jo-TH8g/exec';
 
 const imageStore = []; const docStore = []; let oldFileLinksArray = [];
-let userData = {}; let approverData = {}; let oplHistoryData = [];
+let userData = {}; let usersByPlant = {};
+let approverData = {}; let approversByPlant = {};
+let oplHistoryData = [];
 
 /* ── Guided Tour ── */
 function startTour() {
@@ -502,8 +504,9 @@ async function initData() {
     ]);
     if (uRes.status === 'success') {
       userData = uRes.users || {};
+      usersByPlant = uRes.usersByPlant || {};
       approverData = uRes.approvers || {};
-      // โหลด dept list — ถ้า API ส่งมาพร้อมกันใช้เลย ไม่ต้อง fetch ซ้ำ
+      approversByPlant = uRes.approversByPlant || {};
       if (uRes.depts) DeptHelper.loadDeptsFromArray(uRes.depts);
       else await DeptHelper.loadDepts(APPS_SCRIPT_URL);
     }
@@ -613,15 +616,35 @@ function generateOplId() {
 function populateUsers() {
   const dept = document.getElementById('f-dept').value;
   const role = document.getElementById('f-role').value;
+  const plant = document.getElementById('f-factory').value;  // Plant ที่เลือก
   const nameSelect = document.getElementById('f-name');
   if (!nameSelect) return;
   nameSelect.innerHTML = '<option value="">-- เลือกชื่อ --</option>';
   if (!dept) return;
-  if (role === 'self' && userData[dept]) {
-    userData[dept].forEach(u => { const opt = document.createElement('option'); opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name; nameSelect.appendChild(opt); });
-  } else if (role === 'lead' && approverData[dept]) {
-    const u = approverData[dept].lead;
-    if (u) { const opt = document.createElement('option'); opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name; nameSelect.appendChild(opt); }
+
+  // กรองตาม Plant ก่อน ถ้าไม่มีใน plant นั้น fallback ไปใช้ flat list
+  if (role === 'self') {
+    const list = (plant && usersByPlant[plant] && usersByPlant[plant][dept])
+      ? usersByPlant[plant][dept]
+      : (userData[dept] || []);
+    list.forEach(u => {
+      const opt = document.createElement('option');
+      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
+      nameSelect.appendChild(opt);
+    });
+    if (!list.length) nameSelect.innerHTML = '<option value="">(ไม่พบรายชื่อพนักงาน)</option>';
+  } else if (role === 'lead') {
+    const approver = (plant && approversByPlant[plant] && approversByPlant[plant][dept])
+      ? approversByPlant[plant][dept]
+      : approverData[dept];
+    const u = approver?.lead;
+    if (u && u.name) {
+      const opt = document.createElement('option');
+      opt.value = u.name; opt.dataset.email = u.email; opt.textContent = u.name;
+      nameSelect.appendChild(opt);
+    } else {
+      nameSelect.innerHTML = '<option value="">(ไม่พบข้อมูลหัวหน้า)</option>';
+    }
   }
 }
 
