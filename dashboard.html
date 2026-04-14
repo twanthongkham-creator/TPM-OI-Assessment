@@ -959,8 +959,10 @@ function onPlantChange() {
 // ================================================================
 // Dept Comparison Charts — OPL/Kaizen และ FI/Makigami รายแผนก
 // ================================================================
-function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
-  try {
+function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp, isDark) {
+  isDark = isDark !== false && !document.body.classList.contains('light');
+  const themeLabel = isDark ? '#C8D7F0' : '#1e1e3a';   // สีตัวเลขใน bar
+  const themeRemPill = isDark ? 'rgba(255,255,255,0.78)' : 'rgba(20,20,60,0.78)'; // pill ใน remaining
     // ── dept getter per data type ──────────────────────────────
     const getDept = {
       opl: r => sg(r,'Department',5) || sg(r,'Department',4) || '',
@@ -1059,21 +1061,36 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
     const fiT  = target('FI');
     const mkT  = target('Makigami');
 
-    const cf = { family:'IBM Plex Sans Thai', size:12, weight:'700' };
-    const gc = 'rgba(200,210,225,0.4)';
+    // ── เรียงแผนกตาม OPL actual มากสุดซ้ายสุด (ใช้ index เดิม reorder ทีหลัง) ──
+    // (sort ทำในแต่ละ chart แยกกัน เพราะ metric ต่างกัน)
+
+    const cf = { family:'IBM Plex Sans Thai', size:12, weight:'700',
+                 color: isDark ? 'rgba(168,192,224,0.85)' : '#505A64' };
+    const gc = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(200,210,225,0.4)';
     const fullName = code => {
       const f = DeptHelper.getDepts().find(d=>d.code===code);
       return f ? `${code} — ${f.name}` : code;
     };
 
+    // helper: สร้าง sorted version ของ codes+values พร้อมกัน
+    const sortedByValue = (valArr) => {
+      const pairs = codes.map((c,i) => ({ code:c, val:valArr[i]||0 }));
+      pairs.sort((a,b) => b.val - a.val);
+      return { sortedCodes: pairs.map(p=>p.code), sortedVals: pairs.map(p=>p.val) };
+    };
+    // remap array ตาม sortedCodes
+    const reorder = (arr, sortedCodes) =>
+      sortedCodes.map(c => arr[codes.indexOf(c)] ?? 0);
+
     // ════════════════════════════════════════════════════════
     // makeCountChart: OPL / Kaizen
     // ════════════════════════════════════════════════════════
-    const makeCountChart = (canvasId, chartRef, actualArr, targetArr, solidColor, solidBorder, fadeColor, detailType) => {
+    const makeCountChart = (canvasId, chartRef, actualArr, targetArr, solidColor, solidBorder, fadeColor, detailType, sortedCodes) => {
       const el = document.getElementById(canvasId);
       if (!el) return chartRef;
       if (chartRef) chartRef.destroy();
-      const remain = codes.map((_,i) => Math.max(0, (targetArr[i]||0) - actualArr[i]));
+      const barCodes = sortedCodes || codes;  // ใช้ sorted ถ้ามี
+      const remain = actualArr.map((a,i) => Math.max(0, (targetArr[i]||0) - a));
 
       const topLabelPlugin = {
         id: 'topLabel_'+canvasId,
@@ -1104,7 +1121,7 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
               }
             }
 
-            // "a/t" pill กลาง remaining bar — แสดงเฉพาะถ้ากว้างพอ
+            // "a/t" pill กลาง remaining bar
             if (t === 0) return;
             const lbl = `${a}/${t}`;
             ctx.font = 'bold 11px "IBM Plex Sans Thai"';
@@ -1112,11 +1129,10 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
             if (remH > 18 && w > tw2 + 8) {
               const pad2=4, ph2=15, pr2=6, cx=bar.x, cy=remY+remH/2;
               ctx.beginPath(); ctx.roundRect(cx-tw2/2-pad2, cy-ph2/2, tw2+pad2*2, ph2, pr2);
-              ctx.fillStyle='rgba(255,255,255,0.75)'; ctx.fill();
-              ctx.fillStyle='rgba(15,25,50,0.82)'; ctx.textAlign='center'; ctx.textBaseline='middle';
+              ctx.fillStyle = themeRemPill; ctx.fill();
+              ctx.fillStyle = themeLabel; ctx.textAlign='center'; ctx.textBaseline='middle';
               ctx.fillText(lbl, cx, cy);
             }
-            // ถ้าแคบเกินไป → ไม่วาด label (ดีกว่าทับกัน)
           });
           ctx.restore();
         }
@@ -1125,7 +1141,7 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
       return new Chart(el.getContext('2d'), {
         type: 'bar',
         data: {
-          labels: codes,
+          labels: barCodes,
           datasets: [
             { label:'Actual', data:actualArr, _target:targetArr,
               backgroundColor:solidColor, borderColor:solidBorder, borderWidth:0,
@@ -1146,9 +1162,7 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
           onHover: (e, els) => { e.native.target.style.cursor = els.length ? 'pointer' : 'default'; },
           onClick: (e, els) => {
             if (!els.length || !detailType) return;
-            const idx = els[0].index;
-            const deptCode = codes[idx];
-            // set dept filter แล้วไปหน้า detail ของ type นั้น
+            const deptCode = barCodes[els[0].index];
             const deptEl = document.getElementById('global-filter-dept');
             if (deptEl) { deptEl.value = deptCode; processAndRender(); }
             openDetail(detailType, appData[detailType].title);
@@ -1156,12 +1170,15 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
           plugins: {
             legend:{ display:false },
             tooltip:{
-              backgroundColor:'rgba(255,255,255,0.97)', titleColor:'#0f172a', bodyColor:'#334155',
-              borderColor:'rgba(200,210,225,0.5)', borderWidth:1, padding:14, cornerRadius:12,
+              backgroundColor: isDark ? 'rgba(15,32,64,0.97)' : 'rgba(255,255,255,0.97)',
+              titleColor: isDark ? '#E8EFF8' : '#0f172a',
+              bodyColor:  isDark ? '#A8C0E0' : '#334155',
+              borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(200,210,225,0.5)',
+              borderWidth:1, padding:14, cornerRadius:12,
               titleFont:{family:'IBM Plex Sans Thai',size:14,weight:'bold'},
               bodyFont:{family:'IBM Plex Sans Thai',size:13},
               callbacks:{
-                title: c2 => fullName(codes[c2[0].dataIndex]),
+                title: c2 => fullName(barCodes[c2[0].dataIndex]),
                 label: c2 => {
                   if (c2.dataset.label==='__rem') return null;
                   const i=c2.dataIndex, a=c2.raw||0, t=c2.dataset._target?.[i]||0;
@@ -1174,9 +1191,9 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
             }
           },
           scales:{
-            x:{ grid:{display:false}, ticks:{font:cf, maxRotation:0} },
+            x:{ grid:{display:false}, ticks:{font:cf, maxRotation:0, color:cf.color} },
             y:{ beginAtZero:true, grid:{color:gc,borderDash:[4,4]},
-                ticks:{stepSize:1, font:{family:'IBM Plex Sans Thai',size:11}} }
+                ticks:{stepSize:1, font:{family:'IBM Plex Sans Thai',size:11}, color:cf.color} }
           }
         }
       });
@@ -1184,16 +1201,16 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
 
     // ════════════════════════════════════════════════════════
     // makePctChart: FI / MK — % Actual แบบเดียวกับ Card
-    // ════════════════════════════════════════════════════════
-    const makePctChart = (canvasId, chartRef, weightedArr, targetArr, countArr, solidColor, solidBorder, fadeColor, detailType) => {
+    const makePctChart = (canvasId, chartRef, weightedArr, targetArr, countArr, solidColor, solidBorder, fadeColor, detailType, sortedCodes) => {
       const el = document.getElementById(canvasId);
       if (!el) return chartRef;
       if (chartRef) chartRef.destroy();
+      const barCodes = sortedCodes || codes;
 
-      const pctArr = codes.map((_,i) => {
-        const wa=weightedArr[i]||0, t=targetArr[i], cnt=countArr[i]||1;
-        if (t>0) return Math.min(100, Math.round(wa/t*100));
-        if (cnt>0) return Math.min(100, Math.round(wa/cnt*100));
+      const pctArr = weightedArr.map((wa,i) => {
+        const t=targetArr[i], cnt=countArr[i]||1;
+        if (t>0) return Math.min(100, Math.round((wa||0)/t*100));
+        if (cnt>0) return Math.min(100, Math.round((wa||0)/cnt*100));
         return 0;
       });
       const remArr = pctArr.map(p => Math.max(0, 100-p));
@@ -1211,8 +1228,6 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
             const pLabel = `${p}%`;
             ctx.font = 'bold 12px "IBM Plex Sans Thai"';
             const tw = ctx.measureText(pLabel).width;
-            // แสดง pill เฉพาะเมื่อแท่งกว้าง > tw+16 และสูง > 28
-            // มิฉะนั้นไม่วาดเลย → ดูจาก tooltip แทน (ป้องกัน label ทับกัน)
             if (h > 28 && w > tw + 16) {
               const pad=6, ph=20, pr=10, cx=bar.x, cy=bar.y+h/2;
               ctx.beginPath(); ctx.roundRect(cx-tw/2-pad, cy-ph/2, tw+pad*2, ph, pr);
@@ -1229,7 +1244,7 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
       return new Chart(el.getContext('2d'), {
         type: 'bar',
         data: {
-          labels: codes,
+          labels: barCodes,
           datasets: [
             { label:'%Actual', data:pctArr, _weighted:weightedArr, _target:targetArr, _count:countArr,
               backgroundColor:solidColor, borderColor:solidBorder, borderWidth:0,
@@ -1250,8 +1265,7 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
           onHover: (e, els) => { e.native.target.style.cursor = els.length ? 'pointer' : 'default'; },
           onClick: (e, els) => {
             if (!els.length || !detailType) return;
-            const idx = els[0].index;
-            const deptCode = codes[idx];
+            const deptCode = barCodes[els[0].index];
             const deptEl = document.getElementById('global-filter-dept');
             if (deptEl) { deptEl.value = deptCode; processAndRender(); }
             openDetail(detailType, appData[detailType].title);
@@ -1259,12 +1273,15 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
           plugins: {
             legend:{ display:false },
             tooltip:{
-              backgroundColor:'rgba(255,255,255,0.97)', titleColor:'#0f172a', bodyColor:'#334155',
-              borderColor:'rgba(200,210,225,0.5)', borderWidth:1, padding:14, cornerRadius:12,
+              backgroundColor: isDark ? 'rgba(15,32,64,0.97)' : 'rgba(255,255,255,0.97)',
+              titleColor: isDark ? '#E8EFF8' : '#0f172a',
+              bodyColor:  isDark ? '#A8C0E0' : '#334155',
+              borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(200,210,225,0.5)',
+              borderWidth:1, padding:14, cornerRadius:12,
               titleFont:{family:'IBM Plex Sans Thai',size:14,weight:'bold'},
               bodyFont:{family:'IBM Plex Sans Thai',size:13},
               callbacks:{
-                title: c2 => fullName(codes[c2[0].dataIndex]),
+                title: c2 => fullName(barCodes[c2[0].dataIndex]),
                 label: c2 => {
                   if (c2.dataset.label==='__rem') return null;
                   const i=c2.dataIndex;
@@ -1277,26 +1294,43 @@ function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp) {
             }
           },
           scales:{
-            x:{ grid:{display:false}, ticks:{font:cf, maxRotation:0} },
+            x:{ grid:{display:false}, ticks:{font:cf, maxRotation:0, color:cf.color} },
             y:{ beginAtZero:true, max:100, grid:{color:gc,borderDash:[4,4]},
-                ticks:{ font:{family:'IBM Plex Sans Thai',size:11}, callback: v=>v+'%' } }
+                ticks:{ font:{family:'IBM Plex Sans Thai',size:11}, color:cf.color, callback: v=>v+'%' } }
           }
         }
       });
     };
 
-    // ── สร้าง 4 charts ─────────────────────────────────────
-    chartDeptOpl = makeCountChart('deptOplChart', chartDeptOpl, oplA, oplT,
-      'rgba(251,146,60,0.9)', 'rgba(234,88,12,1)', 'rgba(251,146,60,0.12)', 'opl');
+    // ── สร้าง 4 charts — เรียงมากสุดซ้ายสุด ─────────────────
 
-    chartDeptKz  = makeCountChart('deptKzChart',  chartDeptKz,  kzA,  kzT,
-      'rgba(52,211,153,0.9)', 'rgba(5,150,105,1)', 'rgba(52,211,153,0.12)', 'kz');
+    // OPL: เรียงตาม actual มากสุดซ้าย
+    const { sortedCodes: oplSorted, sortedVals: oplSortedA } = sortedByValue(oplA);
+    chartDeptOpl = makeCountChart('deptOplChart', chartDeptOpl,
+      oplSortedA, reorder(oplT, oplSorted),
+      'rgba(251,146,60,0.9)', 'rgba(234,88,12,1)', 'rgba(251,146,60,0.12)', 'opl',
+      oplSorted);
 
-    chartDeptFi  = makePctChart('deptFiChart', chartDeptFi, fiWA, fiT, fiCount,
-      'rgba(139,92,246,0.9)', 'rgba(109,40,217,1)', 'rgba(139,92,246,0.12)', 'fi');
+    // Kaizen: เรียงตาม actual มากสุดซ้าย
+    const { sortedCodes: kzSorted, sortedVals: kzSortedA } = sortedByValue(kzA);
+    chartDeptKz  = makeCountChart('deptKzChart', chartDeptKz,
+      kzSortedA, reorder(kzT, kzSorted),
+      'rgba(52,211,153,0.9)', 'rgba(5,150,105,1)', 'rgba(52,211,153,0.12)', 'kz',
+      kzSorted);
 
-    chartDeptMk  = makePctChart('deptMkChart', chartDeptMk, mkWA, mkT, mkCount,
-      'rgba(244,63,94,0.9)',  'rgba(190,18,60,1)',  'rgba(244,63,94,0.12)', 'mk');
+    // FI: เรียงตาม weighted actual มากสุดซ้าย
+    const { sortedCodes: fiSorted } = sortedByValue(fiWA);
+    chartDeptFi  = makePctChart('deptFiChart', chartDeptFi,
+      reorder(fiWA, fiSorted), reorder(fiT, fiSorted), reorder(fiCount, fiSorted),
+      'rgba(139,92,246,0.9)', 'rgba(109,40,217,1)', 'rgba(139,92,246,0.12)', 'fi',
+      fiSorted);
+
+    // Makigami: เรียงตาม weighted actual มากสุดซ้าย
+    const { sortedCodes: mkSorted } = sortedByValue(mkWA);
+    chartDeptMk  = makePctChart('deptMkChart', chartDeptMk,
+      reorder(mkWA, mkSorted), reorder(mkT, mkSorted), reorder(mkCount, mkSorted),
+      'rgba(244,63,94,0.9)',  'rgba(190,18,60,1)',  'rgba(244,63,94,0.12)', 'mk',
+      mkSorted);
 
   } catch(e) { console.error('renderDeptCharts Error:', e); }
 }
@@ -1580,28 +1614,38 @@ function processAndRender() {
           document.querySelectorAll('.kpi-card').forEach((c,i)=>{ setTimeout(()=>{c.classList.add('visible');const f=c.querySelector('.progress-fill');if(f)setTimeout(()=>{f.style.width=f.dataset.w+'%'},60);},i*70); });
       }
 
-      const cf={family:'IBM Plex Sans Thai',size:13}, gc='rgba(0,0,0,0.04)';
-      
+      // ── สีตาม dark/light mode ──────────────────────────────
+      const isDark = !document.body.classList.contains('light');
+      const cf = { family:'IBM Plex Sans Thai', size:13, color: isDark ? 'rgba(168,192,224,0.85)' : '#505A64' };
+      const gc = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
+      const labelColor = isDark ? '#C8D7F0' : '#0f172a';   // สีตัวเลขบน chart
+      const pillRemColor = isDark ? 'rgba(255,255,255,0.75)' : 'rgba(30,30,60,0.75)';  // สี pill ใน remaining
+
       if (typeof Chart !== 'undefined') {
           let ctxKpi = document.getElementById('kpiBarChart');
           if (ctxKpi) {
               if(chartKPI)chartKPI.destroy();
-              chartKPI=new Chart(ctxKpi.getContext('2d'),{
+
+              // ── เรียงข้อมูลจากมากไปน้อย (% สูงสุดอยู่บนสุด) ──
+              const kpiItems = [
+                { label:'AM-OI',    pct:appData.am.pct,  key:'am',  c1:'#3B82F6',c2:'#1E40AF', h:'#60A5FA' },
+                { label:'OPL',      pct:appData.opl.pct, key:'opl', c1:'#F59E0B',c2:'#B45309', h:'#FBBF24' },
+                { label:'FI Theme', pct:appData.fi.pct,  key:'fi',  c1:'#8B5CF6',c2:'#4338CA', h:'#A78BFA' },
+                { label:'Kaizen',   pct:appData.kz.pct,  key:'kz',  c1:'#10B981',c2:'#047857', h:'#34D399' },
+                { label:'Makigami', pct:appData.mk.pct,  key:'mk',  c1:'#F43F5E',c2:'#BE123C', h:'#FB7185' },
+              ].sort((a,b) => b.pct - a.pct);  // มากสุดบนสุด
+
+              const kpiCtx2d = ctxKpi.getContext('2d');
+              chartKPI=new Chart(kpiCtx2d,{
                 type:'bar',
                 data:{
-                    labels:['AM-OI','OPL','FI Theme','Kaizen','Makigami'],
+                    labels: kpiItems.map(i=>i.label),
                     datasets:[{
                         label: ' % ความคืบหน้า',
-                        data:[appData.am.pct,appData.opl.pct,appData.fi.pct,appData.kz.pct,appData.mk.pct],
-                        backgroundColor:[
-                            createGrad(ctxKpi.getContext('2d'), '#3B82F6', '#1E40AF', true),
-                            createGrad(ctxKpi.getContext('2d'), '#F59E0B', '#B45309', true),
-                            createGrad(ctxKpi.getContext('2d'), '#8B5CF6', '#4338CA', true),
-                            createGrad(ctxKpi.getContext('2d'), '#10B981', '#047857', true),
-                            createGrad(ctxKpi.getContext('2d'), '#F43F5E', '#BE123C', true)
-                        ],
-                        hoverBackgroundColor: ['#60A5FA','#FBBF24','#A78BFA','#34D399','#FB7185'],
-                        hoverBorderColor: '#ffffff', hoverBorderWidth: 4,
+                        data: kpiItems.map(i=>i.pct),
+                        backgroundColor: kpiItems.map(i=>createGrad(kpiCtx2d,i.c1,i.c2,true)),
+                        hoverBackgroundColor: kpiItems.map(i=>i.h),
+                        hoverBorderColor:'#ffffff', hoverBorderWidth:4,
                         borderRadius:14, borderSkipped:false, barPercentage:0.6
                     }]
                 },
@@ -1614,7 +1658,7 @@ function processAndRender() {
                             const value = data.datasets[0].data[index];
                             if (value > 0) {
                                 ctx.font = 'bold 14px "IBM Plex Sans Thai"';
-                                ctx.fillStyle = '#0f172a';
+                                ctx.fillStyle = labelColor;
                                 ctx.textAlign = 'left';
                                 ctx.textBaseline = 'middle';
                                 ctx.fillText(value + '%', datapoint.x + 10, datapoint.y + 1);
@@ -1625,28 +1669,32 @@ function processAndRender() {
                 }],
                 options:{
                     indexAxis:'y', responsive:true, maintainAspectRatio:false,
-                    animation: { duration: 2000, easing: 'easeOutElastic' },
+                    animation: { duration: 1600, easing: 'easeOutQuart' },
                     onClick: (event, elements) => {
                         if (elements.length > 0) {
                             const idx = elements[0].index;
-                            const map = [{k:'am',t:appData.am.title},{k:'opl',t:appData.opl.title},{k:'fi',t:appData.fi.title},{k:'kz',t:appData.kz.title},{k:'mk',t:appData.mk.title}];
-                            openDetail(map[idx].k, map[idx].t);
+                            const key = kpiItems[idx].key;
+                            openDetail(key, appData[key].title);
                         }
                     },
                     onHover: (event, elements) => { event.native.target.style.cursor = elements.length ? 'pointer' : 'default'; },
-                    layout: { padding: { right: 50 } }, 
+                    layout: { padding: { right: 50 } },
                     plugins:{
-                        legend:{display:false}, 
+                        legend:{display:false},
                         tooltip:{
-                            backgroundColor:'rgba(255,255,255,0.95)', titleColor:'#0f172a', bodyColor:'#334155',
-                            borderColor:'rgba(255,255,255,1)', borderWidth:1, padding:16,
-                            titleFont:{family:'IBM Plex Sans Thai',size:15,weight:'bold'}, bodyFont:{family:'IBM Plex Sans Thai',size:14},
-                            boxShadow:'0 15px 40px rgba(0,0,0,0.15)', cornerRadius: 12
+                            backgroundColor: isDark ? 'rgba(15,32,64,0.97)' : 'rgba(255,255,255,0.97)',
+                            titleColor: isDark ? '#E8EFF8' : '#0f172a',
+                            bodyColor:  isDark ? '#A8C0E0' : '#334155',
+                            borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,1)',
+                            borderWidth:1, padding:16,
+                            titleFont:{family:'IBM Plex Sans Thai',size:15,weight:'bold'},
+                            bodyFont:{family:'IBM Plex Sans Thai',size:14},
+                            cornerRadius:12
                         }
                     },
                     scales:{
-                        x:{beginAtZero:true, grid:{color:gc, borderDash:[6,6]}, ticks:{font:cf}},
-                        y:{grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai', weight:'bold', size:13}}}
+                        x:{ beginAtZero:true, max:100, grid:{color:gc, borderDash:[6,6]}, ticks:{font:cf, color:cf.color} },
+                        y:{ grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai',weight:'bold',size:13}, color:cf.color} }
                     }
                 }
               });
@@ -1698,15 +1746,15 @@ function processAndRender() {
                         }
                     },
                     scales:{
-                        y:{beginAtZero:true, grid:{color:gc, borderDash:[6,6]}, ticks:{stepSize:1, font:cf}},
-                        x:{grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai', weight:'bold', size:13}}}
+                        y:{beginAtZero:true, grid:{color:gc, borderDash:[6,6]}, ticks:{stepSize:1, font:cf, color:cf.color}},
+                        x:{grid:{display:false}, ticks:{font:{family:'IBM Plex Sans Thai', weight:'bold', size:13}, color:cf.color}}
                     }
                 }
               });
           }
 
           // ── Dept Comparison Charts ─────────────────────────
-          renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp);
+          renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp, isDark);
       }
 
       const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);if(!b)return; b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:40px;color:#9BA5B1;font-weight:600;">ไม่มีข้อมูลให้แสดงผล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
