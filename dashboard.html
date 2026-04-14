@@ -961,9 +961,9 @@ function onPlantChange() {
 // ================================================================
 function renderDeptCharts(fOpl, fFi, fKz, fMk, fd, fp, isDark) {
   isDark = isDark !== false && !document.body.classList.contains('light');
-  const themeLabel = isDark ? '#C8D7F0' : '#1e1e3a';   // สีตัวเลขใน bar
-  const themeRemPill = isDark ? 'rgba(255,255,255,0.78)' : 'rgba(20,20,60,0.78)'; // pill ใน remaining
-    // ── dept getter per data type ──────────────────────────────
+  const themeLabel = isDark ? '#C8D7F0' : '#1e1e3a';
+  const themeRemPill = isDark ? 'rgba(255,255,255,0.78)' : 'rgba(20,20,60,0.78)';
+  try {
     const getDept = {
       opl: r => sg(r,'Department',5) || sg(r,'Department',4) || '',
       fi:  r => sg(r,'Department',5) || sg(r,'Department',4) || '',
