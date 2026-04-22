@@ -409,10 +409,15 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
 .b-wait{background:rgba(245,124,0,0.18);color:#FBBF24;border:1px solid rgba(251,191,36,0.25)}
 .b-fail{background:rgba(244,63,94,0.18);color:#FB7185;border:1px solid rgba(251,113,133,0.25)}
 
+/* ✨ สไตล์ปุ่มแก้ไข / อนุมัติ / พิมพ์ฟอร์ม */
 .btn-edit { background:rgba(255,255,255,0.08); color:#C8D7F0; border:1px solid rgba(255,255,255,0.15); padding:7px 16px; border-radius:10px; font-size:13px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; transition:all 0.2s; white-space:nowrap; }
 .btn-edit:hover { background:rgba(255,255,255,0.15); color:#fff; transform:translateY(-2px); }
+
 .btn-approve { background:linear-gradient(135deg, #2DD4BF, #0CA47C); color:white; border:none; padding:7px 16px; border-radius:10px; font-size:13px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; transition:all 0.2s; white-space:nowrap; }
 .btn-approve:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(12,164,124,0.3); }
+
+.btn-print { background:#FFF0F0; color:#D93838; border:1px solid #FFCACA; padding:7px 12px; border-radius:10px; font-size:13px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:4px; transition:all 0.2s; white-space:nowrap; }
+.btn-print:hover { background:#FFE4E4; transform:translateY(-2px); box-shadow:0 6px 12px rgba(217,56,56,0.15); }
 
 /* AM Cards Detail */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
@@ -480,12 +485,9 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       กลับเมนูหลัก
     </a>
-    <!-- Dark / Light Mode Toggle -->
     <button class="pill-btn theme-toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="สลับ Dark/Light Mode" aria-label="Toggle theme">
       <span id="theme-toggle-icon">
-        <!-- Moon icon (dark mode active) -->
         <svg id="icon-moon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        <!-- Sun icon (light mode active) — hidden by default -->
         <svg id="icon-sun" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       </span>
       <span id="theme-toggle-label">Light</span>
@@ -547,7 +549,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
                             <stop offset="100%" stop-color="#F59E0B"/>
                           </linearGradient>
                         </defs>
-                        <path fill="url(#geminiGrad)" d="M12.000,0.000C12.000,6.627,6.627,12.000,0.000,12.000C6.627,12.000,12.000,17.373,12.000,24.000C12.000,17.373,17.373,12.000,24.000,12.000C17.373,12.000,12.000,6.627,12.000,0.000Z"/>
+                        <path fill="url(#geminiGrad)" d="M12.000,0.000C12.000,6.627,6.627,12.000,0.000,12.000C6.627,12.000,17.373,12.000,24.000,12.000C17.373,12.000,12.000,6.627,12.000,0.000Z"/>
                       </svg>
                   </div>
                   <div>
@@ -596,10 +598,8 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
         </div>
       </div>
 
-      <!-- ══ Dept Comparison Charts — 4 แยกกัน ══ -->
       <div style="margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:24px;" id="dept-charts-grid">
 
-        <!-- OPL รายแผนก -->
         <div class="chart-box" id="box-deptOpl">
           <div class="chart-header">
             <div class="chart-title-text">
@@ -613,7 +613,6 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
           <div style="flex:1;position:relative;min-height:220px;"><canvas id="deptOplChart"></canvas></div>
         </div>
 
-        <!-- Kaizen รายแผนก -->
         <div class="chart-box" id="box-deptKz">
           <div class="chart-header">
             <div class="chart-title-text">
@@ -627,7 +626,6 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
           <div style="flex:1;position:relative;min-height:220px;"><canvas id="deptKzChart"></canvas></div>
         </div>
 
-        <!-- FI Theme รายแผนก -->
         <div class="chart-box" id="box-deptFi">
           <div class="chart-header">
             <div class="chart-title-text">
@@ -641,7 +639,6 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
           <div style="flex:1;position:relative;min-height:220px;"><canvas id="deptFiChart"></canvas></div>
         </div>
 
-        <!-- Makigami รายแผนก -->
         <div class="chart-box" id="box-deptMk">
           <div class="chart-header">
             <div class="chart-title-text">
@@ -704,7 +701,7 @@ body::after{width:60vw;height:60vw;max-width:700px;max-height:700px;background:r
       <div class="detail-header-title" id="detail-page-title">รายละเอียด</div>
     </div>
     <div id="detail-am" style="display:none;"><div class="grid" id="am-card-container"></div></div>
-    <div id="detail-opl" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่</th><th>รหัส OPL</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้จัดทำ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="opl-table-body"></tbody></table></div></div>
+    <div id="detail-opl" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่ (Timestamp)</th><th>รหัส OPL</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้สอน</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="opl-table-body"></tbody></table></div></div>
     <div id="detail-fi" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>รหัส FI</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้รับผิดชอบ</th><th>ความคืบหน้า</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="fi-table-body"></tbody></table></div></div>
     <div id="detail-kz" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>วันที่</th><th>เลขที่</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้ดำเนินการ</th><th>ประเภท</th><th>จัดการ</th></tr></thead><tbody id="kz-table-body"></tbody></table></div></div>
     <div id="detail-mk" style="display:none;" class="data-table-wrapper"><div class="tbl-scroll"><table class="data-table"><thead><tr><th>รหัส</th><th>แผนก</th><th>ชื่อเรื่อง</th><th>ผู้รับผิดชอบ</th><th>Phase</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="mk-table-body"></tbody></table></div></div>
@@ -1393,7 +1390,7 @@ function processAndRender() {
       const fdEl = document.getElementById('global-filter-dept');
       const fpEl = document.getElementById('global-filter-plant');
       if (!fdEl) return;
-      const fd = fdEl.value;           // dept filter ('all' | 'PD' | ...)
+      const fd = fdEl.value;            // dept filter ('all' | 'PD' | ...)
       const fp = fpEl ? fpEl.value : 'all'; // plant filter ('all' | 'PT' | ...)
       
       const loaderEl = document.getElementById('loader');
@@ -1427,8 +1424,8 @@ function processAndRender() {
           const hPlant = String(sg(h,'Plant',0)||Object.values(h)[0]||'').trim();
           const plantOk = fp==='all' || hPlant===fp || hPlant==='';
           return plantOk &&
-            (sg(h,'Department',4)===dept||Object.values(h)[4]===dept) &&
-            (sg(h,'Area',5)===area||Object.values(h)[5]===area);
+             (sg(h,'Department',4)===dept||Object.values(h)[4]===dept) &&
+             (sg(h,'Area',5)===area||Object.values(h)[5]===area);
         });
         
         appData.am.targetScore += tStep;
@@ -1776,31 +1773,30 @@ function processAndRender() {
 
       const tbl=(id,rows,cols,mapper)=>{const b=document.getElementById(id);if(!b)return; b.innerHTML='';if(!rows.length){b.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:40px;color:#9BA5B1;font-weight:600;">ไม่มีข้อมูลให้แสดงผล</td></tr>`;return;}rows.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=mapper(r);b.appendChild(tr);});};
       
-     // ═════════ วางทับบล็อก OPL Table ตัวเดิมใน dashboard.html ═════════
+      // ════════════ แก้ไขการแสดงผลตาราง OPL ตาม Requirement ════════════
       tbl('opl-table-body', uOpl, 7, r => {
-        // OPL schema: Plant(0)|Timestamp(1)|OPL_ID(2)|OPL_Date(3)|Factory(4)|Department(5)|Title(6)|...|Status(15)
+        // OPL schema ใหม่: Plant(0)|Timestamp(1)|OPL_ID(2)|OPL_Date(3)|Factory(4)|Department(5)|Title(6)|...|Instructor(11)|...|Status(15)
         const oplId = sg(r, 'OPL ID', 2); 
         const status = sg(r, 'Status', 15) || ''; 
         const isWaiting = status.includes('รอหัวหน้า');
         
         let btns = `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=edit" class="btn-edit">แก้ไข/แนบไฟล์</a>`;
+        if (isWaiting) btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-approve">หัวหน้าอนุมัติ</a>`;
         
-        // ✨ ปุ่ม พิมพ์ฟอร์ม (เปิดแท็บใหม่แล้วสั่ง Print อัตโนมัติ)
-        btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&action=print" target="_blank" class="btn-print" style="background:#FFF0F0; color:#D93838; border:1px solid #FFCACA; padding:7px 12px; border-radius:10px; font-size:13px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px; transition:all 0.2s; white-space:nowrap; margin-left:4px;">
+        // ✨ ปุ่ม พิมพ์ฟอร์ม (เด้งแท็บใหม่ไปที่ opl.html แบบ action=print)
+        btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&action=print" target="_blank" class="btn-print">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           พิมพ์ฟอร์ม
         </a>`;
-        
-        if (isWaiting) btns += `<a href="opl.html?oplId=${encodeURIComponent(oplId)}&role=lead" class="btn-approve" style="margin-left:4px;">หัวหน้าอนุมัติ</a>`;
-        
-        // ✨ เปลี่ยนให้แสดงผล Date ด้วย Timestamp จาก sg(r, 'Timestamp', 1) 
+
+        // ✨ ดึง Timestamp แทน วันที่สอน: sg(r, 'Timestamp', 1) 
         return `<td class="col-fit">${formatDateTH(sg(r, 'Timestamp', 1))}</td>
                 <td class="col-fit"><span style="font-weight:700; color:var(--orange-600);">${oplId}</span></td>
                 <td class="col-fit">${sg(r, 'Department', 5)}</td>
                 <td class="col-title"><strong>${sg(r, 'ชื่อเรื่อง', 6)}</strong></td>
                 <td class="col-owner">${sg(r, 'ชื่อผู้สอน', 11)}</td>
                 <td class="col-fit"><span class="badge ${getStatusBadge(status)}">${status}</span></td>
-                <td class="col-fit"><div style="display:flex; gap:4px;">${btns}</div></td>`;
+                <td class="col-fit"><div style="display:flex; align-items:center; gap:8px;">${btns}</div></td>`;
       });
       
       tbl('fi-table-body', uFi, 7, r => {
