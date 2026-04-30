@@ -1754,7 +1754,7 @@ function processAndRender() {
                                     let step = context.dataIndex + 1;
                                     let areas = appData.am.stepDetails[step];
                                     if (!areas || areas.length === 0) return 'ไม่มีข้อมูลพื้นที่ใน Step นี้';
-                                    return areas.map(a => '📌 ' + a); 
+                                    return areas.map(a => ' ' + a); 
                                 }
                             }
                         }
